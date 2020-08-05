@@ -6,4 +6,4 @@ export default {
     component: ExampleComponent,
 };
 
-export const Header1 = (): JSX.Element => <ExampleComponent name="you" />;
+export const Header1 = (): JSX.Element => <ExampleComponent name="world" />;

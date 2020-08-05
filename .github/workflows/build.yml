@@ -55,12 +55,3 @@ jobs:
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   publish_dir: ./storybook-static
-
-            - name: Initialize CodeQL
-              uses: github/codeql-action/init@v1
-
-            - name: CodeQL Autobuild
-              uses: github/codeql-action/autobuild@v1
-
-            - name: CodeQL Analysis
-              uses: github/codeql-action/analyze@v1
