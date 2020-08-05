@@ -1,0 +1,22 @@
+{
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "**/*.stories.tsx", "**/*.test.tsx"],
+    "compilerOptions": {
+        "declaration": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "jsx": "react",
+        "lib": ["dom", "es6"],
+        "module": "commonjs",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "sourceMap": true,
+        "strict": true,
+        "target": "es5",
+        "allowJs": true
+    }
+}

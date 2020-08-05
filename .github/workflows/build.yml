@@ -1,0 +1,64 @@
+name: build
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Unit Test
+        run: npm test
+
+      - name: Lint Code
+        run: npm run lint
+
+      - name: Check Formatting
+        run: npm run check
+
+      - name: Build Package
+        run: npm run build
+
+      - name: Tag Release
+        run: |
+          npm version patch
+          VERSION=v`cat package.json | jq -r .version`
+          git config --global user.name "${GITHUB_ACTOR}" user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git push
+          git push origin $VERSION
+
+      - name: Publish Package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Storybook
+        run: npm run build:storybook
+
+      - name: Deploy Storybook
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./storybook-static
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+
+      - name: CodeQL Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - name: CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
