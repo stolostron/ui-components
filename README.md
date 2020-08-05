@@ -2,7 +2,9 @@
 
 React shared UI component library for open cluster management.
 
-[Storybook](https://open-cluster-management.github.io/ui-components/index.html)
+![build](https://github.com/open-cluster-management/ui-components/workflows/build/badge.svg)
+
+[Storybook of Components](https://open-cluster-management.github.io/ui-components/index.html)
 
 ## Prerequisites
 
