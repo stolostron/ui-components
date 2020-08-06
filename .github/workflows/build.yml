@@ -18,6 +18,11 @@ jobs:
                   node-version: 12.x
                   registry-url: 'https://npm.pkg.github.com'
 
+            - name: Setup Git
+              run: |
+                  git config --global user.name "${GITHUB_ACTOR}"
+                  git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
             - name: Install Dependencies
               run: npm ci --no-optional
 
@@ -35,8 +40,6 @@ jobs:
 
             - name: Tag Release
               run: |
-                  git config --global user.name "${GITHUB_ACTOR}"
-                  git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
                   npm version patch
                   VERSION=v`cat package.json | jq -r .version`
                   git push
