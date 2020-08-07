@@ -3,6 +3,8 @@
 React shared UI component library for open cluster management.
 
 ![build](https://github.com/open-cluster-management/ui-components/workflows/build/badge.svg)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=open-cluster-management_ui-components&metric=coverage&token=64149a11d78bff9de4105c800b8ec2219dae4ea4)](https://sonarcloud.io/dashboard?id=open-cluster-management_ui-components)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=open-cluster-management_ui-components&metric=vulnerabilities&token=64149a11d78bff9de4105c800b8ec2219dae4ea4)](https://sonarcloud.io/dashboard?id=open-cluster-management_ui-components)
 
 [Storybook of Components](https://open-cluster-management.github.io/ui-components/index.html)
 
