@@ -6,6 +6,8 @@ React shared UI component library for open cluster management.
 
 [Storybook of Components](https://open-cluster-management.github.io/ui-components/index.html)
 
+test
+
 ## Prerequisites
 
 - [node.js](https://nodejs.org/) version 12.x
