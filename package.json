@@ -17,6 +17,7 @@
         "check:fix": "prettier --write src",
         "start": "start-storybook -p 9000 --ci",
         "test": "jest",
+        "test:ci": "jest --ci --reporters=default --reporters=jest-junit",
         "update": "rm -rf package-lock.json node_modules && npx npm-check-updates -u && npm install && npm audit fix && npm test && npm run lint && npm run check"
     },
     "repository": {
@@ -45,6 +46,7 @@
         "eslint-plugin-prettier": "^3.1.4",
         "eslint-plugin-react": "^7.20.5",
         "jest": "^26.2.2",
+        "jest-junit": "^11.1.0",
         "prettier": "^2.0.5",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
@@ -139,8 +141,19 @@
         },
         "coverageReporters": [
             "text-summary",
-            "html"
+            "html",
+            "lcov"
         ]
+    },
+    "jest-junit": {
+        "suiteName": "jest tests",
+        "outputDirectory": "./coverage",
+        "outputName": "junit.xml",
+        "uniqueOutputName": "false",
+        "classNameTemplate": "{classname}-{title}",
+        "titleTemplate": "{classname}-{title}",
+        "ancestorSeparator": " › ",
+        "usePathForSuiteName": "true"
     },
     "prettier": {
         "tabWidth": 4,
