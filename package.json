@@ -1,6 +1,6 @@
 {
     "name": "@open-cluster-management/ui-components",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "UI component library for open cluster management",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
