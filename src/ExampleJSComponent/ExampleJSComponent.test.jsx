@@ -1,10 +1,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import ExampleComponent from './ExampleComponent';
+import ExampleJSComponent from './ExampleJSComponent';
 
-describe('ExampleComponent', () => {
+describe('ExampleJSComponent', () => {
     test('Render a h1 element', () => {
-        const wrapper = shallow(<ExampleComponent name="world" />);
+        const wrapper = shallow(<ExampleJSComponent text="world" />);
         expect(wrapper.find('h1').length).toBe(1);
     });
 });

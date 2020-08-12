@@ -109,8 +109,24 @@
             "semi": [
                 "error",
                 "always"
+            ],
+            "@typescript-eslint/explicit-module-boundary-types": [
+                "off"
             ]
         },
+        "overrides": [
+            {
+                "files": [
+                    "*.ts",
+                    "*.tsx"
+                ],
+                "rules": {
+                    "@typescript-eslint/explicit-module-boundary-types": [
+                        "error"
+                    ]
+                }
+            }
+        ],
         "settings": {
             "react": {
                 "version": "detect"
