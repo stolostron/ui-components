@@ -6,4 +6,4 @@ export default {
     component: ExampleJSComponent,
 };
 
-export const Header1 = () => <ExampleJSComponent text="world" />;
+export const Example = () => <ExampleJSComponent text="Example JS Component" />;

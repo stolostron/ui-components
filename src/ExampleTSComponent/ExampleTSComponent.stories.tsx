@@ -6,4 +6,6 @@ export default {
     component: ExampleTSComponent,
 };
 
-export const Header1 = (): JSX.Element => <ExampleTSComponent text="world" />;
+export const Example = (): JSX.Element => (
+    <ExampleTSComponent text="Example TS Component" />
+);
