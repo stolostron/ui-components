@@ -2,7 +2,7 @@ import React from 'react';
 import ExampleTSComponent from './ExampleTSComponent';
 
 export default {
-    title: 'UI/Headers',
+    title: 'Example TS Component',
     component: ExampleTSComponent,
 };
 

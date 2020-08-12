@@ -2,7 +2,7 @@ import React from 'react';
 import ExampleJSComponent from './ExampleJSComponent';
 
 export default {
-    title: 'UI/Headers',
+    title: 'Example JS Component',
     component: ExampleJSComponent,
 };
 
