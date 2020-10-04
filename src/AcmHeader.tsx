@@ -1,6 +1,4 @@
 import {
-    Avatar,
-    Brand,
     Button,
     ButtonVariant,
     Nav,
@@ -14,11 +12,10 @@ import {
     PageSidebar,
 } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
-import imgAvatar from '@patternfly/react-core/src/components/Avatar/examples/avatarImg.svg'
 import CogIcon from '@patternfly/react-icons/dist/js/icons/cog-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React from 'react'
-import imgBrand from '../RHACM-Logo.svg'
+// import imgBrand from '../assets/RHACM-Logo.svg'
 
 export enum NavItemE {
     home = '/home',
@@ -50,7 +47,7 @@ export function AcmHeaderTools() {
                 </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
 
-            <Avatar src={imgAvatar} alt="Avatar image" />
+            {/* <Avatar src={imgAvatar} alt="Avatar image" /> */}
         </PageHeaderTools>
     )
 }
@@ -83,7 +80,7 @@ export function AcmHeader(props: { children: React.ReactNode; activeItem: NavIte
     const Header = (
         <PageHeader
             headerTools={<AcmHeaderTools />}
-            logo={<Brand src={imgBrand} alt="Advanced" />}
+            // logo={<Brand src={imgBrand} alt="Advanced" />}
             showNavToggle
         ></PageHeader>
     )

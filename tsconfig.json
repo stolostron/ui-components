@@ -1,12 +1,6 @@
 {
     "include": ["src/**/*"],
-    "exclude": [
-        "node_modules",
-        "**/*.stories.tsx",
-        "**/*.test.tsx",
-        "**/*.stories.jsx",
-        "**/*.test.jsx"
-    ],
+    "exclude": ["node_modules", "**/*.stories.tsx", "**/*.test.tsx", "**/*.stories.jsx", "**/*.test.jsx"],
     "compilerOptions": {
         "declaration": true,
         "esModuleInterop": true,
@@ -23,6 +17,7 @@
         "sourceMap": true,
         "strict": true,
         "target": "es5",
-        "allowJs": true
+        "allowJs": true,
+        "skipLibCheck": true
     }
 }

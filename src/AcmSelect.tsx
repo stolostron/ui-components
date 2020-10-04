@@ -30,8 +30,8 @@ export function AcmSelect(props: {
                 onToggle={() => {
                     setOpen(!open)
                 }}
-                onSelect={(e, v) => {
-                    if (typeof v === 'string') props.onChange(v)
+                onSelect={(_event, value) => {
+                    if (typeof value === 'string') props.onChange(value)
                     setOpen(false)
                 }}
                 onClear={
