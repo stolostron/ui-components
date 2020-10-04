@@ -11,13 +11,17 @@ export interface IConfirmModalProps {
 
 export const ClosedConfirmModalProps: IConfirmModalProps = {
     open: false,
-    confirm: () => void,
-    cancel: () => void,
+    confirm: () => {
+        /**/
+    },
+    cancel: () => {
+        /**/
+    },
     title: '',
     message: '',
 }
 
-export function ConfirmModal(props: IConfirmModalProps) {
+export function AcmConfirmModal(props: IConfirmModalProps) {
     return (
         <Modal
             variant={ModalVariant.medium}

@@ -17,12 +17,7 @@ import {
     ToolbarItem,
 } from '@patternfly/react-core'
 
-export interface EmptyPageProps {
-    title: string
-    message: string
-    action?: string
-}
-export function EmptyPage(props: EmptyPageProps) {
+export function AcmEmptyPage(props: { title: string; message: string; action?: string }) {
     return (
         <PageSection>
             <Card>

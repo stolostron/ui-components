@@ -11,10 +11,7 @@ import {
     CardBody,
 } from '@patternfly/react-core'
 
-export interface LoadingPageProps {
-    title: string
-}
-export function LoadingPage() {
+export function AcmLoadingPage() {
     return (
         <PageSection>
             <Card>
