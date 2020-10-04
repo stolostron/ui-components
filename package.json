@@ -127,9 +127,9 @@
         }
     },
     "jest": {
+        "preset": "ts-jest",
         "testEnvironment": "jsdom",
         "clearMocks": true,
-        "preset": "ts-jest",
         "rootDir": "./src",
         "setupFilesAfterEnv": [
             "<rootDir>/../jest.setup.ts"
@@ -157,7 +157,11 @@
             "html",
             "lcov"
         ],
-        "testResultsProcessor": "jest-sonar-reporter"
+        "testResultsProcessor": "jest-sonar-reporter",
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/../css.mock.js",
+            "\\.(css|less)$": "<rootDir>/../css.mock.js"
+        }
     },
     "prettier": {
         "printWidth": 120,
