@@ -14,7 +14,7 @@ export function AcmLabelsInput(props: {
 
     function addLabel(input: string) {
         const newlabels = [...(props.value ? props.value : [])]
-        let labels = input
+        const labels = input
             .split(',')
             .join(' ')
             .split(' ')
@@ -63,7 +63,7 @@ export function AcmLabelsInput(props: {
                         onChange={(v) => {
                             setInputValue(v)
                         }}
-                        onBlur={(e) => {
+                        onBlur={() => {
                             if (inputValue) {
                                 addLabel(inputValue)
                             }

@@ -11,9 +11,7 @@ import {
 } from '@patternfly/react-core'
 import {
     ICell,
-    IExtraRowData,
     IRow,
-    IRowData,
     ISortBy,
     SortByDirection,
     Table,
@@ -124,7 +122,7 @@ export function AcmTable<T>(props: {
         }
     }, [selected, paged, keyFn, cellsFn])
 
-    function onSelect(event: FormEvent, isSelected: boolean, rowId: number) {
+    function onSelect(_event: FormEvent, isSelected: boolean, rowId: number) {
         if (!paged) return
         if (!filtered) return
         if (!rows) return
@@ -157,7 +155,7 @@ export function AcmTable<T>(props: {
     const actions = props.rowActions.map((rowAction) => {
         return {
             title: rowAction.title,
-            onClick: (event: React.MouseEvent, rowId: number, rowData: IRowData, extra: IExtraRowData) => {
+            onClick: (_event: React.MouseEvent, rowId: number) => {
                 if (paged) {
                     rowAction.click(paged[rowId])
                 }
@@ -203,7 +201,7 @@ export function AcmTable<T>(props: {
                             {props.bulkActions.map((action) => (
                                 <ToolbarItem key={action.id}>
                                     <Button
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             action.click(props.items.filter((item) => selected[keyFn(item)]))
                                         }}
                                     >
@@ -217,7 +215,7 @@ export function AcmTable<T>(props: {
                             {props.tableActions.map((action) => (
                                 <ToolbarItem key={action.id}>
                                     <Button
-                                        onClick={(e) => {
+                                        onClick={() => {
                                             action.click()
                                         }}
                                     >
@@ -236,7 +234,7 @@ export function AcmTable<T>(props: {
                 canSelectAll={true}
                 aria-label="Simple Table"
                 sortBy={sort}
-                onSort={(event, index, direction) => {
+                onSort={(_event, index, direction) => {
                     setSort({ index, direction })
                 }}
                 onSelect={onSelect}
@@ -270,10 +268,10 @@ export function AcmTable<T>(props: {
                         perPage={perPage}
                         page={page}
                         variant={PaginationVariant.bottom}
-                        onSetPage={(event, page) => {
+                        onSetPage={(_event, page) => {
                             setPage(page)
                         }}
-                        onPerPageSelect={(event, perPage) => {
+                        onPerPageSelect={(_event, perPage) => {
                             setPerPage(perPage)
                         }}
                     ></Pagination>
