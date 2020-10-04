@@ -33,8 +33,9 @@
         "@babel/preset-env": "^7.11.5",
         "@babel/preset-react": "^7.10.4",
         "@storybook/react": "^6.0.25",
-        "@types/enzyme": "^3.10.7",
-        "@types/enzyme-adapter-react-16": "^1.0.6",
+        "@testing-library/jest-dom": "^5.11.4",
+        "@testing-library/react": "^11.0.4",
+        "@testing-library/user-event": "^12.1.6",
         "@types/jest": "^26.0.14",
         "@types/react": "^16.9.50",
         "@types/react-dom": "^16.9.8",
@@ -44,9 +45,6 @@
         "babel-loader": "^8.1.0",
         "cross-env": "^7.0.2",
         "css-loader": "^4.3.0",
-        "enzyme": "^3.11.0",
-        "enzyme-adapter-react-16": "^1.15.5",
-        "enzyme-to-json": "^3.6.1",
         "eslint": "^7.10.0",
         "eslint-config-prettier": "^6.12.0",
         "eslint-plugin-prettier": "^3.1.4",
@@ -129,15 +127,12 @@
         }
     },
     "jest": {
-        "testEnvironment": "node",
+        "testEnvironment": "jsdom",
         "clearMocks": true,
         "preset": "ts-jest",
         "rootDir": "./src",
         "setupFilesAfterEnv": [
             "<rootDir>/../jest.setup.ts"
-        ],
-        "snapshotSerializers": [
-            "enzyme-to-json/serializer"
         ],
         "testPathIgnorePatterns": [
             "/node_modules/",
