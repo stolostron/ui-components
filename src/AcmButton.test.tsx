@@ -4,7 +4,8 @@ import { AcmButton } from './AcmButton'
 
 describe('AcmButton', () => {
     test('renders', () => {
-        const { getByText } = render(<AcmButton>Button</AcmButton>)
-        expect(getByText('Button')).toBeInTheDocument()
+        const { getByText } = render(<AcmButton>Button Label</AcmButton>)
+        expect(getByText('Button Label')).toBeInTheDocument()
+        expect(getByText('Button Label')).toBeInstanceOf(HTMLButtonElement)
     })
 })
