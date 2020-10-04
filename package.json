@@ -23,7 +23,11 @@
         "type": "git",
         "url": "git+https://github.com/open-cluster-management/ui-components.git"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@patternfly/react-core": "^4.50.2",
+        "@patternfly/react-table": "^4.16.20",
+        "fuse.js": "^6.4.1"
+    },
     "devDependencies": {
         "@babel/core": "^7.11.6",
         "@babel/preset-env": "^7.11.5",
@@ -94,10 +98,6 @@
             "@typescript-eslint"
         ],
         "rules": {
-            "indent": [
-                "error",
-                4
-            ],
             "linebreak-style": [
                 "error",
                 "unix"
@@ -108,7 +108,7 @@
             ],
             "semi": [
                 "error",
-                "always"
+                "never"
             ],
             "@typescript-eslint/explicit-module-boundary-types": [
                 "off"
@@ -119,12 +119,7 @@
                 "files": [
                     "*.ts",
                     "*.tsx"
-                ],
-                "rules": {
-                    "@typescript-eslint/explicit-module-boundary-types": [
-                        "error"
-                    ]
-                }
+                ]
             }
         ],
         "settings": {
@@ -162,6 +157,7 @@
             "^.+\\.jsx?$": "babel-jest"
         },
         "coverageReporters": [
+            "text",
             "text-summary",
             "html",
             "lcov"
@@ -169,10 +165,10 @@
         "testResultsProcessor": "jest-sonar-reporter"
     },
     "prettier": {
+        "printWidth": 120,
         "tabWidth": 4,
-        "singleQuote": true,
-        "quoteProps": "consistent",
-        "trailingComma": "all"
+        "semi": false,
+        "singleQuote": true
     },
     "babel": {
         "presets": [
