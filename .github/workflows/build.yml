@@ -75,7 +75,7 @@ jobs:
 
             - name: Publish Package
               if: github.event_name != 'pull_request' && env.SKIP != '1'
-              run: npm publish
+              run: npm publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
