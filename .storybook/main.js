@@ -1,7 +1,7 @@
 const sass = require('sass');
 
 module.exports = {
-    stories: ['../src/**/**/*.stories.tsx', '../src/**/**/*.stories.jsx'],
+    stories: ['../src/**/*.stories.tsx', '../src/**/*.stories.jsx'],
     webpackFinal: async config => {
         config.module.rules.push(
             {
