@@ -1,7 +1,7 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { AcmExpandable } from './AcmExpandable'
-import { AcmPage, AcmPageCard, AcmPageHeader } from './AcmPage'
+import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 
 export default {
     title: 'AcmExpandable',

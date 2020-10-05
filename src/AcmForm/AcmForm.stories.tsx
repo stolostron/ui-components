@@ -1,10 +1,10 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmForm } from './AcmForm'
-import { AcmSelect } from './AcmSelect'
-import { AcmTextInput } from './AcmTextInput'
-import { AcmPage, AcmPageCard, AcmPageHeader } from './AcmPage'
-import { AcmLabelsInput } from './AcmLabelsInput'
+import { AcmSelect } from '../AcmSelect/AcmSelect'
+import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
+import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
+import { AcmLabelsInput } from '../AcmLabelsInput/AcmLabelsInput'
 
 export default {
     title: 'AcmForm',
