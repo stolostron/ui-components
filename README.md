@@ -47,4 +47,3 @@ React shared UI component library for open cluster management.
       - Storybook
 
 2. Export the component in src/index.ts
-
