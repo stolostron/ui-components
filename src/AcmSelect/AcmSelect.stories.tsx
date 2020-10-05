@@ -1,7 +1,7 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
-import { AcmForm } from './AcmForm'
-import { AcmPage, AcmPageCard, AcmPageHeader } from './AcmPage'
+import { AcmForm } from '../AcmForm/AcmForm'
+import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 import { AcmSelect } from './AcmSelect'
 
 export default {

@@ -1,8 +1,8 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import { sortable } from '@patternfly/react-table'
 import React, { useState } from 'react'
-import { AcmPage, AcmPageCard, AcmPageHeader } from './AcmPage'
-import { AcmTable, compareStrings } from './AcmTable'
+import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
+import { AcmTable, compareStrings } from '../AcmTable/AcmTable'
 
 interface IExampleData {
     id: number
