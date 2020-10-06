@@ -27,11 +27,17 @@ type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
 
 export interface IAcmTableColumn<T> {
+    /** the header of the column */
     header: string
+
+    /** enables sort either on field name of using sort function */
     sort?: SortFn<T> | string
+
+    /** if defined will enable search of the search field */
     search?: string
+
+    /** cell content, either on field name of using cell function */
     cell: CellFn<T> | string
-    click?: () => void
 }
 
 export interface IAcmTableAction {
