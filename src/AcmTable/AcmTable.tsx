@@ -10,7 +10,6 @@ import {
     ToolbarItem,
 } from '@patternfly/react-core'
 import {
-    ICell,
     IRow,
     ISortBy,
     sortable,
@@ -21,8 +20,8 @@ import {
     TableVariant,
 } from '@patternfly/react-table'
 import Fuse from 'fuse.js'
-import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
 import get from 'get-value'
+import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
