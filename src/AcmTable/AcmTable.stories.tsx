@@ -1,8 +1,7 @@
 import '@patternfly/react-core/dist/styles/base.css'
-import { sortable } from '@patternfly/react-table'
 import React, { useState } from 'react'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
-import { AcmTable, compareStrings } from '../AcmTable/AcmTable'
+import { AcmTable } from '../AcmTable/AcmTable'
 
 interface IExampleData {
     id: number
@@ -31,23 +30,30 @@ export function TableExample() {
                             header: 'First Name',
                             sort: 'firstName',
                             cell: 'firstName',
-                            key: 'firstName',
                             search: 'firstName',
                         },
                         {
                             header: 'Last Name',
                             sort: 'last_name',
                             cell: 'last_name',
-                            key: 'last_name',
                             search: 'last_name',
                         },
-                        { header: 'EMail', sort: 'email', cell: 'email', key: 'email', search: 'email' },
-                        { header: 'Gender', sort: 'gender', cell: 'gender', key: 'gender', search: 'gender' },
+                        {
+                            header: 'EMail',
+                            sort: 'email',
+                            cell: 'email',
+                            search: 'email',
+                        },
+                        {
+                            header: 'Gender',
+                            sort: 'gender',
+                            cell: 'gender',
+                            search: 'gender',
+                        },
                         {
                             header: 'IP Address',
                             sort: 'ip_address',
                             cell: 'ip_address',
-                            key: 'ip_address',
                             search: 'ip_address',
                         },
                     ]}

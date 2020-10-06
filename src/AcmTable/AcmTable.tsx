@@ -26,14 +26,12 @@ import get from 'get-value'
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
-type KeyFn<T> = (item: T) => string
 
 export interface IAcmTableColumn<T> {
     header: string
     sort?: SortFn<T> | string
     search?: string
     cell: CellFn<T> | string
-    key: KeyFn<T> | string
     click?: () => void
 }
 
