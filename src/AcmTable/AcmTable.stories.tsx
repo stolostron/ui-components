@@ -27,36 +27,31 @@ export function TableExample() {
                     plural="examples"
                     items={items}
                     columns={[
-                        { title: 'First Name', transforms: [sortable] },
-                        { title: 'Last Name', transforms: [sortable] },
-                        { title: 'EMail', transforms: [sortable] },
-                        { title: 'Gender', transforms: [sortable] },
-                        { title: 'IP Address', transforms: [sortable] },
+                        {
+                            header: 'First Name',
+                            sort: 'firstName',
+                            cell: 'firstName',
+                            key: 'firstName',
+                            search: 'firstName',
+                        },
+                        {
+                            header: 'Last Name',
+                            sort: 'last_name',
+                            cell: 'last_name',
+                            key: 'last_name',
+                            search: 'last_name',
+                        },
+                        { header: 'EMail', sort: 'email', cell: 'email', key: 'email', search: 'email' },
+                        { header: 'Gender', sort: 'gender', cell: 'gender', key: 'gender', search: 'gender' },
+                        {
+                            header: 'IP Address',
+                            sort: 'ip_address',
+                            cell: 'ip_address',
+                            key: 'ip_address',
+                            search: 'ip_address',
+                        },
                     ]}
-                    searchKeys={['firstName', 'last_name', 'email', 'ip_address']}
-                    sortFn={(items: IExampleData[], column: number) => {
-                        switch (column) {
-                            case 1:
-                                return items.sort((a, b) => compareStrings(a.firstName, b.firstName))
-                            case 2:
-                                return items.sort((a, b) => compareStrings(a.last_name, b.last_name))
-                            case 3:
-                                return items.sort((a, b) => compareStrings(a.email, b.email))
-                            case 4:
-                                return items.sort((a, b) => compareStrings(a.gender, b.gender))
-                            case 5:
-                                return items.sort((a, b) => compareStrings(a.ip_address, b.ip_address))
-                        }
-                        return items
-                    }}
                     keyFn={(item: IExampleData) => item.id.toString()}
-                    cellsFn={(item: IExampleData) => [
-                        item.firstName,
-                        item.last_name,
-                        item.email,
-                        item.gender,
-                        item.ip_address,
-                    ]}
                     tableActions={[
                         {
                             id: 'delete',

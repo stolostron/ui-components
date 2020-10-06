@@ -13,6 +13,7 @@ import {
     ICell,
     IRow,
     ISortBy,
+    sortable,
     SortByDirection,
     Table,
     TableBody,
@@ -20,7 +21,21 @@ import {
     TableVariant,
 } from '@patternfly/react-table'
 import Fuse from 'fuse.js'
-import React, { FormEvent, Fragment, useLayoutEffect, useState } from 'react'
+import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import get from 'get-value'
+
+type SortFn<T> = (a: T, b: T) => number
+type CellFn<T> = (item: T) => ReactNode
+type KeyFn<T> = (item: T) => string
+
+export interface IAcmTableColumn<T> {
+    header: string
+    sort?: SortFn<T> | string
+    search?: string
+    cell: CellFn<T> | string
+    key: KeyFn<T> | string
+    click?: () => void
+}
 
 export interface IAcmTableAction {
     id: string
@@ -43,16 +58,13 @@ export interface IAcmTableBulkAction<T> {
 export function AcmTable<T>(props: {
     plural: string
     items: T[]
-    columns: ICell[]
-    searchKeys: string[]
-    sortFn: (items: T[], column: number) => T[]
+    columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
-    cellsFn: (item: T) => React.ReactNode[]
     tableActions: IAcmTableAction[]
     rowActions: IAcmRowAction<T>[]
     bulkActions: IAcmTableBulkAction<T>[]
 }) {
-    const { items, columns, sortFn, keyFn, cellsFn } = props
+    const { items, columns, keyFn } = props
     const [filtered, setFiltered] = useState<T[]>(props.items)
     const [sorted, setSorted] = useState<T[]>()
     const [paged, setPaged] = useState<T[]>()
@@ -68,24 +80,32 @@ export function AcmTable<T>(props: {
             const fuse = new Fuse(items, {
                 includeScore: true,
                 threshold: 0.2,
-                keys: props.searchKeys,
+                keys: columns.map((column) => column.search).filter((value) => value !== undefined) as string[],
             })
             setFiltered(fuse.search(search).map((result) => result.item))
             setSort(undefined)
         } else {
             setFiltered(items)
         }
-    }, [search, items, props.searchKeys])
+    }, [search, items, columns])
 
     useLayoutEffect(() => {
         if (sort && sort.index && filtered) {
-            let sorted = sortFn([...filtered], sort.index)
+            const compare = columns[sort.index - 1].sort
+            let sorted: T[] = [...filtered]
+            if (compare) {
+                if (typeof compare === 'string') {
+                    sorted = [...filtered].sort(compareItems(compare))
+                } else {
+                    sorted = [...filtered].sort(compare)
+                }
+            }
             sorted = sort.direction === SortByDirection.asc ? sorted : sorted.reverse()
             setSorted(sorted)
         } else {
             setSorted(filtered)
         }
-    }, [filtered, sort, sortFn])
+    }, [filtered, sort, columns])
 
     useLayoutEffect(() => {
         const start = (page - 1) * perPage
@@ -113,14 +133,22 @@ export function AcmTable<T>(props: {
                 return {
                     selected: selected[keyFn(item)] === true,
                     props: { key: keyFn(item) },
-                    cells: cellsFn(item),
+                    cells: columns.map((column) => {
+                        return (
+                            <Fragment key={keyFn(item)}>
+                                {typeof column.cell === 'string'
+                                    ? get(item as Record<string, unknown>, column.cell)
+                                    : column.cell(item)}
+                            </Fragment>
+                        )
+                    }),
                 }
             })
             setRows(newRows)
         } else {
             setRows(undefined)
         }
-    }, [selected, paged, keyFn, cellsFn])
+    }, [selected, paged, keyFn, columns])
 
     function onSelect(_event: FormEvent, isSelected: boolean, rowId: number) {
         if (!paged) return
@@ -228,7 +256,12 @@ export function AcmTable<T>(props: {
                 </ToolbarContent>
             </Toolbar>
             <Table
-                cells={columns}
+                cells={columns.map((column) => {
+                    return {
+                        title: column.header,
+                        transforms: column.sort ? [sortable] : undefined,
+                    }
+                })}
                 rows={rows}
                 actions={actions}
                 canSelectAll={true}
@@ -281,16 +314,42 @@ export function AcmTable<T>(props: {
     )
 }
 
+export function compareItems(path: string) {
+    return (a: unknown, b: unknown) => {
+        return compareUnknowns(get(a as Record<string, unknown>, path), get(b as Record<string, unknown>, path))
+    }
+}
+
+export function compareUnknowns(a: unknown | undefined | null, b: unknown | undefined | null) {
+    if (a == undefined && b == undefined) return 0
+    if (a == undefined) return 1
+    if (b == undefined) return -1
+    if (typeof a === 'string') {
+        if (typeof b === 'string') {
+            return compareStrings(a, b)
+        } else if (typeof b === 'number') {
+            return compareStrings(a, b.toString())
+        }
+    } else if (typeof a === 'number') {
+        if (typeof b === 'string') {
+            return compareStrings(a.toString(), b)
+        } else if (typeof b === 'number') {
+            return compareNumbers(a, b)
+        }
+    }
+    return 0
+}
+
 export function compareStrings(a: string | undefined | null, b: string | undefined | null) {
-    if (!a && !b) return 0
-    if (!a) return 1
-    if (!b) return -1
+    if (a == undefined && b == undefined) return 0
+    if (a == undefined) return 1
+    if (b == undefined) return -1
     return a < b ? -1 : a > b ? 1 : 0
 }
 
 export function compareNumbers(a: number | undefined | null, b: number | undefined | null) {
-    if (!a && !b) return 0
-    if (!a) return 1
-    if (!b) return -1
+    if (a == undefined && b == undefined) return 0
+    if (a == undefined) return 1
+    if (b == undefined) return -1
     return a < b ? -1 : a > b ? 1 : 0
 }
