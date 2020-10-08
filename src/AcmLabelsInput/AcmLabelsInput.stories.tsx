@@ -5,7 +5,7 @@ import { AcmLabelsInput } from './AcmLabelsInput'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 
 export default {
-    title: 'AcmLabelsInput',
+    title: 'LabelsInput',
     component: AcmLabelsInput,
 }
 

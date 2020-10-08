@@ -3,7 +3,7 @@ import React from 'react'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 
 export default {
-    title: 'AcmPage',
+    title: 'Page',
     component: AcmPage,
 }
 

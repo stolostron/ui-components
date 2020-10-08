@@ -12,11 +12,11 @@ interface IExampleData {
     ip_address: string
 }
 export default {
-    title: 'AcmTable',
+    title: 'Table',
     component: AcmTable,
 }
 
-export function TableExample() {
+export function Table() {
     const [items, setItems] = useState<IExampleData[]>(exampleData)
     return (
         <AcmPage>

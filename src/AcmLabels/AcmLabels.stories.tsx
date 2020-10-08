@@ -4,7 +4,7 @@ import { AcmLabels } from './AcmLabels'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 
 export default {
-    title: 'AcmLabels',
+    title: 'Labels',
     component: AcmLabels,
 }
 
