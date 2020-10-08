@@ -1,6 +1,6 @@
 # Open Cluster Management UI Components
 
-React shared UI component library for open cluster management.
+React shared UI component library for open cluster management
 
 [![Build](https://github.com/open-cluster-management/ui-components/workflows/build/badge.svg)](https://github.com/open-cluster-management/ui-components/actions?query=workflow%3Abuild)
 [![npm version](https://badge.fury.io/js/%40open-cluster-management%2Fui-components.svg)](https://badge.fury.io/js/%40open-cluster-management%2Fui-components)
