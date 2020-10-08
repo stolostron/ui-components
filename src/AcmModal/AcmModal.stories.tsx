@@ -1,6 +1,5 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
-import ReactDOM from 'react-dom'
 import { Meta } from '@storybook/react'
 import { AcmModal } from './AcmModal'
 import { AcmButton } from '../'
