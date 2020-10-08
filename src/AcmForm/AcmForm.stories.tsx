@@ -7,7 +7,7 @@ import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 import { AcmLabelsInput } from '../AcmLabelsInput/AcmLabelsInput'
 
 export default {
-    title: 'AcmForm',
+    title: 'Form',
     component: AcmForm,
 }
 

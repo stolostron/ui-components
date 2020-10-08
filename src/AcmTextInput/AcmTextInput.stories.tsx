@@ -5,7 +5,7 @@ import { AcmTextInput } from './AcmTextInput'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 
 export default {
-    title: 'AcmTextInput',
+    title: 'TextInput',
     component: AcmTextInput,
 }
 

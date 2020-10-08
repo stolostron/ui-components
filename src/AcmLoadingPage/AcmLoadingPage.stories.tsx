@@ -8,7 +8,7 @@ export default {
     component: AcmLoadingPage,
 }
 
-export const TextInput = () => {
+export const LoadingPage = () => {
     return (
         <AcmPage>
             <AcmPageHeader title="LoadingPage"></AcmPageHeader>

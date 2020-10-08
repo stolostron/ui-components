@@ -1,7 +1,7 @@
 import { ExpandableSection } from '@patternfly/react-core'
 import React, { ReactNode, useState } from 'react'
 
-export function AcmExpandable(props: {
+export function AcmExpandableSection(props: {
     label: string
     children: ReactNode
     hidden?: boolean
