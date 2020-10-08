@@ -1,3 +1,4 @@
+import { Button, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmTable } from '../AcmTable/AcmTable'
@@ -81,6 +82,12 @@ export function Table() {
                     },
                 },
             ]}
+            extraToolbarControls={
+                <ToggleGroup>
+                    <ToggleGroupItem isSelected={true}>View 1</ToggleGroupItem>
+                    <ToggleGroupItem>View 2</ToggleGroupItem>
+                </ToggleGroup>
+            }
         />
     )
 }

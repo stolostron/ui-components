@@ -66,6 +66,7 @@ export function AcmTable<T>(props: {
     tableActions: IAcmTableAction[]
     rowActions: IAcmRowAction<T>[]
     bulkActions: IAcmTableBulkAction<T>[]
+    extraToolbarControls?: ReactNode
 }) {
     const { items, columns, keyFn } = props
     const [filtered, setFiltered] = useState<T[]>(props.items)
@@ -256,6 +257,7 @@ export function AcmTable<T>(props: {
                             ))}
                         </Fragment>
                     )}
+                    {props.extraToolbarControls ? props.extraToolbarControls : <Fragment />}
                 </ToolbarContent>
             </Toolbar>
             <Table
