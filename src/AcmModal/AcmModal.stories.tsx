@@ -14,20 +14,15 @@ export default meta
 export const Modal = () => {
     const [open, toggleOpen] = useState<boolean>(true)
     return (
-        <div>
+        <React.Fragment>
             <AcmButton onClick={() => toggleOpen(true)}>Open Modal</AcmButton>
-            {(() => {
-                return ReactDOM.createPortal(
-                    <AcmModal
-                        open={open}
-                        submit={() => toggleOpen((prevOpen) => !prevOpen)}
-                        cancel={() => toggleOpen((prevOpen) => !prevOpen)}
-                        title="ACM Modal"
-                        message="Modal message here"
-                    />,
-                    document.querySelector('body')
-                )
-            })()}
-        </div>
+            <AcmModal
+                open={open}
+                submit={() => toggleOpen((prevOpen) => !prevOpen)}
+                cancel={() => toggleOpen((prevOpen) => !prevOpen)}
+                title="ACM Modal"
+                message="Modal message here"
+            />
+        </React.Fragment>
     )
 }
