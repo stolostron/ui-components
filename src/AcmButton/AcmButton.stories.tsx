@@ -5,12 +5,12 @@ import { AcmButton } from './AcmButton'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 
 const meta: Meta = {
-    title: 'AcmButton',
+    title: 'Button',
     component: AcmButton,
 }
 export default meta
 
-export const SimpleButton = () => (
+export const Button = () => (
     <AcmPage>
         <AcmPageHeader title="AcmButton"></AcmPageHeader>
         <AcmPageCard>

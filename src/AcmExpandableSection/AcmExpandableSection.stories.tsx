@@ -1,18 +1,18 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
-import { AcmExpandable } from './AcmExpandable'
+import { AcmExpandableSection } from './AcmExpandableSection'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 
 export default {
-    title: 'AcmExpandable',
-    component: AcmExpandable,
+    title: 'ExpandableSection',
+    component: AcmExpandableSection,
 }
 
-export const Expandable = () => (
+export const ExpandableSection = () => (
     <AcmPage>
         <AcmPageHeader title="AcmExpandable"></AcmPageHeader>
         <AcmPageCard>
-            <AcmExpandable label="Expandable Label">Expandable Content</AcmExpandable>
+            <AcmExpandableSection label="Expandable Label">Expandable Content</AcmExpandableSection>
         </AcmPageCard>
     </AcmPage>
 )

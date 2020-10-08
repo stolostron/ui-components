@@ -5,7 +5,7 @@ import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 import { AcmSelect } from './AcmSelect'
 
 export default {
-    title: 'AcmSelect',
+    title: 'Select',
     component: AcmSelect,
 }
 
