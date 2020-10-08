@@ -48,6 +48,7 @@ export function AcmLabelsInput(props: {
                 ))}
                 {!showInput ? (
                     <Button
+                        id={`${props.id}-button`}
                         variant="link"
                         icon={<PlusCircleIcon />}
                         onClick={() => {

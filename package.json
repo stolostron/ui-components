@@ -26,7 +26,6 @@
     "dependencies": {
         "@patternfly/react-core": "^4.50.2",
         "@patternfly/react-table": "^4.16.20",
-        "@types/get-value": "^3.0.1",
         "fuse.js": "^6.4.1",
         "get-value": "^3.0.1"
     },
@@ -38,6 +37,7 @@
         "@testing-library/jest-dom": "^5.11.4",
         "@testing-library/react": "^11.0.4",
         "@testing-library/user-event": "^12.1.6",
+        "@types/get-value": "^3.0.1",
         "@types/jest": "^26.0.14",
         "@types/react": "^16.9.50",
         "@types/react-dom": "^16.9.8",

@@ -6,11 +6,9 @@ export function AcmLabels(props: { labels: string[] }) {
     return (
         <Fragment>
             {props.labels?.map((label) => (
-                <Fragment key={label}>
-                    <Label key={label} style={{ margin: 1 }}>
-                        {label}
-                    </Label>
-                </Fragment>
+                <Label key={label} style={{ margin: 1 }}>
+                    {label}
+                </Label>
             ))}
         </Fragment>
     )

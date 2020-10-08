@@ -15,7 +15,7 @@ export const Select = () => {
         <AcmForm>
             <AcmSelect
                 label="Color (lowercase)"
-                id="123"
+                id="select-color"
                 options={['red', 'green', 'blue']}
                 value={value}
                 onChange={setValue}
