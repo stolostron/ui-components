@@ -1,6 +1,5 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
-import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
 import { AcmTable } from '../AcmTable/AcmTable'
 
 interface IExampleData {
@@ -19,75 +18,70 @@ export default {
 export function Table() {
     const [items, setItems] = useState<IExampleData[]>(exampleData)
     return (
-        <AcmPage>
-            <AcmPageHeader title="AcmTable"></AcmPageHeader>
-            <AcmPageCard>
-                <AcmTable<IExampleData>
-                    plural="examples"
-                    items={items}
-                    columns={[
-                        {
-                            header: 'First Name',
-                            sort: 'firstName',
-                            cell: 'firstName',
-                            search: 'firstName',
-                        },
-                        {
-                            header: 'Last Name',
-                            sort: 'last_name',
-                            cell: 'last_name',
-                            search: 'last_name',
-                        },
-                        {
-                            header: 'EMail',
-                            sort: 'email',
-                            cell: 'email',
-                            search: 'email',
-                        },
-                        {
-                            header: 'Gender',
-                            sort: 'gender',
-                            cell: 'gender',
-                            search: 'gender',
-                        },
-                        {
-                            header: 'IP Address',
-                            sort: 'ip_address',
-                            cell: 'ip_address',
-                            search: 'ip_address',
-                        },
-                    ]}
-                    keyFn={(item: IExampleData) => item.id.toString()}
-                    tableActions={[
-                        {
-                            id: 'delete',
-                            title: 'Create address',
-                            click: () => {
-                                alert('Not implemented')
-                            },
-                        },
-                    ]}
-                    rowActions={[
-                        {
-                            id: 'delete',
-                            title: 'Delete item',
-                            click: (item: IExampleData) => {
-                                setItems(items.filter((i) => i.id !== item.id))
-                            },
-                        },
-                    ]}
-                    bulkActions={[
-                        {
-                            id: 'delete',
-                            title: 'Delete items',
-                            click: (it: IExampleData[]) => {
-                                setItems(items.filter((i) => !it.find((item) => item.id === i.id)))
-                            },
-                        },
-                    ]}
-                />
-            </AcmPageCard>
-        </AcmPage>
+        <AcmTable<IExampleData>
+            plural="examples"
+            items={items}
+            columns={[
+                {
+                    header: 'First Name',
+                    sort: 'firstName',
+                    cell: 'firstName',
+                    search: 'firstName',
+                },
+                {
+                    header: 'Last Name',
+                    sort: 'last_name',
+                    cell: 'last_name',
+                    search: 'last_name',
+                },
+                {
+                    header: 'EMail',
+                    sort: 'email',
+                    cell: 'email',
+                    search: 'email',
+                },
+                {
+                    header: 'Gender',
+                    sort: 'gender',
+                    cell: 'gender',
+                    search: 'gender',
+                },
+                {
+                    header: 'IP Address',
+                    sort: 'ip_address',
+                    cell: 'ip_address',
+                    search: 'ip_address',
+                },
+            ]}
+            keyFn={(item: IExampleData) => item.id.toString()}
+            tableActions={[
+                {
+                    id: 'delete',
+                    title: 'Create address',
+                    click: () => {
+                        alert('Not implemented')
+                    },
+                },
+            ]}
+            rowActions={[
+                {
+                    id: 'delete',
+                    title: 'Delete item',
+                    click: (item: IExampleData) => {
+                        setItems(items.filter((i) => i.id !== item.id))
+                    },
+                },
+            ]}
+            bulkActions={[
+                {
+                    id: 'delete',
+                    title: 'Delete items',
+                    click: (it: IExampleData[]) => {
+                        setItems(items.filter((i) => !it.find((item) => item.id === i.id)))
+                    },
+                },
+            ]}
+        />
     )
 }
 

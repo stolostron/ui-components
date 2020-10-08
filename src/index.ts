@@ -1,5 +1,5 @@
 export * from './AcmButton/AcmButton'
-export * from './AcmConfirmModal/AcmConfirmModal'
+export * from './AcmModal/AcmModal'
 export * from './AcmEmptyPage/AcmEmptyPage'
 export * from './AcmExpandableSection/AcmExpandableSection'
 export * from './AcmForm/AcmForm'

@@ -1,17 +1,17 @@
 import React from 'react'
 import { Modal, Button, ModalVariant } from '@patternfly/react-core'
 
-export interface IConfirmModalProps {
+export interface IModalProps {
     open: boolean
-    confirm: () => void
+    submit: () => void
     cancel: () => void
     title: string
     message: string
 }
 
-export const ClosedConfirmModalProps: IConfirmModalProps = {
+export const ClosedModalProps: IModalProps = {
     open: false,
-    confirm: () => {
+    submit: () => {
         /**/
     },
     cancel: () => {
@@ -21,7 +21,7 @@ export const ClosedConfirmModalProps: IConfirmModalProps = {
     message: '',
 }
 
-export function AcmConfirmModal(props: IConfirmModalProps) {
+export function AcmModal(props: IModalProps) {
     return (
         <Modal
             variant={ModalVariant.medium}
@@ -29,8 +29,8 @@ export function AcmConfirmModal(props: IConfirmModalProps) {
             isOpen={props.open}
             onClose={() => props.cancel()}
             actions={[
-                <Button key="confirm" variant="primary" onClick={() => props.confirm()}>
-                    Confirm
+                <Button key="confirm" variant="primary" onClick={() => props.submit()}>
+                    Submit
                 </Button>,
                 <Button key="cancel" variant="link" onClick={() => props.cancel()}>
                     Cancel
