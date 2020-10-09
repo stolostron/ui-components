@@ -9,7 +9,7 @@
         "lib"
     ],
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && cp -R src/assets lib/assets",
         "build:storybook": "cross-env NODE_ENV=production build-storybook",
         "lint": "eslint --ext ts,tsx,js,jsx ./src --max-warnings=0",
         "lint:fix": "eslint --ext ts,tsx,js,jsx ./src --fix",
