@@ -1,4 +1,4 @@
-import { Button, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmTable } from '../AcmTable/AcmTable'
