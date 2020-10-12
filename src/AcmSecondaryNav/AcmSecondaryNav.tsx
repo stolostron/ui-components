@@ -10,6 +10,15 @@ export function AcmSecondaryNav(props: { children: ReactNode }) {
         </PageSection>
     )
 }
-export function AcmSecondaryNavItem(props: { onClick?: ()=>void; isActive: boolean; to?: string; children: ReactNode }) {
-    return <NavItem onClick={props.onClick} isActive={props.isActive} to={props.to}>{props.children}</NavItem>
+export function AcmSecondaryNavItem(props: {
+    onClick?: () => void
+    isActive: boolean
+    to?: string
+    children: ReactNode
+}) {
+    return (
+        <NavItem onClick={props.onClick} isActive={props.isActive} to={props.to}>
+            {props.children}
+        </NavItem>
+    )
 }

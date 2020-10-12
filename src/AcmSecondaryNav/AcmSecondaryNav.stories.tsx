@@ -1,5 +1,5 @@
 import '@patternfly/react-core/dist/styles/base.css'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Meta } from '@storybook/react'
 import { AcmSecondaryNav, AcmSecondaryNavItem } from './AcmSecondaryNav'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
