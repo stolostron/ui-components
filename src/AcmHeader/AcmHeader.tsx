@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 import {
+    Brand,
     Button,
     ButtonVariant,
     Nav,
@@ -14,18 +15,19 @@ import {
     PageSidebar,
 } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
-import CogIcon from '@patternfly/react-icons/dist/js/icons/cog-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
 import React from 'react'
-// import imgBrand from '../assets/RHACM-Logo.svg'
+import imgBrand from '../assets/RHACM-Logo.svg'
 
 export enum NavItemE {
-    home = '/home',
+    welcome = '/welcome',
     overview = '/overview',
     topology = '/topology',
     clusterManagement = '/cluster-management',
-    manageApps = '/manageApps',
-    grc = '/grc',
+    applications = '/applications',
+    policies = '/policies',
+    search = '/search',
 }
 
 export function AcmHeaderTools() {
@@ -38,8 +40,14 @@ export function AcmHeaderTools() {
                 }} /** the settings and help icon buttons are only visible on desktop sizes and replaced by a kebab dropdown for other sizes */
             >
                 <PageHeaderToolsItem>
-                    <Button aria-label="Settings actions" variant={ButtonVariant.plain}>
-                        <CogIcon />
+                    <Button
+                        aria-label="Search"
+                        variant={ButtonVariant.plain}
+                        onClick={() => {
+                            window.location.href = NavItemE.search
+                        }}
+                    >
+                        <SearchIcon />
                     </Button>
                 </PageHeaderToolsItem>
                 <PageHeaderToolsItem>
@@ -53,11 +61,11 @@ export function AcmHeaderTools() {
         </PageHeaderTools>
     )
 }
-export function AcmHeader(props: { children: React.ReactNode; activeItem: NavItemE }) {
+export function AcmHeader(props: { children?: React.ReactNode; activeItem: NavItemE }) {
     const PageNav = (
         <Nav aria-label="Nav">
             <NavList>
-                <NavItem to={NavItemE.home} isActive={props.activeItem === NavItemE.home}>
+                <NavItem to={NavItemE.welcome} isActive={props.activeItem === NavItemE.welcome}>
                     Home
                 </NavItem>
                 <NavItem to={NavItemE.overview} isActive={props.activeItem === NavItemE.overview}>
@@ -69,10 +77,10 @@ export function AcmHeader(props: { children: React.ReactNode; activeItem: NavIte
                 <NavItem to={NavItemE.clusterManagement} isActive={props.activeItem === NavItemE.clusterManagement}>
                     Cluster Management
                 </NavItem>
-                <NavItem to={NavItemE.manageApps} isActive={props.activeItem === NavItemE.manageApps}>
+                <NavItem to={NavItemE.applications} isActive={props.activeItem === NavItemE.applications}>
                     Manage Applications
                 </NavItem>
-                <NavItem to={NavItemE.grc} isActive={props.activeItem === NavItemE.grc}>
+                <NavItem to={NavItemE.policies} isActive={props.activeItem === NavItemE.policies}>
                     Governance and risk
                 </NavItem>
             </NavList>
@@ -82,7 +90,7 @@ export function AcmHeader(props: { children: React.ReactNode; activeItem: NavIte
     const Header = (
         <PageHeader
             headerTools={<AcmHeaderTools />}
-            // logo={<Brand src={imgBrand} alt="Advanced" />}
+            logo={<Brand src={imgBrand} alt="Advanced" />}
             showNavToggle
         ></PageHeader>
     )
@@ -94,7 +102,7 @@ export function AcmHeader(props: { children: React.ReactNode; activeItem: NavIte
             sidebar={Sidebar}
             isManagedSidebar
             defaultManagedSidebarIsOpen={false}
-            style={{ height: '100vh' }}
+            style={{ height: '100%' }}
         >
             {props.children}
         </Page>

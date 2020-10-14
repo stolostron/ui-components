@@ -1,6 +1,6 @@
 {
     "name": "@open-cluster-management/ui-components",
-    "version": "0.1.12",
+    "version": "0.1.16",
     "description": "UI component library for open cluster management",
     "license": "Apache-2.0",
     "main": "lib/index.js",
@@ -9,7 +9,7 @@
         "lib"
     ],
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && cp -R src/assets lib/assets",
         "build:storybook": "cross-env NODE_ENV=production build-storybook",
         "lint": "eslint --ext ts,tsx,js,jsx ./src --max-warnings=0",
         "lint:fix": "eslint --ext ts,tsx,js,jsx ./src --fix",

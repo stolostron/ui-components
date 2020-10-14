@@ -14,6 +14,7 @@ interface IExampleData {
 export default {
     title: 'Table',
     component: AcmTable,
+    excludeStories: ['exampleData']
 }
 
 export function Table() {
