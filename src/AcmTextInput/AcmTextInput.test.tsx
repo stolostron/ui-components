@@ -10,4 +10,10 @@ describe('AcmTextInput', () => {
         expect(getByText('ACM text input')).toBeInTheDocument()
         expect(getByLabelText('ACM text input')).toBeInstanceOf(HTMLInputElement)
     })
+    test('renders as a password input', () => {
+        const { getByLabelText } = render(
+            <AcmTextInput secret label="ACM text input" id="text-input" value="foobar" onChange={() => null} />
+        )
+        expect(getByLabelText('ACM text input')).toHaveAttribute('type', 'password')
+    })
 })

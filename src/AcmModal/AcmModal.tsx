@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal, Button, ModalVariant } from '@patternfly/react-core'
 
+/* istanbul ignore next */
 export interface IModalProps {
     open: boolean
     submit: () => void
@@ -9,6 +10,7 @@ export interface IModalProps {
     message: string
 }
 
+/* istanbul ignore next */
 export const ClosedModalProps: IModalProps = {
     open: false,
     submit: () => {
@@ -27,12 +29,12 @@ export function AcmModal(props: IModalProps) {
             variant={ModalVariant.medium}
             title={props.title}
             isOpen={props.open}
-            onClose={() => props.cancel()}
+            onClose={props.cancel}
             actions={[
-                <Button key="confirm" variant="primary" onClick={() => props.submit()}>
+                <Button key="confirm" variant="primary" onClick={props.submit}>
                     Submit
                 </Button>,
-                <Button key="cancel" variant="link" onClick={() => props.cancel()}>
+                <Button key="cancel" variant="link" onClick={props.cancel}>
                     Cancel
                 </Button>,
             ]}

@@ -8,4 +8,8 @@ describe('AcmLabels', () => {
         expect(getByText('foo=bar')).toBeInTheDocument()
         expect(getByText('cluster=management')).toBeInstanceOf(HTMLSpanElement)
     })
+    test('returns null when no labels are provided', () => {
+        const { container } = render(<AcmLabels labels={[]} />)
+        expect(container.querySelector('.pf-c-label')).toBeNull()
+    })
 })
