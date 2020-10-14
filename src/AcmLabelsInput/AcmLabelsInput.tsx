@@ -61,7 +61,6 @@ export function AcmLabelsInput(props: {
                 ) : (
                     <TextInput
                         id={props.id}
-                        value={inputValue}
                         onChange={(v) => {
                             setInputValue(v)
                         }}

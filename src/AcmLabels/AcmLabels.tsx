@@ -5,7 +5,7 @@ import React, { Fragment } from 'react'
 export function AcmLabels(props: { labels: string[] }) {
     return (
         <Fragment>
-            {props.labels?.map((label) => (
+            {props.labels.map((label) => (
                 <Label key={label} style={{ margin: 1 }}>
                     {label}
                 </Label>

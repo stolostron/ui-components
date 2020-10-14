@@ -141,6 +141,10 @@
             "jest.setup.ts"
         ],
         "collectCoverage": true,
+        "collectCoverageFrom": [
+            "**/*.tsx",
+            "!**/*.stories.tsx"
+        ],
         "coverageDirectory": "<rootDir>/../coverage",
         "coverageThreshold": {
             "global": {
