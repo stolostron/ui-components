@@ -36,7 +36,7 @@ describe('AcmLabelsInput', () => {
     test('does not allow duplicate labels', async () => {
         const { queryByText, queryAllByText, getByTestId } = render(<LabelsInput />)
         const labels = ['foo=bar', 'foo=bar']
-        // verify escape and enter exit input behavior
+
         labels.forEach((label) => {
             userEvent.click(getByTestId('label-input-button'))
             userEvent.type(getByTestId('label-input'), `${label}{enter}`)

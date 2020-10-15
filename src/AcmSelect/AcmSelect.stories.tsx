@@ -30,7 +30,6 @@ export const Select = () => {
                     { title: 'Red', value: 'red' },
                     { title: 'Green', value: 'green' },
                     { title: 'Blue', value: 'blue' },
-                    { title: 'Number', value: 4 },
                 ]}
                 value={value}
                 onChange={setValue}
