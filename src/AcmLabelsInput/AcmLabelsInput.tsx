@@ -5,7 +5,7 @@ import React, { Fragment, useState } from 'react'
 export function AcmLabelsInput(props: {
     id: string
     label: string
-    value: string[] | undefined
+    value: string[]
     onChange: (labels: string[]) => void
     hidden?: boolean
 }) {
@@ -13,7 +13,7 @@ export function AcmLabelsInput(props: {
     const [showInput, setShowInput] = useState(false)
 
     function addLabel(input: string) {
-        const newlabels = [...(props.value ? props.value : [])]
+        const newlabels = props.value
         const labels = input
             .split(',')
             .join(' ')
@@ -30,24 +30,26 @@ export function AcmLabelsInput(props: {
     }
 
     function removeLabel(label: string) {
-        props.onChange([...(props.value ? props.value : [])].filter((l) => l !== label))
+        props.onChange(props.value.filter((l) => l !== label))
     }
 
     return (
         <Fragment>
             <FormGroup id={`${props.id}-label`} label={props.label} fieldId={props.id} hidden={props.hidden}>
-                {(props.value ? props.value : []).map((label) => (
+                {props.value.map((label) => (
                     <Label
                         key={label}
                         style={{ marginBottom: 2, marginRight: 4, marginTop: 2 }}
                         onClose={() => removeLabel(label)}
                         variant="outline"
+                        closeBtnProps={{ id: `remove-${label}` }}
                     >
                         {label}
                     </Label>
                 ))}
                 {!showInput ? (
                     <Button
+                        id={`${props.id}-button`}
                         variant="link"
                         icon={<PlusCircleIcon />}
                         onClick={() => {
@@ -59,15 +61,8 @@ export function AcmLabelsInput(props: {
                 ) : (
                     <TextInput
                         id={props.id}
-                        value={inputValue}
                         onChange={(v) => {
                             setInputValue(v)
-                        }}
-                        onBlur={() => {
-                            if (inputValue) {
-                                addLabel(inputValue)
-                            }
-                            setShowInput(false)
                         }}
                         hidden={!showInput}
                         autoFocus

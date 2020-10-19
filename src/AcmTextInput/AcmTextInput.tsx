@@ -26,7 +26,7 @@ function AcmTextInputInternal(props: {
 export function AcmTextInput(props: {
     id: string
     label: string
-    value: string | null | undefined
+    value: string | undefined
     onChange: (value: string | undefined) => void
     placeholder?: string
     required?: boolean
@@ -34,9 +34,6 @@ export function AcmTextInput(props: {
     focus?: boolean
     secret?: boolean
 }) {
-    if (props.value === null) {
-        props.value = undefined
-    }
     return (
         <FormGroup
             id={`${props.id}-label`}

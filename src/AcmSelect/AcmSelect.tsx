@@ -31,6 +31,7 @@ export function AcmSelect(props: {
                     setOpen(!open)
                 }}
                 onSelect={(_event, value) => {
+                    /* istanbul ignore else */
                     if (typeof value === 'string') props.onChange(value)
                     setOpen(false)
                 }}

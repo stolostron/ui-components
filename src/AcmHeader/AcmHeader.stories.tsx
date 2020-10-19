@@ -16,7 +16,7 @@ export default {
 export const Page = () => {
     const [value, setValue] = useState<string>()
     const [select, setSelect] = useState<string>()
-    const [labels, setLabels] = useState<string[]>()
+    const [labels, setLabels] = useState<string[]>([])
 
     return (
         <AcmHeader activeItem={NavItemE.clusterManagement}>
@@ -55,12 +55,7 @@ export const Page = () => {
                                 clear
                                 required
                             />
-                            <AcmLabelsInput
-                                id="labelsInput"
-                                label="Labels Input"
-                                value={labels}
-                                onChange={setLabels}
-                            ></AcmLabelsInput>
+                            <AcmLabelsInput id="labelsInput" label="Labels Input" value={labels} onChange={setLabels} />
                         </AcmForm>
                     </AcmExpandableSection>
                 </AcmPageCard>

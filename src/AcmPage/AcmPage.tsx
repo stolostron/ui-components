@@ -2,7 +2,7 @@ import { Card, CardBody, Page, PageSection, PageSectionVariants, Text, TextConte
 import React, { ReactNode } from 'react'
 
 export function AcmPage(props: { children: ReactNode }) {
-    return <Page style={{ height: '100%' }}> {props.children}</Page>
+    return <Page style={{ height: '100vh' }}>{props.children}</Page>
 }
 
 export function AcmPageHeader(props: { title: string }) {
