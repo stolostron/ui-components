@@ -11,93 +11,198 @@ interface IExampleData {
     gender: string
     ip_address: string
 }
+
+interface IExampleData2 {
+    uid: number
+    name: string
+    status: string
+    age: string
+}
 export default {
     title: 'Table',
     component: AcmTable,
     excludeStories: ['exampleData'],
 }
 
+const firstColumns = [
+    {
+        header: 'First Name',
+        sort: 'firstName',
+        cell: 'firstName',
+        search: 'firstName',
+    },
+    {
+        header: 'Last Name',
+        sort: 'last_name',
+        cell: 'last_name',
+        search: 'last_name',
+    },
+    {
+        header: 'EMail',
+        sort: 'email',
+        cell: 'email',
+        search: 'email',
+    },
+    {
+        header: 'Gender',
+        sort: 'gender',
+        cell: 'gender',
+        search: 'gender',
+    },
+    {
+        header: 'IP Address',
+        sort: 'ip_address',
+        cell: 'ip_address',
+        search: 'ip_address',
+    },
+    {
+        header: 'UID',
+        sort: 'uid',
+        cell: 'uid',
+        search: 'uid',
+    },
+]
+
+const secondColumns = [
+    {
+        header: 'Name',
+        sort: 'name',
+        cell: 'name',
+        search: 'name',
+    },
+    {
+        header: 'Status',
+        sort: 'status',
+        cell: 'status',
+        search: 'status',
+    },
+    {
+        header: 'Age',
+        sort: 'age',
+        cell: 'age',
+        search: 'age',
+    },
+]
+
+const exampleTwo = [
+    {
+        uid: 1,
+        name: 'Zach cluster',
+        status: 'Discovered',
+        age: '5 hours',
+    },
+    {
+        uid: 2,
+        name: 'Nathan cluster',
+        status: 'Offline',
+        age: '3 hours',
+    },
+    {
+        uid: 3,
+        name: 'Jakob cluster',
+        status: 'Discovered',
+        age: '10 hours',
+    },
+]
+
 export function Table() {
     const testItems = exampleData.slice(0, 105)
     const [items, setItems] = useState<IExampleData[]>(testItems)
-    return (
-        <AcmTable<IExampleData>
-            plural="examples"
-            items={items}
-            columns={[
-                {
-                    header: 'First Name',
-                    sort: 'firstName',
-                    cell: 'firstName',
-                    search: 'firstName',
-                },
-                {
-                    header: 'Last Name',
-                    sort: 'last_name',
-                    cell: 'last_name',
-                    search: 'last_name',
-                },
-                {
-                    header: 'EMail',
-                    sort: 'email',
-                    cell: 'email',
-                    search: 'email',
-                },
-                {
-                    header: 'Gender',
-                    sort: 'gender',
-                    cell: 'gender',
-                    search: 'gender',
-                },
-                {
-                    header: 'IP Address',
-                    sort: 'ip_address',
-                    cell: 'ip_address',
-                    search: 'ip_address',
-                },
-                {
-                    header: 'UID',
-                    sort: 'uid',
-                    cell: 'uid',
-                    search: 'uid',
-                },
-            ]}
-            keyFn={(item: IExampleData) => item.uid.toString()}
-            tableActions={[
-                {
-                    id: 'create',
-                    title: 'Create address',
-                    click: () => {
-                        alert('Not implemented')
+    const [secondItems, setSecondItems] = useState<IExampleData2[]>(exampleTwo)
+    const [view, setView] = useState<string>('first')
+    if (view === 'first') {
+        return (
+            <AcmTable<IExampleData>
+                key="first"
+                plural="examples"
+                items={items}
+                columns={firstColumns}
+                keyFn={(item: IExampleData) => item.uid.toString()}
+                tableActions={[
+                    {
+                        id: 'create',
+                        title: 'Create address',
+                        click: () => {
+                            alert('Not implemented')
+                        },
                     },
-                },
-            ]}
-            rowActions={[
-                {
-                    id: 'delete',
-                    title: 'Delete item',
-                    click: (item: IExampleData) => {
-                        setItems(items.filter((i) => i.uid !== item.uid))
+                ]}
+                rowActions={[
+                    {
+                        id: 'delete',
+                        title: 'Delete item',
+                        click: (item: IExampleData) => {
+                            setItems(items.filter((i) => i.uid !== item.uid))
+                        },
                     },
-                },
-            ]}
-            bulkActions={[
-                {
-                    id: 'delete',
-                    title: 'Delete items',
-                    click: (it: IExampleData[]) => {
-                        setItems(items.filter((i) => !it.find((item) => item.uid === i.uid)))
+                ]}
+                bulkActions={[
+                    {
+                        id: 'delete',
+                        title: 'Delete items',
+                        click: (it: IExampleData[]) => {
+                            setItems(items.filter((i) => !it.find((item) => item.uid === i.uid)))
+                        },
                     },
-                },
-            ]}
-            extraToolbarControls={
-                <ToggleGroup>
-                    <ToggleGroupItem isSelected={true}>View 1</ToggleGroupItem>
-                    <ToggleGroupItem>View 2</ToggleGroupItem>
-                </ToggleGroup>
-            }
-        />
-    )
+                ]}
+                extraToolbarControls={
+                    <ToggleGroup>
+                        <ToggleGroupItem
+                            buttonId="first"
+                            isSelected={true}
+                            onChange={(selected, event) => setView(event.currentTarget.id)}
+                        >
+                            View 1
+                        </ToggleGroupItem>
+                        <ToggleGroupItem
+                            buttonId="second"
+                            isSelected={false}
+                            onChange={(selected, event) => {
+                                console.log('event', event.currentTarget.id)
+                                setView(event.currentTarget.id)
+                            }}
+                        >
+                            View 2
+                        </ToggleGroupItem>
+                    </ToggleGroup>
+                }
+            />
+        )
+    } else {
+        return (
+            <AcmTable<IExampleData2>
+                key="second"
+                plural="examples"
+                items={secondItems}
+                columns={secondColumns}
+                keyFn={(item: IExampleData2) => item.name.toString()}
+                rowActions={[]}
+                tableActions={[]}
+                bulkActions={[]}
+                extraToolbarControls={
+                    <ToggleGroup>
+                        <ToggleGroupItem
+                            buttonId="first"
+                            isSelected={false}
+                            onChange={(selected, event) => setView(event.currentTarget.id)}
+                        >
+                            View 1
+                        </ToggleGroupItem>
+                        <ToggleGroupItem
+                            buttonId="second"
+                            isSelected={true}
+                            onChange={(selected, event) => {
+                                console.log('event', event.currentTarget.id)
+                                setView(event.currentTarget.id)
+                            }}
+                        >
+                            View 2
+                        </ToggleGroupItem>
+                    </ToggleGroup>
+                }
+            />
+        )
+    }
 }
 
 export const exampleData: IExampleData[] = [
