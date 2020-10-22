@@ -7,6 +7,7 @@ export function AcmLabelsInput(props: {
     label: string
     value: string[] | undefined
     onChange: (labels: string[]) => void
+    buttonLabel: string
     hidden?: boolean
 }) {
     const [inputValue, setInputValue] = useState<string>()
@@ -57,6 +58,7 @@ export function AcmLabelsInput(props: {
                             setShowInput(true)
                         }}
                         hidden={showInput}
+                        aria-label={props.buttonLabel}
                     />
                 ) : (
                     <TextInput
