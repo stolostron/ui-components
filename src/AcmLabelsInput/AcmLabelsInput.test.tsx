@@ -6,7 +6,15 @@ import { AcmLabelsInput } from './AcmLabelsInput'
 describe('AcmLabelsInput', () => {
     const LabelsInput = () => {
         const [value, setValue] = useState<string[]>([])
-        return <AcmLabelsInput label="Label input" id="label-input" value={value} onChange={setValue} />
+        return (
+            <AcmLabelsInput
+                label="Label input"
+                id="label-input"
+                value={value}
+                onChange={setValue}
+                buttonLabel="Add label"
+            />
+        )
     }
     test('renders', async () => {
         const { getByText, getByTestId } = render(<LabelsInput />)
