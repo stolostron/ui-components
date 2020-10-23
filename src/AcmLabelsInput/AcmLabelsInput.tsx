@@ -6,7 +6,7 @@ export function AcmLabelsInput(props: {
     id: string
     label: string
     value: string[] | undefined
-    onChange: (labels: string[]) => void
+    onChange: (labels: string[] | undefined) => void
     buttonLabel: string
     hidden?: boolean
 }) {
@@ -31,7 +31,8 @@ export function AcmLabelsInput(props: {
     }
 
     function removeLabel(label: string) {
-        props.onChange(props.value?.filter((l) => l !== label) ?? [])
+        /* istanbul ignore next */
+        props.onChange(props.value?.filter((l) => l !== label))
     }
 
     return (
