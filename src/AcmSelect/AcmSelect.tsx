@@ -1,17 +1,22 @@
-import { FormGroup, Select, SelectOption } from '@patternfly/react-core'
+import { FormGroup, Select, SelectOption, SelectOptionObject } from '@patternfly/react-core'
 import React, { useState } from 'react'
 
 type SelextionOptionData = string | { title: string; value: string }
+export enum AcmSelectVariant {
+    single = 'single',
+    checkbox = 'checkbox',
+}
 export function AcmSelect(props: {
     id: string
     label: string
-    value: string | undefined
-    onChange: (value: string | undefined) => void
+    value: string | string[] | undefined | SelectOptionObject
+    onChange: (value: string | string[] | undefined | SelectOptionObject) => void
     options: SelextionOptionData[]
     placeholder?: string
     required?: boolean
     hidden?: boolean
     clear?: boolean
+    variant: AcmSelectVariant
 }) {
     const [open, setOpen] = useState(false)
 
@@ -24,15 +29,16 @@ export function AcmSelect(props: {
             hidden={props.hidden}
         >
             <Select
+                variant={props.variant}
                 id={props.id}
                 selections={props.value}
                 isOpen={open}
                 onToggle={() => {
                     setOpen(!open)
                 }}
-                onSelect={(_event, value) => {
+                onSelect={(_event, value: string | SelectOptionObject) => {
                     /* istanbul ignore else */
-                    if (typeof value === 'string') props.onChange(value)
+                    props.onChange(value)
                     setOpen(false)
                 }}
                 onClear={
