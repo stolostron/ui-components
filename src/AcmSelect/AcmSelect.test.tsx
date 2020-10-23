@@ -1,9 +1,24 @@
 import React, { useState } from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { axe } from 'jest-axe'
 import { AcmSelect } from './AcmSelect'
 
 describe('AcmSelect', () => {
+    const Select = () => {
+        const [value, setValue] = useState<string>()
+        return (
+            <AcmSelect
+                id="acm-select"
+                label="ACM select"
+                onChange={setValue}
+                options={['foo', 'bar']}
+                value={value}
+                placeholder="Select one"
+                clear
+            />
+        )
+    }
     test('renders with options of type: string', () => {
         const { getByText } = render(
             <AcmSelect id="acm-select" label="ACM select" onChange={() => null} options={['foo', 'bar']} value="foo" />
@@ -26,20 +41,6 @@ describe('AcmSelect', () => {
         expect(getByText('ACM select')).toBeInTheDocument()
     })
     test('can apply and clear selections', () => {
-        const Select = () => {
-            const [value, setValue] = useState<string>()
-            return (
-                <AcmSelect
-                    id="acm-select"
-                    label="ACM select"
-                    onChange={setValue}
-                    options={['foo', 'bar']}
-                    value={value}
-                    placeholder="Select one"
-                    clear
-                />
-            )
-        }
         const { getByTestId, getByRole, queryByText, getByText, queryByTestId } = render(<Select />)
         userEvent.click(getByRole('button'))
 
@@ -52,5 +53,12 @@ describe('AcmSelect', () => {
 
         userEvent.click(getByRole('button', { name: 'Clear all' }))
         expect(queryByText('bar')).toBeNull()
+    })
+    test('has zero accessibility defects', async () => {
+        const { getByRole, container } = render(<Select />)
+        expect(await axe(container)).toHaveNoViolations()
+
+        userEvent.click(getByRole('button'))
+        expect(await axe(container)).toHaveNoViolations()
     })
 })

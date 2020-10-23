@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { axe } from 'jest-axe'
 import { AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
@@ -184,5 +185,9 @@ describe('AcmTable', () => {
         expect(getByLabelText('Go to next page')).toBeVisible()
         userEvent.click(getByLabelText('Go to next page'))
         expect(getByLabelText('Current page')).toHaveValue(2)
+    })
+    test('has zero accessibility defects', async () => {
+        const { container } = render(<Table />)
+        expect(await axe(container)).toHaveNoViolations()
     })
 })
