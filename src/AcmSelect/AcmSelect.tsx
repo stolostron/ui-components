@@ -10,7 +10,7 @@ export function AcmSelect(props: {
     id: string
     label: string
     value: string | string[] | undefined | SelectOptionObject
-    onChange: (value: string | string[] | undefined | SelectOptionObject) => void
+    onChange: (value: string | undefined) => void
     options: SelextionOptionData[]
     placeholder?: string
     required?: boolean
@@ -38,7 +38,7 @@ export function AcmSelect(props: {
                 }}
                 onSelect={(_event, value: string | SelectOptionObject) => {
                     /* istanbul ignore else */
-                    props.onChange(value)
+                    if (typeof value === 'string') props.onChange(value)
                     setOpen(false)
                 }}
                 onClear={

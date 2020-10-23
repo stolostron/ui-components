@@ -45,8 +45,6 @@ export const SingleSelect = () => {
 export const MultiSelect = () => {
     const [value, setValue] = useState<string[]>([])
     const onSelect = (selection: string) => {
-        console.log('value', value)
-        console.log('selection', selection)
         value?.includes(selection) ? setValue(value?.filter((v) => v !== selection)) : setValue([...value, selection])
     }
 

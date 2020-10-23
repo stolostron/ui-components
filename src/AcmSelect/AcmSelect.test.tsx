@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { AcmSelect, AcmSelectVariant } from './AcmSelect'
-import { ClosedModalProps } from '../AcmModal/AcmModal'
 
 describe('AcmSelect - single', () => {
     test('renders with options of type: string', () => {
@@ -39,6 +38,7 @@ describe('AcmSelect - single', () => {
             const [value, setValue] = useState<string>()
             return (
                 <AcmSelect
+                    variant={AcmSelectVariant.single}
                     id="acm-select"
                     label="ACM select"
                     onChange={setValue}
@@ -67,10 +67,9 @@ describe('AcmSelect - single', () => {
 describe('AcmSelect - Multiselect', () => {
     const MultiSelect = (props: { options: string[] | { title: string; value: string }[] }) => {
         const [value, setValue] = useState<string[]>([])
-        const onSelect = (selection: string) => {
-            value?.includes(selection)
-                ? setValue(value?.filter((v) => v !== selection))
-                : setValue([...value, selection])
+        const onSelect = (selection: string | undefined) => {
+            const val = selection ?? ''
+            value.includes(val) ? setValue(value.filter((v) => v !== val)) : setValue(val ? [...value, val] : [])
         }
         return (
             <AcmSelect
@@ -86,11 +85,12 @@ describe('AcmSelect - Multiselect', () => {
         )
     }
     test('renders with options of type: string', () => {
-        const { getByTestId } = render(<MultiSelect options={['red', 'green', 'blue']} />)
+        const { getByTestId, getByRole } = render(<MultiSelect options={['red', 'green', 'blue']} />)
+        userEvent.click(getByRole('button'))
         expect(getByTestId('select-color')).toBeInTheDocument()
     })
     test('renders with options of type: string', () => {
-        const { getByTestId } = render(
+        const { getByTestId, getByRole } = render(
             <MultiSelect
                 options={[
                     { title: 'Red', value: 'red' },
@@ -99,6 +99,7 @@ describe('AcmSelect - Multiselect', () => {
                 ]}
             />
         )
+        userEvent.click(getByRole('button'))
         expect(getByTestId('select-color')).toBeInTheDocument()
     })
 })
