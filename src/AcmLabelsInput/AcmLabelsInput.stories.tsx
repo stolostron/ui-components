@@ -13,7 +13,7 @@ export const LabelsInput = () => {
 
     return (
         <AcmForm>
-            <AcmLabelsInput label="Label" id="123" value={value} onChange={setValue} />
+            <AcmLabelsInput label="Label" id="123" value={value} onChange={setValue} buttonLabel="Add label" />
         </AcmForm>
     )
 }
