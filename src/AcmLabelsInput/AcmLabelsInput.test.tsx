@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { axe } from 'jest-axe'
 import { AcmLabelsInput } from './AcmLabelsInput'
 
 describe('AcmLabelsInput', () => {
     const LabelsInput = () => {
-        const [value, setValue] = useState<string[]>()
+        const [value, setValue] = useState<string[]>([])
         return (
             <AcmLabelsInput
                 label="Label input"
@@ -63,6 +64,15 @@ describe('AcmLabelsInput', () => {
             expect(queryByText('label=null')).toBeNull()
         })
     })
+    test('has zero accessibility defects', async () => {
+        const { getByTestId, container } = render(<LabelsInput />)
+        expect(await axe(container)).toHaveNoViolations()
+
+        userEvent.click(getByTestId('label-input-button'))
+        expect(await axe(container)).toHaveNoViolations()
+
+        userEvent.type(getByTestId('label-input'), 'foo=bar{enter}')
+        expect(await axe(container)).toHaveNoViolations()
     test('allows an undefined value to be set', async () => {
         const UndefinedLabelsInput = () => {
             const [value, setValue] = useState<string[] | undefined>(undefined)

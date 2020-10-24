@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { axe } from 'jest-axe'
 import { AcmModal } from './AcmModal'
 
 describe('AcmModal', () => {
@@ -27,5 +28,11 @@ describe('AcmModal', () => {
             />
         )
         expect(container.querySelector('[role="dialog"]')).not.toBeInTheDocument()
+    })
+    test('has zero accessibility defects', async () => {
+        const { container } = render(
+            <AcmModal open={true} submit={() => null} cancel={() => null} title="Modal title" message="Modal message" />
+        )
+        expect(await axe(container)).toHaveNoViolations()
     })
 })
