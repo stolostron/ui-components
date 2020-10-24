@@ -5,8 +5,8 @@ import React, { Fragment, useState } from 'react'
 export function AcmLabelsInput(props: {
     id: string
     label: string
-    value: string[]
-    onChange: (labels: string[]) => void
+    value: string[] | undefined
+    onChange: (labels: string[] | undefined) => void
     buttonLabel: string
     hidden?: boolean
 }) {
@@ -14,7 +14,7 @@ export function AcmLabelsInput(props: {
     const [showInput, setShowInput] = useState(false)
 
     function addLabel(input: string) {
-        const newlabels = props.value
+        const newlabels = props.value ?? []
         const labels = input
             .split(',')
             .join(' ')
@@ -31,13 +31,14 @@ export function AcmLabelsInput(props: {
     }
 
     function removeLabel(label: string) {
-        props.onChange(props.value.filter((l) => l !== label))
+        /* istanbul ignore next */
+        props.onChange(props.value?.filter((l) => l !== label))
     }
 
     return (
         <Fragment>
             <FormGroup id={`${props.id}-label`} label={props.label} fieldId={props.id} hidden={props.hidden}>
-                {props.value.map((label) => (
+                {props.value?.map((label) => (
                     <Label
                         key={label}
                         style={{ marginBottom: 2, marginRight: 4, marginTop: 2 }}

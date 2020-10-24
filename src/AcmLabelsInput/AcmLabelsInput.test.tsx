@@ -73,5 +73,20 @@ describe('AcmLabelsInput', () => {
 
         userEvent.type(getByTestId('label-input'), 'foo=bar{enter}')
         expect(await axe(container)).toHaveNoViolations()
+    test('allows an undefined value to be set', async () => {
+        const UndefinedLabelsInput = () => {
+            const [value, setValue] = useState<string[] | undefined>(undefined)
+            return (
+                <AcmLabelsInput
+                    label="Label input"
+                    id="label-input"
+                    value={value}
+                    onChange={setValue}
+                    buttonLabel="Add label"
+                />
+            )
+        }
+        const { getByTestId } = render(<UndefinedLabelsInput />)
+        expect(getByTestId('label-input-button')).toBeVisible()
     })
 })
