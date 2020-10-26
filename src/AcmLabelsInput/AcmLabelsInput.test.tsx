@@ -6,7 +6,7 @@ import { AcmLabelsInput } from './AcmLabelsInput'
 
 describe('AcmLabelsInput', () => {
     const LabelsInput = () => {
-        const [value, setValue] = useState<string[]>([])
+        const [value, setValue] = useState<string[] | undefined>([])
         return (
             <AcmLabelsInput
                 label="Label input"
@@ -73,6 +73,8 @@ describe('AcmLabelsInput', () => {
 
         userEvent.type(getByTestId('label-input'), 'foo=bar{enter}')
         expect(await axe(container)).toHaveNoViolations()
+    })
+
     test('allows an undefined value to be set', async () => {
         const UndefinedLabelsInput = () => {
             const [value, setValue] = useState<string[] | undefined>(undefined)

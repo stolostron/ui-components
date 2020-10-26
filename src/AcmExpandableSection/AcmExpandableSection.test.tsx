@@ -33,4 +33,12 @@ describe('AcmExpandableSection', () => {
         userEvent.click(getByRole('button'))
         expect(await axe(container)).toHaveNoViolations()
     })
+    test('can be hidden', async () => {
+        const { container } = render(
+            <AcmExpandableSection label="Expandable Label" summary="Summary about this section" hidden={true}>
+                Section content
+            </AcmExpandableSection>
+        )
+        expect(container).toMatchInlineSnapshot(`<div />`)
+    })
 })
