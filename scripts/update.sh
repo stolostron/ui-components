@@ -10,7 +10,7 @@ fi
 PACKAGE_NAME=`cat package.json | jq -r .name`
 
 git remote remove origin
-git remote add origin https://${GH_TOKEN}@github.com/${PACKAGE_NAME}.git > /dev/null 2>&1
+git remote add origin https://${GITHUB_TOKEN}@github.com/${PACKAGE_NAME}.git > /dev/null 2>&1
 git checkout master
 
 rm -rf node_modules
