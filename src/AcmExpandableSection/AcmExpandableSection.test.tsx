@@ -39,6 +39,6 @@ describe('AcmExpandableSection', () => {
                 Section content
             </AcmExpandableSection>
         )
-        expect(container).toMatchInlineSnapshot(`<div />`)
+        expect(container).toMatchInlineSnapshot('<div />')
     })
 })
