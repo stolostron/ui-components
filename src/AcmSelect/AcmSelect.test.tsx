@@ -1,9 +1,25 @@
 import React, { useState } from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { axe } from 'jest-axe'
 import { AcmSelect, AcmSelectVariant } from './AcmSelect'
 
 describe('AcmSelect - single', () => {
+    const Select = () => {
+        const [value, setValue] = useState<string>()
+        return (
+            <AcmSelect
+                variant={AcmSelectVariant.single}
+                id="acm-select"
+                label="ACM select"
+                onChange={setValue}
+                options={['foo', 'bar']}
+                value={value}
+                placeholder="Select one"
+                clear
+            />
+        )
+    }
     test('renders with options of type: string', () => {
         const { getByText } = render(
             <AcmSelect
@@ -61,6 +77,13 @@ describe('AcmSelect - single', () => {
 
         userEvent.click(getByRole('button', { name: 'Clear all' }))
         expect(queryByText('bar')).toBeNull()
+    })
+    test('has zero accessibility defects', async () => {
+        const { getByRole, container } = render(<Select />)
+        expect(await axe(container)).toHaveNoViolations()
+
+        userEvent.click(getByRole('button'))
+        expect(await axe(container)).toHaveNoViolations()
     })
 })
 

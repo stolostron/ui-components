@@ -31,6 +31,7 @@ export function AcmSelect(props: {
             <Select
                 variant={props.variant}
                 id={props.id}
+                aria-label={props.label}
                 selections={props.value}
                 isOpen={open}
                 onToggle={() => {

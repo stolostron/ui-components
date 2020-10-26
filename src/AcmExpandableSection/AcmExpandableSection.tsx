@@ -6,8 +6,10 @@ export function AcmExpandableSection(props: {
     children: ReactNode
     summary?: string
     expanded?: boolean
+    hidden?: boolean
 }) {
     const [expanded, setExpanded] = useState(props.expanded === true)
+    if (props.hidden) return <></>
     return (
         <ExpandableSection
             toggleText={props.summary && !expanded ? `${props.label} - ${props.summary}` : props.label}

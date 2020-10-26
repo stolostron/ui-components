@@ -1,6 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { axe } from 'jest-axe'
 import { AcmExpandableSection } from './AcmExpandableSection'
 
 describe('AcmExpandableSection', () => {
@@ -21,5 +22,23 @@ describe('AcmExpandableSection', () => {
         )
         userEvent.click(getByRole('button'))
         expect(container.querySelector('.pf-c-expandable-section__content')).toBeVisible()
+    })
+    test('has zero accessibility defects', async () => {
+        const { getByRole, container } = render(
+            <AcmExpandableSection label="Expandable Label" summary="Summary about this section">
+                Section content
+            </AcmExpandableSection>
+        )
+        expect(await axe(container)).toHaveNoViolations()
+        userEvent.click(getByRole('button'))
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('can be hidden', async () => {
+        const { container } = render(
+            <AcmExpandableSection label="Expandable Label" summary="Summary about this section" hidden={true}>
+                Section content
+            </AcmExpandableSection>
+        )
+        expect(container).toMatchInlineSnapshot('<div />')
     })
 })

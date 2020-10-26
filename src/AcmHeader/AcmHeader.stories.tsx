@@ -55,7 +55,13 @@ export const Page = () => {
                                 clear
                                 required
                             />
-                            <AcmLabelsInput id="labelsInput" label="Labels Input" value={labels} onChange={setLabels} />
+                            <AcmLabelsInput
+                                id="labelsInput"
+                                label="Labels Input"
+                                value={labels}
+                                onChange={setLabels}
+                                buttonLabel="Add label"
+                            />
                         </AcmForm>
                     </AcmExpandableSection>
                 </AcmPageCard>

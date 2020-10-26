@@ -1,5 +1,6 @@
 import React from 'react'
 import { render } from '@testing-library/react'
+import { axe } from 'jest-axe'
 import { AcmEmptyState } from './AcmEmptyState'
 
 describe('AcmEmptyState', () => {
@@ -13,5 +14,9 @@ describe('AcmEmptyState', () => {
     test('renders without action', () => {
         const { container } = render(<AcmEmptyState title="Empty state title" message="Empty state message" />)
         expect(container.querySelector('button')).toBeNull()
+    })
+    test('has zero accessibility defects', async () => {
+        const { container } = render(<AcmEmptyState title="Empty state title" message="Empty state message" />)
+        expect(await axe(container)).toHaveNoViolations()
     })
 })

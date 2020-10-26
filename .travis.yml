@@ -1,0 +1,33 @@
+language: node_js
+node_js: '12'
+install: npm ci --no-optional
+
+jobs:
+    include:
+        - stage: Build and test
+          if: type IN (pull_request, push)
+          script:
+              - npm test &&
+                npm run lint &&
+                npm run check &&
+                npm run build &&
+                npm run build:storybook
+
+        - stage: Publish
+          if: type = push AND branch = master
+          script:
+              - npm run build &&
+                npm run build:storybook &&
+                scripts/publish.sh
+          deploy:
+              provider: pages
+              skip_cleanup: true
+              github_token: $GITHUB_TOKEN
+              keep_history: true
+              local_dir: storybook-static
+              on:
+                  branch: master
+
+        - stage: Automated Dependency Upgrade
+          if: type = cron AND branch = master
+          script: scripts/update.sh
