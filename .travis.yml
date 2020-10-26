@@ -15,7 +15,10 @@ jobs:
 
         - stage: Publish
           if: type = push AND branch = master
-          script: scripts/publish.sh
+          script:
+              - npm run build &&
+                npm run build:storybook &&
+                scripts/publish.sh
           deploy:
               provider: pages
               skip_cleanup: true
