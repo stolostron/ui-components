@@ -4,8 +4,8 @@ install: npm ci --no-optional
 
 jobs:
     include:
-        - stage: Build and test
-          if: type IN (pull_request, push)
+        - stage: Pull Request
+          if: type = pull_request
           script:
               - npm test &&
                 npm run lint &&
@@ -13,7 +13,7 @@ jobs:
                 npm run build &&
                 npm run build:storybook
 
-        - stage: Publish
+        - stage: Build and Publish
           if: type = push AND branch = master
           script:
               - npm run build &&
