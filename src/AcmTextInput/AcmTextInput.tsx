@@ -1,56 +1,46 @@
-import { FormGroup, TextInput } from '@patternfly/react-core'
-import React from 'react'
+import { FormGroup, TextInput, TextInputProps } from '@patternfly/react-core'
+import React, { useContext, useLayoutEffect, useState } from 'react'
+import { FormContext } from '../AcmForm/AcmForm'
 
-function AcmTextInputInternal(props: {
-    id: string
-    value: string | undefined
-    onChange: (value: string | undefined) => void
-    placeholder?: string
-    required?: boolean
-    focus?: boolean
-    secret?: boolean
-}) {
-    return (
-        <TextInput
-            id={props.id}
-            value={props.value}
-            onChange={props.onChange}
-            placeholder={props.placeholder}
-            required={props.required}
-            autoFocus={props.focus}
-            type={props.secret ? 'password' : 'text'}
-        />
-    )
-}
-
-export function AcmTextInput(props: {
+type AcmTextInputProps = TextInputProps & {
     id: string
     label: string
-    value: string | undefined
-    onChange: (value: string | undefined) => void
-    placeholder?: string
-    required?: boolean
-    hidden?: boolean
-    focus?: boolean
-    secret?: boolean
-}) {
+    validation?: (value: string) => string
+}
+export function AcmTextInput(props: AcmTextInputProps) {
+    const formContext = useContext(FormContext)
+    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
+    const [error, setError] = useState<string>()
+
+    useLayoutEffect(() => {
+        let error: string | undefined = undefined
+        if (props.isRequired) {
+            if (!props.value || (typeof props.value === 'string' && props.value.trim() === '')) {
+                error = 'Required'
+            }
+        }
+        setError(error)
+        if (formContext.validate) {
+            setValidated(error ? 'error' : undefined)
+        }
+        formContext.setError(props.id, error)
+    }, [props.value])
+
+    useLayoutEffect(() => {
+        setValidated(error ? 'error' : undefined)
+    }, [formContext.validate])
+
     return (
         <FormGroup
             id={`${props.id}-label`}
             label={props.label}
-            isRequired={props.required}
+            isRequired={props.isRequired}
             fieldId={props.id}
             hidden={props.hidden}
+            helperTextInvalid={error}
+            validated={validated}
         >
-            <AcmTextInputInternal
-                id={props.id}
-                value={props.value}
-                onChange={props.onChange}
-                placeholder={props.placeholder}
-                required={props.required}
-                focus={props.focus}
-                secret={props.secret}
-            />
+            <TextInput {...props} validated={validated} />
         </FormGroup>
     )
 }
