@@ -49,6 +49,7 @@ export function AcmSubmit(props: ButtonProps) {
                     context.setValidate(true)
                     setDisabled(hasError)
                 } else {
+                    /* istanbul ignore else */
                     if (props.onClick) {
                         props.onClick(event)
                     }

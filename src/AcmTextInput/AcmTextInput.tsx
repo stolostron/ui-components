@@ -4,6 +4,7 @@ import { FormContext } from '../AcmForm/AcmForm'
 
 type AcmTextInputProps = TextInputProps & {
     id: string
+    label: string
     validation?: (value: string) => string
 }
 export function AcmTextInput(props: AcmTextInputProps) {
