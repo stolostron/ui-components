@@ -25,6 +25,7 @@ if git diff --name-only | grep 'package.json\|package-lock.json'; then
     npm run lint:fix
     npm run check:fix
     npm run build
+    npm run build:storybook
     npm test
     npm run lint
     npm run check

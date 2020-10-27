@@ -30,4 +30,5 @@ jobs:
 
         - stage: Automated Dependency Upgrade
           if: type = cron AND branch = master
+          install: echo skip install
           script: scripts/update.sh
