@@ -2,8 +2,8 @@
 set -x
 set -e
 
-if [ "$GH_TOKEN" = "" ]; then
-    echo "GH_TOKEN required"
+if [ "$GITHUB_TOKEN" = "" ]; then
+    echo "GITHUB_TOKEN required"
     exit 1
 fi
 
