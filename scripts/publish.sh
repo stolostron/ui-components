@@ -14,7 +14,7 @@ NEW_SHA=`npm publish --dry-run --json | jq .shasum`
 
 if [ "$PUBLISHED_SHA" != "$NEW_SHA" ]; then 
     npm version patch --no-git-tag-version
-    NEW_VERSION=`npm view ${PACKAGE_NAME} version`
+    NEW_VERSION=`cat package.json | jq .name | tr -d '"'`
 
     echo Publish: Publishing ${NEW_VERSION}
 
