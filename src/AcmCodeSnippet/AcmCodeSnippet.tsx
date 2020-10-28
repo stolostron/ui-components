@@ -29,7 +29,6 @@ export function AcmCodeSnippet(props: {
             setTimeout(() => setCopied(false), 2000)
         }
     }, [copied])
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (
         <div className="pf-c-code-editor pf-m-read-only" style={{ display: 'flex' }} id={props.id}>
             <div className="pf-c-code-editor__main" style={{ width: '100%' }}>
