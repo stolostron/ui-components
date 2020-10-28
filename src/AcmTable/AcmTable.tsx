@@ -25,6 +25,7 @@ import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
+type SearchFn<T> = (item: T) => string | boolean | number | string[] | boolean[] | number[]
 
 /* istanbul ignore next */
 export interface IAcmTableColumn<T> {
@@ -35,7 +36,7 @@ export interface IAcmTableColumn<T> {
     sort?: SortFn<T> | string
 
     /** if defined will enable search of the search field */
-    search?: string
+    search?: SearchFn<T> | string
 
     /** cell content, either on field name of using cell function */
     cell: CellFn<T> | string
@@ -62,6 +63,11 @@ export interface IAcmTableBulkAction<T> {
     click: (items: T[]) => void
 }
 
+interface ISearchItem<T> {
+    item: T
+    [key: string]: unknown
+}
+
 export function AcmTable<T>(props: {
     plural: string
     items: T[]
@@ -73,7 +79,9 @@ export function AcmTable<T>(props: {
     extraToolbarControls?: ReactNode
 }) {
     const { items, columns, keyFn } = props
-    const [filtered, setFiltered] = useState<T[]>(props.items)
+    const [hasSearch, setHasSearch] = useState(true)
+    const [searchItems, setSearchItems] = useState<ISearchItem<T>[]>()
+    const [filtered, setFiltered] = useState<T[]>(items)
     const [sorted, setSorted] = useState<T[]>()
     const [paged, setPaged] = useState<T[]>()
     const [rows, setRows] = useState<IRow[] | undefined>([])
@@ -84,18 +92,52 @@ export function AcmTable<T>(props: {
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
 
     useLayoutEffect(() => {
-        if (search && search !== '') {
-            const fuse = new Fuse(items, {
+        let hasSearch = false
+        for (const column of columns) {
+            /* istanbul ignore else */
+            if (column.search) {
+                hasSearch = true
+                break
+            }
+        }
+        setHasSearch(hasSearch)
+    }, [columns])
+
+    useLayoutEffect(() => {
+        setSearchItems(
+            items.map((item) => {
+                const searchItem: ISearchItem<T> = { item: item }
+                for (let i = 0; i < columns.length; i++) {
+                    const column = columns[i]
+                    if (column.search) {
+                        if (typeof column.search === 'string') {
+                            searchItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
+                        } else {
+                            searchItem[`column-${i}`] = column.search(item)
+                        }
+                    }
+                }
+                return searchItem
+            })
+        )
+    }, [items, columns])
+
+    useLayoutEffect(() => {
+        if (search && search !== '' && searchItems) {
+            const fuse = new Fuse(searchItems, {
                 includeScore: true,
                 threshold: 0.2,
-                keys: columns.map((column) => column.search).filter((value) => value !== undefined) as string[],
+                keys: columns
+                    .map((column, i) => (column.search ? `column-${i}` : undefined))
+                    .filter((value) => value !== undefined) as string[],
+                // TODO use FuseOptionKeyObject to allow for weights
             })
-            setFiltered(fuse.search(search).map((result) => result.item))
+            setFiltered(fuse.search(search).map((result) => result.item.item))
             setSort(undefined)
         } else {
             setFiltered(items)
         }
-    }, [search, items, columns])
+    }, [search, items, searchItems, columns])
 
     useLayoutEffect(() => {
         if (sort && sort.index && filtered) {
@@ -207,14 +249,14 @@ export function AcmTable<T>(props: {
     })
 
     if (!rows) {
-        return <></>
+        return <Fragment />
     }
 
     return (
         <Fragment>
             <Toolbar>
                 <ToolbarContent>
-                    <ToolbarItem>
+                    <ToolbarItem hidden={!hasSearch}>
                         <SearchInput
                             style={{ minWidth: '350px' }}
                             placeholder="Search"
