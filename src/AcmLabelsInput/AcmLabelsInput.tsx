@@ -14,6 +14,7 @@ export function AcmLabelsInput(props: {
     const [showInput, setShowInput] = useState(false)
 
     function addLabel(input: string) {
+        /* istanbul ignore next */
         const newlabels = props.value ?? []
         const labels = input
             .split(',')
