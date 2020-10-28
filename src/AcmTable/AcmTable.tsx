@@ -92,15 +92,7 @@ export function AcmTable<T>(props: {
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
 
     useLayoutEffect(() => {
-        let hasSearch = false
-        for (const column of columns) {
-            /* istanbul ignore else */
-            if (column.search) {
-                hasSearch = true
-                break
-            }
-        }
-        setHasSearch(hasSearch)
+        setHasSearch(columns.some((column) => column.search))
     }, [columns])
 
     useLayoutEffect(() => {
