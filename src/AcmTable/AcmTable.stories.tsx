@@ -92,8 +92,8 @@ export function Table() {
             ]}
             extraToolbarControls={
                 <ToggleGroup>
-                    <ToggleGroupItem isSelected={true}>View 1</ToggleGroupItem>
-                    <ToggleGroupItem>View 2</ToggleGroupItem>
+                    <ToggleGroupItem isSelected={true} text="View 1" />
+                    <ToggleGroupItem text="View 2" />
                 </ToggleGroup>
             }
         />
