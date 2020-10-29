@@ -1,21 +1,22 @@
-import { FormGroup, Popover, TextInput, TextInputProps } from '@patternfly/react-core'
+import { FormGroup, Popover, TextArea, TextAreaProps } from '@patternfly/react-core'
 import React, { Fragment, ReactNode, useContext, useLayoutEffect, useState } from 'react'
 import { FormContext } from '../AcmForm/AcmForm'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 
-type AcmTextInputProps = TextInputProps & {
+type AcmTextAreaProps = TextAreaProps & {
     id: string
     label: string
     validation?: (value: string) => string | undefined
-    labelHelp?: string
+    labelHelp?: ReactNode
     labelHelpTitle?: ReactNode
-    helperText?: ReactNode
+    helperText?: string
 }
-export function AcmTextInput(props: AcmTextInputProps) {
+
+export function AcmTextArea(props: AcmTextAreaProps) {
     const formContext = useContext(FormContext)
     const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
     const [error, setError] = useState<string>()
-    const { validation, labelHelp, labelHelpTitle, helperText, ...textInputProps } = props
+    const { validation, labelHelp, labelHelpTitle, helperText, ...textAreaProps } = props
 
     useLayoutEffect(() => {
         let error: string | undefined = undefined
@@ -51,13 +52,8 @@ export function AcmTextInput(props: AcmTextInputProps) {
             labelIcon={
                 /* istanbul ignore next */
                 props.labelHelp ? (
-                    <Popover
-                        id={`${props.id}-label-help-popover`}
-                        headerContent={labelHelpTitle}
-                        bodyContent={labelHelp}
-                    >
+                    <Popover headerContent={labelHelpTitle} bodyContent={labelHelp}>
                         <button
-                            id={`${props.id}-label-help-button`}
                             aria-label="More info"
                             onClick={(e) => e.preventDefault()}
                             // aria-describedby="simple-form-name"
@@ -71,7 +67,7 @@ export function AcmTextInput(props: AcmTextInputProps) {
                 )
             }
         >
-            <TextInput {...textInputProps} validated={validated} />
+            <TextArea {...(textAreaProps as unknown)} validated={validated} />
         </FormGroup>
     )
 }
