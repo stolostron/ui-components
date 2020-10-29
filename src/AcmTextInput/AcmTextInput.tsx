@@ -71,7 +71,7 @@ export function AcmTextInput(props: AcmTextInputProps) {
                 )
             }
         >
-            <TextInput {...textInputProps} validated={validated} aria-labelledby={`${props.id}-label`} />
+            <TextInput {...textInputProps} validated={validated} />
         </FormGroup>
     )
 }

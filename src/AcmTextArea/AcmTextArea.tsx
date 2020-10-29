@@ -67,7 +67,7 @@ export function AcmTextArea(props: AcmTextAreaProps) {
                 )
             }
         >
-            <TextArea {...(textAreaProps as unknown)} validated={validated} aria-labelledby={`${props.id}-label`} />
+            <TextArea {...(textAreaProps as unknown)} validated={validated} />
         </FormGroup>
     )
 }
