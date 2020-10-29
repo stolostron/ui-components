@@ -6,7 +6,7 @@ import { AcmLabelsInput } from './AcmLabelsInput'
 
 describe('AcmLabelsInput', () => {
     const LabelsInput = () => {
-        const [value, setValue] = useState<string[] | undefined>([])
+        const [value, setValue] = useState<string[] | undefined>()
         return (
             <AcmLabelsInput
                 label="Label input"

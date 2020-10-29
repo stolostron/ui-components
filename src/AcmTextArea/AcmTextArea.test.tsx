@@ -3,28 +3,28 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React, { useState } from 'react'
 import { AcmForm, AcmSubmit } from '../AcmForm/AcmForm'
-import { AcmTextInput } from './AcmTextInput'
+import { AcmTextArea } from './AcmTextArea'
 
-describe('AcmTextInput', () => {
-    const TextInput = () => <AcmTextInput label="ACM text input" id="text-input" value="foobar" onChange={() => null} />
+describe('AcmTextArea', () => {
+    const TextArea = () => <AcmTextArea label="ACM text Area" id="text-Area" value="foobar" onChange={() => null} />
 
     test('renders', () => {
-        const { getByText, getByLabelText } = render(<TextInput />)
-        expect(getByText('ACM text input')).toBeInTheDocument()
-        expect(getByLabelText('ACM text input')).toBeInstanceOf(HTMLInputElement)
+        const { getByText, getByLabelText } = render(<TextArea />)
+        expect(getByText('ACM text Area')).toBeInTheDocument()
+        expect(getByLabelText('ACM text Area')).toBeInstanceOf(HTMLTextAreaElement)
     })
 
     test('has zero accessibility defects', async () => {
-        const { container } = render(<TextInput />)
+        const { container } = render(<TextArea />)
         expect(await axe(container)).toHaveNoViolations()
     })
 
-    test('validates required input', async () => {
+    test('validates required Area', async () => {
         const Component = () => {
             const [value, setValue] = useState<string | undefined>(undefined)
             return (
                 <AcmForm>
-                    <AcmTextInput id="input" label="label" value={value} onChange={setValue} isRequired />
+                    <AcmTextArea id="input" label="label" value={value} onChange={setValue} isRequired />
                     <AcmSubmit>Submit</AcmSubmit>
                 </AcmForm>
             )
@@ -42,7 +42,7 @@ describe('AcmTextInput', () => {
             const [value, setValue] = useState<string>('')
             return (
                 <AcmForm>
-                    <AcmTextInput
+                    <AcmTextArea
                         id="input"
                         label="label"
                         value={value}

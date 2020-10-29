@@ -21,9 +21,11 @@ export function AcmForm(props: FormProps) {
     const [validate, setValidate] = useState(false)
     const [errors, setErrors] = useState<{ [id: string]: string | undefined }>({})
     const setError = (id: string, error?: string) => {
-        const copy = { ...errors }
-        copy[id] = error
-        setErrors(copy)
+        setErrors((prevState) => {
+            const copy = { ...prevState }
+            copy[id] = error
+            return copy
+        })
     }
     return (
         <FormContext.Provider value={{ validate, setValidate, errors, setError }}>
