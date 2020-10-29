@@ -18,7 +18,8 @@ jobs:
         - stage: Build and Publish
           if: type = push AND branch = master
           script:
-              - npm run build &&
+              - npm test &&
+                npm run build &&
                 npm run build:storybook &&
                 scripts/publish.sh &&
                 sonar-scanner
