@@ -1,5 +1,5 @@
 import { FormGroup, Popover, TextInput, TextInputProps } from '@patternfly/react-core'
-import React, { Fragment, useContext, useLayoutEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useContext, useLayoutEffect, useState } from 'react'
 import { FormContext } from '../AcmForm/AcmForm'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 
@@ -8,8 +8,8 @@ type AcmTextInputProps = TextInputProps & {
     label: string
     validation?: (value: string) => string | undefined
     labelHelp?: string
-    labelHelpTitle?: string
-    helperText?: string
+    labelHelpTitle?: ReactNode
+    helperText?: ReactNode
 }
 export function AcmTextInput(props: AcmTextInputProps) {
     const formContext = useContext(FormContext)
@@ -71,7 +71,7 @@ export function AcmTextInput(props: AcmTextInputProps) {
                 )
             }
         >
-            <TextInput {...textInputProps} validated={validated} />
+            <TextInput {...textInputProps} validated={validated} aria-labelledby={`${props.id}-label`} />
         </FormGroup>
     )
 }

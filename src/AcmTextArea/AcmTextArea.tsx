@@ -1,5 +1,5 @@
 import { FormGroup, Popover, TextArea, TextAreaProps } from '@patternfly/react-core'
-import React, { Fragment, useContext, useLayoutEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useContext, useLayoutEffect, useState } from 'react'
 import { FormContext } from '../AcmForm/AcmForm'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 
@@ -7,8 +7,8 @@ type AcmTextAreaProps = TextAreaProps & {
     id: string
     label: string
     validation?: (value: string) => string | undefined
-    labelHelp?: string
-    labelHelpTitle?: string
+    labelHelp?: ReactNode
+    labelHelpTitle?: ReactNode
     helperText?: string
 }
 
@@ -67,7 +67,7 @@ export function AcmTextArea(props: AcmTextAreaProps) {
                 )
             }
         >
-            <TextArea {...(textAreaProps as unknown)} validated={validated} />
+            <TextArea {...(textAreaProps as unknown)} validated={validated} aria-labelledby={`${props.id}-label`} />
         </FormGroup>
     )
 }
