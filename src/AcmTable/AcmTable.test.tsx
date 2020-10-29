@@ -12,6 +12,7 @@ interface IExampleData {
     last_name: string
     gender: string
     email: string
+    ip_address: string
 }
 
 describe('AcmTable', () => {
@@ -37,7 +38,6 @@ describe('AcmTable', () => {
                         header: 'Last Name',
                         sort: 'last_name',
                         cell: 'last_name',
-                        search: 'last_name',
                     },
                     {
                         header: 'EMail',
@@ -54,7 +54,7 @@ describe('AcmTable', () => {
                         header: 'IP Address',
                         sort: sortFunction,
                         cell: 'ip_address',
-                        search: 'ip_address',
+                        search: (item) => item['ip_address'],
                     },
                     {
                         header: 'UID',
