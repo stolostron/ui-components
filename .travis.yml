@@ -1,7 +1,9 @@
 language: node_js
 node_js: '12'
 install: npm ci --no-optional
-
+addons:
+    sonarcloud:
+        organization: 'open-cluster-management'
 jobs:
     include:
         - stage: Pull Request
@@ -18,7 +20,8 @@ jobs:
           script:
               - npm run build &&
                 npm run build:storybook &&
-                scripts/publish.sh
+                scripts/publish.sh &&
+                sonar-scanner
           deploy:
               provider: pages
               skip_cleanup: true
