@@ -35,6 +35,8 @@ describe('AcmTextArea', () => {
         expect(getByTestId('input')).toHaveAttribute('aria-invalid', 'true')
         expect(getByTestId('input-helper')).toBeInTheDocument()
         expect(getByTestId('input-helper')).toContainHTML('Required')
+        userEvent.type(getByTestId('input'), '12345678')
+        expect(getByTestId('input')).toHaveAttribute('aria-invalid', 'false')
     })
 
     test('validates using function', async () => {
