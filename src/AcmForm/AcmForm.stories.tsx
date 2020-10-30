@@ -1,9 +1,11 @@
+import { SelectOption } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmLabelsInput } from '../AcmLabelsInput/AcmLabelsInput'
+import { AcmMultiSelect } from '../AcmMultiSelect/AcmMultiSelect'
 import { AcmSelect } from '../AcmSelect/AcmSelect'
-import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
 import { AcmTextArea } from '../AcmTextArea/AcmTextArea'
+import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
 import { AcmForm, AcmSubmit } from './AcmForm'
 
 export default {
@@ -12,11 +14,13 @@ export default {
 }
 
 export const Form = () => {
-    const [email, setEmail] = useState<string>()
-    const [password, setPassword] = useState<string>()
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
     const [description, setDescription] = useState<string>()
-    const [select, setSelect] = useState<string>()
+    const [selectValue, setSelectValue] = useState<string>()
+    const [multiselectValue, setMultiselectValue] = useState<string[]>([])
     const [labels, setLabels] = useState<string[]>()
+
     return (
         <AcmForm>
             <AcmTextInput
@@ -53,9 +57,8 @@ export const Form = () => {
             />
             <AcmTextArea
                 id="textArea"
-                label="Description"
-                placeholder="Enter description"
-                labelHelpTitle="Help Title"
+                label="Text Area"
+                placeholder="Enter your multi-line input"
                 labelHelp="This is the help for the text area"
                 value={description}
                 onChange={setDescription}
@@ -63,19 +66,44 @@ export const Form = () => {
             />
 
             <AcmSelect
-                label="Select Input"
-                id="selectInput"
-                options={[
-                    { title: 'Red', value: 'red' },
-                    { title: 'Green', value: 'green' },
-                    { title: 'Blue', value: 'blue' },
-                ]}
-                value={select}
-                onChange={setSelect}
-                placeholder="Select your color"
-                clear
-                required
-            />
+                id="acm-select"
+                label="Select"
+                placeholder="Select your option"
+                labelHelp="AcmSelect allows the selection of one option"
+                value={selectValue}
+                onChange={setSelectValue}
+                isRequired
+            >
+                <SelectOption value="red">
+                    <span style={{ color: 'red' }}>Red</span>
+                </SelectOption>
+                <SelectOption value="green">
+                    <span style={{ color: 'green' }}>Green</span>
+                </SelectOption>
+                <SelectOption value="blue">
+                    <span style={{ color: 'blue' }}>Blue</span>
+                </SelectOption>
+            </AcmSelect>
+
+            <AcmMultiSelect
+                id="acm-multiselect"
+                label="Multi-Select"
+                placeholder="Select your options"
+                labelHelp="AcmMultiSelect allows the selection of multiple options"
+                value={multiselectValue}
+                onChange={setMultiselectValue}
+            >
+                <SelectOption key="option-1" value="option-1">
+                    Option 1
+                </SelectOption>
+                <SelectOption key="option-2" value="option-2">
+                    Option 2
+                </SelectOption>
+                <SelectOption key="option-3" value="option-3">
+                    Option 3
+                </SelectOption>
+            </AcmMultiSelect>
+
             <AcmLabelsInput
                 id="labelsInput"
                 label="Labels Input"
