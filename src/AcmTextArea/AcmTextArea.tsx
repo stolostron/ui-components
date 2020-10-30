@@ -70,7 +70,7 @@ export function AcmTextArea(props: AcmTextAreaProps) {
             <TextArea
                 {...(textAreaProps as unknown)}
                 validated={validated}
-                style={{ height: '90px', minHeight: '36px' }}
+                style={{ height: '88px', minHeight: '36px' }}
                 resizeOrientation={
                     /* istanbul ignore next */ props.resizeOrientation ? props.resizeOrientation : 'vertical'
                 }
