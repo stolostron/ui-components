@@ -90,7 +90,6 @@ export function AcmTable<T>(props: {
     const [page, setPage] = useState(1)
     const [perPage, setPerPage] = useState(10)
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
-
     useLayoutEffect(() => {
         setHasSearch(columns.some((column) => column.search))
     }, [columns])
@@ -281,6 +280,7 @@ export function AcmTable<T>(props: {
                                     <Button
                                         onClick={() => {
                                             action.click(props.items.filter((item) => selected[keyFn(item)]))
+                                            setSelected({})
                                         }}
                                     >
                                         {action.title}
