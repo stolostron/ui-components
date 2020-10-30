@@ -1,17 +1,17 @@
-import { FormGroup, Popover, Select, SelectProps } from '@patternfly/react-core'
+import { FormGroup, Popover, Select, SelectOption, SelectProps, SelectVariant } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useContext, useLayoutEffect, useState } from 'react'
 import { FormContext } from '../AcmForm/AcmForm'
 
-type AcmSelectProps = Pick<
+type AcmMultiSelectProps = Pick<
     SelectProps,
     Exclude<keyof SelectProps, 'onToggle' | 'onChange' | 'selections' | 'onSelect'>
 > & {
     id: string
     label: string
-    value: string | undefined
-    onChange: (value: string | undefined) => void
-    validation?: (value: string | undefined) => string | undefined
+    value: string[] | undefined
+    onChange: (value: string[] | undefined) => void
+    validation?: (value: string[] | undefined) => string | undefined
     placeholder?: string
     labelHelp?: string
     labelHelpTitle?: ReactNode
@@ -19,7 +19,7 @@ type AcmSelectProps = Pick<
     isRequired?: boolean
 }
 
-export function AcmSelect(props: AcmSelectProps) {
+export function AcmMultiSelect(props: AcmMultiSelectProps) {
     const [open, setOpen] = useState(false)
     const formContext = useContext(FormContext)
     const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
@@ -36,12 +36,14 @@ export function AcmSelect(props: AcmSelectProps) {
         ...selectProps
     } = props
 
+    const [placeholderText, setPlaceholderText] = useState<ReactNode | undefined>(props.placeholder)
+
     useLayoutEffect(() => {
         let error: string | undefined = undefined
         if (isRequired) {
             if (props.value === undefined) {
                 error = 'Required'
-            } else if (props.value.trim() === '') {
+            } else if (props.value.length === 0) {
                 error = 'Required'
             }
         }
@@ -58,6 +60,33 @@ export function AcmSelect(props: AcmSelectProps) {
     useLayoutEffect(() => {
         setValidated(error ? 'error' : undefined)
     }, [formContext.validate])
+
+    useLayoutEffect(() => {
+        if (value === undefined || value.length === 0) {
+            setPlaceholderText(<span style={{ color: '#666' }}>{placeholder}</span>)
+        } else {
+            setPlaceholderText(
+                React.Children.map(props.children, (child) => {
+                    const option = (child as unknown) as SelectOption
+                    if (value.includes(option.props.value as string)) return option.props.children
+                    return undefined
+                })
+                    ?.filter((item) => item !== undefined)
+                    .map((node: ReactNode, index) => {
+                        if (index === 0) {
+                            return node
+                        } else {
+                            return (
+                                <Fragment>
+                                    <span>, </span>
+                                    {node}
+                                </Fragment>
+                            )
+                        }
+                    })
+            )
+        }
+    }, [value])
 
     return (
         <FormGroup
@@ -81,7 +110,6 @@ export function AcmSelect(props: AcmSelectProps) {
                             id={`${props.id}-label-help-button`}
                             aria-label="More info"
                             onClick={(e) => e.preventDefault()}
-                            // aria-describedby="simple-form-name"
                             className="pf-c-form__group-label-help"
                         >
                             <HelpIcon noVerticalAlign />
@@ -93,6 +121,7 @@ export function AcmSelect(props: AcmSelectProps) {
             }
         >
             <Select
+                variant={SelectVariant.checkbox}
                 aria-labelledby={`${props.id}-label`}
                 {...selectProps}
                 isOpen={open}
@@ -100,9 +129,16 @@ export function AcmSelect(props: AcmSelectProps) {
                     setOpen(!open)
                 }}
                 selections={value}
-                onSelect={(_event, value) => {
-                    onChange(value as string)
-                    setOpen(false)
+                onSelect={(_event, selection) => {
+                    if (value === undefined) {
+                        onChange([selection as string])
+                    } else {
+                        if (value.includes(selection as string)) {
+                            onChange(value.filter((item) => item !== selection))
+                        } else {
+                            onChange([...value, selection as string])
+                        }
+                    }
                 }}
                 onClear={
                     !props.isRequired
@@ -111,7 +147,7 @@ export function AcmSelect(props: AcmSelectProps) {
                           }
                         : undefined
                 }
-                placeholderText={<span style={{ color: '#666' }}>{placeholder}</span>}
+                placeholderText={placeholderText}
             />
             {validated === 'error' ? (
                 <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px' }}></div>
