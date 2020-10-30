@@ -65,27 +65,32 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
         if (value === undefined || value.length === 0) {
             setPlaceholderText(<span style={{ color: '#666' }}>{placeholder}</span>)
         } else {
-            setPlaceholderText(
-                React.Children.map(props.children, (child) => {
-                    const option = (child as unknown) as SelectOption
-                    if (value.includes(option.props.value as string)) return option.props.children
-                    /* istanbul ignore next */
-                    return undefined
-                })
-                    ?.filter((item) => item !== undefined)
-                    .map((node: ReactNode, index) => {
-                        if (index === 0) {
-                            return <Fragment key={`${index}`}>{node}</Fragment>
-                        } else {
-                            return (
-                                <Fragment key={`${index}`}>
-                                    <span>, </span>
-                                    {node}
-                                </Fragment>
-                            )
-                        }
-                    })
-            )
+            const selectedItems = React.Children.map(props.children, (child) => {
+                const option = (child as unknown) as SelectOption
+                if (value.includes(option.props.value as string)) return option.props.children
+                return undefined
+            })
+            /* istanbul ignore if */
+            if (selectedItems === undefined) {
+                setPlaceholderText(<span style={{ color: '#666' }}>{placeholder}</span>)
+            } else {
+                setPlaceholderText(
+                    selectedItems
+                        .filter((item) => item !== undefined)
+                        .map((node: ReactNode, index) => {
+                            if (index === 0) {
+                                return <Fragment key={`${index}`}>{node}</Fragment>
+                            } else {
+                                return (
+                                    <Fragment key={`${index}`}>
+                                        <span>, </span>
+                                        {node}
+                                    </Fragment>
+                                )
+                            }
+                        })
+                )
+            }
         }
     }, [value])
 
