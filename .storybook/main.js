@@ -1,7 +1,7 @@
 const sass = require('sass');
 
 module.exports = {
-    addons: ['@storybook/addon-a11y'],
+    addons: ['@storybook/addon-essentials', '@storybook/addon-a11y'],
     stories: ['../src/**/*.stories.tsx', '../src/**/*.stories.jsx'],
     webpackFinal: async config => {
         config.module.rules.push(
