@@ -1,3 +1,4 @@
+export * from './AcmAlert/AcmAlert'
 export * from './AcmButton/AcmButton'
 export * from './AcmCodeSnippet/AcmCodeSnippet'
 export * from './AcmModal/AcmModal'
