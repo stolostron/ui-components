@@ -103,6 +103,7 @@ export function AcmLabelsInput(props: {
                                             }
                                             const inputElement = e.target as HTMLInputElement
                                             setInputValue('')
+                                            inputElement.value = ''
                                             setTimeout(() => (inputElement.value = ''), 0)
                                         }
                                         break
@@ -111,10 +112,13 @@ export function AcmLabelsInput(props: {
                                         break
                                 }
                             }}
-                            onBlur={(e) => {
-                                addLabel(e.target.value)
-                                setShowInput(false)
-                            }}
+                            onBlur={
+                                /* istanbul ignore next */
+                                (e) => {
+                                    addLabel(e.target.value)
+                                    setShowInput(false)
+                                }
+                            }
                         />
                     )}
                 </div>

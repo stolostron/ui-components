@@ -26,7 +26,7 @@ describe('AcmLabelsInput', () => {
         expect(getByTestId('label-input')).toBeInstanceOf(HTMLInputElement)
     })
     test('can add and remove labels', async () => {
-        const { queryByText, getByTestId } = render(<LabelsInput />)
+        const { queryByText, getByTestId, getByText } = render(<LabelsInput />)
         const labels = ['foo=bar', 'coffee=bean']
 
         userEvent.click(getByTestId('label-input-button'))
@@ -34,7 +34,7 @@ describe('AcmLabelsInput', () => {
         // add labels
         labels.forEach((label) => {
             userEvent.type(getByTestId('label-input'), `${label}{enter}`)
-            expect(queryByText(label)).toBeVisible()
+            expect(getByText(label)).toBeVisible()
             expect(queryByText(label)).toBeInstanceOf(HTMLSpanElement)
         })
 
