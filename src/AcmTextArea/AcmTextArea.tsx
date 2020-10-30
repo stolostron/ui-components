@@ -70,8 +70,10 @@ export function AcmTextArea(props: AcmTextAreaProps) {
             <TextArea
                 {...(textAreaProps as unknown)}
                 validated={validated}
-                style={{ height: '108px', minHeight: '36px' }}
-                resizeOrientation={props.resizeOrientation ? props.resizeOrientation : 'vertical'}
+                style={{ height: '90px', minHeight: '36px' }}
+                resizeOrientation={
+                    /* istanbul ignore next */ props.resizeOrientation ? props.resizeOrientation : 'vertical'
+                }
             />
         </FormGroup>
     )

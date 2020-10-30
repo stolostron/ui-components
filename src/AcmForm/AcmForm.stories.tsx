@@ -2,7 +2,7 @@ import { SelectOption } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmLabelsInput } from '../AcmLabelsInput/AcmLabelsInput'
-import { AcmMultiSelect } from '../AcmSelect/AcmMultiSelect'
+import { AcmMultiSelect } from '../AcmMultiSelect/AcmMultiSelect'
 import { AcmSelect } from '../AcmSelect/AcmSelect'
 import { AcmTextArea } from '../AcmTextArea/AcmTextArea'
 import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
@@ -17,8 +17,8 @@ export const Form = () => {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [description, setDescription] = useState<string>()
-    const [favoriteColor, setFavoriteColor] = useState<string>()
-    const [otherColors, setOtherColors] = useState<string[]>([])
+    const [selectValue, setSelectValue] = useState<string>()
+    const [multiselectValue, setMultiselectValue] = useState<string[]>([])
     const [labels, setLabels] = useState<string[]>()
 
     return (
@@ -57,9 +57,8 @@ export const Form = () => {
             />
             <AcmTextArea
                 id="textArea"
-                label="Description"
-                placeholder="Enter description"
-                labelHelpTitle="Help Title"
+                label="Text Area"
+                placeholder="Enter your multi-line input"
                 labelHelp="This is the help for the text area"
                 value={description}
                 onChange={setDescription}
@@ -67,12 +66,12 @@ export const Form = () => {
             />
 
             <AcmSelect
-                id="colorSelect"
-                label="Favorite Color"
-                placeholder="Select your favorite color"
-                labelHelp="This is the help for the control"
-                value={favoriteColor}
-                onChange={setFavoriteColor}
+                id="acm-select"
+                label="Select"
+                placeholder="Select your option"
+                labelHelp="AcmSelect allows the selection of one option"
+                value={selectValue}
+                onChange={setSelectValue}
                 isRequired
             >
                 <SelectOption value="red">
@@ -87,52 +86,23 @@ export const Form = () => {
             </AcmSelect>
 
             <AcmMultiSelect
-                id="otherColorsSelect"
-                label="Other Colors"
-                placeholder="Select your other colors"
-                labelHelp="This is the help for the control"
-                value={otherColors}
-                onChange={setOtherColors}
-                isRequired
+                id="acm-multiselect"
+                label="Multi-Select"
+                placeholder="Select your options"
+                labelHelp="AcmMultiSelect allows the selection of multiple options"
+                value={multiselectValue}
+                onChange={setMultiselectValue}
             >
-                <SelectOption value="red">
-                    <span style={{ color: 'red' }}>Red</span>
+                <SelectOption key="option-1" value="option-1">
+                    Option 1
                 </SelectOption>
-                <SelectOption value="green">
-                    <span style={{ color: 'green' }}>Green</span>
+                <SelectOption key="option-2" value="option-2">
+                    Option 2
                 </SelectOption>
-                <SelectOption value="blue">
-                    <span style={{ color: 'blue' }}>Blue</span>
+                <SelectOption key="option-3" value="option-3">
+                    Option 3
                 </SelectOption>
             </AcmMultiSelect>
-
-            {/* <AcmSelect
-                variant={SelectVariant.checkbox}
-                id="selectInput"
-                label="Other colors"
-                selections={selects}
-                onSelect={(event, selection) => {
-                    if (typeof selection === 'string') {
-                        if (selects.includes(selection)) {
-                            setSelects((prevState) => prevState.filter((item) => item !== selection))
-                        } else {
-                            setSelects((prevState) => [...prevState, selection])
-                        }
-                    }
-                }}
-                placeholderText="Select your color"
-                isRequired
-            >
-                <SelectOption key={'red'} value="red">
-                    Red
-                </SelectOption>
-                <SelectOption key={'green'} value="green">
-                    Green
-                </SelectOption>
-                <SelectOption key={'blue'} value="blue">
-                    Blue
-                </SelectOption>
-            </AcmSelect> */}
 
             <AcmLabelsInput
                 id="labelsInput"

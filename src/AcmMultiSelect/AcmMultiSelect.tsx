@@ -74,10 +74,10 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
                     ?.filter((item) => item !== undefined)
                     .map((node: ReactNode, index) => {
                         if (index === 0) {
-                            return node
+                            return <Fragment key={`${index}`}>{node}</Fragment>
                         } else {
                             return (
-                                <Fragment>
+                                <Fragment key={`${index}`}>
                                     <span>, </span>
                                     {node}
                                 </Fragment>
