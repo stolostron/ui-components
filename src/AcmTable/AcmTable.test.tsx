@@ -119,7 +119,6 @@ describe('AcmTable', () => {
         expect(bulkDeleteAction).toHaveBeenCalled()
 
         // // select single
-        userEvent.click(getByLabelText('Select all rows'))
         expect(queryByText('Delete items')).toBeNull()
         expect(getAllByRole('checkbox')[1]).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
