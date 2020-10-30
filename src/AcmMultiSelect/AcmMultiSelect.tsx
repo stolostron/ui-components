@@ -40,22 +40,26 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
 
     useLayoutEffect(() => {
         let error: string | undefined = undefined
-        if (isRequired) {
-            if (props.value === undefined) {
-                error = 'Required'
-            } else if (props.value.length === 0) {
-                error = 'Required'
+        /* istanbul ignore else */
+        if (props.hidden !== true) {
+            if (isRequired) {
+                if (props.value === undefined) {
+                    error = 'Required'
+                } else if (props.value.length === 0) {
+                    error = 'Required'
+                }
             }
-        }
-        if (!error && validation) {
-            error = validation(props.value)
+
+            if (!error && validation) {
+                error = validation(props.value)
+            }
         }
         setError(error)
         if (formContext.validate) {
             setValidated(error ? 'error' : undefined)
         }
         formContext.setError(props.id, error)
-    }, [props.value])
+    }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
         setValidated(error ? 'error' : undefined)

@@ -20,20 +20,23 @@ export function AcmTextArea(props: AcmTextAreaProps) {
 
     useLayoutEffect(() => {
         let error: string | undefined = undefined
-        if (props.isRequired) {
-            if (!props.value || (typeof props.value === 'string' && props.value.trim() === '')) {
-                error = 'Required'
+        /* istanbul ignore else */
+        if (props.hidden !== true) {
+            if (props.isRequired) {
+                if (!props.value || (typeof props.value === 'string' && props.value.trim() === '')) {
+                    error = 'Required'
+                }
             }
-        }
-        if (!error && validation) {
-            error = validation(props.value as string)
+            if (!error && validation) {
+                error = validation(props.value as string)
+            }
         }
         setError(error)
         if (formContext.validate) {
             setValidated(error ? 'error' : undefined)
         }
         formContext.setError(props.id, error)
-    }, [props.value])
+    }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
         setValidated(error ? 'error' : undefined)
