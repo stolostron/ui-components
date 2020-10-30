@@ -10,10 +10,15 @@ export default {
 
 export const LabelsInput = () => {
     const [value, setValue] = useState<string[]>([])
-
     return (
         <AcmForm>
-            <AcmLabelsInput label="Label" id="123" value={value} onChange={setValue} buttonLabel="Add label" />
+            <AcmLabelsInput
+                label="Labels Input"
+                id="labels-input"
+                value={value}
+                onChange={setValue}
+                buttonLabel="Add label"
+            />
         </AcmForm>
     )
 }

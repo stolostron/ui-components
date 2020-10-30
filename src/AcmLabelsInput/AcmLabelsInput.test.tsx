@@ -29,37 +29,56 @@ describe('AcmLabelsInput', () => {
         const { queryByText, getByTestId } = render(<LabelsInput />)
         const labels = ['foo=bar', 'coffee=bean']
 
+        userEvent.click(getByTestId('label-input-button'))
+
         // add labels
         labels.forEach((label) => {
-            userEvent.click(getByTestId('label-input-button'))
             userEvent.type(getByTestId('label-input'), `${label}{enter}`)
             expect(queryByText(label)).toBeVisible()
             expect(queryByText(label)).toBeInstanceOf(HTMLSpanElement)
         })
+
         // delete labels
         labels.forEach((label) => {
             userEvent.click(getByTestId(`remove-${label}`))
             expect(queryByText(label)).toBeNull()
         })
     })
+    test('can add labels with comma', async () => {
+        const { queryByText, getByTestId } = render(<LabelsInput />)
+        userEvent.click(getByTestId('label-input-button'))
+        userEvent.type(getByTestId('label-input'), 'label1,')
+        expect(queryByText('label1')).toBeVisible()
+        expect(queryByText('label1')).toBeInstanceOf(HTMLSpanElement)
+    })
+    test('can add labels with space', async () => {
+        const { queryByText, getByTestId } = render(<LabelsInput />)
+        userEvent.click(getByTestId('label-input-button'))
+        userEvent.type(getByTestId('label-input'), 'label1 ')
+        expect(queryByText('label1')).toBeVisible()
+        expect(queryByText('label1')).toBeInstanceOf(HTMLSpanElement)
+    })
     test('does not allow duplicate labels', async () => {
         const { queryByText, queryAllByText, getByTestId } = render(<LabelsInput />)
         const labels = ['foo=bar', 'foo=bar']
 
+        userEvent.click(getByTestId('label-input-button'))
+
         labels.forEach((label) => {
-            userEvent.click(getByTestId('label-input-button'))
             userEvent.type(getByTestId('label-input'), `${label}{enter}`)
             expect(queryByText(label)).toBeVisible()
             expect(queryByText(label)).toBeInstanceOf(HTMLSpanElement)
         })
         expect(queryAllByText('foo=bar')).toHaveLength(1)
     })
-    test('input can be exited by escape and enter', async () => {
+    test('input can be exited by escape', async () => {
         const { queryByText, getByTestId } = render(<LabelsInput />)
-        const commands = ['{esc}', '{enter}']
+        const commands = ['{esc}']
+
+        userEvent.click(getByTestId('label-input-button'))
+
         // verify escape and enter exit input behavior
         commands.forEach((cmd) => {
-            userEvent.click(getByTestId('label-input-button'))
             userEvent.type(getByTestId('label-input'), cmd)
             expect(queryByText('label=null')).toBeNull()
         })
