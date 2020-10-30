@@ -69,6 +69,7 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
                 React.Children.map(props.children, (child) => {
                     const option = (child as unknown) as SelectOption
                     if (value.includes(option.props.value as string)) return option.props.children
+                    /* istanbul ignore next */
                     return undefined
                 })
                     ?.filter((item) => item !== undefined)

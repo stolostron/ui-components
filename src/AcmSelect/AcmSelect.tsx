@@ -49,8 +49,9 @@ export function AcmSelect(props: AcmSelectProps) {
             error = validation(props.value)
         }
         setError(error)
+        /* istanbul ignore next */
         if (formContext.validate) {
-            setValidated(/* istanbul ignore if */ error ? 'error' : undefined)
+            setValidated(error ? 'error' : undefined)
         }
         formContext.setError(props.id, error)
     }, [props.value])
