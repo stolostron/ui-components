@@ -85,7 +85,10 @@ describe('AcmTable', () => {
                     {
                         id: 'delete',
                         title: 'Delete items',
-                        click: bulkDeleteAction,
+                        click: (items: IExampleData[]) => {
+                            setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
+                            bulkDeleteAction()
+                        },
                     },
                 ]}
                 extraToolbarControls={
@@ -124,6 +127,15 @@ describe('AcmTable', () => {
         expect(queryByText('Delete items')).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
         expect(queryByText('Delete items')).toBeNull()
+    })
+    test('can support table row actions', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Delete item')).toBeVisible()
+        userEvent.click(getByText('Delete item'))
+        expect(deleteAction).toHaveBeenCalled()
     })
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)

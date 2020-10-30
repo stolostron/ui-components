@@ -100,6 +100,7 @@ export function AcmTable<T>(props: {
         Object.keys(selected)
             .filter((key) => props.items.find((item) => keyFn(item) === key))
             .forEach((key) => {
+                /* istanbul ignore next */
                 newSelected[key] = selected[key]
             })
         setSelected(newSelected)
