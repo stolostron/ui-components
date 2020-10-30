@@ -97,10 +97,10 @@ export function AcmTable<T>(props: {
 
     useLayoutEffect(() => {
         const newSelected: { [uid: string]: boolean } = {}
+        /* istanbul ignore next */
         Object.keys(selected)
             .filter((key) => props.items.find((item) => keyFn(item) === key))
             .forEach((key) => {
-                /* istanbul ignore next */
                 newSelected[key] = selected[key]
             })
         setSelected(newSelected)

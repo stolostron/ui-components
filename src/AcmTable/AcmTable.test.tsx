@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { axe } from 'jest-axe'
+import React, { useState } from 'react'
 import { AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
@@ -118,15 +118,21 @@ describe('AcmTable', () => {
         expect(queryByText('Delete items')).toBeVisible()
         userEvent.click(getByText('Delete items'))
         expect(bulkDeleteAction).toHaveBeenCalled()
+        userEvent.click(getByLabelText('Select all rows'))
+        expect(queryByText('Delete items')).toBeNull()
     })
     test('can support bulk table actions with single selection', () => {
-        const { queryByText, getAllByRole } = render(<Table />)
+        const { queryByText, getAllByRole, getByLabelText } = render(<Table />)
         expect(queryByText('Delete items')).toBeNull()
         expect(getAllByRole('checkbox')[1]).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
         expect(queryByText('Delete items')).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
         expect(queryByText('Delete items')).toBeNull()
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(queryByText('Delete items')).toBeVisible()
+        userEvent.click(getByLabelText('Select all rows'))
+        expect(queryByText('Delete items')).toBeVisible()
     })
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
