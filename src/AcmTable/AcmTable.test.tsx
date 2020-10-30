@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { axe } from 'jest-axe'
+import React, { useState } from 'react'
 import { AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
@@ -85,7 +85,10 @@ describe('AcmTable', () => {
                     {
                         id: 'delete',
                         title: 'Delete items',
-                        click: bulkDeleteAction,
+                        click: (items: IExampleData[]) => {
+                            setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
+                            bulkDeleteAction()
+                        },
                     },
                 ]}
                 extraToolbarControls={
@@ -109,24 +112,37 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Create address'))
         expect(createAction).toHaveBeenCalled()
     })
-    test('can support bulk table actions', () => {
-        const { getByLabelText, queryByText, getByText, getAllByRole } = render(<Table />)
-
-        // select all
+    test('can support bulk table actions with select all', () => {
+        const { getByLabelText, queryByText, getByText } = render(<Table />)
         expect(getByLabelText('Select all rows')).toBeVisible()
         userEvent.click(getByLabelText('Select all rows'))
         expect(queryByText('Delete items')).toBeVisible()
         userEvent.click(getByText('Delete items'))
         expect(bulkDeleteAction).toHaveBeenCalled()
-
-        // // select single
         userEvent.click(getByLabelText('Select all rows'))
+        expect(queryByText('Delete items')).toBeNull()
+    })
+    test('can support bulk table actions with single selection', () => {
+        const { queryByText, getAllByRole, getByLabelText } = render(<Table />)
         expect(queryByText('Delete items')).toBeNull()
         expect(getAllByRole('checkbox')[1]).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
         expect(queryByText('Delete items')).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
         expect(queryByText('Delete items')).toBeNull()
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(queryByText('Delete items')).toBeVisible()
+        userEvent.click(getByLabelText('Select all rows'))
+        expect(queryByText('Delete items')).toBeVisible()
+    })
+    test('can support table row actions', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Delete item')).toBeVisible()
+        userEvent.click(getByText('Delete item'))
+        expect(deleteAction).toHaveBeenCalled()
     })
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)

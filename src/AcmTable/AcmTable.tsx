@@ -98,6 +98,17 @@ export function AcmTable<T>(props: {
     }, [columns])
 
     useLayoutEffect(() => {
+        const newSelected: { [uid: string]: boolean } = {}
+        /* istanbul ignore next */
+        Object.keys(selected)
+            .filter((key) => props.items.find((item) => keyFn(item) === key))
+            .forEach((key) => {
+                newSelected[key] = selected[key]
+            })
+        setSelected(newSelected)
+    }, [items])
+
+    useLayoutEffect(() => {
         setSearchItems(
             items.map((item) => {
                 const searchItem: ISearchItem<T> = { item: item }
