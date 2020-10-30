@@ -6,7 +6,10 @@ import { AcmButton } from './AcmButton'
 const meta: Meta = {
     title: 'Button',
     component: AcmButton,
+    argTypes: {
+        isDisabled: { control: 'boolean' },
+    },
 }
 export default meta
 
-export const Button = () => <AcmButton>Button</AcmButton>
+export const Button = (args) => <AcmButton {...args}>Button</AcmButton>
