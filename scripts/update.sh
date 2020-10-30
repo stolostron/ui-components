@@ -7,7 +7,7 @@ if [ "$GITHUB_TOKEN" = "" ]; then
     exit 1
 fi
 
-PACKAGE_NAME=`cat package.json | jq -r .name`
+PACKAGE_NAME=`cat package.json | jq -r .name | cut -c 2-`
 
 git remote remove origin
 git remote add origin https://${GITHUB_TOKEN}@github.com/${PACKAGE_NAME}.git > /dev/null 2>&1
