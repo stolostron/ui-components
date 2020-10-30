@@ -22,6 +22,7 @@ import {
 import Fuse from 'fuse.js'
 import get from 'get-value'
 import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import { AcmTableEmptyState, AcmTableEmptyStateProps } from './AcmTableEmptyState'
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
@@ -77,6 +78,7 @@ export function AcmTable<T>(props: {
     rowActions: IAcmRowAction<T>[]
     bulkActions: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
+    emptyState: AcmTableEmptyStateProps
 }) {
     const { items, columns, keyFn } = props
     const [hasSearch, setHasSearch] = useState(true)
@@ -327,11 +329,19 @@ export function AcmTable<T>(props: {
                 <TableHeader />
                 <TableBody />
             </Table>
-
-            <Split>
-                <SplitItem isFilled>
-                    <Toolbar>
-                        {/* <ToolbarContent>
+            {console.log('rows', rows)}
+            {rows.length === 0 && (
+                <AcmTableEmptyState
+                    title={props.emptyState.title}
+                    message={props.emptyState.message}
+                    action={props.emptyState.action}
+                />
+            )}
+            {rows.length > 0 && (
+                <Split>
+                    <SplitItem isFilled>
+                        <Toolbar>
+                            {/* <ToolbarContent>
                             <ToolbarItem>
                                 <ToggleGroup>
                                     <ToggleGroupItem key={0} buttonId="first" isSelected={true}>
@@ -343,24 +353,25 @@ export function AcmTable<T>(props: {
                                 </ToggleGroup>
                             </ToolbarItem>
                         </ToolbarContent> */}
-                    </Toolbar>
-                </SplitItem>
-                <SplitItem>
-                    <Pagination
-                        hidden={filtered.length < perPage}
-                        itemCount={filtered.length}
-                        perPage={perPage}
-                        page={page}
-                        variant={PaginationVariant.bottom}
-                        onSetPage={(_event, page) => {
-                            setPage(page)
-                        }}
-                        onPerPageSelect={(_event, perPage) => {
-                            setPerPage(perPage)
-                        }}
-                    ></Pagination>
-                </SplitItem>
-            </Split>
+                        </Toolbar>
+                    </SplitItem>
+                    <SplitItem>
+                        <Pagination
+                            hidden={filtered.length < perPage}
+                            itemCount={filtered.length}
+                            perPage={perPage}
+                            page={page}
+                            variant={PaginationVariant.bottom}
+                            onSetPage={(_event, page) => {
+                                setPage(page)
+                            }}
+                            onPerPageSelect={(_event, perPage) => {
+                                setPerPage(perPage)
+                            }}
+                        ></Pagination>
+                    </SplitItem>
+                </Split>
+            )}
         </Fragment>
     )
 }
