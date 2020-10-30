@@ -94,6 +94,7 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
+                emptyState={{ title: 'Empty state title', message: 'Empty state message' }}
             />
         )
     }
@@ -185,6 +186,13 @@ describe('AcmTable', () => {
         expect(getByLabelText('Go to next page')).toBeVisible()
         userEvent.click(getByLabelText('Go to next page'))
         expect(getByLabelText('Current page')).toHaveValue(2)
+    })
+    test('should show the empty state when zero results', () => {
+        const { getByPlaceholderText, queryByText } = render(<Table />)
+        expect(queryByText('Empty state title')).toBeNull()
+        expect(getByPlaceholderText('Search')).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText('Search'), 'NOSEARCHRESULTS')
+        expect(queryByText('Empty state title')).toBeVisible()
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
