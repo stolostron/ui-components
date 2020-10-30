@@ -108,18 +108,16 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Create address'))
         expect(createAction).toHaveBeenCalled()
     })
-    test('can support bulk table actions', () => {
-        const { getByLabelText, queryByText, getByText, getAllByRole } = render(<Table />)
-
-        // select all
+    test('can support bulk table actions with select all', () => {
+        const { getByLabelText, queryByText, getByText } = render(<Table />)
         expect(getByLabelText('Select all rows')).toBeVisible()
         userEvent.click(getByLabelText('Select all rows'))
         expect(queryByText('Delete items')).toBeVisible()
         userEvent.click(getByText('Delete items'))
         expect(bulkDeleteAction).toHaveBeenCalled()
-
-        // // select single
-        userEvent.click(getByLabelText('Select all rows'))
+    })
+    test('can support bulk table actions with single selection', () => {
+        const { queryByText, getAllByRole } = render(<Table />)
         expect(queryByText('Delete items')).toBeNull()
         expect(getAllByRole('checkbox')[1]).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
