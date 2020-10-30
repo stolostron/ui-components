@@ -96,6 +96,7 @@ export function Table() {
                     <ToggleGroupItem text="View 2" />
                 </ToggleGroup>
             }
+            emptyState={{ title: 'No items found', message: 'Empty state message here' }}
         />
     )
 }
