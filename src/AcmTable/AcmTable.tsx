@@ -329,7 +329,6 @@ export function AcmTable<T>(props: {
                 <TableHeader />
                 <TableBody />
             </Table>
-            {console.log('rows', rows)}
             {rows.length === 0 && (
                 <AcmTableEmptyState
                     title={props.emptyState.title}
