@@ -7,49 +7,21 @@ import { AlertVariant } from '@patternfly/react-core'
 export default {
     title: 'Alert',
     component: AcmAlert,
+    argTypes: {
+        isInline: { control: 'boolean' },
+        title: { type: 'string' },
+        subtitle: { type: 'string' },
+        variant: {
+            control: { type: 'select', options: Object.values(AlertVariant) },
+        },
+    },
 }
 
-const alerts = {
-    default: 'Default alert title',
-    info: 'Info alert title',
-    success: 'Success alert title',
-    warning: 'Warning alert title',
-    danger: 'Danger alert title',
-}
-
-export const Alerts = () => {
+export const Alerts = (args) => {
     return (
         <AcmPageCard>
-            {Object.keys(alerts).map((key) => {
-                return (
-                    <AcmAlert
-                        key={key}
-                        variant={AlertVariant[key]}
-                        title={alerts[key]}
-                        style={{ marginBottom: '12px' }}
-                        subtitle={`${alerts[key]} description`}
-                    />
-                )
-            })}
+            <AcmAlert variant={args.variant} isInline={args.isInline} title={args.title} subtitle={args.subtitle} />
         </AcmPageCard>
     )
 }
-
-export const InlineAlerts = () => {
-    return (
-        <AcmPageCard>
-            {Object.keys(alerts).map((key) => {
-                return (
-                    <AcmAlert
-                        isInline
-                        key={key}
-                        variant={AlertVariant[key]}
-                        title={alerts[key]}
-                        style={{ marginBottom: '12px' }}
-                        subtitle={`${alerts[key]} description`}
-                    />
-                )
-            })}
-        </AcmPageCard>
-    )
-}
+Alerts.args = { title: 'Alert title', subtitle: 'Alert subtitle' }
