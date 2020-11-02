@@ -3,6 +3,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React, { useState } from 'react'
+import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 import { AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
@@ -97,7 +98,7 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
-                emptyState={{ title: 'Empty state title', message: 'Empty state message' }}
+                emptyState={<AcmEmptyState title="Empty state title" />}
             />
         )
     }
@@ -119,8 +120,6 @@ describe('AcmTable', () => {
         expect(queryByText('Delete items')).toBeVisible()
         userEvent.click(getByText('Delete items'))
         expect(bulkDeleteAction).toHaveBeenCalled()
-        userEvent.click(getByLabelText('Select all rows'))
-        expect(queryByText('Delete items')).toBeNull()
     })
     test('can support bulk table actions with single selection', () => {
         const { queryByText, getAllByRole, getByLabelText } = render(<Table />)
