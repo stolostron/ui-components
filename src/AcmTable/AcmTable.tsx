@@ -22,7 +22,6 @@ import {
 import Fuse from 'fuse.js'
 import get from 'get-value'
 import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
-import { AcmTableEmptyState, AcmTableEmptyStateProps } from './AcmTableEmptyState'
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
@@ -78,7 +77,7 @@ export function AcmTable<T>(props: {
     rowActions: IAcmRowAction<T>[]
     bulkActions: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
-    emptyState: AcmTableEmptyStateProps
+    emptyState?: ReactNode
 }) {
     const { items, columns, keyFn } = props
     const [hasSearch, setHasSearch] = useState(true)
@@ -224,6 +223,7 @@ export function AcmTable<T>(props: {
                 }
             }
             const newSelected: { [uid: string]: boolean } = {}
+            /* istanbul ignore else */
             if (!allSelected) {
                 for (const item of filtered) {
                     newSelected[keyFn(item)] = true
@@ -319,68 +319,52 @@ export function AcmTable<T>(props: {
                     {props.extraToolbarControls}
                 </ToolbarContent>
             </Toolbar>
-            <Table
-                cells={columns.map((column) => {
-                    return {
-                        title: column.header,
-                        transforms: column.sort ? [sortable] : undefined,
-                    }
-                })}
-                rows={rows}
-                actions={actions}
-                canSelectAll={true}
-                aria-label="Simple Table"
-                sortBy={sort}
-                onSort={(_event, index, direction) => {
-                    setSort({ index, direction })
-                }}
-                onSelect={onSelect}
-                variant={TableVariant.compact}
-            >
-                <TableHeader />
-                <TableBody />
-            </Table>
-            {rows.length === 0 && (
-                <AcmTableEmptyState
-                    title={props.emptyState.title}
-                    message={props.emptyState.message}
-                    action={props.emptyState.action}
-                />
-            )}
-            {rows.length > 0 && (
-                <Split>
-                    <SplitItem isFilled>
-                        <Toolbar>
-                            {/* <ToolbarContent>
-                            <ToolbarItem>
-                                <ToggleGroup>
-                                    <ToggleGroupItem key={0} buttonId="first" isSelected={true}>
-                                        Compact
-                                    </ToggleGroupItem>
-                                    <ToggleGroupItem key={0} buttonId="first" isSelected={false}>
-                                        Compact
-                                    </ToggleGroupItem>
-                                </ToggleGroup>
-                            </ToolbarItem>
-                        </ToolbarContent> */}
-                        </Toolbar>
-                    </SplitItem>
-                    <SplitItem>
-                        <Pagination
-                            hidden={filtered.length < perPage}
-                            itemCount={filtered.length}
-                            perPage={perPage}
-                            page={page}
-                            variant={PaginationVariant.bottom}
-                            onSetPage={(_event, page) => {
-                                setPage(page)
-                            }}
-                            onPerPageSelect={(_event, perPage) => {
-                                setPerPage(perPage)
-                            }}
-                        ></Pagination>
-                    </SplitItem>
-                </Split>
+            {rows.length === 0 ? (
+                <Fragment>{props.emptyState}</Fragment>
+            ) : (
+                <Fragment>
+                    <Table
+                        cells={columns.map((column) => {
+                            return {
+                                title: column.header,
+                                transforms: column.sort ? [sortable] : undefined,
+                            }
+                        })}
+                        rows={rows}
+                        actions={actions}
+                        canSelectAll={true}
+                        aria-label="Simple Table"
+                        sortBy={sort}
+                        onSort={(_event, index, direction) => {
+                            setSort({ index, direction })
+                        }}
+                        onSelect={onSelect}
+                        variant={TableVariant.compact}
+                    >
+                        <TableHeader />
+                        <TableBody />
+                    </Table>
+                    <Split>
+                        <SplitItem isFilled></SplitItem>
+                        <SplitItem>
+                            {filtered.length > perPage && (
+                                <Pagination
+                                    hidden={filtered.length < perPage}
+                                    itemCount={filtered.length}
+                                    perPage={perPage}
+                                    page={page}
+                                    variant={PaginationVariant.bottom}
+                                    onSetPage={(_event, page) => {
+                                        setPage(page)
+                                    }}
+                                    onPerPageSelect={(_event, perPage) => {
+                                        setPerPage(perPage)
+                                    }}
+                                ></Pagination>
+                            )}
+                        </SplitItem>
+                    </Split>
+                </Fragment>
             )}
         </Fragment>
     )

@@ -83,6 +83,7 @@ describe('AcmLabelsInput', () => {
             expect(queryByText('label=null')).toBeNull()
         })
     })
+
     test('has zero accessibility defects', async () => {
         const { getByTestId, container } = render(<LabelsInput />)
         expect(await axe(container)).toHaveNoViolations()

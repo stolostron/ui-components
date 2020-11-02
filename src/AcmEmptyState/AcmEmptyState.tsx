@@ -1,43 +1,17 @@
-import React from 'react'
-import {
-    Button,
-    EmptyState,
-    EmptyStateBody,
-    EmptyStateVariant,
-    Split,
-    SplitItem,
-    Title,
-    Toolbar,
-    ToolbarContent,
-    ToolbarItem,
-} from '@patternfly/react-core'
+import { EmptyState, EmptyStateBody, EmptyStatePrimary, EmptyStateVariant, Title } from '@patternfly/react-core'
+import React, { ReactNode } from 'react'
+import emptyPagePng from '../assets/EmptyPageIcon.png'
 
-export function AcmEmptyState(props: { title: string; message: string; action?: string }) {
+export function AcmEmptyState(props: { title: string; message?: string; action?: ReactNode; showIcon?: boolean }) {
     return (
-        <EmptyState variant={EmptyStateVariant.xl}>
-            <Title size="4xl" headingLevel="h5">
+        <EmptyState variant={EmptyStateVariant.large}>
+            {props.showIcon !== false && <img src={emptyPagePng} style={{ width: '50%' }} />}
+            <Title headingLevel="h4" size="lg">
                 {props.title}
             </Title>
             <EmptyStateBody>{props.message}</EmptyStateBody>
-            <EmptyStateBody>
-                {props.action ? (
-                    <Split>
-                        <SplitItem isFilled></SplitItem>
-                        <SplitItem>
-                            <Toolbar>
-                                <ToolbarContent>
-                                    <ToolbarItem>
-                                        <Button>{props.action}</Button>
-                                    </ToolbarItem>
-                                </ToolbarContent>
-                            </Toolbar>
-                        </SplitItem>
-                        <SplitItem isFilled></SplitItem>
-                    </Split>
-                ) : (
-                    <></>
-                )}
-            </EmptyStateBody>
+            <EmptyStatePrimary>{props.action}</EmptyStatePrimary>
+            {/* <EmptyStateSecondaryActions>{props.secondaryActions}</EmptyStateSecondaryActions> */}
         </EmptyState>
     )
 }
