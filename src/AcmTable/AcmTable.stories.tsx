@@ -1,6 +1,7 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
+import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 import { AcmTable } from '../AcmTable/AcmTable'
 
 interface IExampleData {
@@ -96,7 +97,7 @@ export function Table() {
                     <ToggleGroupItem text="View 2" />
                 </ToggleGroup>
             }
-            emptyState={{ title: 'No items found', message: 'Empty state message here' }}
+            emptyState={<AcmEmptyState title="No filtered results found" showIcon={true} />}
         />
     )
 }

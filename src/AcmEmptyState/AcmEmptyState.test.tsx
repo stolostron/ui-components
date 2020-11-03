@@ -9,7 +9,7 @@ describe('AcmEmptyState', () => {
             <AcmEmptyState title="Empty state title" message="Empty state message" action="Empty state action" />
         )
         expect(getByText('Empty state title')).toBeInTheDocument()
-        expect(getByText('Empty state action')).toBeInstanceOf(HTMLButtonElement)
+        expect(getByText('Empty state action')).toBeInstanceOf(HTMLDivElement)
     })
     test('renders without action', () => {
         const { container } = render(<AcmEmptyState title="Empty state title" message="Empty state message" />)
