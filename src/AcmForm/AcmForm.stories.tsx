@@ -1,4 +1,4 @@
-import { SelectOption, Backdrop } from '@patternfly/react-core'
+import { SelectOption } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmLabelsInput } from '../AcmLabelsInput/AcmLabelsInput'
@@ -23,7 +23,6 @@ export const Form = () => {
 
     return (
         <AcmForm>
-            <Backdrop />
             <AcmTextInput
                 id="textInput"
                 label="Email"
