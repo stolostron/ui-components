@@ -1,6 +1,6 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
-import { AcmAlert } from './AcmAlert'
+import { AcmAlert, AcmAlertGroup } from './AcmAlert'
 import { AcmPageCard } from '../AcmPage/AcmPage'
 import { AlertVariant } from '@patternfly/react-core'
 
@@ -25,3 +25,15 @@ export const Alerts = (args) => {
     )
 }
 Alerts.args = { title: 'Alert title', subtitle: 'Alert subtitle' }
+
+export const AlertGroup = () => {
+    return (
+        <AcmPageCard>
+            <AcmAlertGroup>
+                {Object.values(AlertVariant).map((variant) => (
+                    <AcmAlert key={variant} variant={variant} title="Alert title" subtitle="Alert subtitle" />
+                ))}
+            </AcmAlertGroup>
+        </AcmPageCard>
+    )
+}
