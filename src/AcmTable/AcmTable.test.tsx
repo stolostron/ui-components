@@ -62,6 +62,7 @@ describe('AcmTable', () => {
                         sort: 'uid',
                         cell: 'uid',
                         search: 'uid',
+                        tooltip: 'Tooltip Example',
                     },
                 ]}
                 keyFn={(item: IExampleData) => item.uid.toString()}
