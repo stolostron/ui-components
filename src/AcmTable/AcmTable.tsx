@@ -347,21 +347,19 @@ export function AcmTable<T>(props: {
                     <Split>
                         <SplitItem isFilled></SplitItem>
                         <SplitItem>
-                            {filtered.length > perPage && (
-                                <Pagination
-                                    hidden={filtered.length < perPage}
-                                    itemCount={filtered.length}
-                                    perPage={perPage}
-                                    page={page}
-                                    variant={PaginationVariant.bottom}
-                                    onSetPage={(_event, page) => {
-                                        setPage(page)
-                                    }}
-                                    onPerPageSelect={(_event, perPage) => {
-                                        setPerPage(perPage)
-                                    }}
-                                ></Pagination>
-                            )}
+                            <Pagination
+                                hidden={filtered.length < perPage}
+                                itemCount={filtered.length}
+                                perPage={perPage}
+                                page={page}
+                                variant={PaginationVariant.bottom}
+                                onSetPage={(_event, page) => {
+                                    setPage(page)
+                                }}
+                                onPerPageSelect={(_event, perPage) => {
+                                    setPerPage(perPage)
+                                }}
+                            />
                         </SplitItem>
                     </Split>
                 </Fragment>
