@@ -5,8 +5,8 @@ import React, { Fragment, useState } from 'react'
 export function AcmLabelsInput(props: {
     id: string
     label: string
-    value: string[] | undefined
-    onChange: (labels: string[] | undefined) => void
+    value: Record<string, string> | undefined
+    onChange: (labels: Record<string, string> | undefined) => void
     buttonLabel: string
     hidden?: boolean
 }) {
@@ -15,24 +15,32 @@ export function AcmLabelsInput(props: {
 
     function addLabel(input: string) {
         /* istanbul ignore next */
-        const newlabels = props.value ?? []
-        const labels = input
+        const newlabels = input
             .split(',')
             .join(' ')
             .split(' ')
             .map((label) => label.trim())
             .filter((label) => label !== '')
-        for (const label of labels) {
-            if (!newlabels.includes(label)) {
-                newlabels.push(label)
-            }
-        }
+            .reduce(
+                (value, label) => {
+                    const parts = label.split('=')
+                    if (parts.length === 1) {
+                        value[parts[0]] = ''
+                    } else {
+                        value[parts[0]] = parts.slice(1).join('=')
+                    }
+                    return value
+                },
+                { ...props.value } as Record<string, string>
+            )
         props.onChange(newlabels)
     }
 
-    function removeLabel(label: string) {
+    function removeLabel(key: string) {
         /* istanbul ignore next */
-        props.onChange(props.value?.filter((l) => l !== label))
+        const newLabels: Record<string, string> = { ...props.value }
+        delete newLabels[key]
+        props.onChange(newLabels)
     }
 
     return (
@@ -50,17 +58,19 @@ export function AcmLabelsInput(props: {
                         minHeight: '36px',
                     }}
                 >
-                    {props.value?.map((label) => (
-                        <Label
-                            key={label}
-                            style={{ margin: 2 }}
-                            onClose={() => removeLabel(label)}
-                            variant="outline"
-                            closeBtnProps={{ id: `remove-${label}` }}
-                        >
-                            {label}
-                        </Label>
-                    ))}
+                    {props.value &&
+                        Object.keys(props.value).map((key) => (
+                            <Label
+                                key={key}
+                                style={{ margin: 2 }}
+                                onClose={() => removeLabel(key)}
+                                variant="outline"
+                                closeBtnProps={{ id: `remove-${key}` }}
+                            >
+                                {key}
+                                {props.value && props.value[key].trim() != '' && '=' + props.value[key]}
+                            </Label>
+                        ))}
                     {!showInput ? (
                         <Button
                             style={{

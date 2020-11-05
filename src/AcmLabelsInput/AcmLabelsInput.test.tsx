@@ -6,7 +6,7 @@ import { AcmLabelsInput } from './AcmLabelsInput'
 
 describe('AcmLabelsInput', () => {
     const LabelsInput = () => {
-        const [value, setValue] = useState<string[] | undefined>()
+        const [value, setValue] = useState<Record<string, string> | undefined>()
         return (
             <AcmLabelsInput
                 label="Label input"
@@ -40,7 +40,7 @@ describe('AcmLabelsInput', () => {
 
         // delete labels
         labels.forEach((label) => {
-            userEvent.click(getByTestId(`remove-${label}`))
+            userEvent.click(getByTestId(`remove-${label.split('=')[0]}`))
             expect(queryByText(label)).toBeNull()
         })
     })
@@ -97,7 +97,7 @@ describe('AcmLabelsInput', () => {
 
     test('allows an undefined value to be set', async () => {
         const UndefinedLabelsInput = () => {
-            const [value, setValue] = useState<string[] | undefined>(undefined)
+            const [value, setValue] = useState<Record<string, string> | undefined>(undefined)
             return (
                 <AcmLabelsInput
                     label="Label input"
