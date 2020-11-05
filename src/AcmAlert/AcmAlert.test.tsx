@@ -1,7 +1,8 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { AcmAlert } from './AcmAlert'
+import { AlertVariant } from '@patternfly/react-core'
+import { AcmAlert, AcmAlertGroup } from './AcmAlert'
 
 describe('AcmAlert', () => {
     test('renders with subtitle of type: string', () => {
@@ -29,5 +30,21 @@ describe('AcmAlert', () => {
     test('has zero accessibility defects', async () => {
         const { container } = render(<AcmAlert title="Acm Alert title" />)
         expect(await axe(container)).toHaveNoViolations()
+    })
+})
+
+describe('AcmAlertGroup', () => {
+    const AlertGroup = () => {
+        return (
+            <AcmAlertGroup>
+                {Object.values(AlertVariant).map((variant) => (
+                    <AcmAlert key={variant} variant={variant} title="Alert title" subtitle="Alert subtitle" />
+                ))}
+            </AcmAlertGroup>
+        )
+    }
+    test('renders', () => {
+        const { getByRole } = render(<AlertGroup />)
+        expect(getByRole('list')).toBeInTheDocument()
     })
 })
