@@ -9,10 +9,10 @@ import { ButtonVariant } from '@patternfly/react-core'
 describe('AcmModal', () => {
     const onSubmit = jest.fn()
     const onCancel = jest.fn()
-    const Component = () => {
+    const Component = (props: { open: boolean }) => {
         return (
             <AcmModal
-                isOpen={true}
+                isOpen={props.open}
                 title="Modal title"
                 actions={[
                     <AcmButton key="confirm" variant={ButtonVariant.primary} onClick={onSubmit}>
@@ -28,7 +28,7 @@ describe('AcmModal', () => {
         )
     }
     test('renders in an open state', () => {
-        const { getByRole, getByText } = render(<Component />)
+        const { getByRole, getByText } = render(<Component open={true} />)
         userEvent.click(getByText('Submit'))
         userEvent.click(getByText('Cancel'))
         expect(getByRole('dialog')).toBeInTheDocument()
@@ -36,11 +36,11 @@ describe('AcmModal', () => {
         expect(onCancel).toHaveBeenCalled()
     })
     test('does not render when in a closed state', () => {
-        const { container } = render(<Component />)
-        expect(container.querySelector('[role="dialog"]')).not.toBeInTheDocument()
+        const { queryByText } = render(<Component open={false} />)
+        expect(queryByText('Modal title')).toBeNull()
     })
     test('has zero accessibility defects', async () => {
-        const { container } = render(<Component />)
+        const { container } = render(<Component open={true} />)
         expect(await axe(container)).toHaveNoViolations()
     })
 })
