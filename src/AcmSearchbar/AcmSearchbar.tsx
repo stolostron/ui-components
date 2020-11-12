@@ -27,7 +27,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
     return (
         <div className={'searchbar-container'}>
             <ReactTags
-                placeholder={'Search items'}
+                placeholder={currentQuery === '' ? 'Search items' : ''}
                 tags={searchbarTags}
                 suggestions={
                     loadingSuggestions !== true ? suggestions : [{ id: 'loading', name: 'Loading...', disabled: true }]
@@ -100,12 +100,14 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                     setSearchbarTags([])
                 }}
                 noVerticalAlign
+                title={'Remove current search tags'}
             />
             <HelpIcon
                 id={'toggle-searchbar-help-button'}
                 className={'help-button'}
                 onClick={toggleInfoModal}
                 noVerticalAlign
+                title={'Open help modal'}
             />
             <SearchIcon className={'search-icon'} noVerticalAlign />
         </div>
