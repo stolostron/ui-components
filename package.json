@@ -11,7 +11,7 @@
     "scripts": {
         "build": "tsc && cp -R src/assets lib/assets",
         "build:storybook": "cross-env NODE_ENV=production build-storybook --quiet --no-dll",
-        "lint": "eslint --ext ts,tsx,js,jsx ./src --max-warnings=0",
+        "lint": "eslint --ext ts,tsx,js,jsx,css ./src --max-warnings=0",
         "lint:fix": "eslint --ext ts,tsx,js,jsx ./src --fix",
         "check": "prettier --check src",
         "check:fix": "prettier --write src",
@@ -26,7 +26,6 @@
     "dependencies": {
         "@patternfly/react-core": "^4.75.2",
         "@patternfly/react-table": "^4.19.5",
-        "@types/react-tag-autocomplete": "^5.12.0",
         "fuse.js": "^6.4.3",
         "get-value": "^3.0.1",
         "react-tag-autocomplete": "^5.12.0"
@@ -47,6 +46,7 @@
         "@types/jest-axe": "^3.5.1",
         "@types/react": "^16.9.56",
         "@types/react-dom": "^16.9.9",
+        "@types/react-tag-autocomplete": "^5.12.0",
         "@typescript-eslint/eslint-plugin": "^4.7.0",
         "@typescript-eslint/parser": "^4.7.0",
         "babel-jest": "^26.6.3",

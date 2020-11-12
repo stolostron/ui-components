@@ -3,7 +3,7 @@ import ReactTags, { Tag } from 'react-tag-autocomplete'
 import CloseIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
-import './testStyling.css'
+import './AcmSearchbar.css'
 import { convertStringToTags } from './helper'
 
 export type DropdownSuggestionsProps = Tag & {
