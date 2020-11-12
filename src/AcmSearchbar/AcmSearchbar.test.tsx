@@ -93,31 +93,31 @@ describe('AcmSearchbar', () => {
     })
 
     test('validates loading dropdown suggestions state', async () => {
-        const { getByText, getByPlaceholderText } = render(<LoadingSuggestionsSearchbar />)
-        userEvent.click(getByPlaceholderText('Search items'))
+        const { getByText, getByRole } = render(<LoadingSuggestionsSearchbar />)
+        userEvent.click(getByRole('combobox'))
         expect(getByText('Loading...')).toBeInTheDocument()
     })
 
     test('validates adding search keyword tags', async () => {
-        const { queryByText, getByPlaceholderText } = render(<BlankSearchbar />)
-        userEvent.click(getByPlaceholderText('Search items'))
-        userEvent.type(getByPlaceholderText('Search items'), 'keyword1 ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'keyword2 ') // space at end triggers the addition of the text as a tag
+        const { queryByText, getByRole } = render(<BlankSearchbar />)
+        userEvent.click(getByRole('combobox'))
+        userEvent.type(getByRole('combobox'), 'keyword1 ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'keyword2 ') // space at end triggers the addition of the text as a tag
         expect(queryByText('keyword1')).toBeInTheDocument()
         expect(queryByText('keyword2')).toBeInTheDocument()
     })
 
     test('validates adding search tags from dropdown', async () => {
-        const { queryByText, getByPlaceholderText } = render(<BlankSearchbar />)
-        userEvent.click(getByPlaceholderText('Search items'))
-        userEvent.type(getByPlaceholderText('Search items'), 'name ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'name1 ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'name ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'name2 ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'namespace ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'namespace1 ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'namespace ') // space at end triggers the addition of the text as a tag
-        userEvent.type(getByPlaceholderText('Search items'), 'namespace2 ') // space at end triggers the addition of the text as a tag
+        const { queryByText, getByRole } = render(<BlankSearchbar />)
+        userEvent.click(getByRole('combobox'))
+        userEvent.type(getByRole('combobox'), 'name ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'name1 ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'name ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'name2 ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'namespace ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'namespace1 ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'namespace ') // space at end triggers the addition of the text as a tag
+        userEvent.type(getByRole('combobox'), 'namespace2 ') // space at end triggers the addition of the text as a tag
         expect(queryByText('name:name1,name2')).toBeInTheDocument()
         expect(queryByText('namespace:namespace1,namespace2')).toBeInTheDocument()
     })
