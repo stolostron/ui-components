@@ -28,7 +28,7 @@
     right: 15px;
     margin-left: 0.5rem;
     padding: 0 0.75rem;
-    border-left: solid 1px var(--pf-global--BackgroundColor--200);
+    border-left: solid 1px var(--pf-global--BorderColor--300);
 }
 
 /*
@@ -146,7 +146,7 @@
     padding: 0;
     list-style: none;
     background: white;
-    border: 1px solid var(--pf-global--BackgroundColor--200);
+    border: 1px solid var(--pf-global--BorderColor--300);
     border-radius: 2px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     overflow-y: scroll;
@@ -168,7 +168,7 @@
     cursor: auto;
     padding: 0.5rem 0.75rem 0.5rem 0.5rem;
     letter-spacing: 0.05rem;
-    border-bottom: 1px solid var(--pf-global--BackgroundColor--200);
+    border-bottom: 1px solid var(--pf-global--BorderColor--300);
 }
 .react-tags__suggestions li.is-disabled:first-of-type {
     font-size: 0.6rem;
