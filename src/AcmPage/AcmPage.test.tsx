@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { AcmPage, AcmPageHeader, AcmPageCard } from './AcmPage'
+import { AcmPage, AcmPageHeader, AcmPageCard, AcmBreadcrumb } from './AcmPage'
 
 describe('AcmPage', () => {
     test('renders', () => {
@@ -35,6 +35,41 @@ describe('AcmPageCard', () => {
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<AcmPageCard>ACM card</AcmPageCard>)
+        expect(await axe(container)).toHaveNoViolations()
+    })
+})
+
+describe('AcmBreadcrumb', () => {
+    test('renders', () => {
+        const { getByText, container } = render(
+            <AcmBreadcrumb
+                breadcrumbs={[
+                    { text: 'First', to: '/first' },
+                    { text: 'Second', to: '/second' },
+                ]}
+            />
+        )
+        expect(getByText('First')).toBeInTheDocument()
+        expect(getByText('First')).toBeInstanceOf(HTMLAnchorElement)
+        expect(container.querySelector('[aria-current="page"]')).toContainHTML('Second') // verify last crumb is disabled
+    })
+    test('renders null when no breadcrumbs are provided', () => {
+        const { container } = render(<AcmBreadcrumb breadcrumbs={[]} />)
+        expect(container).toMatchInlineSnapshot('<div />')
+    })
+    test('should not disable a single breadcrumb', () => {
+        const { getByText } = render(<AcmBreadcrumb breadcrumbs={[{ text: 'First', to: '/first' }]} />)
+        expect(getByText('First')).not.toHaveAttribute('aria-current')
+    })
+    test('has zero accessibility defects', async () => {
+        const { container } = render(
+            <AcmBreadcrumb
+                breadcrumbs={[
+                    { text: 'First', to: '/foo' },
+                    { text: 'Second', to: '/foo' },
+                ]}
+            />
+        )
         expect(await axe(container)).toHaveNoViolations()
     })
 })
