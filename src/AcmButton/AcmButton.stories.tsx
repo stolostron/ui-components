@@ -2,7 +2,7 @@ import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { Meta } from '@storybook/react'
 import { AcmButton } from './AcmButton'
-import { ButtonVariant, Tooltip, Button } from '@patternfly/react-core'
+import { ButtonVariant, Button } from '@patternfly/react-core'
 
 const meta: Meta = {
     title: 'Button',
