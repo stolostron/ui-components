@@ -1,4 +1,5 @@
 import React from 'react'
+import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { AcmPage, AcmPageHeader, AcmPageCard, AcmBreadcrumb } from './AcmPage'
@@ -42,33 +43,45 @@ describe('AcmPageCard', () => {
 describe('AcmBreadcrumb', () => {
     test('renders', () => {
         const { getByText, container } = render(
-            <AcmBreadcrumb
-                breadcrumbs={[
-                    { text: 'First', to: '/first' },
-                    { text: 'Second', to: '/second' },
-                ]}
-            />
+            <MemoryRouter>
+                <AcmBreadcrumb
+                    breadcrumbs={[
+                        { text: 'First', to: '/first' },
+                        { text: 'Second', to: '/second' },
+                    ]}
+                />
+            </MemoryRouter>
         )
         expect(getByText('First')).toBeInTheDocument()
         expect(getByText('First')).toBeInstanceOf(HTMLAnchorElement)
         expect(container.querySelector('[aria-current="page"]')).toContainHTML('Second') // verify last crumb is disabled
     })
     test('renders null when no breadcrumbs are provided', () => {
-        const { container } = render(<AcmBreadcrumb breadcrumbs={[]} />)
+        const { container } = render(
+            <MemoryRouter>
+                <AcmBreadcrumb breadcrumbs={[]} />
+            </MemoryRouter>
+        )
         expect(container).toMatchInlineSnapshot('<div />')
     })
     test('should not disable a single breadcrumb', () => {
-        const { getByText } = render(<AcmBreadcrumb breadcrumbs={[{ text: 'First', to: '/first' }]} />)
+        const { getByText } = render(
+            <MemoryRouter>
+                <AcmBreadcrumb breadcrumbs={[{ text: 'First', to: '/first' }]} />
+            </MemoryRouter>
+        )
         expect(getByText('First')).not.toHaveAttribute('aria-current')
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(
-            <AcmBreadcrumb
-                breadcrumbs={[
-                    { text: 'First', to: '/foo' },
-                    { text: 'Second', to: '/foo' },
-                ]}
-            />
+            <MemoryRouter>
+                <AcmBreadcrumb
+                    breadcrumbs={[
+                        { text: 'First', to: '/foo' },
+                        { text: 'Second', to: '/foo' },
+                    ]}
+                />
+            </MemoryRouter>
         )
         expect(await axe(container)).toHaveNoViolations()
     })

@@ -10,6 +10,7 @@ import {
     BreadcrumbItem,
 } from '@patternfly/react-core'
 import React, { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 
 export function AcmPage(props: { children: ReactNode }) {
     return <Page style={{ height: '100vh' }}>{props.children}</Page>
@@ -42,12 +43,16 @@ export function AcmBreadcrumb(props: { breadcrumbs?: { text: string; to: string 
         return (
             <Breadcrumb>
                 {breadcrumbs.map((crumb, i) => (
-                    <BreadcrumbItem
-                        key={crumb.to}
-                        to={crumb.to}
-                        isActive={breadcrumbs.length > 1 && i === breadcrumbs.length - 1}
-                    >
-                        {crumb.text}
+                    <BreadcrumbItem key={crumb.to}>
+                        {breadcrumbs.length > 1 && i === breadcrumbs.length - 1 ? (
+                            <a aria-current="page" className="pf-c-breadcrumb__link pf-m-current">
+                                {crumb.text}
+                            </a>
+                        ) : (
+                            <Link to={crumb.to} className="pf-c-breadcrumb__link">
+                                {crumb.text}
+                            </Link>
+                        )}
                     </BreadcrumbItem>
                 ))}
             </Breadcrumb>
