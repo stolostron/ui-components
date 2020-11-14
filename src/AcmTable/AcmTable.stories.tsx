@@ -58,6 +58,7 @@ export function Table() {
                 },
                 {
                     header: 'UID',
+                    tooltip: 'Tooltip Example',
                     sort: 'uid',
                     cell: 'uid',
                     search: 'uid',

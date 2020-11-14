@@ -32,6 +32,8 @@ export interface IAcmTableColumn<T> {
     /** the header of the column */
     header: string
 
+    tooltip?: string
+
     /** enables sort either on field name of using sort function */
     sort?: SortFn<T> | string
 
@@ -327,6 +329,14 @@ export function AcmTable<T>(props: {
                         cells={columns.map((column) => {
                             return {
                                 title: column.header,
+                                header: column.tooltip
+                                    ? {
+                                          info: {
+                                              tooltip: column.tooltip,
+                                              tooltipProps: { isContentLeftAligned: true },
+                                          },
+                                      }
+                                    : {},
                                 transforms: column.sort ? [sortable] : undefined,
                             }
                         })}
@@ -338,7 +348,11 @@ export function AcmTable<T>(props: {
                         onSort={(_event, index, direction) => {
                             setSort({ index, direction })
                         }}
-                        onSelect={onSelect}
+                        onSelect={
+                            /* istanbul ignore next */ props.bulkActions && props.bulkActions.length
+                                ? onSelect
+                                : undefined
+                        }
                         variant={TableVariant.compact}
                     >
                         <TableHeader />
@@ -347,21 +361,26 @@ export function AcmTable<T>(props: {
                     <Split>
                         <SplitItem isFilled></SplitItem>
                         <SplitItem>
-                            {filtered.length > perPage && (
-                                <Pagination
-                                    hidden={filtered.length < perPage}
-                                    itemCount={filtered.length}
-                                    perPage={perPage}
-                                    page={page}
-                                    variant={PaginationVariant.bottom}
-                                    onSetPage={(_event, page) => {
-                                        setPage(page)
-                                    }}
-                                    onPerPageSelect={(_event, perPage) => {
-                                        setPerPage(perPage)
-                                    }}
-                                ></Pagination>
-                            )}
+                            {
+                                /* instanbul ignore else */
+                                filtered.length > perPage ? (
+                                    <Pagination
+                                        hidden={filtered.length < perPage}
+                                        itemCount={filtered.length}
+                                        perPage={perPage}
+                                        page={page}
+                                        variant={PaginationVariant.bottom}
+                                        onSetPage={(_event, page) => {
+                                            setPage(page)
+                                        }}
+                                        onPerPageSelect={(_event, perPage) => {
+                                            setPerPage(perPage)
+                                        }}
+                                    />
+                                ) : (
+                                    <span>&nbsp;</span>
+                                )
+                            }
                         </SplitItem>
                     </Split>
                 </Fragment>
