@@ -9,7 +9,7 @@
         "lib"
     ],
     "scripts": {
-        "build": "tsc && cp -R src/assets lib/assets",
+        "build": "tsc && cp -R src/assets lib/assets && copyfiles -u 1 src/**/*.css lib",
         "build:storybook": "cross-env NODE_ENV=production build-storybook --quiet --no-dll",
         "lint": "eslint --ext ts,tsx,js,jsx ./src --max-warnings=0",
         "lint:fix": "eslint --ext ts,tsx,js,jsx ./src --fix",
@@ -52,6 +52,7 @@
         "@typescript-eslint/parser": "^4.7.0",
         "babel-jest": "^26.6.3",
         "babel-loader": "^8.2.1",
+        "copyfiles": "^2.4.0",
         "core-js": "^3.7.0",
         "cross-env": "^7.0.2",
         "css-loader": "^5.0.1",
