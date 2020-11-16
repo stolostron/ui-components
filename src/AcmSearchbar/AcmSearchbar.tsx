@@ -1,12 +1,18 @@
+// @types/react-tag-autocomplete is not up-to-date with react-tag-autocomplete library
+// using the following line to override for time being
+declare module 'react-tag-autocomplete'
+
 import React, { useState } from 'react'
-import ReactTags, { Tag } from 'react-tag-autocomplete'
+import ReactTags from 'react-tag-autocomplete'
 import CloseIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
 import './AcmSearchbar.css'
 import { convertStringToTags } from './helper'
 
-export type DropdownSuggestionsProps = Tag & {
+export type DropdownSuggestionsProps = {
+    id: string | number
+    name: string
     kind?: 'filter' | 'value' | 'label'
     disabled?: boolean
 }
@@ -27,15 +33,15 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
     return (
         <div className={'searchbar-container'}>
             <ReactTags
-                placeholder={currentQuery === '' ? 'Search items' : ''}
+                placeholderText={currentQuery === '' ? 'Search items' : ''}
                 tags={searchbarTags}
                 suggestions={
                     loadingSuggestions !== true ? suggestions : [{ id: 'loading', name: 'Loading...', disabled: true }]
                 }
-                suggestionsFilter={(suggestion: Tag, query: string) => {
+                suggestionsFilter={(suggestion: DropdownSuggestionsProps, query: string) => {
                     return suggestion.name.includes(query)
                 }}
-                handleDelete={(idx: number) => {
+                onDelete={(idx: number) => {
                     // need to check if there are 2+ values @ tag[idx] - if there are we only delete the last one
                     const tagToDelete = searchbarTags[idx]
                     if (tagToDelete.name.includes(',')) {
@@ -49,7 +55,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                     currentQueryCallback(searchbarTags.map((tag) => tag.name).join(' '))
                     setSearchbarTags(searchbarTags)
                 }}
-                handleAddition={(tag: DropdownSuggestionsProps) => {
+                onAddition={(tag: DropdownSuggestionsProps) => {
                     if (tag.kind === 'filter') {
                         const newQueryString = `${currentQuery === '' ? '' : `${currentQuery} `}${tag.name}:`
                         setCurrentQuery(newQueryString)
@@ -87,8 +93,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                 autoresize={true}
                 minQueryLength={0}
                 allowNew={true}
-                delimiterChars={[' ', ':', ',']}
-                autofocus={false}
+                delimiters={[' ', ':', ',']}
                 maxSuggestionsLength={Number.MAX_SAFE_INTEGER}
             />
             <CloseIcon
