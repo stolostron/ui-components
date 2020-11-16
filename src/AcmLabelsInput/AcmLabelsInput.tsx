@@ -1,5 +1,4 @@
-import { Button, FormGroup, Label } from '@patternfly/react-core'
-import PlusCircleIcon from '@patternfly/react-icons/dist/js/icons/plus-circle-icon'
+import { FormGroup, Label } from '@patternfly/react-core'
 import React, { Fragment, useState } from 'react'
 
 export function AcmLabelsInput(props: {
@@ -47,6 +46,7 @@ export function AcmLabelsInput(props: {
         <Fragment>
             <FormGroup id={`${props.id}-label`} label={props.label} fieldId={props.id} hidden={props.hidden}>
                 <div
+                    id="label-input-button"
                     className="pf-c-form-control"
                     style={{
                         padding: 0,
@@ -56,6 +56,10 @@ export function AcmLabelsInput(props: {
                         flexWrap: 'wrap',
                         height: 'unset',
                         minHeight: '36px',
+                    }}
+                    onClick={() => {
+                        setInputValue(undefined)
+                        setShowInput(true)
                     }}
                 >
                     {props.value &&
@@ -72,25 +76,7 @@ export function AcmLabelsInput(props: {
                             </Label>
                         ))}
                     {!showInput ? (
-                        <Button
-                            style={{
-                                padding: 0,
-                                margin: 0,
-                                alignSelf: 'center',
-                                paddingLeft: '4px',
-                                paddingTop: '4px',
-                                marginLeft: '3px',
-                            }}
-                            id={`${props.id}-button`}
-                            variant="link"
-                            icon={<PlusCircleIcon style={{ color: '#888' }} />}
-                            onClick={() => {
-                                setInputValue(undefined)
-                                setShowInput(true)
-                            }}
-                            hidden={showInput}
-                            aria-label={props.buttonLabel}
-                        />
+                        <Fragment />
                     ) : (
                         <input
                             style={{ marginLeft: '2px', marginTop: '1px' }}
