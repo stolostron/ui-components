@@ -9,7 +9,7 @@
         "lib"
     ],
     "scripts": {
-        "build": "tsc && cp -R src/assets lib/assets",
+        "build": "tsc && cp -R src/assets lib/assets && copyfiles -u 1 src/**/*.css lib",
         "build:storybook": "cross-env NODE_ENV=production build-storybook --quiet --no-dll",
         "lint": "eslint --ext ts,tsx,js,jsx ./src --max-warnings=0",
         "lint:fix": "eslint --ext ts,tsx,js,jsx ./src --fix",
@@ -26,6 +26,7 @@
     "dependencies": {
         "@patternfly/react-core": "^4.75.2",
         "@patternfly/react-table": "^4.19.5",
+        "copyfiles": "^2.4.0",
         "fuse.js": "^6.4.3",
         "get-value": "^3.0.1",
         "react-router-dom": "^5.2.0",
