@@ -2,7 +2,7 @@ import { Skeleton, Split, Toolbar, ToolbarContent, ToolbarItem } from '@patternf
 import { Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table'
 import React, { Fragment } from 'react'
 
-export function AcmLoadingTable() {
+export function AcmTableLoading() {
     const rows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     return (
         <Fragment>
