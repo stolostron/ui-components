@@ -15,8 +15,8 @@ export const AcmTemplateIcon = () => (
                                 id="Combined-Shape"
                                 fillRule="nonzero"
                             ></path>
-                            <rect id="line" x="3.2" y="8.22857143" width="5.48571429" height="1"></rect>
-                            <rect id="line" x="3.2" y="10.9714286" width="5.48571429" height="1"></rect>
+                            <rect id="Top-Line" x="3.2" y="8.22857143" width="5.48571429" height="1"></rect>
+                            <rect id="Bottom-Line" x="3.2" y="10.9714286" width="5.48571429" height="1"></rect>
                         </g>
                     </g>
                 </g>
