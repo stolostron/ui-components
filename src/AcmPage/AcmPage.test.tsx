@@ -84,8 +84,8 @@ describe('AcmBreadcrumb', () => {
             <MemoryRouter>
                 <AcmBreadcrumb
                     breadcrumb={[
-                        { text: 'First', to: '/foo' },
-                        { text: 'Second', to: '/foo' },
+                        { text: 'First', to: '/first' },
+                        { text: 'Second', to: '/second' },
                     ]}
                 />
             </MemoryRouter>

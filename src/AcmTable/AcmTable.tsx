@@ -1,10 +1,14 @@
 import {
     Button,
+    EmptyState,
+    EmptyStateIcon,
     Pagination,
     PaginationVariant,
     SearchInput,
+    Spinner,
     Split,
     SplitItem,
+    Title,
     Toolbar,
     ToolbarContent,
     ToolbarItem,
@@ -22,6 +26,8 @@ import {
 import Fuse from 'fuse.js'
 import get from 'get-value'
 import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import { AcmButton } from '../AcmButton/AcmButton'
+import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
@@ -72,7 +78,7 @@ interface ISearchItem<T> {
 
 export function AcmTable<T>(props: {
     plural: string
-    items: T[]
+    items?: T[]
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
     tableActions: IAcmTableAction[]
@@ -84,7 +90,7 @@ export function AcmTable<T>(props: {
     const { items, columns, keyFn } = props
     const [hasSearch, setHasSearch] = useState(true)
     const [searchItems, setSearchItems] = useState<ISearchItem<T>[]>()
-    const [filtered, setFiltered] = useState<T[]>(items)
+    const [filtered, setFiltered] = useState<T[] | undefined>(items)
     const [sorted, setSorted] = useState<T[]>()
     const [paged, setPaged] = useState<T[]>()
     const [rows, setRows] = useState<IRow[] | undefined>([])
@@ -94,6 +100,28 @@ export function AcmTable<T>(props: {
     const [perPage, setPerPage] = useState(10)
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
 
+    let { emptyState } = props
+    /* istanbul ignore else */
+    if (!emptyState) {
+        emptyState = (
+            <AcmEmptyState
+                title="No results found"
+                message="No results match the filter criteria. Clear filters to show results."
+                action={
+                    <AcmButton
+                        variant="link"
+                        onClick={() => {
+                            setSearch('')
+                            setSort({ index: 1, direction: SortByDirection.asc })
+                        }}
+                    >
+                        Clear all filters
+                    </AcmButton>
+                }
+            />
+        )
+    }
+
     useLayoutEffect(() => {
         setHasSearch(columns.some((column) => column.search))
     }, [columns])
@@ -102,7 +130,7 @@ export function AcmTable<T>(props: {
         const newSelected: { [uid: string]: boolean } = {}
         /* istanbul ignore next */
         Object.keys(selected)
-            .filter((key) => props.items.find((item) => keyFn(item) === key))
+            .filter((key) => props.items?.find((item) => keyFn(item) === key))
             .forEach((key) => {
                 newSelected[key] = selected[key]
             })
@@ -110,6 +138,8 @@ export function AcmTable<T>(props: {
     }, [items])
 
     useLayoutEffect(() => {
+        /* istanbul ignore if */
+        if (!items) return
         setSearchItems(
             items.map((item) => {
                 const searchItem: ISearchItem<T> = { item: item }
@@ -132,7 +162,7 @@ export function AcmTable<T>(props: {
         if (search && search !== '' && searchItems) {
             const fuse = new Fuse(searchItems, {
                 includeScore: true,
-                threshold: 0.2,
+                threshold: 0.3,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
                     .filter((value) => value !== undefined) as string[],
@@ -162,7 +192,7 @@ export function AcmTable<T>(props: {
         } else {
             setSorted(filtered)
         }
-    }, [filtered, sort, columns, items])
+    }, [filtered, sort, columns])
 
     useLayoutEffect(() => {
         const start = (page - 1) * perPage
@@ -184,7 +214,7 @@ export function AcmTable<T>(props: {
         } else {
             setPaged(sorted)
         }
-    }, [sorted, page, perPage, items])
+    }, [sorted, page, perPage])
 
     useLayoutEffect(() => {
         if (paged) {
@@ -207,7 +237,7 @@ export function AcmTable<T>(props: {
         } else {
             setRows(undefined)
         }
-    }, [selected, paged, keyFn, columns, items])
+    }, [selected, paged, keyFn, columns])
 
     function onSelect(_event: FormEvent, isSelected: boolean, rowId: number) {
         /* istanbul ignore next */
@@ -255,74 +285,88 @@ export function AcmTable<T>(props: {
         }
     })
 
-    if (!rows) {
-        return <Fragment />
+    // LOADING STATE
+    if (!items || !rows || !filtered || !paged) {
+        const minHeight = 68 + 41 * (perPage + 1) + 68
+        return (
+            <EmptyState style={{ minHeight: `${minHeight}px` }}>
+                <EmptyStateIcon variant="container" component={Spinner} />
+                <Title size="lg" headingLevel="h4">
+                    Loading
+                </Title>
+            </EmptyState>
+        )
     }
 
     return (
         <Fragment>
-            <Toolbar>
-                <ToolbarContent>
-                    <ToolbarItem hidden={!hasSearch}>
-                        <SearchInput
-                            style={{ minWidth: '350px' }}
-                            placeholder="Search"
-                            value={search}
-                            onChange={(value) => {
-                                setSearch(value)
-                                if (value === '') {
-                                    /* istanbul ignore next */
-                                    if (!sort) {
-                                        setSort({ index: 1, direction: SortByDirection.asc })
+            {items.length > 0 && (
+                <Toolbar>
+                    <ToolbarContent>
+                        <ToolbarItem hidden={!hasSearch}>
+                            <SearchInput
+                                style={{ minWidth: '350px' }}
+                                placeholder="Search"
+                                value={search}
+                                onChange={(value) => {
+                                    setSearch(value)
+                                    if (value === '') {
+                                        /* istanbul ignore next */
+                                        if (!sort) {
+                                            setSort({ index: 1, direction: SortByDirection.asc })
+                                        }
                                     }
-                                }
-                            }}
-                            onClear={() => {
-                                setSearch('')
-                                setSort({ index: 1, direction: SortByDirection.asc })
-                            }}
-                            resultsCount={`${filtered.length} / ${items.length}`}
-                        />
-                    </ToolbarItem>
-                    <ToolbarItem alignment={{ default: 'alignRight' }} />
-                    {Object.keys(selected).length ? (
-                        <Fragment>
-                            <ToolbarItem>
-                                {Object.keys(selected).length}/{props.items.length} {props.plural} selected
-                            </ToolbarItem>
-                            <ToolbarItem variant="separator" />
-                            {props.bulkActions.map((action) => (
-                                <ToolbarItem key={action.id}>
-                                    <Button
-                                        onClick={() => {
-                                            action.click(props.items.filter((item) => selected[keyFn(item)]))
-                                        }}
-                                    >
-                                        {action.title}
-                                    </Button>
+                                }}
+                                onClear={() => {
+                                    setSearch('')
+                                    setSort({ index: 1, direction: SortByDirection.asc })
+                                }}
+                                resultsCount={`${filtered.length} / ${items.length}`}
+                            />
+                        </ToolbarItem>
+                        <ToolbarItem alignment={{ default: 'alignRight' }} />
+                        {Object.keys(selected).length ? (
+                            <Fragment>
+                                <ToolbarItem>
+                                    {`${Object.keys(selected).length}/${items.length} ${props.plural} selected`}
                                 </ToolbarItem>
-                            ))}
-                        </Fragment>
-                    ) : (
-                        <Fragment>
-                            {props.tableActions.map((action) => (
-                                <ToolbarItem key={action.id}>
-                                    <Button
-                                        onClick={() => {
-                                            action.click()
-                                        }}
-                                    >
-                                        {action.title}
-                                    </Button>
-                                </ToolbarItem>
-                            ))}
-                        </Fragment>
-                    )}
-                    {props.extraToolbarControls}
-                </ToolbarContent>
-            </Toolbar>
-            {rows.length === 0 ? (
-                <Fragment>{props.emptyState}</Fragment>
+                                <ToolbarItem variant="separator" />
+                                {props.bulkActions.map((action) => (
+                                    <ToolbarItem key={action.id}>
+                                        <Button
+                                            onClick={() => {
+                                                action.click(items.filter((item) => selected[keyFn(item)]))
+                                            }}
+                                        >
+                                            {action.title}
+                                        </Button>
+                                    </ToolbarItem>
+                                ))}
+                            </Fragment>
+                        ) : (
+                            <Fragment>
+                                {props.tableActions.map((action) => (
+                                    <ToolbarItem key={action.id}>
+                                        <Button
+                                            onClick={() => {
+                                                action.click()
+                                            }}
+                                        >
+                                            {action.title}
+                                        </Button>
+                                    </ToolbarItem>
+                                ))}
+                            </Fragment>
+                        )}
+                        {props.extraToolbarControls}
+                    </ToolbarContent>
+                </Toolbar>
+            )}
+            {items.length === 0 ? (
+                <AcmEmptyState
+                    title={`No ${props.plural} found`}
+                    message={`You do not have any ${props.plural} yet.`}
+                />
             ) : (
                 <Fragment>
                     <Table
@@ -349,9 +393,8 @@ export function AcmTable<T>(props: {
                             setSort({ index, direction })
                         }}
                         onSelect={
-                            /* istanbul ignore next */ props.bulkActions && props.bulkActions.length
-                                ? onSelect
-                                : undefined
+                            /* istanbul ignore next */
+                            rows.length > 0 && props.bulkActions && props.bulkActions.length ? onSelect : undefined
                         }
                         variant={TableVariant.compact}
                     >
@@ -363,7 +406,7 @@ export function AcmTable<T>(props: {
                         <SplitItem>
                             {
                                 /* instanbul ignore else */
-                                filtered.length > perPage ? (
+                                filtered && filtered.length > perPage ? (
                                     <Pagination
                                         hidden={filtered.length < perPage}
                                         itemCount={filtered.length}
@@ -383,6 +426,7 @@ export function AcmTable<T>(props: {
                             }
                         </SplitItem>
                     </Split>
+                    {filtered.length === 0 && <Fragment>{emptyState}</Fragment>}
                 </Fragment>
             )}
         </Fragment>
