@@ -24,7 +24,7 @@ const useStyles = makeStyles({
     },
     relatedResourceCount: {
         fontSize: '28px',
-        color: '#0066CC',
+        color: 'var(--pf-global--palette--blue-400)',
         marginRight: '.5rem',
     },
     relatedResourceKind: {
