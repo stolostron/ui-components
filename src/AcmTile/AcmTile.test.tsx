@@ -20,6 +20,10 @@ describe('AcmTile', () => {
         return <AcmTile isSelected={false} relatedResourceData={{ count: 10, kind: 'pod' }} title={''} />
     }
 
+    const RelatedResourceTileLargeCount = () => {
+        return <AcmTile isSelected={false} relatedResourceData={{ count: 9999, kind: 'pod' }} title={''} />
+    }
+
     test('renders loading tile component', () => {
         const { queryByText } = render(<LoadingTile />)
         expect(queryByText('testing')).not.toBeInTheDocument()
@@ -27,6 +31,11 @@ describe('AcmTile', () => {
     test('renders related resource tile component', () => {
         const { getByText } = render(<RelatedResourceTile />)
         expect(getByText('10')).toBeInTheDocument()
+        expect(getByText('Related pod')).toBeInTheDocument()
+    })
+    test('renders related resource tile component - large count', () => {
+        const { getByText } = render(<RelatedResourceTileLargeCount />)
+        expect(getByText('9.9k')).toBeInTheDocument()
         expect(getByText('Related pod')).toBeInTheDocument()
     })
     test('renders default tile component', () => {
