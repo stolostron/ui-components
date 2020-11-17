@@ -104,28 +104,6 @@ export function AcmTable<T>(props: {
     const [perPage, setPerPage] = useState(10)
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
 
-    let { emptyState } = props
-    /* istanbul ignore else */
-    if (!emptyState) {
-        emptyState = (
-            <AcmEmptyState
-                title="No results found"
-                message="No results match the filter criteria. Clear filters to show results."
-                action={
-                    <AcmButton
-                        variant="link"
-                        onClick={() => {
-                            setSearch('')
-                            setSort({ index: 1, direction: SortByDirection.asc })
-                        }}
-                    >
-                        Clear all filters
-                    </AcmButton>
-                }
-            />
-        )
-    }
-
     useLayoutEffect(() => {
         setHasSearch(columns.some((column) => column.search))
     }, [columns])
@@ -366,73 +344,93 @@ export function AcmTable<T>(props: {
                     </ToolbarContent>
                 </Toolbar>
             )}
-            {items.length === 0 ? (
-                <AcmEmptyState
-                    title={`No ${props.plural} found`}
-                    message={`You do not have any ${props.plural} yet.`}
-                />
-            ) : (
-                <Fragment>
-                    <Table
-                        cells={columns.map((column) => {
-                            return {
-                                title: column.header,
-                                header: column.tooltip
-                                    ? {
-                                          info: {
-                                              tooltip: column.tooltip,
-                                              tooltipProps: { isContentLeftAligned: true },
-                                          },
-                                      }
-                                    : {},
-                                transforms: column.sort ? [sortable] : undefined,
+            {
+                /* istanbul ignore next */ items.length === 0 ? (
+                    props.emptyState ?? (
+                        <AcmEmptyState
+                            title={`No ${props.plural} found`}
+                            message={`You do not have any ${props.plural} yet.`}
+                        />
+                    )
+                ) : (
+                    <Fragment>
+                        <Table
+                            cells={columns.map((column) => {
+                                return {
+                                    title: column.header,
+                                    header: column.tooltip
+                                        ? {
+                                              info: {
+                                                  tooltip: column.tooltip,
+                                                  tooltipProps: { isContentLeftAligned: true },
+                                              },
+                                          }
+                                        : {},
+                                    transforms: column.sort ? [sortable] : undefined,
+                                }
+                            })}
+                            rows={rows}
+                            actions={actions}
+                            canSelectAll={true}
+                            aria-label="Simple Table"
+                            sortBy={sort}
+                            onSort={(_event, index, direction) => {
+                                setSort({ index, direction })
+                            }}
+                            onSelect={
+                                /* istanbul ignore next */
+                                rows.length > 0 && props.bulkActions && props.bulkActions.length ? onSelect : undefined
                             }
-                        })}
-                        rows={rows}
-                        actions={actions}
-                        canSelectAll={true}
-                        aria-label="Simple Table"
-                        sortBy={sort}
-                        onSort={(_event, index, direction) => {
-                            setSort({ index, direction })
-                        }}
-                        onSelect={
-                            /* istanbul ignore next */
-                            rows.length > 0 && props.bulkActions && props.bulkActions.length ? onSelect : undefined
-                        }
-                        variant={TableVariant.compact}
-                    >
-                        <TableHeader />
-                        <TableBody />
-                    </Table>
-                    <Split>
-                        <SplitItem isFilled></SplitItem>
-                        <SplitItem>
-                            {
-                                /* instanbul ignore else */
-                                filtered && filtered.length > perPage ? (
-                                    <Pagination
-                                        hidden={filtered.length < perPage}
-                                        itemCount={filtered.length}
-                                        perPage={perPage}
-                                        page={page}
-                                        variant={PaginationVariant.bottom}
-                                        onSetPage={(_event, page) => {
-                                            setPage(page)
+                            variant={TableVariant.compact}
+                        >
+                            <TableHeader />
+                            <TableBody />
+                        </Table>
+                        <Split>
+                            <SplitItem isFilled></SplitItem>
+                            <SplitItem>
+                                {
+                                    /* instanbul ignore else */
+                                    filtered && filtered.length > perPage ? (
+                                        <Pagination
+                                            hidden={filtered.length < perPage}
+                                            itemCount={filtered.length}
+                                            perPage={perPage}
+                                            page={page}
+                                            variant={PaginationVariant.bottom}
+                                            onSetPage={(_event, page) => {
+                                                setPage(page)
+                                            }}
+                                            onPerPageSelect={(_event, perPage) => {
+                                                setPerPage(perPage)
+                                            }}
+                                        />
+                                    ) : (
+                                        <span>&nbsp;</span>
+                                    )
+                                }
+                            </SplitItem>
+                        </Split>
+                        {filtered.length === 0 && (
+                            <AcmEmptyState
+                                title="No results found"
+                                message="No results match the filter criteria. Clear filters to show results."
+                                action={
+                                    <AcmButton
+                                        variant="link"
+                                        onClick={() => {
+                                            setSearch('')
+                                            setSort({ index: 1, direction: SortByDirection.asc })
                                         }}
-                                        onPerPageSelect={(_event, perPage) => {
-                                            setPerPage(perPage)
-                                        }}
-                                    />
-                                ) : (
-                                    <span>&nbsp;</span>
-                                )
-                            }
-                        </SplitItem>
-                    </Split>
-                    {filtered.length === 0 && <Fragment>{emptyState}</Fragment>}
-                </Fragment>
-            )}
+                                    >
+                                        Clear all filters
+                                    </AcmButton>
+                                }
+                            />
+                        )}
+                    </Fragment>
+                )
+            }
         </Fragment>
     )
 }
