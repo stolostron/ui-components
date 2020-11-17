@@ -13,8 +13,12 @@ const handleCardClick = () => {
     console.log('Card clicked')
 }
 
-const suggestedSearchCardActions = [{ text: 'share' }]
-const savedSearchCardActions = [{ text: 'edit' }, { text: 'share' }, { text: 'delete' }]
+const suggestedSearchCardActions = [{ text: 'share', handleAction: () => console.log('share action') }]
+const savedSearchCardActions = [
+    { text: 'edit', handleAction: () => console.log('edit action') },
+    { text: 'share', handleAction: () => console.log('share action') },
+    { text: 'delete', handleAction: () => console.log('delete action') },
+]
 
 export const SuggestedSearchCard = () => {
     return (
@@ -56,17 +60,17 @@ export const SavedSearchCard = () => {
     )
 }
 
-// export const ClustersOverview = () => {
-//     return (
-//         <AcmCountCard
-//             count={2}
-//             countTitle="Nodes"
-//             cardFooter={{
-//                 countDescription: {count?},
-//                 countLink: null,
-//             }}
-//         />
-//     )
-// }
+export const ClustersOverview = () => {
+    return (
+        <AcmCountCard
+            count={0}
+            countTitle="Nodes"
+            cardFooter={{
+                countDescription: '0 nodes inactive',
+                countLink: null,
+            }}
+        />
+    )
+}
 
 export const CardSkeleton = () => loadingCard({ id: 'ACM Skeleton Card' })

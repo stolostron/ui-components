@@ -12,34 +12,36 @@ import {
     DropdownItem,
     KebabToggle,
     Skeleton,
-    DropdownItemProps,
     CardActionsProps,
 } from '@patternfly/react-core'
 import { AcmTemplateIcon } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/styles'
 
-type CardHeaderActions = DropdownItemProps & {
+type CardHeaderActions = {
     text: string
+    handleAction: () => void
 }
 
 interface CardHeaderProps {
     title: string
     description: string
     actions?: CardHeaderActions[]
-    onActionClick: (event: React.SyntheticEvent) => void
+    onActionClick?: (event: React.SyntheticEvent) => void
     hasIcon?: boolean
 }
 
 interface CardFooterProps {
-    count: number
     countDescription?: string
     countLink?: string | ReactNode
 }
 
 interface CardDropdownProps {
-    dropdownItems: { text: string }[]
+    dropdownItems: {
+        text: string
+        handleAction: () => void
+    }[]
     toggle?: React.ReactNode
-    onSelect: (event: React.SyntheticEvent) => void
+    onSelect?: (event: React.SyntheticEvent) => void
 }
 
 type AcmCountCardProps = CardProps & {
@@ -75,6 +77,9 @@ const useStyles = makeStyles({
         fontSize: 'var(--pf-global--FontSize--sm)',
         fontWeight: 700,
     },
+    footer: {
+        linkStyle: 'none',
+    },
 })
 
 export function CardDropdown(props: CardDropdownProps & CardActionsProps) {
@@ -85,23 +90,19 @@ export function CardDropdown(props: CardDropdownProps & CardActionsProps) {
     })
     const classes = useStyles()
     const [isOpen, setOpen] = useState<boolean>(false)
-    const actionSelect = (event: React.SyntheticEvent) => {
-        // event?.stopPropagation()
-        setOpen(!isOpen)
-        props.onSelect(event)
-    }
 
     return (
         <Dropdown
             className="dropdownMenu"
             onClick={(e) => {
-                actionSelect(e)
+                setOpen(!isOpen)
+                e.stopPropagation()
             }}
             toggle={<KebabToggle onToggle={() => setOpen(!isOpen)} />}
             isOpen={isOpen}
             isPlain
             dropdownItems={props.dropdownItems.map((item) => (
-                <DropdownItem className={classes.dropdown} key={item.text} {...item}>
+                <DropdownItem className={classes.dropdown} key={item.text} onClick={item.handleAction}>
                     {item.text}
                 </DropdownItem>
             ))}
@@ -149,15 +150,15 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
         >
             {cardHeader && (
                 <CardHeader>
-                    {cardHeader?.actions && cardHeader?.actions?.length > 0 && (
+                    {cardHeader.actions && cardHeader.actions.length > 0 && (
                         <CardActions>
-                            <CardDropdown dropdownItems={cardHeader.actions} onSelect={cardHeader.onActionClick} />
+                            <CardDropdown dropdownItems={cardHeader.actions} />
                         </CardActions>
                     )}
                     <CardHeaderMain>
-                        {cardHeader?.hasIcon && <AcmTemplateIcon />}
-                        <CardTitle>{cardHeader?.title}</CardTitle>
-                        <p className={classes.headerDescription}>{cardHeader?.description}</p>
+                        {cardHeader.hasIcon && <AcmTemplateIcon />}
+                        <CardTitle>{cardHeader.title}</CardTitle>
+                        <p className={classes.headerDescription}>{cardHeader.description}</p>
                     </CardHeaderMain>
                 </CardHeader>
             )}
@@ -166,9 +167,9 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
                 <div className={classes.countTitle}>{countTitle}</div>
             </CardBody>
             {cardFooter && (
-                <CardFooter>
-                    {cardFooter?.countDescription || null}
-                    {cardFooter?.countLink || null}
+                <CardFooter className={classes.footer}>
+                    {cardFooter.countDescription || null}
+                    {cardFooter.countLink || null}
                 </CardFooter>
             )}
         </Card>

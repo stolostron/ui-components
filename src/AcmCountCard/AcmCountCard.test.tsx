@@ -6,6 +6,8 @@ import { AcmCountCard } from './AcmCountCard'
 
 describe('AcmCountCard', () => {
     const shareAction = jest.fn()
+    const deleteAction = jest.fn()
+    const editAction = jest.fn()
     const cardAction = jest.fn()
 
     // Skeleton Card Tests
@@ -26,16 +28,37 @@ describe('AcmCountCard', () => {
 
     // Suggested Search Card Tests
 
-    const SuggestedSearchCard = () => (
+    const SuggestedSearchCardWithOutHeader = () => (
+        <AcmCountCard
+            id="ACM Suggested Search Card"
+            onClick={cardAction()}
+            count={0}
+            countTitle="Results"
+            isSelectable={true}
+        />
+    )
+
+    const SuggestedSearchCardWithOutActions = () => (
         <AcmCountCard
             id="ACM Suggested Search Card"
             cardHeader={{
                 title: 'Workloads',
                 description: 'A pre-defined search to help you review your workloads',
-                actions: [{ text: 'Share' }],
-                onActionClick: () => {
-                    shareAction()
-                },
+            }}
+            onClick={cardAction()}
+            count={0}
+            countTitle="Results"
+            isSelectable={true}
+        />
+    )
+
+    const SuggestedSearchCardWithActions = () => (
+        <AcmCountCard
+            id="ACM Suggested Search Card"
+            cardHeader={{
+                title: 'Workloads',
+                description: 'A pre-defined search to help you review your workloads',
+                actions: [{ text: 'Share', handleAction: shareAction }],
             }}
             onClick={cardAction()}
             count={0}
@@ -45,22 +68,31 @@ describe('AcmCountCard', () => {
     )
 
     test('has zero accessibility defects', async () => {
-        const { container, getAllByLabelText } = render(<SuggestedSearchCard />)
+        const { container, getAllByLabelText } = render(<SuggestedSearchCardWithActions />)
         expect(await axe(container)).toHaveNoViolations()
-
         userEvent.click(getAllByLabelText('Actions')[0])
         expect(await axe(container)).toHaveNoViolations()
     })
 
     test('validates ACM Suggested Search Card renders and is clickable', () => {
-        const { getByTestId } = render(<SuggestedSearchCard />)
+        const { getByTestId } = render(<SuggestedSearchCardWithActions />)
         expect(getByTestId('ACM Suggested Search Card')).toBeInTheDocument()
         userEvent.click(getByTestId('ACM Suggested Search Card'))
         expect(cardAction).toHaveBeenCalled()
     })
 
+    test('Render card with no header', () => {
+        const { queryByText } = render(<SuggestedSearchCardWithOutHeader />)
+        expect(queryByText('Results')).toBeInTheDocument()
+    })
+
+    test('Render card with zero actions', () => {
+        const { queryByLabelText } = render(<SuggestedSearchCardWithOutActions />)
+        expect(queryByLabelText('Actions')).not.toBeInTheDocument()
+    })
+
     test('supports single menu action', () => {
-        const { getAllByLabelText, getByText } = render(<SuggestedSearchCard />)
+        const { getAllByLabelText, getByText } = render(<SuggestedSearchCardWithActions />)
         expect(getAllByLabelText('Actions')).toHaveLength(1)
         userEvent.click(getAllByLabelText('Actions')[0])
         expect(getByText('Share')).toBeVisible()
@@ -76,10 +108,11 @@ describe('AcmCountCard', () => {
             cardHeader={{
                 title: 'Kind:pod',
                 description: 'A pre-defined search to help you review your workloads',
-                actions: [{ text: 'Edit' }, { text: 'Share' }, { text: 'Delete' }],
-                onActionClick: () => {
-                    shareAction()
-                },
+                actions: [
+                    { text: 'Edit', handleAction: editAction },
+                    { text: 'Share', handleAction: shareAction },
+                    { text: 'Delete', handleAction: deleteAction },
+                ],
                 hasIcon: true,
             }}
             onClick={cardAction()}
@@ -88,18 +121,56 @@ describe('AcmCountCard', () => {
             isSelectable={true}
         />
     )
-
     test('has zero accessibility defects', async () => {
         const { container, getAllByLabelText } = render(<SavedSearchCard />)
         expect(await axe(container)).toHaveNoViolations()
-
         userEvent.click(getAllByLabelText('Actions')[0])
         expect(await axe(container)).toHaveNoViolations()
     })
 
-    test('validates ACM Saved Search Card renders and is clickable', () => {
+    test('validates ACM Saved Search Card renders', () => {
         const { getByTestId, getAllByLabelText } = render(<SavedSearchCard />)
         expect(getByTestId('ACM Saved Search Card')).toBeInTheDocument()
         expect(getAllByLabelText('Actions')).toHaveLength(1)
+    })
+
+    // Clusters Overview Variant Test
+
+    const ClustersOverviewVariantWithDescription = () => (
+        <AcmCountCard
+            id="ACM Clusters Overview Card Variant"
+            cardFooter={{
+                countDescription: '0 nodes inactive',
+            }}
+        />
+    )
+
+    const ClustersOverviewVariantWithOutDescription = () => (
+        <AcmCountCard
+            id="ACM Clusters Overview Card Variant"
+            cardFooter={{
+                countLink: 'https://www.redhat.com',
+            }}
+        />
+    )
+
+    test('has zero accessibility defects', async () => {
+        const { container } = render(<ClustersOverviewVariantWithDescription />)
+        expect(await axe(container)).toHaveNoViolations()
+    })
+
+    test('validates ACM Clusters Overview Card variant renders', () => {
+        const { getByTestId } = render(<ClustersOverviewVariantWithDescription />)
+        expect(getByTestId('ACM Clusters Overview Card Variant')).toBeInTheDocument()
+    })
+
+    test('has zero accessibility defects', async () => {
+        const { container } = render(<ClustersOverviewVariantWithOutDescription />)
+        expect(await axe(container)).toHaveNoViolations()
+    })
+
+    test('validates ACM Clusters Overview Card variant renders', () => {
+        const { getByTestId } = render(<ClustersOverviewVariantWithOutDescription />)
+        expect(getByTestId('ACM Clusters Overview Card Variant')).toBeInTheDocument()
     })
 })
