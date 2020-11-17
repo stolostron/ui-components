@@ -7,6 +7,7 @@ import ReactTags from 'react-tag-autocomplete'
 import CloseIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
+import '@patternfly/patternfly/base/patternfly-variables.css'
 import './AcmSearchbar.css'
 import { convertStringToTags } from './helper'
 

@@ -1,5 +1,3 @@
-@import '@patternfly/patternfly/base/patternfly-variables.css';
-
 .searchbar-container {
     display: flex;
     align-items: center;
