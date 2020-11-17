@@ -1,4 +1,4 @@
-@import '../../node_modules/@patternfly/patternfly/base/patternfly-variables.css';
+@import '@patternfly/patternfly/base/patternfly-variables.css';
 
 .searchbar-container {
     display: flex;
