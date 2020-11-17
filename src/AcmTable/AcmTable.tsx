@@ -162,7 +162,7 @@ export function AcmTable<T>(props: {
         } else {
             setSorted(filtered)
         }
-    }, [filtered, sort, columns])
+    }, [filtered, sort, columns, items])
 
     useLayoutEffect(() => {
         const start = (page - 1) * perPage
@@ -184,7 +184,7 @@ export function AcmTable<T>(props: {
         } else {
             setPaged(sorted)
         }
-    }, [sorted, page, perPage])
+    }, [sorted, page, perPage, items])
 
     useLayoutEffect(() => {
         if (paged) {
@@ -207,7 +207,7 @@ export function AcmTable<T>(props: {
         } else {
             setRows(undefined)
         }
-    }, [selected, paged, keyFn, columns])
+    }, [selected, paged, keyFn, columns, items])
 
     function onSelect(_event: FormEvent, isSelected: boolean, rowId: number) {
         /* istanbul ignore next */
