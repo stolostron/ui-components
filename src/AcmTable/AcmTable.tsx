@@ -22,6 +22,8 @@ import {
 import Fuse from 'fuse.js'
 import get from 'get-value'
 import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import AngleDownIcon from '@patternfly/react-icons/dist/js/icons/angle-down-icon'
+import AngleUpIcon from '@patternfly/react-icons/dist/js/icons/angle-up-icon'
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
@@ -71,6 +73,7 @@ interface ISearchItem<T> {
 }
 
 export function AcmTable<T>(props: {
+    tableHeaderLabel?: string
     plural: string
     items: T[]
     columns: IAcmTableColumn<T>[]
@@ -81,8 +84,10 @@ export function AcmTable<T>(props: {
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
 }) {
-    const { items, columns, keyFn } = props
+    const { items, columns, keyFn, tableHeaderLabel } = props
     const [hasSearch, setHasSearch] = useState(true)
+    const [hasCollapsableHeader, setHasCollapsableHeader] = useState(false)
+    const [hideTable, toggleHideTable] = useState(false)
     const [searchItems, setSearchItems] = useState<ISearchItem<T>[]>()
     const [filtered, setFiltered] = useState<T[]>(items)
     const [sorted, setSorted] = useState<T[]>()
@@ -93,6 +98,10 @@ export function AcmTable<T>(props: {
     const [page, setPage] = useState(1)
     const [perPage, setPerPage] = useState(10)
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
+
+    useLayoutEffect(() => {
+        setHasCollapsableHeader(tableHeaderLabel !== undefined && tableHeaderLabel !== '')
+    })
 
     useLayoutEffect(() => {
         setHasSearch(columns.some((column) => column.search))
@@ -255,6 +264,72 @@ export function AcmTable<T>(props: {
         }
     })
 
+    const renderTable = () => {
+        if (hideTable) {
+            return null
+        }
+        return (
+            <Fragment>
+                <Table
+                    cells={columns.map((column) => {
+                        return {
+                            title: column.header,
+                            header: column.tooltip
+                                ? {
+                                      info: {
+                                          tooltip: column.tooltip,
+                                          tooltipProps: { isContentLeftAligned: true },
+                                      },
+                                  }
+                                : {},
+                            transforms: column.sort ? [sortable] : undefined,
+                        }
+                    })}
+                    rows={rows}
+                    actions={actions}
+                    canSelectAll={true}
+                    aria-label="Simple Table"
+                    sortBy={sort}
+                    onSort={(_event, index, direction) => {
+                        setSort({ index, direction })
+                    }}
+                    onSelect={
+                        /* istanbul ignore next */ props.bulkActions && props.bulkActions.length ? onSelect : undefined
+                    }
+                    variant={TableVariant.compact}
+                >
+                    <TableHeader />
+                    <TableBody />
+                </Table>
+                <Split>
+                    <SplitItem isFilled></SplitItem>
+                    <SplitItem>
+                        {
+                            /* instanbul ignore else */
+                            filtered.length > perPage ? (
+                                <Pagination
+                                    hidden={filtered.length < perPage}
+                                    itemCount={filtered.length}
+                                    perPage={perPage}
+                                    page={page}
+                                    variant={PaginationVariant.bottom}
+                                    onSetPage={(_event, page) => {
+                                        setPage(page)
+                                    }}
+                                    onPerPageSelect={(_event, perPage) => {
+                                        setPerPage(perPage)
+                                    }}
+                                />
+                            ) : (
+                                <span>&nbsp;</span>
+                            )
+                        }
+                    </SplitItem>
+                </Split>
+            </Fragment>
+        )
+    }
+
     if (!rows) {
         return <Fragment />
     }
@@ -263,6 +338,12 @@ export function AcmTable<T>(props: {
         <Fragment>
             <Toolbar>
                 <ToolbarContent>
+                    <ToolbarItem hidden={!hasCollapsableHeader} onClick={() => toggleHideTable(!hideTable)}>
+                        <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                            <div style={{ marginRight: '.5rem' }}>{props.tableHeaderLabel}</div>
+                            {!hideTable ? <AngleDownIcon /> : <AngleUpIcon />}
+                        </div>
+                    </ToolbarItem>
                     <ToolbarItem hidden={!hasSearch}>
                         <SearchInput
                             style={{ minWidth: '350px' }}
@@ -321,70 +402,7 @@ export function AcmTable<T>(props: {
                     {props.extraToolbarControls}
                 </ToolbarContent>
             </Toolbar>
-            {rows.length === 0 ? (
-                <Fragment>{props.emptyState}</Fragment>
-            ) : (
-                <Fragment>
-                    <Table
-                        cells={columns.map((column) => {
-                            return {
-                                title: column.header,
-                                header: column.tooltip
-                                    ? {
-                                          info: {
-                                              tooltip: column.tooltip,
-                                              tooltipProps: { isContentLeftAligned: true },
-                                          },
-                                      }
-                                    : {},
-                                transforms: column.sort ? [sortable] : undefined,
-                            }
-                        })}
-                        rows={rows}
-                        actions={actions}
-                        canSelectAll={true}
-                        aria-label="Simple Table"
-                        sortBy={sort}
-                        onSort={(_event, index, direction) => {
-                            setSort({ index, direction })
-                        }}
-                        onSelect={
-                            /* istanbul ignore next */ props.bulkActions && props.bulkActions.length
-                                ? onSelect
-                                : undefined
-                        }
-                        variant={TableVariant.compact}
-                    >
-                        <TableHeader />
-                        <TableBody />
-                    </Table>
-                    <Split>
-                        <SplitItem isFilled></SplitItem>
-                        <SplitItem>
-                            {
-                                /* instanbul ignore else */
-                                filtered.length > perPage ? (
-                                    <Pagination
-                                        hidden={filtered.length < perPage}
-                                        itemCount={filtered.length}
-                                        perPage={perPage}
-                                        page={page}
-                                        variant={PaginationVariant.bottom}
-                                        onSetPage={(_event, page) => {
-                                            setPage(page)
-                                        }}
-                                        onPerPageSelect={(_event, perPage) => {
-                                            setPerPage(perPage)
-                                        }}
-                                    />
-                                ) : (
-                                    <span>&nbsp;</span>
-                                )
-                            }
-                        </SplitItem>
-                    </Split>
-                </Fragment>
-            )}
+            {rows.length === 0 ? <Fragment>{props.emptyState}</Fragment> : renderTable()}
         </Fragment>
     )
 }

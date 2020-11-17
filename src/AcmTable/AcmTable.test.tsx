@@ -26,6 +26,7 @@ describe('AcmTable', () => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
+                tableHeaderLabel={'Users'}
                 plural="examples"
                 items={items}
                 columns={[
@@ -209,6 +210,15 @@ describe('AcmTable', () => {
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'NOSEARCHRESULTS')
         expect(queryByText('Empty state title')).toBeVisible()
+    })
+    test('should collapse table contents when header label is clicked', () => {
+        const { container, getByText } = render(<Table />)
+        expect(container.querySelector('thead tr:first-of-type [data-label="First Name"]')).toBeInTheDocument()
+        // Find header label and click it
+        expect(getByText('Users')).toBeInTheDocument()
+        userEvent.click(getByText('Users'))
+        // Check to make sure table is now collapsed
+        expect(container.querySelector('thead tr:first-of-type [data-label="First Name"]')).not.toBeInTheDocument()
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)

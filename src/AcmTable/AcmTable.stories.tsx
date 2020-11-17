@@ -24,6 +24,7 @@ export function Table() {
     const [items, setItems] = useState<IExampleData[]>(testItems)
     return (
         <AcmTable<IExampleData>
+            tableHeaderLabel={'Users'}
             plural="examples"
             items={items}
             columns={[
