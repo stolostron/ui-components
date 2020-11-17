@@ -1,9 +1,10 @@
 import React from 'react'
-import { Tile, TileProps } from '@patternfly/react-core'
+import { Skeleton, Tile, TileProps } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import '@patternfly/react-core/dist/styles/base.css'
 
 type AcmTileProps = TileProps & {
+    loading?: boolean
     relatedResourceData?: {
         count: number
         kind: string
@@ -18,9 +19,13 @@ const useStyles = makeStyles({
         height: '64px',
         width: '275px',
     },
+    loading: {
+        width: 'calc(275px - 2rem)',
+    },
     relatedResourceContainer: {
         display: 'flex',
         alignItems: 'baseline',
+        width: 'calc(275px - 2rem)',
     },
     relatedResourceCount: {
         fontSize: '28px',
@@ -30,18 +35,32 @@ const useStyles = makeStyles({
     relatedResourceKind: {
         fontSize: '14px',
         fontWeight: 'bold',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
     },
 })
 
 export function AcmTile(props: AcmTileProps) {
     const classes = useStyles(props)
+    if (props.loading) {
+        return (
+            <Tile className={classes.tileRoot} title={''} ref={null}>
+                <Skeleton className={classes.loading} />
+            </Tile>
+        )
+    }
     if (props.relatedResourceData) {
         // This render is specific to the search related resources tile
+        let count = `${props.relatedResourceData.count}`
+        if (parseInt(count) >= 1000) {
+            count = `${(parseInt(count) - (parseInt(count) % 100)) / 1000}k`
+        }
         return (
             <Tile className={classes.tileRoot} title={props.title} ref={null}>
                 <div className={classes.relatedResourceContainer}>
-                    <div className={classes.relatedResourceCount}>{props.relatedResourceData.count}</div>
-                    <div className={classes.relatedResourceKind}>{props.relatedResourceData.kind}</div>
+                    <div className={classes.relatedResourceCount}>{count}</div>
+                    <div className={classes.relatedResourceKind}>{`Related ${props.relatedResourceData.kind}`}</div>
                 </div>
             </Tile>
         )

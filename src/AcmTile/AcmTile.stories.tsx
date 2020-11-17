@@ -18,10 +18,25 @@ export const Tile = () => {
 
     return (
         <AcmTile
+            loading={false}
             isSelected={selected}
             title={''}
             onClick={() => toggleSelected(!selected)}
-            relatedResourceData={{ count: 10, kind: 'Related pod' }}
+            relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
+        />
+    )
+}
+
+export const LoadingTile = () => {
+    const [selected, toggleSelected] = useState<boolean>(false)
+
+    return (
+        <AcmTile
+            loading={true}
+            isSelected={selected}
+            title={'testing'}
+            onClick={() => toggleSelected(!selected)}
+            relatedResourceData={{ count: 1, kind: 'veryLongKindNameForTestingPurposes' }}
         />
     )
 }
