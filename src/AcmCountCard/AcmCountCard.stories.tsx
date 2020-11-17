@@ -13,11 +13,11 @@ const handleCardClick = () => {
     console.log('Card clicked')
 }
 
-const suggestedSearchCardActions = [{ text: 'share', handleAction: () => console.log('share action') }]
+const suggestedSearchCardActions = [{ text: 'Share', handleAction: () => console.log('share action') }]
 const savedSearchCardActions = [
-    { text: 'edit', handleAction: () => console.log('edit action') },
-    { text: 'share', handleAction: () => console.log('share action') },
-    { text: 'delete', handleAction: () => console.log('delete action') },
+    { text: 'Edit', handleAction: () => console.log('edit action') },
+    { text: 'Share', handleAction: () => console.log('share action') },
+    { text: 'Delete', handleAction: () => console.log('delete action') },
 ]
 
 export const SuggestedSearchCard = () => {
@@ -33,7 +33,7 @@ export const SuggestedSearchCard = () => {
                 },
             }}
             onCardClick={handleCardClick}
-            count={0}
+            count={13000}
             countTitle="Results"
             isSelectable={true}
         />

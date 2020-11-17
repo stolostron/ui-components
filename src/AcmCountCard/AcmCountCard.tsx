@@ -62,7 +62,7 @@ type SkeletonCard = CardProps & {
 
 const useStyles = makeStyles({
     card: {
-        height: '250px',
+        height: (props: AcmCountCardProps) => (props.cardFooter ? 'auto' : '250px'),
     },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
