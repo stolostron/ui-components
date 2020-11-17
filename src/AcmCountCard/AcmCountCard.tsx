@@ -13,82 +13,93 @@ import {
     KebabToggle,
     Skeleton,
     DropdownItemProps,
+    CardActionsProps,
 } from '@patternfly/react-core'
 import { AcmTemplateIcon } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/styles'
-import '@patternfly/react-core/dist/styles/base.css'
 
 type CardHeaderActions = DropdownItemProps & {
     text: string
 }
 
-type CardHeaderProps = {
+interface CardHeaderProps {
     title: string
     description: string
     actions?: CardHeaderActions[]
-    onActionClick: (e) => void
+    onActionClick: (event: React.SyntheticEvent) => void
 }
 
-type CardFooterProps = {
+interface CardFooterProps {
     countDescription?: string
     countLink?: string | ReactNode
 }
 
+interface CardDropdownProps {
+    dropdownItems: { text: string }[]
+    toggle?: React.ReactNode
+    onSelect: (event: React.SyntheticEvent) => void
+}
+
 type AcmCountCardProps = CardProps & {
+    id?: string
+    label?: string
+    loading?: boolean
     onCardClick?: () => void
     cardHeader?: CardHeaderProps
     cardFooter?: CardFooterProps
-    count: number
-    countTitle: string
-    isFlat: boolean
+    count?: number
+    countTitle?: string
+    isFlat?: boolean
 }
 
-type CardDropdownProps = {
-    dropdownItems: { text: string }[]
-    toggle?: React.ReactNode
-    onSelect: (event: React.SyntheticEvent | undefined) => void
+type SkeletonCard = CardProps & {
+    id?: string
 }
 
 const useStyles = makeStyles({
     card: {
-        minHeight: '250px',
-    },
-    cardSkeleton: {
-        backgroundColor: '#FFFFFF',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-        minHeight: '8rem',
+        height: '250px',
+        '& .dropdownMenu': {
+            display: 'none',
+        },
+        '&:hover .dropdownMenu': {
+            display: 'flex',
+        },
     },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
-        color: 'var(--pf-global--BackgroundColor--dark-400)',
-    },
-    dropdown: {
-        width: '10rem',
+        color: 'var(--pf-global--palette--black-700)',
     },
     count: {
         color: (props: AcmCountCardProps) =>
-            props.count !== 0 ? 'var(--pf-global--link--Color)' : 'var(--pf-global--BackgroundColor--dark-100)',
+            props.count !== 0 ? 'var(--pf-global--link--Color)' : 'var(--pf-global--palette--black-900)',
         fontSize: 'var(--pf-global--FontSize--3xl)',
     },
     countTitle: {
         fontSize: 'var(--pf-global--FontSize--sm)',
-        fontWeight: '700',
+        fontWeight: 700,
     },
 })
 
-export function CardDropdown(props: CardDropdownProps) {
-    const classes = useStyles(props)
+export function CardDropdown(props: CardDropdownProps & CardActionsProps) {
+    const useStyles = makeStyles({
+        dropdown: {
+            width: '10rem',
+        },
+    })
+    const classes = useStyles()
     const [isOpen, setOpen] = useState<boolean>(false)
-    const onSelect = (event: React.SyntheticEvent | undefined) => {
-        event.stopPropagation()
+    const actionSelect = (event: React.SyntheticEvent) => {
+        event?.stopPropagation()
         setOpen(!isOpen)
         props.onSelect(event)
     }
 
     return (
         <Dropdown
-            onSelect={(event) => {
-                onSelect(event)
+            className="dropdownMenu"
+            onClick={(e) => {
+                actionSelect(e)
             }}
             toggle={<KebabToggle onToggle={() => setOpen(!isOpen)} />}
             isOpen={isOpen}
@@ -103,18 +114,25 @@ export function CardDropdown(props: CardDropdownProps) {
     )
 }
 
-export function AcmCardSkeleton() {
-    const classes = useStyles()
+export const loadingCard = (props: SkeletonCard) => {
+    const useStyles = makeStyles({
+        cardSkeleton: {
+            height: '250px',
+        },
+    })
+    const classes = useStyles(props)
     return (
-        <Card className={classes.cardSkeleton}>
-            <CardTitle>
+        <Card id={props.id} className={classes.cardSkeleton}>
+            <CardHeader>
                 <Skeleton width="25%" />
-            </CardTitle>
+            </CardHeader>
             <CardBody>
-                <Skeleton width="80%" height="4rem" />
+                <Skeleton width="100%" />
+                <br />
+                <Skeleton width="100%" />
             </CardBody>
             <CardFooter>
-                <Skeleton width="25%" height="3rem" />
+                <Skeleton width="25%" height="4rem" />
             </CardFooter>
         </Card>
     )
@@ -122,15 +140,18 @@ export function AcmCardSkeleton() {
 
 export const AcmCountCard = (props: AcmCountCardProps) => {
     const classes = useStyles(props)
-    const { count, countTitle, cardFooter, cardHeader } = props
+    const { id, loading, count, countTitle, cardFooter, cardHeader } = props
+
+    if (loading) return loadingCard(props)
     return (
         <Card
+            id={id}
             className={classes.card}
             onClick={props.onCardClick}
             isSelectable={!!props.onCardClick}
             isFlat={!props.onCardClick}
         >
-            {props.cardHeader && (
+            {cardHeader && (
                 <CardHeader>
                     {cardHeader?.actions && cardHeader?.actions?.length > 0 && (
                         <CardActions>
@@ -139,19 +160,19 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
                     )}
                     <CardHeaderMain>
                         <AcmTemplateIcon />
-                        <CardTitle>{cardHeader.title}</CardTitle>
-                        <p className={classes.headerDescription}>{cardHeader.description}</p>
+                        <CardTitle>{cardHeader?.title}</CardTitle>
+                        <p className={classes.headerDescription}>{cardHeader?.description}</p>
                     </CardHeaderMain>
                 </CardHeader>
             )}
-            <CardBody className={classes.body}>
+            <CardBody>
                 <div className={classes.count}>{count}</div>
                 <div className={classes.countTitle}>{countTitle}</div>
             </CardBody>
-            {props.cardFooter && (
+            {cardFooter && (
                 <CardFooter>
-                    {cardFooter.countDescription && <div />}
-                    {cardFooter.countLink && <div />}
+                    {cardFooter?.countDescription || null}
+                    {cardFooter?.countLink || null}
                 </CardFooter>
             )}
         </Card>

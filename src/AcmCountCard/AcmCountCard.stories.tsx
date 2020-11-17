@@ -1,7 +1,7 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { Meta } from '@storybook/react'
-import { AcmCountCard, AcmCardSkeleton } from './AcmCountCard'
+import { AcmCountCard, loadingCard } from './AcmCountCard'
 
 const meta: Meta = {
     title: 'Count Card',
@@ -13,20 +13,18 @@ const handleCardClick = () => {
     console.log('Card clicked')
 }
 
+const cardActions = [{ text: 'Share' }]
+
 export const Card = () => {
     return (
         <AcmCountCard
             cardHeader={{
                 title: 'Workloads',
                 description: 'A pre-defined search to help you review your workloads',
-                actions: [{ text: 'Share' }],
+                actions: [...cardActions],
                 onActionClick: (e) => {
-                    console.log(e.target.text)
+                    console.log(e.target)
                 },
-            }}
-            cardFooter={{
-                countDescription: 'Results',
-                countLink: 'link',
             }}
             onCardClick={handleCardClick}
             count={0}
@@ -36,4 +34,4 @@ export const Card = () => {
     )
 }
 
-export const CardSkeleton = () => <AcmCardSkeleton></AcmCardSkeleton>
+export const CardSkeleton = () => loadingCard({ id: 'ACM Skeleton Card' })
