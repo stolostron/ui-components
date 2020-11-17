@@ -5,6 +5,11 @@ import { axe } from 'jest-axe'
 import { AcmCountCard } from './AcmCountCard'
 
 describe('AcmCountCard', () => {
+    const shareAction = jest.fn()
+    const cardAction = jest.fn()
+
+    // Skeleton Card Tests
+
     const SkeletonCard = () => {
         return <AcmCountCard id="ACM Skeleton Card" loading={true} />
     }
@@ -19,10 +24,11 @@ describe('AcmCountCard', () => {
         expect(await axe(container)).toHaveNoViolations
     })
 
-    const shareAction = jest.fn()
+    // Suggested Search Card Tests
+
     const SuggestedSearchCard = () => (
         <AcmCountCard
-            id="ACM Card"
+            id="ACM Suggested Search Card"
             cardHeader={{
                 title: 'Workloads',
                 description: 'A pre-defined search to help you review your workloads',
@@ -31,16 +37,12 @@ describe('AcmCountCard', () => {
                     shareAction()
                 },
             }}
-            onCardClick={jest.fn()}
+            onClick={cardAction()}
             count={0}
             countTitle="Results"
             isSelectable={true}
         />
     )
-    test('validates ACM Suggested Search Card renders', () => {
-        const { getByTestId } = render(<SuggestedSearchCard />)
-        expect(getByTestId('ACM Card')).toBeInTheDocument()
-    })
 
     test('has zero accessibility defects', async () => {
         const { container, getAllByLabelText } = render(<SuggestedSearchCard />)
@@ -50,22 +52,54 @@ describe('AcmCountCard', () => {
         expect(await axe(container)).toHaveNoViolations()
     })
 
+    test('validates ACM Suggested Search Card renders and is clickable', () => {
+        const { getByTestId } = render(<SuggestedSearchCard />)
+        expect(getByTestId('ACM Suggested Search Card')).toBeInTheDocument()
+        userEvent.click(getByTestId('ACM Suggested Search Card'))
+        expect(cardAction).toHaveBeenCalled()
+    })
+
     test('supports single menu action', () => {
-        const { getAllByLabelText, getByText, getByRole } = render(<SuggestedSearchCard />)
+        const { getAllByLabelText, getByText } = render(<SuggestedSearchCard />)
         expect(getAllByLabelText('Actions')).toHaveLength(1)
         userEvent.click(getAllByLabelText('Actions')[0])
-        expect(getByRole('menu')).toBeVisible()
         expect(getByText('Share')).toBeVisible()
         userEvent.click(getByText('Share'))
         expect(shareAction).toHaveBeenCalled()
-        expect(getByText('pf-m-expanded dropdownMenu')).not.toBeInTheDocument()
     })
 
-    //     test('validates using function on card click', () => {
-    //     const { getByText } = render(<SuggestedSearchCard />)
-    // }
-    // test('renders', () => {
-    //     const { getByText } = render(<LoadingCard />)
-    //     expect(getByText('ACM card'))
-    // })
+    // Saved Search Card Tests
+
+    const SavedSearchCard = () => (
+        <AcmCountCard
+            id="ACM Saved Search Card"
+            cardHeader={{
+                title: 'Kind:pod',
+                description: 'A pre-defined search to help you review your workloads',
+                actions: [{ text: 'Edit' }, { text: 'Share' }, { text: 'Delete' }],
+                onActionClick: () => {
+                    shareAction()
+                },
+                hasIcon: true,
+            }}
+            onClick={cardAction()}
+            count={0}
+            countTitle="Results"
+            isSelectable={true}
+        />
+    )
+
+    test('has zero accessibility defects', async () => {
+        const { container, getAllByLabelText } = render(<SavedSearchCard />)
+        expect(await axe(container)).toHaveNoViolations()
+
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(await axe(container)).toHaveNoViolations()
+    })
+
+    test('validates ACM Saved Search Card renders and is clickable', () => {
+        const { getByTestId, getAllByLabelText } = render(<SavedSearchCard />)
+        expect(getByTestId('ACM Saved Search Card')).toBeInTheDocument()
+        expect(getAllByLabelText('Actions')).toHaveLength(1)
+    })
 })

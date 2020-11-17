@@ -13,15 +13,17 @@ const handleCardClick = () => {
     console.log('Card clicked')
 }
 
-const cardActions = [{ text: 'Share' }]
+const suggestedSearchCardActions = [{ text: 'share' }]
+const savedSearchCardActions = [{ text: 'edit' }, { text: 'share' }, { text: 'delete' }]
 
-export const Card = () => {
+export const SuggestedSearchCard = () => {
     return (
         <AcmCountCard
             cardHeader={{
+                hasIcon: true,
                 title: 'Workloads',
                 description: 'A pre-defined search to help you review your workloads',
-                actions: [...cardActions],
+                actions: [...suggestedSearchCardActions],
                 onActionClick: (e) => {
                     console.log(e.target)
                 },
@@ -33,5 +35,38 @@ export const Card = () => {
         />
     )
 }
+
+export const SavedSearchCard = () => {
+    return (
+        <AcmCountCard
+            cardHeader={{
+                hasIcon: false,
+                title: 'Test Search',
+                description: 'Custom description with max amount of 60 characters',
+                actions: [...savedSearchCardActions],
+                onActionClick: (e) => {
+                    console.log(e.target)
+                },
+            }}
+            onCardClick={handleCardClick}
+            count={0}
+            countTitle="Results"
+            isSelectable={true}
+        />
+    )
+}
+
+// export const ClustersOverview = () => {
+//     return (
+//         <AcmCountCard
+//             count={2}
+//             countTitle="Nodes"
+//             cardFooter={{
+//                 countDescription: {count?},
+//                 countLink: null,
+//             }}
+//         />
+//     )
+// }
 
 export const CardSkeleton = () => loadingCard({ id: 'ACM Skeleton Card' })

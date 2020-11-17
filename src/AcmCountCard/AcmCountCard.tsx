@@ -27,9 +27,11 @@ interface CardHeaderProps {
     description: string
     actions?: CardHeaderActions[]
     onActionClick: (event: React.SyntheticEvent) => void
+    hasIcon?: boolean
 }
 
 interface CardFooterProps {
+    count: number
     countDescription?: string
     countLink?: string | ReactNode
 }
@@ -59,12 +61,6 @@ type SkeletonCard = CardProps & {
 const useStyles = makeStyles({
     card: {
         height: '250px',
-        '& .dropdownMenu': {
-            display: 'none',
-        },
-        '&:hover .dropdownMenu': {
-            display: 'flex',
-        },
     },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
@@ -90,7 +86,7 @@ export function CardDropdown(props: CardDropdownProps & CardActionsProps) {
     const classes = useStyles()
     const [isOpen, setOpen] = useState<boolean>(false)
     const actionSelect = (event: React.SyntheticEvent) => {
-        event?.stopPropagation()
+        // event?.stopPropagation()
         setOpen(!isOpen)
         props.onSelect(event)
     }
@@ -159,7 +155,7 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
                         </CardActions>
                     )}
                     <CardHeaderMain>
-                        <AcmTemplateIcon />
+                        {cardHeader?.hasIcon && <AcmTemplateIcon />}
                         <CardTitle>{cardHeader?.title}</CardTitle>
                         <p className={classes.headerDescription}>{cardHeader?.description}</p>
                     </CardHeaderMain>
