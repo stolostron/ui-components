@@ -1,17 +1,41 @@
-import { Card, CardBody, Page, PageSection, PageSectionVariants, Text, TextContent } from '@patternfly/react-core'
+import {
+    Card,
+    CardBody,
+    Page,
+    PageSection,
+    PageSectionVariants,
+    Title,
+    Split,
+    SplitItem,
+    PageBreadcrumb,
+    Breadcrumb,
+    BreadcrumbItem,
+} from '@patternfly/react-core'
 import React, { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 
 export function AcmPage(props: { children: ReactNode }) {
     return <Page style={{ height: '100vh' }}>{props.children}</Page>
 }
 
-export function AcmPageHeader(props: { title: string }) {
+export function AcmPageHeader(props: {
+    title: string
+    breadcrumb?: { text: string; to: string }[]
+    actions?: React.ReactNode
+}) {
     return (
-        <PageSection variant={PageSectionVariants.light}>
-            <TextContent>
-                <Text component="h1">{props.title}</Text>
-            </TextContent>
-        </PageSection>
+        <React.Fragment>
+            <AcmBreadcrumb breadcrumb={props.breadcrumb} />
+            <PageSection variant={PageSectionVariants.light}>
+                <Split>
+                    <SplitItem>
+                        <Title headingLevel="h1">{props.title}</Title>
+                    </SplitItem>
+                    <SplitItem isFilled />
+                    <SplitItem>{props.actions}</SplitItem>
+                </Split>
+            </PageSection>
+        </React.Fragment>
     )
 }
 
@@ -23,4 +47,30 @@ export function AcmPageCard(props: { children: ReactNode }) {
             </Card>
         </PageSection>
     )
+}
+
+export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to: string }[] | undefined }) {
+    const { breadcrumb = [] } = props
+    if (breadcrumb.length) {
+        return (
+            <PageBreadcrumb>
+                <Breadcrumb>
+                    {breadcrumb.map((crumb, i) => (
+                        <BreadcrumbItem key={crumb.to}>
+                            {breadcrumb.length > 1 && i === breadcrumb.length - 1 ? (
+                                <a aria-current="page" className="pf-c-breadcrumb__link pf-m-current">
+                                    {crumb.text}
+                                </a>
+                            ) : (
+                                <Link to={crumb.to} className="pf-c-breadcrumb__link">
+                                    {crumb.text}
+                                </Link>
+                            )}
+                        </BreadcrumbItem>
+                    ))}
+                </Breadcrumb>
+            </PageBreadcrumb>
+        )
+    }
+    return null
 }

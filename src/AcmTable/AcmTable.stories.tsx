@@ -3,6 +3,7 @@ import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 import { AcmTable } from '../AcmTable/AcmTable'
+import { AcmTableLoading } from '../AcmTableLoading/AcmTableLoading'
 
 interface IExampleData {
     uid: number
@@ -101,6 +102,10 @@ export function Table() {
             emptyState={<AcmEmptyState title="No filtered results found" showIcon={true} />}
         />
     )
+}
+
+export function TableLoading() {
+    return <AcmTableLoading />
 }
 
 export const exampleData: IExampleData[] = [

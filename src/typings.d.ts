@@ -5,3 +5,8 @@ declare module '*.svg' {
 }
 
 declare module '*.png'
+
+declare module 'react-tag-autocomplete' {
+    const ReactTags: any
+    export default ReactTags
+}
