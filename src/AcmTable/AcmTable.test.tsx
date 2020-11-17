@@ -3,7 +3,6 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React, { useState } from 'react'
-import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 import { AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
@@ -26,7 +25,7 @@ describe('AcmTable', () => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
-                plural="examples"
+                plural="addresses"
                 items={items}
                 columns={[
                     {
@@ -103,7 +102,6 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
-                emptyState={<AcmEmptyState title="Empty state title" />}
             />
         )
     }
@@ -215,12 +213,14 @@ describe('AcmTable', () => {
         userEvent.click(getByLabelText('Go to next page'))
         expect(getByLabelText('Current page')).toHaveValue(2)
     })
-    test('should show the empty state when zero results', () => {
-        const { getByPlaceholderText, queryByText } = render(<Table />)
-        expect(queryByText('Empty state title')).toBeNull()
+    test('should show the empty state when filtered results', () => {
+        const { getByPlaceholderText, queryByText, getByText } = render(<Table />)
+        expect(queryByText('No results found')).toBeNull()
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'NOSEARCHRESULTS')
-        expect(queryByText('Empty state title')).toBeVisible()
+        expect(queryByText('No results found')).toBeVisible()
+        getByText('Clear all filters').click()
+        expect(queryByText('No results found')).toBeNull()
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
