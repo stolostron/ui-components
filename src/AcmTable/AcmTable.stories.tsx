@@ -1,9 +1,7 @@
-import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
-import React, { useState } from 'react'
-import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
+import React, { useEffect, useState } from 'react'
+import { AcmPage, AcmPageCard } from '../AcmPage/AcmPage'
 import { AcmTable } from '../AcmTable/AcmTable'
-import { AcmTableLoading } from '../AcmTableLoading/AcmTableLoading'
 
 interface IExampleData {
     uid: number
@@ -21,92 +19,134 @@ export default {
 
 export function Table() {
     const testItems = exampleData.slice(0, 105)
-    const [items, setItems] = useState<IExampleData[]>(testItems)
+    const [items, setItems] = useState<IExampleData[]>()
+    useEffect(() => {
+        setTimeout(() => setItems(testItems), 1000)
+    }, [])
     return (
-        <AcmTable<IExampleData>
-            plural="examples"
-            items={items}
-            columns={[
-                {
-                    header: 'First Name',
-                    sort: 'firstName',
-                    cell: 'firstName',
-                    search: 'firstName',
-                },
-                {
-                    header: 'Last Name',
-                    sort: 'last_name',
-                    cell: 'last_name',
-                    search: 'last_name',
-                },
-                {
-                    header: 'EMail',
-                    sort: 'email',
-                    cell: 'email',
-                    search: 'email',
-                },
-                {
-                    header: 'Gender',
-                    sort: 'gender',
-                    cell: 'gender',
-                    search: 'gender',
-                },
-                {
-                    header: 'IP Address',
-                    sort: 'ip_address',
-                    cell: 'ip_address',
-                    search: 'ip_address',
-                },
-                {
-                    header: 'UID',
-                    tooltip: 'Tooltip Example',
-                    sort: 'uid',
-                    cell: 'uid',
-                    search: 'uid',
-                },
-            ]}
-            keyFn={(item: IExampleData) => item.uid.toString()}
-            tableActions={[
-                {
-                    id: 'create',
-                    title: 'Create address',
-                    click: () => {
-                        alert('Not implemented')
-                    },
-                },
-            ]}
-            rowActions={[
-                {
-                    id: 'delete',
-                    title: 'Delete item',
-                    click: (item: IExampleData) => {
-                        setItems(items.filter((i) => i.uid !== item.uid))
-                    },
-                },
-            ]}
-            bulkActions={[
-                {
-                    id: 'delete',
-                    title: 'Delete items',
-                    click: (it: IExampleData[]) => {
-                        setItems(items.filter((i) => !it.find((item) => item.uid === i.uid)))
-                    },
-                },
-            ]}
-            extraToolbarControls={
-                <ToggleGroup>
-                    <ToggleGroupItem isSelected={true} text="View 1" />
-                    <ToggleGroupItem text="View 2" />
-                </ToggleGroup>
-            }
-            emptyState={<AcmEmptyState title="No filtered results found" showIcon={true} />}
-        />
+        <AcmPage>
+            <AcmPageCard>
+                <AcmTable<IExampleData>
+                    plural="addresses"
+                    items={items}
+                    columns={columns}
+                    keyFn={(item: IExampleData) => item.uid.toString()}
+                    tableActions={[
+                        {
+                            id: 'create',
+                            title: 'Create address',
+                            click: () => {
+                                alert('Not implemented')
+                            },
+                        },
+                    ]}
+                    rowActions={[
+                        {
+                            id: 'delete',
+                            title: 'Delete item',
+                            click: (item: IExampleData) => {
+                                setItems(items ? items.filter((i) => i.uid !== item.uid) : [])
+                            },
+                        },
+                    ]}
+                    bulkActions={[
+                        {
+                            id: 'delete',
+                            title: 'Delete items',
+                            click: (it: IExampleData[]) => {
+                                setItems(items ? items.filter((i) => !it.find((item) => item.uid === i.uid)) : [])
+                            },
+                        },
+                    ]}
+                />
+            </AcmPageCard>
+        </AcmPage>
+    )
+}
+
+export function TableEmpty() {
+    return (
+        <AcmPage>
+            <AcmPageCard>
+                <AcmTable<IExampleData>
+                    plural="addresses"
+                    items={[]}
+                    columns={columns}
+                    keyFn={(item: IExampleData) => item.uid.toString()}
+                    tableActions={[
+                        {
+                            id: 'create',
+                            title: 'Create address',
+                            click: () => {
+                                alert('Not implemented')
+                            },
+                        },
+                    ]}
+                    rowActions={[]}
+                    bulkActions={[]}
+                />
+            </AcmPageCard>
+        </AcmPage>
     )
 }
 
 export function TableLoading() {
-    return <AcmTableLoading />
+    return (
+        <AcmPage>
+            <AcmPageCard>
+                <AcmTable<IExampleData>
+                    plural="addresses"
+                    items={undefined}
+                    columns={columns}
+                    keyFn={(item: IExampleData) => item.uid.toString()}
+                    tableActions={[]}
+                    rowActions={[]}
+                    bulkActions={[]}
+                />
+            </AcmPageCard>
+        </AcmPage>
+    )
 }
+
+const columns = [
+    {
+        header: 'First Name',
+        sort: 'firstName',
+        cell: 'firstName',
+        search: 'firstName',
+    },
+    {
+        header: 'Last Name',
+        sort: 'last_name',
+        cell: 'last_name',
+        search: 'last_name',
+    },
+    {
+        header: 'EMail',
+        sort: 'email',
+        cell: 'email',
+        search: 'email',
+    },
+    {
+        header: 'Gender',
+        sort: 'gender',
+        cell: 'gender',
+        search: 'gender',
+    },
+    {
+        header: 'IP Address',
+        sort: 'ip_address',
+        cell: 'ip_address',
+        search: 'ip_address',
+    },
+    {
+        header: 'UID',
+        tooltip: 'Tooltip Example',
+        sort: 'uid',
+        cell: 'uid',
+        search: 'uid',
+    },
+]
 
 export const exampleData: IExampleData[] = [
     {

@@ -3,7 +3,6 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React, { useState } from 'react'
-import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 import { AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
@@ -22,11 +21,11 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
-    const Table = () => {
+    const Table = ({ bulkActions = false }) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
-                plural="examples"
+                plural="addresses"
                 items={items}
                 columns={[
                     {
@@ -83,23 +82,26 @@ describe('AcmTable', () => {
                         },
                     },
                 ]}
-                bulkActions={[
-                    {
-                        id: 'delete',
-                        title: 'Delete items',
-                        click: (items: IExampleData[]) => {
-                            setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
-                            bulkDeleteAction()
-                        },
-                    },
-                ]}
+                bulkActions={
+                    bulkActions
+                        ? [
+                              {
+                                  id: 'delete',
+                                  title: 'Delete items',
+                                  click: (items: IExampleData[]) => {
+                                      setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
+                                      bulkDeleteAction()
+                                  },
+                              },
+                          ]
+                        : []
+                }
                 extraToolbarControls={
                     <ToggleGroup>
                         <ToggleGroupItem isSelected={true} text="View 1" />
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
-                emptyState={<AcmEmptyState title="Empty state title" />}
             />
         )
     }
@@ -115,7 +117,7 @@ describe('AcmTable', () => {
         expect(createAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with select all', () => {
-        const { getByLabelText, queryByText, getByText } = render(<Table />)
+        const { getByLabelText, queryByText, getByText } = render(<Table bulkActions={true} />)
         expect(getByLabelText('Select all rows')).toBeVisible()
         userEvent.click(getByLabelText('Select all rows'))
         expect(queryByText('Delete items')).toBeVisible()
@@ -123,7 +125,7 @@ describe('AcmTable', () => {
         expect(bulkDeleteAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with single selection', () => {
-        const { queryByText, getAllByRole, getByLabelText } = render(<Table />)
+        const { queryByText, getAllByRole, getByLabelText } = render(<Table bulkActions={true} />)
         expect(queryByText('Delete items')).toBeNull()
         expect(getAllByRole('checkbox')[1]).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
@@ -168,8 +170,9 @@ describe('AcmTable', () => {
         userEvent.type(getByPlaceholderText('Search'), 'A{backspace}')
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
     })
-    test('can be sorted', () => {
-        const { getByText, container } = render(<Table />)
+
+    const sortTest = (bulkActions: boolean) => {
+        const { getByText, container } = render(<Table bulkActions={bulkActions} />)
 
         // sort by string
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
@@ -185,6 +188,13 @@ describe('AcmTable', () => {
         // sort with function
         userEvent.click(getByText('IP Address'))
         expect(sortFunction).toHaveBeenCalled()
+    }
+
+    test('can be sorted', () => {
+        sortTest(false)
+    })
+    test('can be sorted with bulk actions', () => {
+        sortTest(true)
     })
     test('page size can be updated', () => {
         const { getByLabelText, getByText, container } = render(<Table />)
@@ -203,12 +213,14 @@ describe('AcmTable', () => {
         userEvent.click(getByLabelText('Go to next page'))
         expect(getByLabelText('Current page')).toHaveValue(2)
     })
-    test('should show the empty state when zero results', () => {
-        const { getByPlaceholderText, queryByText } = render(<Table />)
-        expect(queryByText('Empty state title')).toBeNull()
+    test('should show the empty state when filtered results', () => {
+        const { getByPlaceholderText, queryByText, getByText } = render(<Table />)
+        expect(queryByText('No results found')).toBeNull()
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'NOSEARCHRESULTS')
-        expect(queryByText('Empty state title')).toBeVisible()
+        expect(queryByText('No results found')).toBeVisible()
+        getByText('Clear all filters').click()
+        expect(queryByText('No results found')).toBeNull()
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
