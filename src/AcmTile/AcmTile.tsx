@@ -15,17 +15,17 @@ const useStyles = makeStyles({
     tileRoot: {
         display: 'flex',
         alignItems: 'center',
-        padding: '0 1rem',
+        padding: '0 1.5rem',
         height: '64px',
         width: '275px',
     },
     loading: {
-        width: 'calc(275px - 2rem)',
+        width: 'calc(275px - 3rem)',
     },
     relatedResourceContainer: {
         display: 'flex',
-        alignItems: 'baseline',
-        width: 'calc(275px - 2rem)',
+        alignItems: 'center',
+        width: 'calc(275px - 3rem)',
     },
     relatedResourceCount: {
         fontSize: '28px',
@@ -35,9 +35,10 @@ const useStyles = makeStyles({
     relatedResourceKind: {
         fontSize: '14px',
         fontWeight: 'bold',
-        whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
+        textAlign: 'left',
+        lineHeight: '18px',
     },
 })
 

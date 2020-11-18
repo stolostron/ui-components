@@ -17,13 +17,22 @@ export const Tile = () => {
     const [selected, toggleSelected] = useState<boolean>(false)
 
     return (
-        <AcmTile
-            loading={false}
-            isSelected={selected}
-            title={''}
-            onClick={() => toggleSelected(!selected)}
-            relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
-        />
+        <div style={{ display: 'flex' }}>
+            <AcmTile
+                loading={false}
+                isSelected={selected}
+                title={''}
+                onClick={() => toggleSelected(!selected)}
+                relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
+            />
+            <AcmTile
+                loading={false}
+                isSelected={selected}
+                title={''}
+                onClick={() => toggleSelected(!selected)}
+                relatedResourceData={{ count: 1, kind: 'veryShort' }}
+            />
+        </div>
     )
 }
 
