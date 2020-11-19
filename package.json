@@ -24,6 +24,7 @@
         "url": "git+https://github.com/open-cluster-management/ui-components.git"
     },
     "dependencies": {
+        "@material-ui/styles": "^4.10.0",
         "@patternfly/react-core": "^4.75.2",
         "@patternfly/react-table": "^4.19.5",
         "fuse.js": "^6.4.3",
@@ -35,6 +36,7 @@
         "@babel/core": "^7.12.3",
         "@babel/preset-env": "^7.12.1",
         "@babel/preset-react": "^7.12.5",
+        "@material-ui/styles": "^4.10.0",
         "@storybook/addon-a11y": "^6.0.28",
         "@storybook/addon-essentials": "^6.0.28",
         "@storybook/addon-storysource": "^6.0.28",
