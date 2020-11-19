@@ -1,15 +1,15 @@
 import {
+    Breadcrumb,
+    BreadcrumbItem,
     Card,
     CardBody,
+    Flex,
+    FlexItem,
     Page,
+    PageBreadcrumb,
     PageSection,
     PageSectionVariants,
     Title,
-    Split,
-    SplitItem,
-    PageBreadcrumb,
-    Breadcrumb,
-    BreadcrumbItem,
 } from '@patternfly/react-core'
 import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
@@ -27,13 +27,12 @@ export function AcmPageHeader(props: {
         <React.Fragment>
             <AcmBreadcrumb breadcrumb={props.breadcrumb} />
             <PageSection variant={PageSectionVariants.light}>
-                <Split>
-                    <SplitItem>
+                <Flex style={{ minHeight: '36px' }}>
+                    <FlexItem grow={{ default: 'grow' }} alignSelf={{ default: 'alignSelfCenter' }}>
                         <Title headingLevel="h1">{props.title}</Title>
-                    </SplitItem>
-                    <SplitItem isFilled />
-                    <SplitItem>{props.actions}</SplitItem>
-                </Split>
+                    </FlexItem>
+                    <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>{props.actions}</FlexItem>
+                </Flex>
             </PageSection>
         </React.Fragment>
     )
