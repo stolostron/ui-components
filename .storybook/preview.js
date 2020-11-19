@@ -4,7 +4,7 @@ export const parameters = {
         values: [
             { 
                 name: 'pf-grey', 
-                value: 'var(--pf-global--BackgroundColor--light-300)' 
+                value: '#f0f0f0' 
             },
         ]
     }
