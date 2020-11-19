@@ -32,7 +32,7 @@ const ToggleIcon = (props: { open: boolean; toggle: () => void }) => {
 }
 
 export function AcmDescriptionList(props: {
-    title: string | React.ReactNode
+    title: string
     leftItems: ListItems[]
     rightItems?: ListItems[] | undefined
 }) {
