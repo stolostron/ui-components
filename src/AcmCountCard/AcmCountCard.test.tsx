@@ -67,6 +67,21 @@ describe('AcmCountCard', () => {
         />
     )
 
+    const SuggestedSearchCardLargeCount = () => (
+        <AcmCountCard
+            id="ACM Suggested Search Card"
+            cardHeader={{
+                title: 'Workloads',
+                description: 'A pre-defined search to help you review your workloads',
+                actions: [{ text: 'Share', handleAction: shareAction }],
+            }}
+            onClick={cardAction()}
+            count={9999}
+            countTitle="Results"
+            isSelectable={true}
+        />
+    )
+
     test('has zero accessibility defects', async () => {
         const { container, getAllByLabelText } = render(<SuggestedSearchCardWithActions />)
         expect(await axe(container)).toHaveNoViolations()
@@ -81,14 +96,19 @@ describe('AcmCountCard', () => {
         expect(cardAction).toHaveBeenCalled()
     })
 
-    test('Render card with no header', () => {
+    test('render card with no header', () => {
         const { queryByText } = render(<SuggestedSearchCardWithOutHeader />)
         expect(queryByText('Results')).toBeInTheDocument()
     })
 
-    test('Render card with zero actions', () => {
+    test('render card with zero actions', () => {
         const { queryByLabelText } = render(<SuggestedSearchCardWithOutActions />)
         expect(queryByLabelText('Actions')).not.toBeInTheDocument()
+    })
+
+    test('render card with large count', () => {
+        const { getByText } = render(<SuggestedSearchCardLargeCount />)
+        expect(getByText('9.9k')).toBeInTheDocument()
     })
 
     test('supports single menu action', () => {

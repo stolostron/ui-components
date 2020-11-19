@@ -137,8 +137,11 @@ export const loadingCard = (props: SkeletonCard) => {
 
 export const AcmCountCard = (props: AcmCountCardProps) => {
     const classes = useStyles(props)
-    const { id, loading, count, countTitle, cardFooter, cardHeader } = props
-
+    const { id, loading, countTitle, cardFooter, cardHeader } = props
+    let count = `${props.count}`
+    if (parseInt(count) >= 1000) {
+        count = `${(parseInt(count) - (parseInt(count) % 100)) / 1000}k`
+    }
     if (loading) return loadingCard(props)
     return (
         <Card
