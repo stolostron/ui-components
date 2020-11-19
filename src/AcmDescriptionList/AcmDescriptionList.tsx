@@ -6,7 +6,6 @@ import {
     DescriptionListDescription,
     Card,
     CardTitle,
-    CardHeader,
     CardBody,
     Split,
     SplitItem,
@@ -16,6 +15,12 @@ import {
     GridItem,
 } from '@patternfly/react-core'
 import { AngleDownIcon, AngleRightIcon } from '@patternfly/react-icons'
+import { makeStyles } from '@material-ui/styles'
+
+const useStyles = makeStyles({
+    toggleContainer: { alignSelf: 'center' },
+    cardBody: { borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: '40px' },
+})
 
 export type ListItems = {
     key: string
@@ -37,7 +42,7 @@ export function AcmDescriptionList(props: {
     rightItems?: ListItems[] | undefined
 }) {
     const [open, setOpen] = useState<boolean>(true)
-    const toggle = () => setOpen(!open)
+    const classes = useStyles()
     return (
         <Card>
             <Split>
@@ -45,13 +50,12 @@ export function AcmDescriptionList(props: {
                     <CardTitle>{props.title}</CardTitle>
                 </SplitItem>
                 <SplitItem isFilled></SplitItem>
-                <SplitItem style={{ alignSelf: 'center' }}>
-                    <ToggleIcon open={open} toggle={toggle} />
+                <SplitItem className={classes.toggleContainer}>
+                    <ToggleIcon open={open} toggle={() => setOpen(!open)} />
                 </SplitItem>
             </Split>
             {open && (
-                <CardBody style={{ borderTop: '1px solid rgba(0,0,0,0.1)' }}>
-                    <CardHeader /> {/* creates space */}
+                <CardBody className={classes.cardBody}>
                     <Grid sm={12} md={6}>
                         <GridItem>
                             <List items={props.leftItems} />
@@ -74,7 +78,7 @@ const List = (props: { items: ListItems[] }) => {
             {props.items.map(({ key, keyAction, value }) => (
                 <DescriptionListGroup key={key}>
                     <DescriptionListTerm>
-                        {key} {keyAction && <span>{keyAction}</span>}
+                        {key} {keyAction}
                     </DescriptionListTerm>
                     <DescriptionListDescription>{value ?? '-'}</DescriptionListDescription>
                 </DescriptionListGroup>
