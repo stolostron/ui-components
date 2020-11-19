@@ -63,15 +63,28 @@ type SkeletonCard = CardProps & {
 const useStyles = makeStyles({
     card: {
         height: (props: AcmCountCardProps) => (props.cardFooter ? 'auto' : '250px'),
+        maxWidth: '278px',
+        margin: '8px',
     },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
         color: 'var(--pf-global--palette--black-700)',
     },
+    actions: {
+        width: '1rem',
+        padding: '0',
+        '&& ul': {
+            right: '-1rem',
+        },
+    },
     count: {
         color: (props: AcmCountCardProps) =>
             props.count !== 0 ? 'var(--pf-global--link--Color)' : 'var(--pf-global--palette--black-900)',
         fontSize: 'var(--pf-global--FontSize--3xl)',
+    },
+    body: {
+        position: (props: AcmCountCardProps) => (props.cardHeader ? 'absolute' : 'relative'),
+        bottom: '0',
     },
     countTitle: {
         fontSize: 'var(--pf-global--FontSize--sm)',
@@ -115,6 +128,8 @@ export const loadingCard = (props: SkeletonCard) => {
     const useStyles = makeStyles({
         cardSkeleton: {
             height: '250px',
+            width: '278px',
+            margin: '8px',
         },
     })
     const classes = useStyles(props)
@@ -154,7 +169,7 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
             {cardHeader && (
                 <CardHeader>
                     {cardHeader.actions && cardHeader.actions.length > 0 && (
-                        <CardActions>
+                        <CardActions className={classes.actions}>
                             <CardDropdown dropdownItems={cardHeader.actions} />
                         </CardActions>
                     )}
@@ -165,7 +180,7 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
                     </CardHeaderMain>
                 </CardHeader>
             )}
-            <CardBody>
+            <CardBody className={classes.body}>
                 <div className={classes.count}>{count}</div>
                 <div className={classes.countTitle}>{countTitle}</div>
             </CardBody>

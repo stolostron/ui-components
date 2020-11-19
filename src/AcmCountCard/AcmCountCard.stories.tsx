@@ -1,7 +1,7 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { Meta } from '@storybook/react'
-import { AcmCountCard, loadingCard } from './AcmCountCard'
+import { AcmCountCard } from './AcmCountCard'
 
 const meta: Meta = {
     title: 'Count Card',
@@ -22,41 +22,75 @@ const savedSearchCardActions = [
 
 export const SuggestedSearchCard = () => {
     return (
-        <AcmCountCard
-            cardHeader={{
-                hasIcon: true,
-                title: 'Workloads',
-                description: 'A pre-defined search to help you review your workloads',
-                actions: [...suggestedSearchCardActions],
-                onActionClick: (e) => {
-                    console.log(e.target)
-                },
-            }}
-            onCardClick={handleCardClick}
-            count={13000}
-            countTitle="Results"
-            isSelectable={true}
-        />
+        <div style={{ display: 'flex' }}>
+            <AcmCountCard
+                cardHeader={{
+                    hasIcon: true,
+                    title: 'Workloads',
+                    description: 'A pre-defined search to help you review your workloads',
+                    actions: [...suggestedSearchCardActions],
+                    onActionClick: (e) => {
+                        console.log(e.target)
+                    },
+                }}
+                onCardClick={handleCardClick}
+                count={13000}
+                countTitle="Results"
+                isSelectable={true}
+            />
+            <AcmCountCard
+                cardHeader={{
+                    hasIcon: true,
+                    title: 'Unhealthy Pods',
+                    description: 'Show pods with unhealthy status',
+                    actions: [...suggestedSearchCardActions],
+                    onActionClick: (e) => {
+                        console.log(e.target)
+                    },
+                }}
+                onCardClick={handleCardClick}
+                count={0}
+                countTitle="Unhealthy"
+                isSelectable={true}
+            />
+        </div>
     )
 }
 
 export const SavedSearchCard = () => {
     return (
-        <AcmCountCard
-            cardHeader={{
-                hasIcon: false,
-                title: 'Test Search',
-                description: 'Custom description with max amount of 60 characters',
-                actions: [...savedSearchCardActions],
-                onActionClick: (e) => {
-                    console.log(e.target)
-                },
-            }}
-            onCardClick={handleCardClick}
-            count={0}
-            countTitle="Results"
-            isSelectable={true}
-        />
+        <div style={{ display: 'flex' }}>
+            <AcmCountCard
+                cardHeader={{
+                    hasIcon: false,
+                    title: 'Test Search 1',
+                    description: 'Custom description with max amount of 60 characters',
+                    actions: [...savedSearchCardActions],
+                    onActionClick: (e) => {
+                        console.log(e.target)
+                    },
+                }}
+                onCardClick={handleCardClick}
+                count={1234}
+                countTitle="Results"
+                isSelectable={true}
+            />
+            <AcmCountCard
+                cardHeader={{
+                    hasIcon: false,
+                    title: 'Test Search 2',
+                    description: 'Custom description with max amount of 60 characters',
+                    actions: [...savedSearchCardActions],
+                    onActionClick: (e) => {
+                        console.log(e.target)
+                    },
+                }}
+                onCardClick={handleCardClick}
+                count={0}
+                countTitle="Results"
+                isSelectable={true}
+            />
+        </div>
     )
 }
 
@@ -73,4 +107,12 @@ export const ClustersOverview = () => {
     )
 }
 
-export const CardSkeleton = () => loadingCard({ id: 'ACM Skeleton Card' })
+export const CardSkeleton = () => {
+    return (
+        <div style={{ display: 'flex' }}>
+            <AcmCountCard loading />
+            <AcmCountCard loading />
+            <AcmCountCard loading />
+        </div>
+    )
+}
