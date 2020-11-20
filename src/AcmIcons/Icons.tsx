@@ -1,8 +1,7 @@
 import React from 'react'
 
 export const AcmTemplateIcon = () => (
-    <svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1">
-        <title>template icon</title>
+    <svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" role="presentation">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g transform="translate(-338.000000, -653.000000)">
                 <g transform="translate(314.000000, 592.000000)">
@@ -24,8 +23,7 @@ export const AcmTemplateIcon = () => (
 )
 
 export const CloudIcon = () => (
-    <svg width="40px" height="25px" viewBox="0 0 40 25" version="1.1">
-        <title>Cloud</title>
+    <svg width="40px" height="25px" viewBox="0 0 40 25" version="1.1" role="presentation">
         <defs>
             <path
                 d="M10,25.6285714 L32.3714286,25.6285714 C35.870192,25.6588881 38.7953208,22.9755741 39.0662636,19.4871855 C39.3372064,15.9987969 36.8614844,12.8959994 33.4,12.3857143 C33.0060026,7.13943676 29.304322,2.73144974 24.2051491,1.4364217 C19.1059762,0.141393666 13.749564,2.24891268 10.9,6.67142857 L10.0142857,6.67142857 C4.78336016,6.67142857 0.542857143,10.9119316 0.542857143,16.1428571 C0.542857143,21.3737827 4.78336016,25.6142857 10.0142857,25.6142857 L10,25.6285714 Z M10,8.82857143 C10.4213916,8.83373106 10.8417289,8.87194354 11.2571429,8.94285714 C11.7029069,9.01953032 12.1488042,8.80801494 12.3714286,8.41428571 C14.6181107,4.39851991 19.2951382,2.40897709 23.7463213,3.57556361 C28.1975045,4.74215013 31.2974852,8.76992697 31.2857143,13.3714286 C31.2934083,13.9599458 31.7686256,14.4351631 32.3571429,14.4428571 C34.0331403,14.3486122 35.6237738,15.1891874 36.4901681,16.6269671 C37.3565625,18.0647468 37.3565625,19.8638247 36.4901681,21.3016044 C35.6237738,22.7393841 34.0331403,23.5799592 32.3571429,23.4857143 L10,23.4857143 C5.95254176,23.4857143 2.67142857,20.2046011 2.67142857,16.1571429 C2.67142857,12.1096846 5.95254176,8.82857143 10,8.82857143 L10,8.82857143 Z"
@@ -46,7 +44,7 @@ export const CloudIcon = () => (
 )
 
 export const GCPIcon = () => (
-    <svg width="40px" height="33px" viewBox="0 0 40 33" version="1.1">
+    <svg width="40px" height="33px" viewBox="0 0 40 33" role="presentation">
         <title>Google Cloud Platform</title>
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g transform="translate(-338.000000, -204.000000)" fillRule="nonzero">
@@ -74,8 +72,7 @@ export const GCPIcon = () => (
 )
 
 export const AzureIcon = () => (
-    <svg width="40px" height="32px" viewBox="0 0 40 32" version="1.1">
-        <title>Microsoft Azure</title>
+    <svg width="40px" height="32px" viewBox="0 0 40 32" role="presentation">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g transform="translate(-961.000000, -372.000000)" fill="#0089D6" fillRule="nonzero">
                 <g transform="translate(961.000000, 372.000000)">
@@ -87,8 +84,7 @@ export const AzureIcon = () => (
 )
 
 export const BareMetalIcon = () => (
-    <svg width="45px" height="45px" viewBox="0 0 45 45" version="1.1">
-        <title>Bare metal</title>
+    <svg width="45px" height="45px" viewBox="0 0 45 45" role="presentation">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g transform="translate(-381.000000, -956.000000)" fill="#000000">
                 <g transform="translate(380.000000, 955.000000)">
@@ -100,7 +96,7 @@ export const BareMetalIcon = () => (
 )
 
 export const AWSIcon = () => (
-    <svg x="0px" y="0px" viewBox="0 0 304 182" xmlSpace="preserve">
+    <svg x="0px" y="0px" viewBox="0 0 304 182" xmlSpace="preserve" role="presentation">
         <g>
             <path
                 fill="#252F3E"
@@ -147,7 +143,7 @@ export const AWSIcon = () => (
 )
 
 export const VMWareIcon = () => (
-    <svg width="38px" height="38px" viewBox="0 0 38 38">
+    <svg width="38px" height="38px" viewBox="0 0 38 38" role="presentation">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g transform="translate(-422.000000, -1029.000000)">
                 <g transform="translate(71.000000, 573.000000)">

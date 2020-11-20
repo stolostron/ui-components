@@ -3,16 +3,33 @@ import { AcmTemplateIcon, AWSIcon, GCPIcon, AzureIcon, CloudIcon, BareMetalIcon,
 import ibmCloud from '../assets/IBM-Cloud.png'
 
 export enum AcmIconVariant {
-    template = (<AcmTemplateIcon />),
-    aws = (<AWSIcon />),
-    gcp = (<GCPIcon />),
-    azure = (<AzureIcon />),
-    ibm = (<img src={ibmCloud} role="presentation" />),
-    baremetal  = (<BareMetalIcon />),
-    vmware = (<VMWareIcon />),
-    cloud = (<CloudIcon />)
+    template = 'template',
+    aws = 'aws',
+    gcp = 'gcp',
+    azure = 'azure',
+    ibm = 'ibm',
+    baremetal = 'baremetal',
+    vmware = 'vmware',
+    cloud = 'cloud',
 }
 
 export function AcmIcon(props: { icon: AcmIconVariant }) {
-    return props.icon
+    switch (props.icon) {
+        case AcmIconVariant.template:
+            return <AcmTemplateIcon />
+        case AcmIconVariant.aws:
+            return <AWSIcon />
+        case AcmIconVariant.gcp:
+            return <GCPIcon />
+        case AcmIconVariant.azure:
+            return <AzureIcon />
+        case AcmIconVariant.ibm:
+            return <img src={ibmCloud} role="presentation" />
+        case AcmIconVariant.baremetal:
+            return <BareMetalIcon />
+        case AcmIconVariant.vmware:
+            return <VMWareIcon />
+        case AcmIconVariant.cloud:
+            return <CloudIcon />
+    }
 }

@@ -23,7 +23,6 @@ const useStyles = makeStyles({
     },
     providerTitle: {
         fontSize: 'var(--pf-c-title--m-3xl--FontSize)',
-        fontWeight: 'lighter !important',
         lineHeight: 'var(--pf-c-title--m-3xl--LineHeight)',
     },
     iconContainer: {
@@ -99,14 +98,19 @@ export function AcmProviderCard(props: ProviderCardProps) {
                     <CardHeader>
                         <CardHeaderMain>
                             <div className={classes.iconContainer}>
-                                <AcmIcon icon={iconMap[props.provider] ?? iconMap[Provider.other]} />
+                                <AcmIcon icon={iconMap[props.provider]} />
                             </div>
-                            <Title headingLevel="h2" size="3xl" className={classes.providerTitle}>
+                            <Title
+                                headingLevel="h2"
+                                size="3xl"
+                                className={classes.providerTitle}
+                                style={{ fontWeight: 300 }}
+                            >
                                 {props.provider}
                                 {props.danger && (
                                     <ExclamationCircleIcon
                                         color="var(--pf-global--palette--red-100)"
-                                        className={classes.dangerIcon}
+                                        className={`${classes.dangerIcon} danger-icon`}
                                     />
                                 )}
                             </Title>

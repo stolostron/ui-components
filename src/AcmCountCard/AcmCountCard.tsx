@@ -14,7 +14,7 @@ import {
     Skeleton,
     CardActionsProps,
 } from '@patternfly/react-core'
-import { AcmTemplateIcon } from '../AcmIcons/AcmIcons'
+import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/styles'
 
 type CardHeaderActions = {
@@ -174,7 +174,7 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
                         </CardActions>
                     )}
                     <CardHeaderMain>
-                        {cardHeader.hasIcon && <AcmTemplateIcon />}
+                        {cardHeader.hasIcon && <AcmIcon icon={AcmIconVariant.template} />}
                         <CardTitle>{cardHeader.title}</CardTitle>
                         <p className={classes.headerDescription}>{cardHeader.description}</p>
                     </CardHeaderMain>
