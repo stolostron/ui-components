@@ -5,7 +5,7 @@ import { AcmButton } from '../AcmButton/AcmButton'
 type AcmExpandableWrapperProps = {
     headerLabel?: string
     children: React.ReactNode
-    card?: boolean
+    maxHeight?: string
 }
 
 const useStyles = makeStyles({
@@ -23,7 +23,7 @@ const useStyles = makeStyles({
         flex: '1 0 auto',
     },
     hideExtras: {
-        maxHeight: (props: AcmExpandableWrapperProps) => (props.card ? '17rem' : '9.6rem'),
+        maxHeight: (props: AcmExpandableWrapperProps) => props.maxHeight,
         overflow: 'hidden',
     },
     showAllButton: {
