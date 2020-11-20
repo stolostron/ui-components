@@ -18,7 +18,7 @@ import { AngleDownIcon, AngleRightIcon } from '@patternfly/react-icons'
 import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
-    toggleContainer: { alignSelf: 'center' },
+    toggleContainer: { alignSelf: 'center', paddingRight: '12px' },
     cardBody: { borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: '40px' },
 })
 
