@@ -27,10 +27,8 @@
         "@material-ui/styles": "^4.10.0",
         "@patternfly/react-core": "^4.75.2",
         "@patternfly/react-table": "^4.19.5",
-        "@types/lodash": "^4.14.165",
         "fuse.js": "^6.4.3",
         "get-value": "^3.0.1",
-        "lodash": "^4.17.20",
         "react-router-dom": "^5.2.0",
         "react-tag-autocomplete": "^6.1.0"
     },
