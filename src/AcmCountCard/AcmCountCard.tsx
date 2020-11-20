@@ -45,7 +45,6 @@ interface CardDropdownProps {
 }
 
 type AcmCountCardProps = CardProps & {
-    key?: string
     id?: string
     label?: string
     loading?: boolean
@@ -65,6 +64,7 @@ const useStyles = makeStyles({
     card: {
         height: (props: AcmCountCardProps) => (props.cardFooter ? 'auto' : '250px'),
         width: '278px',
+        maxWidth: '278px',
         margin: '8px',
     },
     headerDescription: {
