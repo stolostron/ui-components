@@ -17,24 +17,11 @@ const savedSearchCardActions = [
 ]
 
 export const ExpandableSavedSearchWrapper = () => {
-    return (
-        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'wrapper label'}>
+    const count = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const renderAcmCountCards = count.map((n) => {
+        return (
             <AcmCountCard
-                cardHeader={{
-                    hasIcon: false,
-                    title: 'Test Search 1',
-                    description: 'Custom description with max amount of 60 characters',
-                    actions: [...savedSearchCardActions],
-                    onActionClick: (e) => {
-                        console.log(e.target)
-                    },
-                }}
-                onCardClick={() => console.log('cardclicked')}
-                count={1234}
-                countTitle="Results"
-                isSelectable={true}
-            />
-            <AcmCountCard
+                key={n}
                 cardHeader={{
                     hasIcon: false,
                     title: 'Test Search 2',
@@ -49,180 +36,28 @@ export const ExpandableSavedSearchWrapper = () => {
                 countTitle="Results"
                 isSelectable={true}
             />
-            <AcmCountCard
-                cardHeader={{
-                    hasIcon: false,
-                    title: 'Test Search 3',
-                    description: 'Custom description with max amount of 60 characters',
-                    actions: [...savedSearchCardActions],
-                    onActionClick: (e) => {
-                        console.log(e.target)
-                    },
-                }}
-                onCardClick={() => console.log('cardclicked')}
-                count={1234}
-                countTitle="Results"
-                isSelectable={true}
-            />
-            <AcmCountCard
-                cardHeader={{
-                    hasIcon: false,
-                    title: 'Test Search 4',
-                    description: 'Custom description with max amount of 60 characters',
-                    actions: [...savedSearchCardActions],
-                    onActionClick: (e) => {
-                        console.log(e.target)
-                    },
-                }}
-                onCardClick={() => console.log('cardclicked')}
-                count={0}
-                countTitle="Results"
-                isSelectable={true}
-            />
-            <AcmCountCard
-                cardHeader={{
-                    hasIcon: false,
-                    title: 'Test Search 5',
-                    description: 'Custom description with max amount of 60 characters',
-                    actions: [...savedSearchCardActions],
-                    onActionClick: (e) => {
-                        console.log(e.target)
-                    },
-                }}
-                onCardClick={() => console.log('cardclicked')}
-                count={1234}
-                countTitle="Results"
-                isSelectable={true}
-            />
-            <AcmCountCard
-                cardHeader={{
-                    hasIcon: false,
-                    title: 'Test Search 6',
-                    description: 'Custom description with max amount of 60 characters',
-                    actions: [...savedSearchCardActions],
-                    onActionClick: (e) => {
-                        console.log(e.target)
-                    },
-                }}
-                onCardClick={() => console.log('cardclicked')}
-                count={0}
-                countTitle="Results"
-                isSelectable={true}
-            />
-            <AcmCountCard
-                cardHeader={{
-                    hasIcon: false,
-                    title: 'Test Search 7',
-                    description: 'Custom description with max amount of 60 characters',
-                    actions: [...savedSearchCardActions],
-                    onActionClick: (e) => {
-                        console.log(e.target)
-                    },
-                }}
-                onCardClick={() => console.log('cardclicked')}
-                count={1234}
-                countTitle="Results"
-                isSelectable={true}
-            />
-            <AcmCountCard
-                cardHeader={{
-                    hasIcon: false,
-                    title: 'Test Search 8',
-                    description: 'Custom description with max amount of 60 characters',
-                    actions: [...savedSearchCardActions],
-                    onActionClick: (e) => {
-                        console.log(e.target)
-                    },
-                }}
-                onCardClick={() => console.log('cardclicked')}
-                count={0}
-                countTitle="Results"
-                isSelectable={true}
-            />
+        )
+    })
+    return (
+        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'wrapper label'}>
+            {renderAcmCountCards}
         </AcmExpandableWrapper>
     )
 }
 
 export const ExpandableRelatedResWrapper = () => {
-    return (
-        <AcmExpandableWrapper maxHeight={'9rem'}>
+    const count = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const renderAcmTiles = count.map((n) => {
+        return (
             <AcmTile
+                key={n}
                 loading={false}
                 isSelected={false}
                 title={''}
                 onClick={() => console.log('tile clicked')}
                 relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
             />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 1, kind: 'veryShort' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 1, kind: 'veryShort' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 1, kind: 'veryShort' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 1, kind: 'veryShort' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 1, kind: 'veryShort' }}
-            />
-            <AcmTile
-                loading={false}
-                isSelected={false}
-                title={''}
-                onClick={() => console.log('tile clicked')}
-                relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
-            />
-        </AcmExpandableWrapper>
-    )
+        )
+    })
+    return <AcmExpandableWrapper maxHeight={'9rem'}>{renderAcmTiles}</AcmExpandableWrapper>
 }

@@ -45,7 +45,7 @@ interface CardDropdownProps {
 }
 
 type AcmCountCardProps = CardProps & {
-    key?: string
+    key?: number
     id?: string
     label?: string
     loading?: boolean
