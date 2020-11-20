@@ -1,10 +1,10 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { AcmTemplateIcon } from './AcmIcons'
+import { AcmIcon, AcmIconVariant } from './AcmIcons'
 
 describe('AcmIcon', () => {
-    const Icon = () => <AcmTemplateIcon />
+    const Icon = () => <AcmIcon icon={AcmIconVariant.template} />
 
     test('renders', () => {
         const { getByText } = render(<Icon />)
