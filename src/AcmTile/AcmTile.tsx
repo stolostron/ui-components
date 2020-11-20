@@ -17,15 +17,14 @@ const useStyles = makeStyles({
         alignItems: 'center',
         padding: '0 1.5rem',
         height: '64px',
-        width: '275px',
-    },
-    loading: {
-        width: 'calc(275px - 3rem)',
+        overflow: 'hidden',
+        '& >div:last-child': {
+            width: '100%',
+        },
     },
     relatedResourceContainer: {
         display: 'flex',
         alignItems: 'center',
-        width: 'calc(275px - 3rem)',
     },
     relatedResourceCount: {
         fontSize: '28px',

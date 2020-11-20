@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { AcmButton } from '../AcmButton/AcmButton'
+import { Title, Grid, GridItem } from '@patternfly/react-core'
 
 type AcmExpandableWrapperProps = {
     headerLabel?: string
@@ -14,20 +15,14 @@ const useStyles = makeStyles({
         flexDirection: 'column',
     },
     wrapperContainer: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill,minmax(18rem,0fr))',
-        gridGap: '1rem',
         margin: '1rem 0',
-    },
-    wrapperItem: {
-        flex: '1 0 auto',
     },
     hideExtras: {
         maxHeight: (props: AcmExpandableWrapperProps) => props.maxHeight,
         overflow: 'hidden',
     },
     showAllButton: {
-        margin: 'auto',
+        margin: '1rem auto',
     },
 })
 
@@ -38,19 +33,21 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
 
     return (
         <div className={classes.root}>
-            <p>{headerLabel}</p>
+            {headerLabel && <Title headingLevel="h4">{headerLabel}</Title>}
             <div
                 className={
                     showAll ? `${classes.wrapperContainer}` : `${classes.wrapperContainer} ${classes.hideExtras}`
                 }
             >
-                {React.Children.map(props.children, (child, idx) => {
-                    return (
-                        <div key={`item-${idx}`} className={classes.wrapperItem}>
-                            {child}
-                        </div>
-                    )
-                })}
+                <Grid hasGutter sm={6} md={4} lg={4} xl={3}>
+                    {React.Children.map(props.children, (child, idx) => {
+                        return (
+                            <GridItem>
+                                <div key={`item-${idx}`}>{child}</div>
+                            </GridItem>
+                        )
+                    })}
+                </Grid>
             </div>
             <AcmButton className={classes.showAllButton} variant={'secondary'} onClick={() => setShowAll(!showAll)}>
                 {showAll ? 'Show less' : `Show all (${React.Children.count(children)})`}

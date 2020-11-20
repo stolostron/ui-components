@@ -18,7 +18,7 @@ const savedSearchCardActions = [
 
 export const ExpandableSavedSearchWrapper = () => {
     return (
-        <AcmExpandableWrapper maxHeight={'17rem'} headerLabel={'wrapper label'}>
+        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'wrapper label'}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,
@@ -145,7 +145,7 @@ export const ExpandableSavedSearchWrapper = () => {
 
 export const ExpandableRelatedResWrapper = () => {
     return (
-        <AcmExpandableWrapper maxHeight={'9.5rem'} headerLabel={'wrapper label'}>
+        <AcmExpandableWrapper maxHeight={'9rem'}>
             <AcmTile
                 loading={false}
                 isSelected={false}
