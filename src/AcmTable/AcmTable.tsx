@@ -16,6 +16,8 @@ import {
 import {
     IRow,
     ISortBy,
+    RowWrapper,
+    RowWrapperProps,
     sortable,
     SortByDirection,
     Table,
@@ -201,12 +203,13 @@ export function AcmTable<T>(props: {
     useLayoutEffect(() => {
         if (paged) {
             const newRows = paged.map((item) => {
+                const key = keyFn(item)
                 return {
-                    selected: selected[keyFn(item)] === true,
-                    props: { key: keyFn(item) },
+                    selected: selected[key] === true,
+                    props: { key },
                     cells: columns.map((column) => {
                         return (
-                            <Fragment key={keyFn(item)}>
+                            <Fragment key={key}>
                                 {typeof column.cell === 'string'
                                     ? get(item as Record<string, unknown>, column.cell)
                                     : column.cell(item)}
@@ -278,6 +281,10 @@ export function AcmTable<T>(props: {
                 </Title>
             </EmptyState>
         )
+    }
+
+    const ouiaIdRowWrapper = (props: RowWrapperProps) => {
+        return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
     }
 
     return (
@@ -370,6 +377,7 @@ export function AcmTable<T>(props: {
                                 }
                             })}
                             rows={rows}
+                            rowWrapper={ouiaIdRowWrapper}
                             actions={actions}
                             canSelectAll={true}
                             aria-label="Simple Table"

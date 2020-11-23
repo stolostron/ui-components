@@ -222,6 +222,14 @@ describe('AcmTable', () => {
         getByText('Clear all filters').click()
         expect(queryByText('No results found')).toBeNull()
     })
+    test('can provide ouia attributes on table rows', () => {
+        const { container } = render(<Table />)
+        expect(
+            container.querySelector(
+                '[data-ouia-component-type="PF4/TableRow"][data-ouia-component-id="25"] [data-label="First Name"]'
+            )
+        ).toHaveTextContent('Arabela')
+    })
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
         expect(await axe(container)).toHaveNoViolations()
