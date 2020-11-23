@@ -13,10 +13,6 @@ describe('AcmDonutChart', () => {
         { key: 'Pending', value: 8 },
         { key: 'Failed', value: 2, isDanger: true },
     ]
-    // const clusterData = [
-    //     { key: 'Ready', value: 2, isPrimary: true },
-    //     { key: 'Offline', value: 0, isDanger: true },
-    // ]
     test('renders', () => {
         const { getByTestId } = render(
             <AcmDonutChart
