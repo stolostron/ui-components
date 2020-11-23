@@ -16,6 +16,8 @@ import {
 import {
     IRow,
     ISortBy,
+    RowWrapper,
+    RowWrapperProps,
     sortable,
     SortByDirection,
     Table,
@@ -103,28 +105,6 @@ export function AcmTable<T>(props: {
     const [page, setPage] = useState(1)
     const [perPage, setPerPage] = useState(10)
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
-
-    let { emptyState } = props
-    /* istanbul ignore else */
-    if (!emptyState) {
-        emptyState = (
-            <AcmEmptyState
-                title="No results found"
-                message="No results match the filter criteria. Clear filters to show results."
-                action={
-                    <AcmButton
-                        variant="link"
-                        onClick={() => {
-                            setSearch('')
-                            setSort({ index: 1, direction: SortByDirection.asc })
-                        }}
-                    >
-                        Clear all filters
-                    </AcmButton>
-                }
-            />
-        )
-    }
 
     useLayoutEffect(() => {
         setHasSearch(columns.some((column) => column.search))
@@ -223,12 +203,13 @@ export function AcmTable<T>(props: {
     useLayoutEffect(() => {
         if (paged) {
             const newRows = paged.map((item) => {
+                const key = keyFn(item)
                 return {
-                    selected: selected[keyFn(item)] === true,
-                    props: { key: keyFn(item) },
+                    selected: selected[key] === true,
+                    props: { key },
                     cells: columns.map((column) => {
                         return (
-                            <Fragment key={keyFn(item)}>
+                            <Fragment key={key}>
                                 {typeof column.cell === 'string'
                                     ? get(item as Record<string, unknown>, column.cell)
                                     : column.cell(item)}
@@ -292,6 +273,10 @@ export function AcmTable<T>(props: {
     const showActions = items && items.length > 0
     const showSearch = hasSearch && showActions
     const showToolbar = showSearch || showActions || props.extraToolbarControls
+
+    const ouiaIdRowWrapper = (props: RowWrapperProps) => {
+        return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
+    }
 
     return (
         <Fragment>
@@ -393,6 +378,7 @@ export function AcmTable<T>(props: {
                             }
                         })}
                         rows={rows}
+                        rowWrapper={ouiaIdRowWrapper}
                         actions={actions}
                         canSelectAll={true}
                         aria-label="Simple Table"
@@ -434,7 +420,23 @@ export function AcmTable<T>(props: {
                             }
                         </SplitItem>
                     </Split>
-                    {filtered.length === 0 && <Fragment>{emptyState}</Fragment>}
+                    {filtered.length === 0 && (
+                        <AcmEmptyState
+                            title="No results found"
+                            message="No results match the filter criteria. Clear filters to show results."
+                            action={
+                                <AcmButton
+                                    variant="link"
+                                    onClick={() => {
+                                        setSearch('')
+                                        setSort({ index: 1, direction: SortByDirection.asc })
+                                    }}
+                                >
+                                    Clear all filters
+                                </AcmButton>
+                            }
+                        />
+                    )}
                 </Fragment>
             )}
         </Fragment>
