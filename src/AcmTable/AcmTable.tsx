@@ -289,84 +289,88 @@ export function AcmTable<T>(props: {
         }
     })
 
-    // LOADING STATE
-    if (!items || !rows || !filtered || !paged) {
-        const minHeight = 68 + 41 * (perPage + 1) + 68
-        return (
-            <EmptyState style={{ minHeight: `${minHeight}px` }}>
-                <EmptyStateIcon variant="container" component={Spinner} />
-                <Title size="lg" headingLevel="h4">
-                    Loading
-                </Title>
-            </EmptyState>
-        )
-    }
+    const showActions = items && items.length > 0
+    const showSearch = hasSearch && showActions
+    const showToolbar = showSearch || showActions || props.extraToolbarControls
 
     return (
         <Fragment>
-            {items.length > 0 && (
+            {showToolbar && (
                 <Toolbar>
                     <ToolbarContent>
-                        <ToolbarItem hidden={!hasSearch}>
-                            <SearchInput
-                                style={{ minWidth: '350px' }}
-                                placeholder="Search"
-                                value={search}
-                                onChange={(value) => {
-                                    setSearch(value)
-                                    if (value === '') {
-                                        /* istanbul ignore next */
-                                        if (!sort) {
-                                            setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
+                        {hasSearch && items && items.length > 0 && filtered && (
+                            <ToolbarItem>
+                                <SearchInput
+                                    style={{ minWidth: '350px' }}
+                                    placeholder="Search"
+                                    value={search}
+                                    onChange={(value) => {
+                                        setSearch(value)
+                                        if (value === '') {
+                                            /* istanbul ignore next */
+                                            if (!sort) {
+                                                setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
+                                            }
                                         }
-                                    }
-                                }}
-                                onClear={() => {
-                                    setSearch('')
-                                    setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
-                                }}
-                                resultsCount={`${filtered.length} / ${items.length}`}
-                            />
-                        </ToolbarItem>
+                                    }}
+                                    onClear={() => {
+                                        setSearch('')
+                                        setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
+                                    }}
+                                    resultsCount={`${filtered.length} / ${items.length}`}
+                                />
+                            </ToolbarItem>
+                        )}
                         <ToolbarItem alignment={{ default: 'alignRight' }} />
-                        {Object.keys(selected).length ? (
-                            <Fragment>
-                                <ToolbarItem>
-                                    {`${Object.keys(selected).length}/${items.length} ${props.plural} selected`}
-                                </ToolbarItem>
-                                <ToolbarItem variant="separator" />
-                                {props.bulkActions.map((action) => (
-                                    <ToolbarItem key={action.id}>
-                                        <Button
-                                            onClick={() => {
-                                                action.click(items.filter((item) => selected[keyFn(item)]))
-                                            }}
-                                        >
-                                            {action.title}
-                                        </Button>
+                        {items && items.length > 0 ? (
+                            Object.keys(selected).length ? (
+                                <Fragment>
+                                    <ToolbarItem>
+                                        {`${Object.keys(selected).length}/${items.length} ${props.plural} selected`}
                                     </ToolbarItem>
-                                ))}
-                            </Fragment>
+                                    <ToolbarItem variant="separator" />
+                                    {props.bulkActions.map((action) => (
+                                        <ToolbarItem key={action.id}>
+                                            <Button
+                                                onClick={() => {
+                                                    action.click(items.filter((item) => selected[keyFn(item)]))
+                                                }}
+                                            >
+                                                {action.title}
+                                            </Button>
+                                        </ToolbarItem>
+                                    ))}
+                                </Fragment>
+                            ) : (
+                                <Fragment>
+                                    {props.tableActions.map((action) => (
+                                        <ToolbarItem key={action.id}>
+                                            <Button
+                                                onClick={() => {
+                                                    action.click()
+                                                }}
+                                            >
+                                                {action.title}
+                                            </Button>
+                                        </ToolbarItem>
+                                    ))}
+                                </Fragment>
+                            )
                         ) : (
-                            <Fragment>
-                                {props.tableActions.map((action) => (
-                                    <ToolbarItem key={action.id}>
-                                        <Button
-                                            onClick={() => {
-                                                action.click()
-                                            }}
-                                        >
-                                            {action.title}
-                                        </Button>
-                                    </ToolbarItem>
-                                ))}
-                            </Fragment>
+                            <Fragment />
                         )}
                         {props.extraToolbarControls}
                     </ToolbarContent>
                 </Toolbar>
             )}
-            {items.length === 0 ? (
+            {!items || !rows || !filtered || !paged ? (
+                <EmptyState>
+                    <EmptyStateIcon variant="container" component={Spinner} />
+                    <Title size="lg" headingLevel="h4">
+                        Loading
+                    </Title>
+                </EmptyState>
+            ) : items.length === 0 ? (
                 <AcmEmptyState
                     title={`No ${props.plural} found`}
                     message={`You do not have any ${props.plural} yet.`}
