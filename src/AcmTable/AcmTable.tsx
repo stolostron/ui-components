@@ -78,6 +78,10 @@ interface ISearchItem<T> {
     [key: string]: unknown
 }
 
+function OuiaIdRowWrapper(props: RowWrapperProps) {
+    return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
+}
+
 export function AcmTable<T>(props: {
     plural: string
     items?: T[]
@@ -283,10 +287,6 @@ export function AcmTable<T>(props: {
         )
     }
 
-    const ouiaIdRowWrapper = (props: RowWrapperProps) => {
-        return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
-    }
-
     return (
         <Fragment>
             {items.length > 0 && (
@@ -377,7 +377,7 @@ export function AcmTable<T>(props: {
                                 }
                             })}
                             rows={rows}
-                            rowWrapper={ouiaIdRowWrapper}
+                            rowWrapper={OuiaIdRowWrapper}
                             actions={actions}
                             canSelectAll={true}
                             aria-label="Simple Table"
