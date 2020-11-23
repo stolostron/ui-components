@@ -98,7 +98,9 @@ export function AcmProviderCard(props: ProviderCardProps) {
     return (
         <Card
             onClick={() => props.onClick(props.provider)}
-            onKeyDown={(event: React.KeyboardEvent) => [13, 32].includes(event.keyCode) && props.onClick(props.provider)}
+            onKeyDown={(event: React.KeyboardEvent) =>
+                [13, 32].includes(event.keyCode) && props.onClick(props.provider)
+            }
             isSelectable
             isSelected={props.isSelected}
             className={classes.card}
