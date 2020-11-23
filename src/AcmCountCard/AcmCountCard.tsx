@@ -127,8 +127,6 @@ export const loadingCard = (props: SkeletonCard) => {
     const useStyles = makeStyles({
         cardSkeleton: {
             height: '250px',
-            width: '278px',
-            margin: '8px',
         },
     })
     const classes = useStyles(props)
