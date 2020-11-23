@@ -46,7 +46,7 @@ export function AcmTile(props: AcmTileProps) {
     if (props.loading) {
         return (
             <Tile className={classes.tileRoot} title={''} ref={null}>
-                <Skeleton className={classes.loading} />
+                <Skeleton />
             </Tile>
         )
     }
