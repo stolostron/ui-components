@@ -44,13 +44,23 @@ const useStyles = makeStyles({
 })
 
 export enum Provider {
-    aws = 'Amazon',
-    gcp = 'Google',
-    azure = 'Microsoft',
-    vmware = 'VMware',
-    ibm = 'IBM',
-    baremetal = 'Bare metal',
-    other = 'Other',
+    aws = 'aws',
+    gcp = 'gcp',
+    azure = 'azure',
+    vmware = 'vmware',
+    ibm = 'ibm',
+    baremetal = 'baremetal',
+    other = 'other',
+}
+
+const providerTextMap = {
+    [Provider.aws]: 'Amazon',
+    [Provider.gcp]: 'Google',
+    [Provider.azure]: 'Microsoft',
+    [Provider.ibm]: 'IBM',
+    [Provider.baremetal]: 'Bare metal',
+    [Provider.vmware]: 'VMware',
+    [Provider.other]: 'Other',
 }
 
 const iconMap = {
@@ -68,6 +78,7 @@ type ProviderCardProps = {
     clusterCount: number | undefined
     onClick: (provider: string) => void
     danger?: boolean
+    isSelected?: boolean
 }
 
 export function AcmOverviewProviders(props: { providers: ProviderCardProps[] }) {
@@ -84,14 +95,14 @@ export function AcmOverviewProviders(props: { providers: ProviderCardProps[] }) 
 
 export function AcmProviderCard(props: ProviderCardProps) {
     const classes = useStyles()
-    const id = props.provider.toLowerCase().replace(/\s+/g, '-')
     return (
         <Card
-            onClick={() => props.onClick(id)}
-            onKeyDown={(event: React.KeyboardEvent) => [13, 32].includes(event.keyCode) && props.onClick(id)}
+            onClick={() => props.onClick(props.provider)}
+            onKeyDown={(event: React.KeyboardEvent) => [13, 32].includes(event.keyCode) && props.onClick(props.provider)}
             isSelectable
+            isSelected={props.isSelected}
             className={classes.card}
-            id={`${id}-provider-card`}
+            id={`${props.provider}-provider-card`}
         >
             <Stack>
                 <StackItem>
@@ -106,7 +117,7 @@ export function AcmProviderCard(props: ProviderCardProps) {
                                 className={classes.providerTitle}
                                 style={{ fontWeight: 300 }}
                             >
-                                {props.provider}
+                                {providerTextMap[props.provider]}
                                 {props.danger && (
                                     <ExclamationCircleIcon
                                         color="var(--pf-global--palette--red-100)"
