@@ -270,18 +270,9 @@ export function AcmTable<T>(props: {
         }
     })
 
-    // LOADING STATE
-    if (!items || !rows || !filtered || !paged) {
-        const minHeight = 68 + 41 * (perPage + 1) + 68
-        return (
-            <EmptyState style={{ minHeight: `${minHeight}px` }}>
-                <EmptyStateIcon variant="container" component={Spinner} />
-                <Title size="lg" headingLevel="h4">
-                    Loading
-                </Title>
-            </EmptyState>
-        )
-    }
+    const showActions = items && items.length > 0
+    const showSearch = hasSearch && showActions
+    const showToolbar = showSearch || showActions || props.extraToolbarControls
 
     const ouiaIdRowWrapper = (props: RowWrapperProps) => {
         return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
@@ -289,156 +280,165 @@ export function AcmTable<T>(props: {
 
     return (
         <Fragment>
-            {items.length > 0 && (
+            {showToolbar && (
                 <Toolbar>
                     <ToolbarContent>
-                        <ToolbarItem hidden={!hasSearch}>
-                            <SearchInput
-                                style={{ minWidth: '350px' }}
-                                placeholder="Search"
-                                value={search}
-                                onChange={(value) => {
-                                    setSearch(value)
-                                    if (value === '') {
-                                        /* istanbul ignore next */
-                                        if (!sort) {
-                                            setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
+                        {hasSearch && items && items.length > 0 && filtered && (
+                            <ToolbarItem>
+                                <SearchInput
+                                    style={{ minWidth: '350px' }}
+                                    placeholder="Search"
+                                    value={search}
+                                    onChange={(value) => {
+                                        setSearch(value)
+                                        if (value === '') {
+                                            /* istanbul ignore next */
+                                            if (!sort) {
+                                                setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
+                                            }
                                         }
-                                    }
-                                }}
-                                onClear={() => {
-                                    setSearch('')
-                                    setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
-                                }}
-                                resultsCount={`${filtered.length} / ${items.length}`}
-                            />
-                        </ToolbarItem>
+                                    }}
+                                    onClear={() => {
+                                        setSearch('')
+                                        setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
+                                    }}
+                                    resultsCount={`${filtered.length} / ${items.length}`}
+                                />
+                            </ToolbarItem>
+                        )}
                         <ToolbarItem alignment={{ default: 'alignRight' }} />
-                        {Object.keys(selected).length ? (
-                            <Fragment>
-                                <ToolbarItem>
-                                    {`${Object.keys(selected).length}/${items.length} ${props.plural} selected`}
-                                </ToolbarItem>
-                                <ToolbarItem variant="separator" />
-                                {props.bulkActions.map((action) => (
-                                    <ToolbarItem key={action.id}>
-                                        <Button
-                                            onClick={() => {
-                                                action.click(items.filter((item) => selected[keyFn(item)]))
-                                            }}
-                                        >
-                                            {action.title}
-                                        </Button>
+                        {items && items.length > 0 ? (
+                            Object.keys(selected).length ? (
+                                <Fragment>
+                                    <ToolbarItem>
+                                        {`${Object.keys(selected).length}/${items.length} ${props.plural} selected`}
                                     </ToolbarItem>
-                                ))}
-                            </Fragment>
+                                    <ToolbarItem variant="separator" />
+                                    {props.bulkActions.map((action) => (
+                                        <ToolbarItem key={action.id}>
+                                            <Button
+                                                onClick={() => {
+                                                    action.click(items.filter((item) => selected[keyFn(item)]))
+                                                }}
+                                            >
+                                                {action.title}
+                                            </Button>
+                                        </ToolbarItem>
+                                    ))}
+                                </Fragment>
+                            ) : (
+                                <Fragment>
+                                    {props.tableActions.map((action) => (
+                                        <ToolbarItem key={action.id}>
+                                            <Button
+                                                onClick={() => {
+                                                    action.click()
+                                                }}
+                                            >
+                                                {action.title}
+                                            </Button>
+                                        </ToolbarItem>
+                                    ))}
+                                </Fragment>
+                            )
                         ) : (
-                            <Fragment>
-                                {props.tableActions.map((action) => (
-                                    <ToolbarItem key={action.id}>
-                                        <Button
-                                            onClick={() => {
-                                                action.click()
-                                            }}
-                                        >
-                                            {action.title}
-                                        </Button>
-                                    </ToolbarItem>
-                                ))}
-                            </Fragment>
+                            <Fragment />
                         )}
                         {props.extraToolbarControls}
                     </ToolbarContent>
                 </Toolbar>
             )}
-            {
-                /* istanbul ignore next */ items.length === 0 ? (
-                    props.emptyState ?? (
-                        <AcmEmptyState
-                            title={`No ${props.plural} found`}
-                            message={`You do not have any ${props.plural} yet.`}
-                        />
-                    )
-                ) : (
-                    <Fragment>
-                        <Table
-                            cells={columns.map((column) => {
-                                return {
-                                    title: column.header,
-                                    header: column.tooltip
-                                        ? {
-                                              info: {
-                                                  tooltip: column.tooltip,
-                                                  tooltipProps: { isContentLeftAligned: true },
-                                              },
-                                          }
-                                        : {},
-                                    transforms: column.sort ? [sortable] : undefined,
-                                }
-                            })}
-                            rows={rows}
-                            rowWrapper={ouiaIdRowWrapper}
-                            actions={actions}
-                            canSelectAll={true}
-                            aria-label="Simple Table"
-                            sortBy={sort}
-                            onSort={(_event, index, direction) => {
-                                setSort({ index, direction })
-                            }}
-                            onSelect={
-                                /* istanbul ignore next */
-                                rows.length > 0 && props.bulkActions && props.bulkActions.length ? onSelect : undefined
+            {!items || !rows || !filtered || !paged ? (
+                <EmptyState>
+                    <EmptyStateIcon variant="container" component={Spinner} />
+                    <Title size="lg" headingLevel="h4">
+                        Loading
+                    </Title>
+                </EmptyState>
+            ) : items.length === 0 ? (
+                <AcmEmptyState
+                    title={`No ${props.plural} found`}
+                    message={`You do not have any ${props.plural} yet.`}
+                />
+            ) : (
+                <Fragment>
+                    <Table
+                        cells={columns.map((column) => {
+                            return {
+                                title: column.header,
+                                header: column.tooltip
+                                    ? {
+                                          info: {
+                                              tooltip: column.tooltip,
+                                              tooltipProps: { isContentLeftAligned: true },
+                                          },
+                                      }
+                                    : {},
+                                transforms: column.sort ? [sortable] : undefined,
                             }
-                            variant={TableVariant.compact}
-                        >
-                            <TableHeader />
-                            <TableBody />
-                        </Table>
-                        <Split>
-                            <SplitItem isFilled></SplitItem>
-                            <SplitItem>
-                                {
-                                    /* instanbul ignore else */
-                                    filtered && filtered.length > perPage ? (
-                                        <Pagination
-                                            hidden={filtered.length < perPage}
-                                            itemCount={filtered.length}
-                                            perPage={perPage}
-                                            page={page}
-                                            variant={PaginationVariant.bottom}
-                                            onSetPage={(_event, page) => {
-                                                setPage(page)
-                                            }}
-                                            onPerPageSelect={(_event, perPage) => {
-                                                setPerPage(perPage)
-                                            }}
-                                        />
-                                    ) : (
-                                        <span>&nbsp;</span>
-                                    )
-                                }
-                            </SplitItem>
-                        </Split>
-                        {filtered.length === 0 && (
-                            <AcmEmptyState
-                                title="No results found"
-                                message="No results match the filter criteria. Clear filters to show results."
-                                action={
-                                    <AcmButton
-                                        variant="link"
-                                        onClick={() => {
-                                            setSearch('')
-                                            setSort({ index: 1, direction: SortByDirection.asc })
+                        })}
+                        rows={rows}
+                        rowWrapper={ouiaIdRowWrapper}
+                        actions={actions}
+                        canSelectAll={true}
+                        aria-label="Simple Table"
+                        sortBy={sort}
+                        onSort={(_event, index, direction) => {
+                            setSort({ index, direction })
+                        }}
+                        onSelect={
+                            /* istanbul ignore next */
+                            rows.length > 0 && props.bulkActions && props.bulkActions.length ? onSelect : undefined
+                        }
+                        variant={TableVariant.compact}
+                    >
+                        <TableHeader />
+                        <TableBody />
+                    </Table>
+                    <Split>
+                        <SplitItem isFilled></SplitItem>
+                        <SplitItem>
+                            {
+                                /* instanbul ignore else */
+                                filtered && filtered.length > perPage ? (
+                                    <Pagination
+                                        hidden={filtered.length < perPage}
+                                        itemCount={filtered.length}
+                                        perPage={perPage}
+                                        page={page}
+                                        variant={PaginationVariant.bottom}
+                                        onSetPage={(_event, page) => {
+                                            setPage(page)
                                         }}
-                                    >
-                                        Clear all filters
-                                    </AcmButton>
-                                }
-                            />
-                        )}
-                    </Fragment>
-                )
-            }
+                                        onPerPageSelect={(_event, perPage) => {
+                                            setPerPage(perPage)
+                                        }}
+                                    />
+                                ) : (
+                                    <span>&nbsp;</span>
+                                )
+                            }
+                        </SplitItem>
+                    </Split>
+                    {filtered.length === 0 && (
+                        <AcmEmptyState
+                            title="No results found"
+                            message="No results match the filter criteria. Clear filters to show results."
+                            action={
+                                <AcmButton
+                                    variant="link"
+                                    onClick={() => {
+                                        setSearch('')
+                                        setSort({ index: 1, direction: SortByDirection.asc })
+                                    }}
+                                >
+                                    Clear all filters
+                                </AcmButton>
+                            }
+                        />
+                    )}
+                </Fragment>
+            )}
         </Fragment>
     )
 }
