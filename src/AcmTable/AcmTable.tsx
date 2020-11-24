@@ -399,24 +399,19 @@ export function AcmTable<T>(props: {
                         <SplitItem isFilled></SplitItem>
                         <SplitItem>
                             {
-                                /* instanbul ignore else */
-                                filtered && filtered.length > perPage ? (
-                                    <Pagination
-                                        hidden={filtered.length < perPage}
-                                        itemCount={filtered.length}
-                                        perPage={perPage}
-                                        page={page}
-                                        variant={PaginationVariant.bottom}
-                                        onSetPage={(_event, page) => {
-                                            setPage(page)
-                                        }}
-                                        onPerPageSelect={(_event, perPage) => {
-                                            setPerPage(perPage)
-                                        }}
-                                    />
-                                ) : (
-                                    <span>&nbsp;</span>
-                                )
+                                <Pagination
+                                    hidden={filtered.length < perPage}
+                                    itemCount={filtered.length}
+                                    perPage={perPage}
+                                    page={page}
+                                    variant={PaginationVariant.bottom}
+                                    onSetPage={(_event, page) => {
+                                        setPage(page)
+                                    }}
+                                    onPerPageSelect={(_event, perPage) => {
+                                        setPerPage(perPage)
+                                    }}
+                                />
                             }
                         </SplitItem>
                     </Split>
