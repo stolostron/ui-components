@@ -17,7 +17,7 @@ export const Tile = () => {
     const [selected, toggleSelected] = useState<boolean>(false)
 
     return (
-        <div style={{ display: 'flex' }}>
+        <div>
             <AcmTile
                 loading={false}
                 isSelected={selected}
