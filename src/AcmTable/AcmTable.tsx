@@ -400,7 +400,6 @@ export function AcmTable<T>(props: {
                         <SplitItem>
                             {
                                 <Pagination
-                                    hidden={filtered.length < perPage}
                                     itemCount={filtered.length}
                                     perPage={perPage}
                                     page={page}
