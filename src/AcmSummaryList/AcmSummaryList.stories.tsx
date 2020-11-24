@@ -30,7 +30,7 @@ export const SummaryList = () => {
     )
 }
 
-const Menu = () => {
+export const Menu = () => {
     const [isOpen, setOpen] = useState<boolean>(false)
     const noop = () => null
     const menuItems = [
@@ -43,7 +43,7 @@ const Menu = () => {
     ]
     const toggle = (
         <OptionsMenuToggleWithText
-            toggleText="All cloud providers"
+            toggleText="All providers"
             toggleButtonContents={<CaretDownIcon />}
             onToggle={() => setOpen(!isOpen)}
         />

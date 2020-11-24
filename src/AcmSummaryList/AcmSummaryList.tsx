@@ -4,8 +4,6 @@ import {
     Card,
     CardTitle,
     CardBody,
-    CardProps,
-    CardFooter,
     Text,
     TextVariants,
     Split,
@@ -13,8 +11,8 @@ import {
     Flex,
     FlexItem,
     Divider,
-    Gallery,
-    GalleryItem,
+    Grid,
+    GridItem
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
@@ -32,9 +30,6 @@ type AcmSummaryListProps = {
 
 export function AcmSummaryList(props: AcmSummaryListProps) {
     const classes = useStyles()
-    if (props.list.filter((item) => item.isPrimary) && props.list.filter((item) => item.isPrimary).length > 1) {
-        throw new Error('AcmSummaryList component can only have one primary section')
-    }
     const primary = props.list.find((item) => item.isPrimary)
     const secondary = props.list.filter((item) => !item.isPrimary)
     return (
@@ -47,7 +42,7 @@ export function AcmSummaryList(props: AcmSummaryListProps) {
                         </FlexItem>
                         {props.actions?.map((action, i) => (
                             <Fragment key={`summary-action-${i}`}>
-                                <Divider isVertical inset={{default: 'inset2xl'}} />
+                                <Divider isVertical inset={{ default: 'inset2xl' }} />
                                 <FlexItem>{action}</FlexItem>
                             </Fragment>
                         ))}
@@ -57,19 +52,19 @@ export function AcmSummaryList(props: AcmSummaryListProps) {
                 <SplitItem className={classes.rightSplit}>{props.rightAction}</SplitItem>
             </Split>
             <div className={classes.cardBody}>
-                <Gallery>
+                <Grid sm={6} md={4} lg={2}>
                     {primary && (
-                        <GalleryItem key={primary.description}>
+                        <GridItem key={primary.description}>
                             <SummarySection {...primary} />
-                        </GalleryItem>
+                        </GridItem>
                     )}
                     {secondary &&
                         secondary.map((item) => (
-                            <GalleryItem key={item.description}>
+                            <GridItem key={item.description}>
                                 <SummarySection {...item} />
-                            </GalleryItem>
+                            </GridItem>
                         ))}
-                </Gallery>
+                </Grid>
             </div>
         </Card>
     )
@@ -77,16 +72,19 @@ export function AcmSummaryList(props: AcmSummaryListProps) {
 
 const useSectionStyles = makeStyles({
     card: {
-        // borderRight: (props: SummarySectionProps) => (props.isPrimary ? '1px solid rgba(0,0,0,0.1)' : ''),
-        // padding: '37px 48px 31px 18px',
         border: 'none !important',
         height: '100%',
-        maxWidth: '37px',
+        maxWidth: '185px',
+        minWidth: '130px',
+    },
+    cardBody: {
+        paddingLeft: '34px',
     },
     cardFooter: {
         height: '100%',
     },
     count: {
+        lineHeight: ({ isPrimary }) => isPrimary ? '2.55rem' : undefined,
         fontSize: (props: SummarySectionProps) => (props.isPrimary ? '36px' : '28px'),
         fontColor: (props: SummarySectionProps) => (props.isPrimary ? 'var(--pf-global--primary-color--100)' : ''),
         '& a': {
@@ -110,17 +108,15 @@ type SummarySectionProps = {
 const SummarySection = (props: SummarySectionProps) => {
     const classes = useSectionStyles(props)
     return (
-        // <div className={classes.container}>
-        <Card component="div" className={classes.card} isFlat>
-            <CardFooter>
+        <Card component="div" className={classes.card} isFlat id={`${props.description.toLowerCase().replace(/\s+/g, '-')}-summary`}>
+            <CardBody className={classes.cardBody}>
                 <Text component={TextVariants.p} className={classes.count}>
                     {props.href ? <Link to={props.href}>{props.count}</Link> : props.count}
                 </Text>
                 <Text component={TextVariants.p} className={classes.description}>
                     {props.description}
                 </Text>
-            </CardFooter>
+            </CardBody>
         </Card>
-        // </div>
     )
 }
