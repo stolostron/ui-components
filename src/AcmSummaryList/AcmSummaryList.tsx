@@ -12,7 +12,7 @@ import {
     FlexItem,
     Divider,
     Grid,
-    GridItem
+    GridItem,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
@@ -84,7 +84,7 @@ const useSectionStyles = makeStyles({
         height: '100%',
     },
     count: {
-        lineHeight: ({ isPrimary }) => isPrimary ? '2.55rem' : undefined,
+        lineHeight: ({ isPrimary }) => (isPrimary ? '2.55rem' : undefined),
         fontSize: (props: SummarySectionProps) => (props.isPrimary ? '36px' : '28px'),
         fontColor: (props: SummarySectionProps) => (props.isPrimary ? 'var(--pf-global--primary-color--100)' : ''),
         '& a': {
@@ -108,7 +108,12 @@ type SummarySectionProps = {
 const SummarySection = (props: SummarySectionProps) => {
     const classes = useSectionStyles(props)
     return (
-        <Card component="div" className={classes.card} isFlat id={`${props.description.toLowerCase().replace(/\s+/g, '-')}-summary`}>
+        <Card
+            component="div"
+            className={classes.card}
+            isFlat
+            id={`${props.description.toLowerCase().replace(/\s+/g, '-')}-summary`}
+        >
             <CardBody className={classes.cardBody}>
                 <Text component={TextVariants.p} className={classes.count}>
                     {props.href ? <Link to={props.href}>{props.count}</Link> : props.count}
