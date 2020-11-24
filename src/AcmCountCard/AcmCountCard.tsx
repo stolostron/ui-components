@@ -45,6 +45,7 @@ interface CardDropdownProps {
 }
 
 type AcmCountCardProps = CardProps & {
+    key?: number
     id?: string
     label?: string
     loading?: boolean
@@ -63,8 +64,6 @@ type SkeletonCard = CardProps & {
 const useStyles = makeStyles({
     card: {
         height: (props: AcmCountCardProps) => (props.cardFooter ? 'auto' : '250px'),
-        maxWidth: '278px',
-        margin: '8px',
     },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
@@ -128,8 +127,6 @@ export const loadingCard = (props: SkeletonCard) => {
     const useStyles = makeStyles({
         cardSkeleton: {
             height: '250px',
-            width: '278px',
-            margin: '8px',
         },
     })
     const classes = useStyles(props)
