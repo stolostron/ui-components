@@ -13,9 +13,9 @@ type StyleProps = {
 const useStyles = makeStyles({
     card: {
         maxHeight: '259px',
-        minWidth: (props: StyleProps) => (props.viewWidth > 376 ? '376px' : ''),
-        maxWidth: (props: StyleProps) => (props.viewWidth < 376 ? '376px' : ''),
-        '& .pf-c-chart svg g path:last-of-type': {
+        minWidth: (props: StyleProps) => (props.viewWidth > 376 ? '376px' : undefined),
+        maxWidth: (props: StyleProps) => (props.viewWidth < 376 ? '376px' : undefined),
+        '& .pf-c-chart > svg g path:last-of-type': {
             fill: (props: StyleProps) => (props.danger ? '#E62325 !important' : undefined),
         },
     },
@@ -35,10 +35,11 @@ export function AcmDonutChart(props: {
     const chartData = props.data.map((d) => ({ x: d.key, y: d.value }))
     const legendData = props.data.map((d) => ({ name: `${d.value} ${d.key}` }))
     const total = props.data.reduce((a, b) => a + b.value, 0)
-    const primary = props.data.find((d) => d.isPrimary)
+    /* istanbul ignore next */
+    const primary = props.data.find((d) => d.isPrimary) || { key: '', value: 0 }
 
     const { viewWidth } = useViewport()
-    const classes = useStyles({ danger: props.data.some((d) => d.isDanger), viewWidth } as StyleProps)
+    const classes = useStyles({ ...props, danger: props.data.some((d) => d.isDanger), viewWidth } as StyleProps)
     return (
         <Card className={classes.card} id={`${props.title.toLowerCase().replace(/\s+/g, '-')}-chart`}>
             <CardTitle className={classes.cardTitle}>
@@ -53,15 +54,15 @@ export function AcmDonutChart(props: {
                     constrainToVisibleArea={true}
                     data={chartData}
                     legendData={legendData}
-                    labels={({ datum }) => `${datum.x}: ${datum.y}%`}
+                    labels={({ datum }) => `${datum.x}: ${(datum.y / total) * 100}%`}
                     padding={{
                         bottom: 20,
                         left: 20,
                         right: 145,
                         top: 20,
                     }}
-                    title={/* istanbul ignore next */ `${Math.round(((primary?.value ?? 0) / total) * 100)}%`}
-                    subTitle={/* istanbul ignore next */ primary?.key}
+                    title={`${Math.round((primary.value / total) * 100)}%`}
+                    subTitle={primary.key}
                     width={/* istanbul ignore next */ viewWidth < 376 ? viewWidth : 376}
                     height={/* istanbul ignore next */ viewWidth < 376 ? 150 : 200}
                 />

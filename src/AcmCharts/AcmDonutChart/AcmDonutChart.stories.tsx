@@ -3,7 +3,7 @@ import { AcmDonutChart } from './AcmDonutChart'
 import { AcmChartGroup } from '../AcmChartGroup'
 
 export default {
-    title: 'AcmChart',
+    title: 'Charts',
     component: AcmDonutChart,
 }
 
