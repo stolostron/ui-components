@@ -1,6 +1,8 @@
 .searchbar-container {
     display: flex;
     align-items: center;
+    background-color: var(--pf-global--palette--white);
+    width: 100%;
 }
 .clear-button {
     width: 15px;
@@ -19,11 +21,10 @@
     color: var(--pf-global--active-color--100);
 }
 .search-icon {
-    position: absolute;
+    position: relative;
     color: var(--pf-global--palette--black-600);
     height: 2.25rem;
     width: 2.5rem;
-    right: 15px;
     margin-left: 0.5rem;
     padding: 0 0.75rem;
     border-left: solid 1px var(--pf-global--BorderColor--300);
