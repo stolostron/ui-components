@@ -27,7 +27,7 @@ import {
 } from '@patternfly/react-table'
 import Fuse from 'fuse.js'
 import get from 'get-value'
-import React, { FormEvent, Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import React, { FormEvent, Fragment, ReactNode, createContext, useContext, useLayoutEffect, useState } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 
@@ -82,6 +82,28 @@ function OuiaIdRowWrapper(props: RowWrapperProps) {
     return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
 }
 
+const DEFAULT_ITEMS_PER_PAGE = 10
+
+const AcmTablePaginationContext: React.Context<{
+    perPage?: number
+    setPerPage?: (perPage: number) => void
+}> = createContext({})
+
+export function AcmTablePaginationContextProvider(props: { children: ReactNode; localStorageKey: string }) {
+    const { children, localStorageKey } = props
+    const [perPage, setPerPage] = useState(
+        parseInt(localStorage.getItem(localStorageKey) || '0', 10) || DEFAULT_ITEMS_PER_PAGE
+    )
+    const paginationContext = {
+        perPage,
+        setPerPage: (perPage: number) => {
+            localStorage.setItem(localStorageKey, String(perPage))
+            setPerPage(perPage)
+        },
+    }
+    return <AcmTablePaginationContext.Provider value={paginationContext}>{children}</AcmTablePaginationContext.Provider>
+}
+
 export function AcmTable<T>(props: {
     plural: string
     items?: T[]
@@ -107,7 +129,10 @@ export function AcmTable<T>(props: {
         direction: SortByDirection.asc,
     })
     const [page, setPage] = useState(1)
-    const [perPage, setPerPage] = useState(10)
+    const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
+    const { perPage: contextPerPage, setPerPage: contextSetPerPage } = useContext(AcmTablePaginationContext)
+    const perPage = contextPerPage || statePerPage
+    const setPerPage = contextSetPerPage || stateSetPerPage
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
 
     useLayoutEffect(() => {
