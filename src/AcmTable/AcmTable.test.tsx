@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React, { useState } from 'react'
-import { AcmTable } from './AcmTable'
+import { AcmTablePaginationContextProvider, AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
 interface IExampleData {
@@ -229,6 +229,20 @@ describe('AcmTable', () => {
                 '[data-ouia-component-type="PF4/TableRow"][data-ouia-component-id="25"] [data-label="First Name"]'
             )
         ).toHaveTextContent('Arabela')
+    })
+    test('can use saved pagination', () => {
+        const { getAllByLabelText, getByText, container } = render(
+            <AcmTablePaginationContextProvider localStorageKey="my-table">
+                <Table />
+                <Table />
+            </AcmTablePaginationContextProvider>
+        )
+        // set pagination on first table
+        userEvent.click(getAllByLabelText('Items per page')[0])
+        expect(getByText('100 per page')).toBeVisible()
+        userEvent.click(getByText('100 per page'))
+        // verify pagination changes on both tables
+        expect(container.querySelectorAll('tbody tr')).toHaveLength(200)
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
