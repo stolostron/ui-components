@@ -16,6 +16,7 @@ import {
 import {
     IRow,
     ISortBy,
+    ITransform,
     RowWrapper,
     RowWrapperProps,
     sortable,
@@ -60,6 +61,10 @@ export interface IAcmTableColumn<T> {
 
     /** cell content, either on field name of using cell function */
     cell: CellFn<T> | string
+
+    transforms?: ITransform[]
+
+    cellTransforms?: ITransform[]
 }
 
 /* istanbul ignore next */
@@ -256,12 +261,10 @@ export function AcmTable<T>(props: {
                 selected: selected[key] === true,
                 props: { key },
                 cells: columns.map((column) => {
-                    return (
-                        <Fragment key={key}>
-                            {typeof column.cell === 'string'
-                                ? get(item as Record<string, unknown>, column.cell)
-                                : column.cell(item)}
-                        </Fragment>
+                    return typeof column.cell === 'string' ? (
+                        get(item as Record<string, unknown>, column.cell)
+                    ) : (
+                        <Fragment key={key}>{column.cell(item)}</Fragment>
                     )
                 }),
             }
@@ -367,7 +370,7 @@ export function AcmTable<T>(props: {
         }
     })
 
-    const showActions = items && items.length > 0
+    const showActions = items && items.length
     const showSearch = hasSearch && showActions
     const showToolbar = showSearch || showActions || props.extraToolbarControls
 
@@ -393,7 +396,7 @@ export function AcmTable<T>(props: {
                             </ToolbarItem>
                         )}
                         <ToolbarItem alignment={{ default: 'alignRight' }} />
-                        {items && items.length > 0 ? (
+                        {items && items.length ? (
                             Object.keys(selected).length ? (
                                 <Fragment>
                                     <ToolbarItem>
@@ -464,7 +467,8 @@ export function AcmTable<T>(props: {
                                           },
                                       }
                                     : {},
-                                transforms: column.sort ? [sortable] : undefined,
+                                transforms: [...(column.transforms || []), ...(column.sort ? [sortable] : [])],
+                                cellTransforms: column.cellTransforms || [],
                             }
                         })}
                         rows={rows}
@@ -478,7 +482,7 @@ export function AcmTable<T>(props: {
                         }}
                         onSelect={
                             /* istanbul ignore next */
-                            rows.length > 0 && props.bulkActions && props.bulkActions.length ? onSelect : undefined
+                            rows.length && props.bulkActions?.length ? onSelect : undefined
                         }
                         variant={TableVariant.compact}
                     >
@@ -504,7 +508,7 @@ export function AcmTable<T>(props: {
                             )}
                         </SplitItem>
                     </Split>
-                    {filtered.length === 0 && (
+                    {!filtered.length && (
                         <AcmEmptyState
                             title="No results found"
                             message="No results match the filter criteria. Clear filters to show results."
