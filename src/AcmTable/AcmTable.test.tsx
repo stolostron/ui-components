@@ -1,10 +1,12 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { axe } from 'jest-axe'
+import { configureAxe } from 'jest-axe'
 import React, { useState } from 'react'
 import { AcmTablePaginationContextProvider, AcmTable } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
+
+const axe = configureAxe({ rules: { 'scope-attr-valid': { enabled: false } } })
 
 interface IExampleData {
     uid: number

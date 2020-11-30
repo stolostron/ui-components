@@ -5,7 +5,7 @@ export function AcmSpinnerBackdrop() {
     return (
         <Backdrop>
             <Bullseye>
-                <Spinner />
+                <Spinner aria-label="loading" />
             </Bullseye>
         </Backdrop>
     )

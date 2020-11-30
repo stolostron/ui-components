@@ -1,7 +1,9 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import { axe } from 'jest-axe'
 import { AcmLoadingPage } from './AcmLoadingPage'
+import { configureAxe } from 'jest-axe'
+
+const axe = configureAxe({ rules: { 'aria-progressbar-name': { enabled: false } } })
 
 describe('AcmLoadingPage', () => {
     test('renders', () => {
