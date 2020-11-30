@@ -15,7 +15,7 @@ import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 export function AcmPage(props: { children: ReactNode }) {
-    return <Page style={{ height: '100vh' }}>{props.children}</Page>
+    return <Page>{props.children}</Page>
 }
 
 export function AcmPageHeader(props: {
