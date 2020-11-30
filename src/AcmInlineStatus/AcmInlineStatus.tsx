@@ -33,7 +33,7 @@ function StatusIcon(props: { type: StatusType }) {
         case StatusType.warning:
             return <ExclamationTriangleIcon color="var(--pf-global--warning-color--100)" />
         case StatusType.progress:
-            return <Spinner size="md" style={{ verticalAlign: 'middle' }} aria-label="progressing" />
+            return <Spinner size="md" style={{ verticalAlign: 'middle' }} />
         case 'unknown':
         default:
             return <MinusCircleIcon color="var(--pf-global--disabled-color--100)" />
