@@ -16,7 +16,7 @@
         "check": "prettier --check src",
         "check:fix": "prettier --write src",
         "start": "start-storybook -p 9000 --ci --no-dll",
-        "test": "jest --clearCache && jest",
+        "test": "jest",
         "test:ci": "jest --ci"
     },
     "repository": {

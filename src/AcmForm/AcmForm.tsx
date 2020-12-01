@@ -81,7 +81,11 @@ export function AcmSubmit(props: ButtonProps) {
                     context.setReadOnly(true)
                     /* istanbul ignore else */
                     if (props.onClick) {
-                        await props.onClick(event)
+                        try {
+                            await props.onClick(event)
+                        } catch (err) {
+                            // Do Nothing
+                        }
                         context.setReadOnly(false)
                         setIsLoading(false)
                     }
