@@ -82,11 +82,7 @@ export function AcmSubmit(props: ButtonProps) {
                     /* istanbul ignore else */
                     if (props.onClick) {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const promise = props.onClick(event) as any
-                        /* istanbul ignore else */
-                        if (promise instanceof Promise) {
-                            await promise
-                        }
+                        await props.onClick(event)
                         context.setReadOnly(false)
                         setIsLoading(false)
                     }
