@@ -1,3 +1,4 @@
+import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useEffect, useState } from 'react'
 import { AcmPage, AcmPageCard } from '../AcmPage/AcmPage'
@@ -58,6 +59,12 @@ export function Table() {
                             },
                         },
                     ]}
+                    extraToolbarControls={
+                        <ToggleGroup>
+                            <ToggleGroupItem isSelected={true} text="View 1" />
+                            <ToggleGroupItem text="View 2" />
+                        </ToggleGroup>
+                    }
                 />
             </AcmPageCard>
         </AcmPage>
@@ -84,6 +91,12 @@ export function TableEmpty() {
                     ]}
                     rowActions={[]}
                     bulkActions={[]}
+                    extraToolbarControls={
+                        <ToggleGroup>
+                            <ToggleGroupItem isSelected={true} text="View 1" />
+                            <ToggleGroupItem text="View 2" />
+                        </ToggleGroup>
+                    }
                 />
             </AcmPageCard>
         </AcmPage>

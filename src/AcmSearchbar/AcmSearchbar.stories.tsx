@@ -46,17 +46,15 @@ function getSuggestions(query: string): DropdownSuggestionsProps[] {
 export const Searchbar = () => {
     const [currentQuery, setCurrentQuery] = useState('')
     return (
-        <React.Fragment>
-            <AcmSearchbar
-                loadingSuggestions={false}
-                queryString={'kind:pod namespace:default name:testing'}
-                suggestions={getSuggestions(currentQuery)}
-                currentQueryCallback={(updatedQuery) => {
-                    setCurrentQuery(updatedQuery)
-                    return updatedQuery
-                }}
-                toggleInfoModal={() => null}
-            />
-        </React.Fragment>
+        <AcmSearchbar
+            loadingSuggestions={false}
+            queryString={'kind:pod namespace:default name:testing'}
+            suggestions={getSuggestions(currentQuery)}
+            currentQueryCallback={(updatedQuery) => {
+                setCurrentQuery(updatedQuery)
+                return updatedQuery
+            }}
+            toggleInfoModal={() => null}
+        />
     )
 }

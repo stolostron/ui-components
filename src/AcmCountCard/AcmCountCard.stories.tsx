@@ -2,6 +2,7 @@ import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { Meta } from '@storybook/react'
 import { AcmCountCard } from './AcmCountCard'
+import { makeStyles } from '@material-ui/styles'
 
 const meta: Meta = {
     title: 'Count Card',
@@ -20,9 +21,18 @@ const savedSearchCardActions = [
     { text: 'Delete', handleAction: () => console.log('delete action') },
 ]
 
+const useStyles = makeStyles({
+    root: {
+        '& article': {
+            margin: '1rem',
+        },
+    },
+})
+
 export const SuggestedSearchCard = () => {
+    const classes = useStyles()
     return (
-        <div style={{ display: 'flex' }}>
+        <div className={classes.root}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: true,
@@ -58,8 +68,9 @@ export const SuggestedSearchCard = () => {
 }
 
 export const SavedSearchCard = () => {
+    const classes = useStyles()
     return (
-        <div style={{ display: 'flex' }}>
+        <div className={classes.root}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,
@@ -108,8 +119,9 @@ export const ClustersOverview = () => {
 }
 
 export const CardSkeleton = () => {
+    const classes = useStyles()
     return (
-        <div style={{ display: 'flex' }}>
+        <div className={classes.root}>
             <AcmCountCard loading />
             <AcmCountCard loading />
             <AcmCountCard loading />
