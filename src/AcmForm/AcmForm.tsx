@@ -81,7 +81,6 @@ export function AcmSubmit(props: ButtonProps) {
                     context.setReadOnly(true)
                     /* istanbul ignore else */
                     if (props.onClick) {
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         await props.onClick(event)
                         context.setReadOnly(false)
                         setIsLoading(false)
