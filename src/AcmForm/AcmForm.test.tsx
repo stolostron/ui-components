@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { AcmForm, AcmSubmit } from './AcmForm'
 import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
@@ -19,12 +19,17 @@ describe('AcmForm', () => {
 
     test('supports validation', async () => {
         const mockClickCallback = jest.fn()
+        const mockClickPromise = () => {
+            mockClickCallback()
+            return Promise.resolve()
+        }
+
         const Component = () => {
             const [value, setValue] = useState<string>('')
             return (
                 <AcmForm>
                     <AcmTextInput id="input" label="Input" isRequired value={value} onChange={setValue} />
-                    <AcmSubmit onClick={mockClickCallback}>Submit</AcmSubmit>
+                    <AcmSubmit onClick={mockClickPromise}>Submit</AcmSubmit>
                 </AcmForm>
             )
         }
@@ -51,7 +56,7 @@ describe('AcmForm', () => {
 
         userEvent.clear(getByTestId('input'))
 
-        expect(getByText('Submit')).toHaveAttribute('disabled')
-        expect(getByTestId('input')).toHaveAttribute('aria-invalid', 'true')
+        waitFor(() => expect(getByText('Submit')).toHaveAttribute('disabled'))
+        waitFor(() => expect(getByTestId('input')).toHaveAttribute('aria-invalid', 'true'))
     })
 })

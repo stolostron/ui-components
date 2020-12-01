@@ -1,7 +1,7 @@
 import { FormGroup, Popover, Select, SelectProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
-import React, { Fragment, ReactNode, useContext, useLayoutEffect, useState } from 'react'
-import { FormContext } from '../AcmForm/AcmForm'
+import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import { useFormContext } from '../AcmForm/AcmForm'
 
 type AcmSelectProps = Pick<
     SelectProps,
@@ -21,7 +21,7 @@ type AcmSelectProps = Pick<
 
 export function AcmSelect(props: AcmSelectProps) {
     const [open, setOpen] = useState(false)
-    const formContext = useContext(FormContext)
+    const formContext = useFormContext()
     const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
     const [error, setError] = useState<string>()
     const {
@@ -116,6 +116,7 @@ export function AcmSelect(props: AcmSelectProps) {
                         : undefined
                 }
                 placeholderText={<span style={{ color: '#666' }}>{placeholder}</span>}
+                isDisabled={props.isDisabled || formContext.isReadOnly}
             />
             {validated === 'error' ? (
                 <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px' }}></div>

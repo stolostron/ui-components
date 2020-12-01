@@ -1,7 +1,7 @@
 import { FormGroup, Popover, TextInput, TextInputProps } from '@patternfly/react-core'
-import React, { Fragment, ReactNode, useContext, useLayoutEffect, useState } from 'react'
-import { FormContext } from '../AcmForm/AcmForm'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
+import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import { useFormContext } from '../AcmForm/AcmForm'
 
 type AcmTextInputProps = TextInputProps & {
     id: string
@@ -12,7 +12,7 @@ type AcmTextInputProps = TextInputProps & {
     helperText?: ReactNode
 }
 export function AcmTextInput(props: AcmTextInputProps) {
-    const formContext = useContext(FormContext)
+    const formContext = useFormContext()
     const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
     const [error, setError] = useState<string>()
     const { validation, labelHelp, labelHelpTitle, helperText, ...textInputProps } = props
@@ -74,7 +74,11 @@ export function AcmTextInput(props: AcmTextInputProps) {
                 )
             }
         >
-            <TextInput {...textInputProps} validated={validated} />
+            <TextInput
+                {...textInputProps}
+                validated={validated}
+                isDisabled={props.isDisabled || formContext.isReadOnly}
+            />
         </FormGroup>
     )
 }
