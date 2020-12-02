@@ -381,10 +381,14 @@ export function AcmTable<T>(props: {
                     </Title>
                 </EmptyState>
             ) : items.length === 0 ? (
-                <AcmEmptyState
-                    title={`No ${props.plural} found`}
-                    message={`You do not have any ${props.plural} yet.`}
-                />
+                props.emptyState ? (
+                    props.emptyState
+                ) : (
+                    <AcmEmptyState
+                        title={`No ${props.plural} found`}
+                        message={`You do not have any ${props.plural} yet.`}
+                    />
+                )
             ) : (
                 <Fragment>
                     <Table
@@ -423,7 +427,7 @@ export function AcmTable<T>(props: {
                     <Split>
                         <SplitItem isFilled></SplitItem>
                         <SplitItem>
-                            {
+                            {filtered.length !== 0 && (
                                 <Pagination
                                     itemCount={filtered.length}
                                     perPage={perPage}
@@ -436,13 +440,14 @@ export function AcmTable<T>(props: {
                                         setPerPage(perPage)
                                     }}
                                 />
-                            }
+                            )}
                         </SplitItem>
                     </Split>
                     {filtered.length === 0 && (
                         <AcmEmptyState
                             title="No results found"
                             message="No results match the filter criteria. Clear filters to show results."
+                            showIcon={false}
                             action={
                                 <AcmButton
                                     variant="link"

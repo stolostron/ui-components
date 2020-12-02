@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React, { useState } from 'react'
-import { AcmTablePaginationContextProvider, AcmTable } from './AcmTable'
+import { AcmTable, AcmTablePaginationContextProvider } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
 interface IExampleData {
@@ -21,7 +21,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
-    const Table = ({ bulkActions = false }) => {
+    const Table = ({ bulkActions = false, emptyState = undefined }) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -102,6 +102,7 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
+                emptyState={emptyState}
             />
         )
     }
@@ -247,5 +248,32 @@ describe('AcmTable', () => {
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
         expect(await axe(container)).toHaveNoViolations()
+    })
+
+    test('can support show custom empty state', () => {
+        const { getByText } = render(
+            <AcmTable<IExampleData>
+                plural="addresses"
+                items={[]}
+                columns={[
+                    {
+                        header: 'First Name',
+                        cell: 'firstName',
+                    },
+                ]}
+                keyFn={(item: IExampleData) => item.uid.toString()}
+                tableActions={[]}
+                rowActions={[]}
+                bulkActions={[]}
+                extraToolbarControls={
+                    <ToggleGroup>
+                        <ToggleGroupItem isSelected={true} text="View 1" />
+                        <ToggleGroupItem text="View 2" />
+                    </ToggleGroup>
+                }
+                emptyState={<div>TEST EMPTY STATE</div>}
+            />
+        )
+        expect(getByText('TEST EMPTY STATE')).toBeVisible()
     })
 })
