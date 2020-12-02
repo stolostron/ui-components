@@ -14,6 +14,9 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
     },
+    headerCount: {
+        fontWeight: 'lighter',
+    },
     wrapperContainer: {
         margin: '1rem 0',
     },
@@ -36,7 +39,7 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
             {headerLabel && 
                 <Title headingLevel="h4">
                     {headerLabel} 
-                    {headerLabel === 'Saved Searches' && <span style={{fontWeight: 'lighter'}}> {`( ${React.Children.count(children)} total )`}</span>}
+                    {headerLabel === 'Saved Searches' && <span className={classes.headerCount}> {`( ${React.Children.count(children)} total )`}</span>}
                 </Title>
             }
             <div

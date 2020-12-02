@@ -7,7 +7,27 @@ import { AcmExpandableWrapper } from '../AcmExpandableWrapper/AcmExpandableWrapp
 
 describe('AcmExpandableWrapper', () => {
     const savedSearchWrapper = () => (
-        <AcmExpandableWrapper headerLabel={'wrapper label'}>
+        <AcmExpandableWrapper headerLabel={'Saved Searches'}>
+            <AcmCountCard
+                cardHeader={{
+                    hasIcon: false,
+                    title: 'Test Search 1',
+                    description: 'Custom description with max amount of 60 characters',
+                    actions: [],
+                    onActionClick: (e) => {
+                        console.log(e.target)
+                    },
+                }}
+                onCardClick={() => console.log('cardclicked')}
+                count={1234}
+                countTitle="Results"
+                isSelectable={true}
+            />
+        </AcmExpandableWrapper>
+    )
+
+    const suggestedSearchWrapper = () => (
+        <AcmExpandableWrapper headerLabel={'Suggested Searches'}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,
@@ -33,7 +53,7 @@ describe('AcmExpandableWrapper', () => {
 
     test('validates expandable wrapper renders in collapsed state', () => {
         const { getByText, container } = render(savedSearchWrapper())
-        expect(getByText('wrapper label')).toBeInTheDocument()
+        expect(getByText('Saved Searches')).toBeInTheDocument()
         expect(container.querySelector('.pf-c-button')).toBeInTheDocument()
     })
 
@@ -42,4 +62,15 @@ describe('AcmExpandableWrapper', () => {
         userEvent.click(getByRole('button'))
         expect(getByText('Show less')).toBeInTheDocument()
     })
+
+    test('savedSearchCard shows count', () => {
+        const { container } = render(savedSearchWrapper())
+        expect(container.querySelector('.pf-c-title > span')).toBeInTheDocument()
+    })
+
+    test('suggestedSearchCard does not show count', () => {
+        const { container } = render(suggestedSearchWrapper())
+        expect(container.querySelector('.pf-c-title > span')).not.toBeInTheDocument()
+    })
+
 })
