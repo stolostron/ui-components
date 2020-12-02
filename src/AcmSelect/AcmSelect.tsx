@@ -1,4 +1,4 @@
-import { FormGroup, Popover, Select, SelectProps } from '@patternfly/react-core'
+import { FormGroup, Popover, Select, SelectProps, SelectVariant } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
@@ -115,7 +115,13 @@ export function AcmSelect(props: AcmSelectProps) {
                           }
                         : undefined
                 }
-                placeholderText={<span style={{ color: '#666' }}>{placeholder}</span>}
+                placeholderText={
+                    props.variant === 'typeahead' || props.variant === 'typeaheadmulti' ? (
+                        placeholder
+                    ) : (
+                        <span style={{ color: '#666' }}>{placeholder}</span>
+                    )
+                }
                 isDisabled={props.isDisabled || formContext.isReadOnly}
             />
             {validated === 'error' ? (
