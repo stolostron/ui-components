@@ -14,13 +14,20 @@ export default {
         variant: {
             control: { type: 'select', options: Object.values(AlertVariant) },
         },
+        staticAlert: { type: 'boolean' },
     },
 }
 
 export const Alerts = (args) => {
     return (
         <AcmPageCard>
-            <AcmAlert variant={args.variant} isInline={args.isInline} title={args.title} subtitle={args.subtitle} />
+            <AcmAlert
+                variant={args.variant}
+                isInline={args.isInline}
+                title={args.title}
+                subtitle={args.subtitle}
+                staticAlert={args.staticAlert}
+            />
         </AcmPageCard>
     )
 }
