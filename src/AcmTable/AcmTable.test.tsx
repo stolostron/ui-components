@@ -21,7 +21,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
-    const Table = ({ bulkActions = false }) => {
+    const Table = ({ bulkActions = false, ...otherProps }) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -102,6 +102,7 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
+                {...otherProps}
             />
         )
     }
@@ -243,6 +244,14 @@ describe('AcmTable', () => {
         userEvent.click(getByText('100 per page'))
         // verify pagination changes on both tables
         expect(container.querySelectorAll('tbody tr')).toHaveLength(200)
+    })
+    test('can provide default empty state', () => {
+        const { queryByText } = render(<Table items={[]} />)
+        expect(queryByText('No addresses found')).toBeVisible()
+    })
+    test('can use custom empty state', () => {
+        const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
+        expect(queryByText('Look elsewhere!')).toBeVisible()
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
