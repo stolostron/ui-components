@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React, { useState } from 'react'
-import { AcmTablePaginationContextProvider, AcmTable } from './AcmTable'
+import { AcmTable, AcmTablePaginationContextProvider } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 
 interface IExampleData {
@@ -21,7 +21,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
-    const Table = ({ bulkActions = false }) => {
+    const Table = ({ bulkActions = false, ...otherProps }) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -102,6 +102,7 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
+                {...otherProps}
             />
         )
     }
@@ -159,12 +160,12 @@ describe('AcmTable', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, container } = render(<Table />)
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'Female')
-        expect(queryByText('58 / 105')).toBeVisible()
+        expect(queryByText('57 / 105')).toBeVisible()
 
         // clear table
         expect(getByLabelText('Clear')).toBeVisible()
         userEvent.click(getByLabelText('Clear'))
-        expect(queryByText('58 / 105')).toBeNull()
+        expect(queryByText('57 / 105')).toBeNull()
 
         // verify manually deleting search, resets table with first column sorting
         userEvent.type(getByPlaceholderText('Search'), 'A{backspace}')
@@ -176,9 +177,10 @@ describe('AcmTable', () => {
 
         // sort by string
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
-        userEvent.click(getByText('First Name'))
-        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Ysabel')
-
+        userEvent.click(getByText('Gender'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Gender"]')).toHaveTextContent('Female')
+        userEvent.click(getByText('Gender'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Gender"]')).toHaveTextContent('Non-binary')
         // sort by number
         userEvent.click(getByText('UID'))
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Bogart')
@@ -247,5 +249,17 @@ describe('AcmTable', () => {
     test('has zero accessibility defects', async () => {
         const { container } = render(<Table />)
         expect(await axe(container)).toHaveNoViolations()
+    })
+    test('can provide default empty state', () => {
+        const { queryByText } = render(<Table items={[]} />)
+        expect(queryByText('No addresses found')).toBeVisible()
+    })
+    test('can use custom empty state', () => {
+        const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
+        expect(queryByText('Look elsewhere!')).toBeVisible()
+    })
+    test('shows loading', () => {
+        const { queryByText } = render(<Table items={undefined} />)
+        expect(queryByText('Loading')).toBeVisible()
     })
 })

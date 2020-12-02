@@ -22,7 +22,7 @@ describe('AcmButton', () => {
         waitFor(() => expect(screen.getByRole('tooltip')).toBeInTheDocument())
         userEvent.unhover(getByText('Button Label'))
         waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument())
-        await new Promise((resolve) => setTimeout(() => resolve(), 0))
+        await new Promise((resolve) => setTimeout(resolve, 0))
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<AcmButton onClick={() => null}>Button Label</AcmButton>)
