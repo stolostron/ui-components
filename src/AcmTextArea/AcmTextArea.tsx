@@ -1,7 +1,7 @@
 import { FormGroup, Popover, TextArea, TextAreaProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
-import React, { Fragment, ReactNode, useContext, useLayoutEffect, useState } from 'react'
-import { FormContext } from '../AcmForm/AcmForm'
+import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import { useFormContext } from '../AcmForm/AcmForm'
 
 type AcmTextAreaProps = TextAreaProps & {
     id: string
@@ -13,7 +13,7 @@ type AcmTextAreaProps = TextAreaProps & {
 }
 
 export function AcmTextArea(props: AcmTextAreaProps) {
-    const formContext = useContext(FormContext)
+    const formContext = useFormContext()
     const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
     const [error, setError] = useState<string>()
     const { validation, labelHelp, labelHelpTitle, helperText, ...textAreaProps } = props
@@ -77,6 +77,7 @@ export function AcmTextArea(props: AcmTextAreaProps) {
                 resizeOrientation={
                     /* istanbul ignore next */ props.resizeOrientation ? props.resizeOrientation : 'vertical'
                 }
+                disabled={formContext.isReadOnly}
             />
         </FormGroup>
     )
