@@ -399,7 +399,7 @@ export const exampleData: IExampleData[] = [
         firstName: 'Wilt',
         last_name: 'Menhci',
         email: 'wmenhcit@google.co.uk',
-        gender: 'Male',
+        gender: 'Non-binary',
         ip_address: '111.181.112.255',
     },
     {
@@ -855,7 +855,7 @@ export const exampleData: IExampleData[] = [
         firstName: 'Arline',
         last_name: 'Kinworthy',
         email: 'akinworthy2e@about.com',
-        gender: 'Female',
+        gender: 'Non-binary',
         ip_address: '131.198.124.26',
     },
     {

@@ -21,7 +21,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
-    const Table = ({ bulkActions = false, emptyState = undefined }) => {
+    const Table = ({ bulkActions = false, ...otherProps }) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -102,7 +102,7 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
-                emptyState={emptyState}
+                {...otherProps}
             />
         )
     }
@@ -160,12 +160,12 @@ describe('AcmTable', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, container } = render(<Table />)
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'Female')
-        expect(queryByText('58 / 105')).toBeVisible()
+        expect(queryByText('57 / 105')).toBeVisible()
 
         // clear table
         expect(getByLabelText('Clear')).toBeVisible()
         userEvent.click(getByLabelText('Clear'))
-        expect(queryByText('58 / 105')).toBeNull()
+        expect(queryByText('57 / 105')).toBeNull()
 
         // verify manually deleting search, resets table with first column sorting
         userEvent.type(getByPlaceholderText('Search'), 'A{backspace}')
@@ -177,9 +177,10 @@ describe('AcmTable', () => {
 
         // sort by string
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
-        userEvent.click(getByText('First Name'))
-        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Ysabel')
-
+        userEvent.click(getByText('Gender'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Gender"]')).toHaveTextContent('Female')
+        userEvent.click(getByText('Gender'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Gender"]')).toHaveTextContent('Non-binary')
         // sort by number
         userEvent.click(getByText('UID'))
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Bogart')
