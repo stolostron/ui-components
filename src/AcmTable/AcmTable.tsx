@@ -115,7 +115,7 @@ export function AcmTable<T>(props: {
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
 }) {
-    const { items, columns, keyFn, bulkActions } = props
+    const { emptyState, items, columns, keyFn, bulkActions } = props
     const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
     const [hasSearch, setHasSearch] = useState(true)
     const [searchItems, setSearchItems] = useState<ISearchItem<T>[]>()
@@ -381,10 +381,12 @@ export function AcmTable<T>(props: {
                     </Title>
                 </EmptyState>
             ) : items.length === 0 ? (
-                <AcmEmptyState
-                    title={`No ${props.plural} found`}
-                    message={`You do not have any ${props.plural} yet.`}
-                />
+                emptyState || (
+                    <AcmEmptyState
+                        title={`No ${props.plural} found`}
+                        message={`You do not have any ${props.plural} yet.`}
+                    />
+                )
             ) : (
                 <Fragment>
                     <Table
