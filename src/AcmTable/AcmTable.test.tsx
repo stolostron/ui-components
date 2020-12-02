@@ -250,7 +250,6 @@ describe('AcmTable', () => {
         const { container } = render(<Table />)
         expect(await axe(container)).toHaveNoViolations()
     })
-
     test('can provide default empty state', () => {
         const { queryByText } = render(<Table items={[]} />)
         expect(queryByText('No addresses found')).toBeVisible()
@@ -258,5 +257,9 @@ describe('AcmTable', () => {
     test('can use custom empty state', () => {
         const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
         expect(queryByText('Look elsewhere!')).toBeVisible()
+    })
+    test('shows loading', () => {
+        const { queryByText } = render(<Table items={undefined} />)
+        expect(queryByText('Loading')).toBeVisible()
     })
 })
