@@ -17,7 +17,7 @@ const savedSearchCardActions = [
 ]
 
 export const ExpandableSavedSearchWrapper = () => {
-    const count = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    const count = [1, 2,3,4,5,6,7]
     const renderAcmCountCards = count.map((n) => {
         return (
             <AcmCountCard
@@ -39,7 +39,7 @@ export const ExpandableSavedSearchWrapper = () => {
         )
     })
     return (
-        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'wrapper label'}>
+        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'Saved Searches'}>
             {renderAcmCountCards}
         </AcmExpandableWrapper>
     )
