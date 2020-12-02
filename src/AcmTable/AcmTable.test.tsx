@@ -251,30 +251,12 @@ describe('AcmTable', () => {
         expect(await axe(container)).toHaveNoViolations()
     })
 
-    test('can support show custom empty state', () => {
-        const { getByText } = render(
-            <AcmTable<IExampleData>
-                plural="addresses"
-                items={[]}
-                columns={[
-                    {
-                        header: 'First Name',
-                        cell: 'firstName',
-                    },
-                ]}
-                keyFn={(item: IExampleData) => item.uid.toString()}
-                tableActions={[]}
-                rowActions={[]}
-                bulkActions={[]}
-                extraToolbarControls={
-                    <ToggleGroup>
-                        <ToggleGroupItem isSelected={true} text="View 1" />
-                        <ToggleGroupItem text="View 2" />
-                    </ToggleGroup>
-                }
-                emptyState={<div>TEST EMPTY STATE</div>}
-            />
-        )
-        expect(getByText('TEST EMPTY STATE')).toBeVisible()
+    test('can provide default empty state', () => {
+        const { queryByText } = render(<Table items={[]} />)
+        expect(queryByText('No addresses found')).toBeVisible()
+    })
+    test('can use custom empty state', () => {
+        const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
+        expect(queryByText('Look elsewhere!')).toBeVisible()
     })
 })
