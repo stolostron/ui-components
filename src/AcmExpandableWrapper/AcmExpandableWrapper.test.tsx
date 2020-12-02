@@ -72,5 +72,4 @@ describe('AcmExpandableWrapper', () => {
         const { container } = render(suggestedSearchWrapper())
         expect(container.querySelector('.pf-c-title > span')).not.toBeInTheDocument()
     })
-
 })

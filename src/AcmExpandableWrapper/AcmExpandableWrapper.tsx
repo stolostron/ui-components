@@ -36,12 +36,14 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
 
     return (
         <div className={classes.root}>
-            {headerLabel && 
+            {headerLabel && (
                 <Title headingLevel="h4">
-                    {headerLabel} 
-                    {headerLabel === 'Saved Searches' && <span className={classes.headerCount}> {`( ${React.Children.count(children)} total )`}</span>}
+                    {headerLabel}
+                    {headerLabel === 'Saved Searches' && (
+                        <span className={classes.headerCount}> {`( ${React.Children.count(children)} total )`}</span>
+                    )}
                 </Title>
-            }
+            )}
             <div
                 className={
                     showAll ? `${classes.wrapperContainer}` : `${classes.wrapperContainer} ${classes.hideExtras}`
