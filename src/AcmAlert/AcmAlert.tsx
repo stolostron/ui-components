@@ -20,7 +20,7 @@ export function AcmAlert(props: AcmAlertProps) {
 
     const { noClose, ...otherProps } = props
     const [showAlert, setShowAlert] = useState(true)
-    const closeAlert = !noClose && <AlertActionCloseButton onClose={() => setShowAlert(!showAlert)} />
+    const closeAlert = !noClose && <AlertActionCloseButton onClose={() => setShowAlert(false)} />
     return showAlert ? (
         <Alert {...otherProps} actionClose={closeAlert} className={classes.alert}>
             <p>{props.subtitle}</p>
