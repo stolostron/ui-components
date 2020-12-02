@@ -16,7 +16,7 @@ git checkout master
 rm -rf node_modules
 rm -f package-lock.json
 
-npx npm-check-updates -u -t minor 
+npx npm-check-updates -u
 npm install
 npm dedup
 npm audit fix

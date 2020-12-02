@@ -27,7 +27,7 @@ describe('AcmCodeSnippet', () => {
         expect(queryByText(fakeCommand)).toBeNull()
         await act(async () => {
             await userEvent.click(getByTestId('copy-button-snippet'))
-            await new Promise((resolve) => setTimeout(resolve, 2100))
+            await new Promise((resolve) => setTimeout(() => resolve(), 2100))
         })
         expect(document.execCommand).toHaveBeenCalled()
     })
