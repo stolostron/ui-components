@@ -36,7 +36,7 @@ describe('AcmAlert', () => {
         expect(container.querySelector('[class="pf-c-alert"]')).toBeNull()
     })
     test('renders without close option', () => {
-        const { queryByRole } = render(<AcmAlert title="Acm Alert title" staticAlert />)
+        const { queryByRole } = render(<AcmAlert title="Acm Alert title" noClose />)
         expect(queryByRole('button', { name: 'Close Default alert: alert: Acm Alert title' })).toBeNull()
     })
     test('has zero accessibility defects', async () => {

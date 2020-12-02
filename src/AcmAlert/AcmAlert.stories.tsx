@@ -14,7 +14,7 @@ export default {
         variant: {
             control: { type: 'select', options: Object.values(AlertVariant) },
         },
-        staticAlert: { type: 'boolean' },
+        noClose: { type: 'boolean' },
     },
 }
 
@@ -26,7 +26,7 @@ export const Alerts = (args) => {
                 isInline={args.isInline}
                 title={args.title}
                 subtitle={args.subtitle}
-                staticAlert={args.staticAlert}
+                noClose={args.noClose}
             />
         </AcmPageCard>
     )

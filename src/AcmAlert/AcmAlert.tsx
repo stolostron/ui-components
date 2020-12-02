@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles'
 
 type AcmAlertProps = AlertProps & {
     subtitle?: string | React.ReactNode
-    staticAlert?: boolean
+    noClose?: boolean
 }
 
 const useStyles = makeStyles({
@@ -18,9 +18,9 @@ const useStyles = makeStyles({
 export function AcmAlert(props: AcmAlertProps) {
     const classes = useStyles()
 
-    const { staticAlert, ...otherProps } = props
+    const { noClose, ...otherProps } = props
     const [showAlert, setShowAlert] = useState(true)
-    const closeAlert = !staticAlert && <AlertActionCloseButton onClose={() => setShowAlert(!showAlert)} />
+    const closeAlert = !noClose && <AlertActionCloseButton onClose={() => setShowAlert(!showAlert)} />
     return showAlert ? (
         <Alert {...otherProps} actionClose={closeAlert} className={classes.alert}>
             <p>{props.subtitle}</p>
