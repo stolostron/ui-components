@@ -1,4 +1,4 @@
-import { FormGroup, Popover, Select, SelectProps, SelectVariant } from '@patternfly/react-core'
+import { FormGroup, Popover, Select, SelectProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
