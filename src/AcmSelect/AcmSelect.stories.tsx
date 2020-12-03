@@ -14,7 +14,7 @@ export const Select = () => {
 
     return (
         <AcmForm>
-            <AcmSelect label="Select" placeholder="test" id="select" value={value} onChange={setValue}>
+            <AcmSelect label="Select" placeholder="options" id="select" value={value} onChange={setValue}>
                 <SelectOption key="option-1" value="option-1">
                     Option 1
                 </SelectOption>
@@ -38,7 +38,7 @@ export const TypeAheadSelect = () => {
                 id="select"
                 value={value}
                 onChange={setValue}
-                placeholder="test"
+                placeholder="options"
                 variant={SelectVariant.typeahead}
             >
                 <SelectOption key="option-1" value="option-1">
