@@ -55,7 +55,9 @@ export function AcmForm(props: FormProps) {
     )
 }
 
-export function AcmSubmit(props: ButtonProps) {
+type AcmSubmitProps = ButtonProps & { label?: string; processingLabel?: string }
+
+export function AcmSubmit(props: AcmSubmitProps) {
     const context = useContext(FormContext)
     const [isDisabled, setDisabled] = useState(false)
     const [isLoading, setIsLoading] = React.useState(false)
@@ -93,17 +95,23 @@ export function AcmSubmit(props: ButtonProps) {
                         } catch (err) {
                             // Do Nothing
                         }
-                        /* istanbul ignore else */
-                        if (isMountedRef.current) {
-                            context.setReadOnly(false)
-                            setIsLoading(false)
-                        }
+
+                        // In cases where the onClick caused a route change and the component is unmounted
+                        // we need to wait for that to process and only after that if we are still mounted
+                        // set the states
+                        /* istanbul ignore next */
+                        setTimeout(() => {
+                            if (isMountedRef.current) {
+                                context.setReadOnly(false)
+                                setIsLoading(false)
+                            }
+                        }, 0)
                     }
                 }
             }}
             isDisabled={isDisabled || props.isDisabled}
         >
-            {props.children}
+            {props.label ? (isLoading ? props.processingLabel : props.label) : props.children}
         </Button>
     )
 }

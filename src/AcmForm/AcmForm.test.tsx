@@ -29,7 +29,7 @@ describe('AcmForm', () => {
             return (
                 <AcmForm>
                     <AcmTextInput id="input" label="Input" isRequired value={value} onChange={setValue} />
-                    <AcmSubmit onClick={mockClickPromise}>Submit</AcmSubmit>
+                    <AcmSubmit onClick={mockClickPromise} label="Submit" processingLabel="Loading" />
                 </AcmForm>
             )
         }
