@@ -7,12 +7,17 @@ type AcmExpandableWrapperProps = {
     headerLabel?: string
     children: React.ReactNode
     maxHeight?: string
+    withCount: boolean
+    expandable: boolean
 }
 
 const useStyles = makeStyles({
     root: {
         display: 'flex',
         flexDirection: 'column',
+    },
+    headerCount: {
+        fontWeight: 'lighter',
     },
     wrapperContainer: {
         margin: '1rem 0',
@@ -27,13 +32,20 @@ const useStyles = makeStyles({
 })
 
 export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
-    const { children, headerLabel } = props
+    const { children, headerLabel, withCount, expandable } = props
     const classes = useStyles(props)
     const [showAll, setShowAll] = useState<boolean>(false)
 
     return (
         <div className={classes.root}>
-            {headerLabel && <Title headingLevel="h4">{headerLabel}</Title>}
+            {headerLabel && (
+                <Title headingLevel="h4">
+                    {headerLabel}
+                    {withCount && (
+                        <span className={classes.headerCount}> {`( ${React.Children.count(children)} total )`}</span>
+                    )}
+                </Title>
+            )}
             <div
                 className={
                     showAll ? `${classes.wrapperContainer}` : `${classes.wrapperContainer} ${classes.hideExtras}`
@@ -49,9 +61,11 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
                     })}
                 </Grid>
             </div>
-            <AcmButton className={classes.showAllButton} variant={'secondary'} onClick={() => setShowAll(!showAll)}>
-                {showAll ? 'Show less' : `Show all (${React.Children.count(children)})`}
-            </AcmButton>
+            {expandable && (
+                <AcmButton className={classes.showAllButton} variant={'secondary'} onClick={() => setShowAll(!showAll)}>
+                    {showAll ? 'Show less' : `Show all (${React.Children.count(children)})`}
+                </AcmButton>
+            )}
         </div>
     )
 }
