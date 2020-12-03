@@ -59,6 +59,13 @@ export function AcmSubmit(props: ButtonProps) {
     const context = useContext(FormContext)
     const [isDisabled, setDisabled] = useState(false)
     const [isLoading, setIsLoading] = React.useState(false)
+    const isMountedRef = React.useRef(false)
+    useEffect(() => {
+        isMountedRef.current = true
+        return () => {
+            isMountedRef.current = false
+        }
+    }, [])
 
     useEffect(() => {
         if (context.validate) {
@@ -86,8 +93,11 @@ export function AcmSubmit(props: ButtonProps) {
                         } catch (err) {
                             // Do Nothing
                         }
-                        context.setReadOnly(false)
-                        setIsLoading(false)
+                        /* istanbul ignore else */
+                        if (isMountedRef.current) {
+                            context.setReadOnly(false)
+                            setIsLoading(false)
+                        }
                     }
                 }
             }}
