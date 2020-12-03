@@ -39,7 +39,7 @@ export const ExpandableSavedSearchWrapper = () => {
         )
     })
     return (
-        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'Saved Searches'}>
+        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'Saved Searches'} withCount={true}>
             {renderAcmCountCards}
         </AcmExpandableWrapper>
     )

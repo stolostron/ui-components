@@ -7,7 +7,7 @@ import { AcmExpandableWrapper } from '../AcmExpandableWrapper/AcmExpandableWrapp
 
 describe('AcmExpandableWrapper', () => {
     const savedSearchWrapper = () => (
-        <AcmExpandableWrapper headerLabel={'Saved Searches'}>
+        <AcmExpandableWrapper headerLabel={'Saved Searches'} withCount={true}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,
@@ -27,7 +27,7 @@ describe('AcmExpandableWrapper', () => {
     )
 
     const suggestedSearchWrapper = () => (
-        <AcmExpandableWrapper headerLabel={'Suggested Searches'}>
+        <AcmExpandableWrapper headerLabel={'Suggested Searches'} withCount={false}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,

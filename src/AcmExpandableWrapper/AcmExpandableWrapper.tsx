@@ -7,6 +7,7 @@ type AcmExpandableWrapperProps = {
     headerLabel?: string
     children: React.ReactNode
     maxHeight?: string
+    withCount: boolean
 }
 
 const useStyles = makeStyles({
@@ -30,7 +31,7 @@ const useStyles = makeStyles({
 })
 
 export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
-    const { children, headerLabel } = props
+    const { children, headerLabel, withCount } = props
     const classes = useStyles(props)
     const [showAll, setShowAll] = useState<boolean>(false)
 
@@ -39,7 +40,7 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
             {headerLabel && (
                 <Title headingLevel="h4">
                     {headerLabel}
-                    {headerLabel === 'Saved Searches' && (
+                    {withCount && (
                         <span className={classes.headerCount}> {`( ${React.Children.count(children)} total )`}</span>
                     )}
                 </Title>
@@ -59,9 +60,11 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
                     })}
                 </Grid>
             </div>
-            <AcmButton className={classes.showAllButton} variant={'secondary'} onClick={() => setShowAll(!showAll)}>
-                {showAll ? 'Show less' : `Show all (${React.Children.count(children)})`}
-            </AcmButton>
+            {headerLabel !== 'Suggested Searches' && (
+                <AcmButton className={classes.showAllButton} variant={'secondary'} onClick={() => setShowAll(!showAll)}>
+                    {showAll ? 'Show less' : `Show all (${React.Children.count(children)})`}
+                </AcmButton>
+            )}
         </div>
     )
 }
