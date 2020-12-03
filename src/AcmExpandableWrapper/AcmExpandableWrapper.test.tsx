@@ -7,7 +7,7 @@ import { AcmExpandableWrapper } from '../AcmExpandableWrapper/AcmExpandableWrapp
 
 describe('AcmExpandableWrapper', () => {
     const savedSearchWrapper = () => (
-        <AcmExpandableWrapper headerLabel={'Saved Searches'} withCount={true}>
+        <AcmExpandableWrapper headerLabel={'Saved Searches'} expandable={true} withCount={true}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,
@@ -27,7 +27,7 @@ describe('AcmExpandableWrapper', () => {
     )
 
     const suggestedSearchWrapper = () => (
-        <AcmExpandableWrapper headerLabel={'Suggested Searches'} withCount={false}>
+        <AcmExpandableWrapper headerLabel={'Suggested Searches'} expandable={false} withCount={false}>
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,
@@ -68,8 +68,9 @@ describe('AcmExpandableWrapper', () => {
         expect(container.querySelector('.pf-c-title > span')).toBeInTheDocument()
     })
 
-    test('suggestedSearchCard does not show count', () => {
+    test('suggestedSearchCard does not show count or show more button', () => {
         const { container } = render(suggestedSearchWrapper())
         expect(container.querySelector('.pf-c-title > span')).not.toBeInTheDocument()
+        expect(container.querySelector('.pf-c-button')).not.toBeInTheDocument()
     })
 })

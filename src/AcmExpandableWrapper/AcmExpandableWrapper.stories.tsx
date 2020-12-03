@@ -10,6 +10,12 @@ const meta: Meta = {
 }
 export default meta
 
+const suggestedSearchCardActions = [
+    {
+        text: 'Share',
+        handleAction: () => console.log('share action'),
+    },
+]
 const savedSearchCardActions = [
     { text: 'Edit', handleAction: () => console.log('edit action') },
     { text: 'Share', handleAction: () => console.log('share action') },
@@ -39,7 +45,36 @@ export const ExpandableSavedSearchWrapper = () => {
         )
     })
     return (
-        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'Saved Searches'} withCount={true}>
+        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'Saved searches'} withCount={true} expandable={true}>
+            {renderAcmCountCards}
+        </AcmExpandableWrapper>
+    )
+}
+
+export const nonExpandableSuggestedSearchWrapper = () => {
+    const count = [1, 2, 3]
+    const renderAcmCountCards = count.map((n) => {
+        return (
+            <AcmCountCard
+                key={n}
+                cardHeader={{
+                    hasIcon: true,
+                    title: 'Test Search 2',
+                    description: 'Custom description with max amount of 60 characters',
+                    actions: [...suggestedSearchCardActions],
+                    onActionClick: (e) => {
+                        console.log(e.target)
+                    },
+                }}
+                onCardClick={() => console.log('cardclicked')}
+                count={0}
+                countTitle="Results"
+                isSelectable={true}
+            />
+        )
+    })
+    return (
+        <AcmExpandableWrapper headerLabel={'Suggested search templates'} withCount={false} expandable={false}>
             {renderAcmCountCards}
         </AcmExpandableWrapper>
     )
@@ -59,5 +94,9 @@ export const ExpandableRelatedResWrapper = () => {
             />
         )
     })
-    return <AcmExpandableWrapper maxHeight={'9rem'}>{renderAcmTiles}</AcmExpandableWrapper>
+    return (
+        <AcmExpandableWrapper maxHeight={'9rem'} withCount={false} expandable={true}>
+            {renderAcmTiles}
+        </AcmExpandableWrapper>
+    )
 }

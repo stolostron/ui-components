@@ -8,6 +8,7 @@ type AcmExpandableWrapperProps = {
     children: React.ReactNode
     maxHeight?: string
     withCount: boolean
+    expandable: boolean
 }
 
 const useStyles = makeStyles({
@@ -31,7 +32,7 @@ const useStyles = makeStyles({
 })
 
 export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
-    const { children, headerLabel, withCount } = props
+    const { children, headerLabel, withCount, expandable } = props
     const classes = useStyles(props)
     const [showAll, setShowAll] = useState<boolean>(false)
 
@@ -60,7 +61,7 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
                     })}
                 </Grid>
             </div>
-            {headerLabel !== 'Suggested Searches' && (
+            {expandable && (
                 <AcmButton className={classes.showAllButton} variant={'secondary'} onClick={() => setShowAll(!showAll)}>
                     {showAll ? 'Show less' : `Show all (${React.Children.count(children)})`}
                 </AcmButton>
