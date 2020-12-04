@@ -7,6 +7,7 @@ import { AcmMultiSelect } from '../AcmMultiSelect/AcmMultiSelect'
 import { AcmPageCard } from '../AcmPage/AcmPage'
 import { AcmSelect } from '../AcmSelect/AcmSelect'
 import { AcmTextArea } from '../AcmTextArea/AcmTextArea'
+import { AcmFormSection } from '../AcmFormSection/AcmFormSection'
 import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
 import { AcmForm, AcmSubmit } from './AcmForm'
 
@@ -28,6 +29,7 @@ export const Form = () => {
     return (
         <AcmPageCard>
             <AcmForm>
+                <AcmFormSection title="TextInput"></AcmFormSection>
                 <AcmTextInput
                     id="textInput"
                     label="Email"
@@ -60,6 +62,7 @@ export const Form = () => {
                     }}
                     isRequired
                 />
+                <AcmFormSection title="TextArea" addSpacing></AcmFormSection>
                 <AcmTextArea
                     id="textArea"
                     label="Text Area"
@@ -69,7 +72,7 @@ export const Form = () => {
                     onChange={setDescription}
                     isRequired
                 />
-
+                <AcmFormSection title="Select" addSpacing></AcmFormSection>
                 <AcmSelect
                     id="acm-select"
                     label="Select"
@@ -109,6 +112,7 @@ export const Form = () => {
                     </SelectOption>
                 </AcmMultiSelect>
 
+                <AcmFormSection title="Labels" addSpacing></AcmFormSection>
                 <AcmLabelsInput
                     id="labelsInput"
                     label="Labels Input"
