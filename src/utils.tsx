@@ -14,3 +14,16 @@ export function TooltipWrapper(props: {
         props.children
     )
 }
+
+export const onCopy = (event: React.ClipboardEvent<HTMLDivElement>, text: string) => {
+    const clipboard = event.currentTarget.parentElement
+    /* istanbul ignore else */
+    if (clipboard) {
+        const el = document.createElement('textarea')
+        el.value = text
+        clipboard.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        clipboard.removeChild(el)
+    }
+}

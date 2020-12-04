@@ -1,4 +1,5 @@
 import React from 'react'
+import { Card, CardBody } from '@patternfly/react-core'
 import { AcmInlineCopy } from './AcmInlineCopy'
 
 export default {
@@ -7,5 +8,11 @@ export default {
 }
 
 export const InlineCopy = () => {
-    return <AcmInlineCopy text="Copy me" />
+    return (
+        <Card>
+            <CardBody>
+                <AcmInlineCopy text="Copy me" />
+            </CardBody>
+        </Card>
+    )
 }
