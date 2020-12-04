@@ -20,6 +20,7 @@ export function AcmInlineCopy(props: { text: string; id: string }) {
                     id={props.id}
                     variant={ButtonVariant.link}
                     icon={<CopyIcon />}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     onClick={(event: any) => {
                         setCopied(true)
                         onCopy(event, props.text)
