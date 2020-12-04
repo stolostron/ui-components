@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { OptionsMenu, OptionsMenuItem, OptionsMenuToggleWithText } from '@patternfly/react-core'
 import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
+import { CaretDownIcon } from '@patternfly/react-icons'
 import { AcmSummaryList } from './AcmSummaryList'
-import { Menu } from './AcmSummaryList.stories'
 
 describe('AcmSummaryList', () => {
     const list = [
@@ -36,3 +37,24 @@ describe('AcmSummaryList', () => {
         expect(await axe(container)).toHaveNoViolations()
     })
 })
+
+export const Menu = () => {
+    const [isOpen, setOpen] = useState<boolean>(false)
+    const noop = () => null
+    const menuItems = [
+        <OptionsMenuItem id="aws" key="1" onSelect={noop}>
+            Amazon
+        </OptionsMenuItem>,
+        <OptionsMenuItem id="gcp" key="2" onSelect={noop}>
+            Google
+        </OptionsMenuItem>,
+    ]
+    const toggle = (
+        <OptionsMenuToggleWithText
+            toggleText="All providers"
+            toggleButtonContents={<CaretDownIcon />}
+            onToggle={() => setOpen(!isOpen)}
+        />
+    )
+    return <OptionsMenu id="fake" menuItems={menuItems} isOpen={isOpen} isPlain isText toggle={toggle} />
+}

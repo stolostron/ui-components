@@ -86,7 +86,8 @@ const useSectionStyles = makeStyles({
     count: {
         lineHeight: ({ isPrimary }) => (isPrimary ? '2.55rem' : undefined),
         fontSize: (props: SummarySectionProps) => (props.isPrimary ? '36px' : '28px'),
-        fontColor: (props: SummarySectionProps) => (props.isPrimary ? 'var(--pf-global--primary-color--100)' : ''),
+        fontColor: (props: SummarySectionProps) =>
+            props.isPrimary ? 'var(--pf-global--primary-color--100)' : undefined,
         '& a': {
             textDecoration: 'none !important',
             fontColor: 'var(--pf-global--Color--100) !important',

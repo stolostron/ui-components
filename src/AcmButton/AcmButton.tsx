@@ -1,16 +1,14 @@
-import { Button, ButtonProps, Tooltip } from '@patternfly/react-core'
 import React from 'react'
+import { Button, ButtonProps } from '@patternfly/react-core'
+import { TooltipWrapper } from '../utils'
 
 export function AcmButton(props: ButtonProps & { tooltip?: string | React.ReactNode }) {
     const { isDisabled, tooltip, children, ...otherProps } = props
-    if (isDisabled && tooltip) {
-        return (
-            <Tooltip content={props.tooltip}>
-                <Button {...otherProps} isAriaDisabled>
-                    {children}
-                </Button>
-            </Tooltip>
-        )
-    }
-    return <Button {...props}>{children}</Button>
+    return (
+        <TooltipWrapper showTooltip={isDisabled && !!tooltip} tooltip={tooltip}>
+            <Button {...otherProps} isAriaDisabled={isDisabled}>
+                {children}
+            </Button>
+        </TooltipWrapper>
+    )
 }
