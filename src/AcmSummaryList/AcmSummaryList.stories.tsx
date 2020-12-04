@@ -30,7 +30,7 @@ export const SummaryList = () => {
     )
 }
 
-export const Menu = () => {
+const Menu = () => {
     const [isOpen, setOpen] = useState<boolean>(false)
     const noop = () => null
     const menuItems = [

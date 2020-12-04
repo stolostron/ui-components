@@ -1,4 +1,4 @@
-import { SelectOption } from '@patternfly/react-core'
+import { SelectOption, SelectVariant } from '@patternfly/react-core'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
@@ -10,13 +10,7 @@ describe('AcmSelect', () => {
     const Select = () => {
         const [value, setValue] = useState<string>()
         return (
-            <AcmSelect
-                id="acm-select"
-                label="ACM select"
-                value={value}
-                onChange={setValue}
-                placeholderText="Select one"
-            >
+            <AcmSelect id="acm-select" label="ACM select" value={value} onChange={setValue} placeholder="Select one">
                 <SelectOption key="red" value="red">
                     Red
                 </SelectOption>
@@ -29,7 +23,7 @@ describe('AcmSelect', () => {
 
     test('can apply and clear selections', () => {
         const { container, getByRole, getByText, getAllByRole, queryByTestId, queryByText } = render(<Select />)
-        expect(queryByText('Select one')).toBeNull()
+        expect(queryByText('Select one')).toBeVisible()
         container.querySelector<HTMLButtonElement>('.pf-c-select__toggle')?.click()
         expect(getByText('Red')).toBeVisible()
         getAllByRole('option')[0].click()
@@ -37,6 +31,34 @@ describe('AcmSelect', () => {
         userEvent.click(getByRole('button', { name: 'Clear all' }))
         expect(queryByTestId('acm-select')).toBeNull()
         expect(queryByText('Red')).toBeNull()
+    })
+
+    test('typeahead varient shows placeholder text', () => {
+        const TypeaheadSelect = () => {
+            const [value, setValue] = useState<string>()
+            return (
+                <AcmSelect
+                    variant={SelectVariant.typeahead}
+                    id="acm-select"
+                    label="ACM select"
+                    value={value}
+                    onChange={setValue}
+                    placeholder="Select one"
+                >
+                    <SelectOption key="red" value="red">
+                        Red
+                    </SelectOption>
+                    <SelectOption key="green" value="green">
+                        Green
+                    </SelectOption>
+                </AcmSelect>
+            )
+        }
+        const { container } = render(<TypeaheadSelect />)
+        expect(container.querySelector<HTMLInputElement>('.pf-c-select__toggle-typeahead')).toHaveAttribute(
+            'placeholder',
+            'Select one'
+        )
     })
 
     test('has zero accessibility defects', async () => {
