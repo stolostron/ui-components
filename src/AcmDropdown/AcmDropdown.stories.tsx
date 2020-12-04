@@ -26,7 +26,7 @@ export const Dropdown = (args) => {
     const onHover = () => console.log('hovered')
     return (
         <Card>
-            <CardBody style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+            <CardBody style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', paddingTop: '50px' }}>
                 <AcmDropdown
                     onHover={onHover}
                     isDisabled={args.isDisabled}

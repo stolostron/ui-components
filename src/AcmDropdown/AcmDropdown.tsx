@@ -6,11 +6,10 @@ import {
     DropdownPosition,
     KebabToggle,
     DropdownProps,
-    Tooltip,
-    TooltipPosition,
 } from '@patternfly/react-core'
+import { TooltipWrapper } from '../utils'
 
-type Props = Omit<DropdownProps, 'toggle'>
+type Props = Omit<DropdownProps, 'toggle' | 'onSelect'>
 
 export type AcmDropdownProps = Props & {
     dropdownItems: AcmDropdownItems[]
@@ -46,7 +45,6 @@ export function AcmDropdown(props: AcmDropdownProps) {
         <TooltipWrapper showTooltip={props.isDisabled && !!props.tooltip} tooltip={props.tooltip}>
             <Dropdown
                 onMouseOver={props.onHover}
-                // onSelect={onSelect}
                 position={DropdownPosition.right}
                 dropdownItems={props.dropdownItems.map((item) => (
                     <TooltipWrapper
@@ -75,16 +73,3 @@ export function AcmDropdown(props: AcmDropdownProps) {
     )
 }
 
-export function TooltipWrapper(props: {
-    children: React.ReactElement
-    showTooltip?: boolean
-    tooltip?: string | React.ReactNode
-}) {
-    return props.showTooltip ? (
-        <Tooltip content={props.tooltip} position={TooltipPosition.top}>
-            {props.children}
-        </Tooltip>
-    ) : (
-        props.children
-    )
-}
