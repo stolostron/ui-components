@@ -9,6 +9,8 @@ import {
 } from '@patternfly/react-core'
 import { TooltipWrapper } from '../utils'
 
+// TODO this dropdown is not accessible when the dropdown items are wrapped by the Tooltip component
+
 type Props = Omit<DropdownProps, 'toggle' | 'onSelect'>
 
 export type AcmDropdownProps = Props & {
