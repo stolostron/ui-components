@@ -1,12 +1,13 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CopyIcon } from '@patternfly/react-icons'
 import { Popover, ButtonVariant } from '@patternfly/react-core'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { onCopy } from '../utils'
 
-export function AcmInlineCopy(props: { text: string }) {
+export function AcmInlineCopy(props: { text: string; id: string }) {
     const [copied, setCopied] = useState<boolean>(false)
     useEffect(() => {
+        /* istanbul ignore if */
         if (copied) {
             setTimeout(() => setCopied(false), 2000)
         }
@@ -16,6 +17,7 @@ export function AcmInlineCopy(props: { text: string }) {
             {props.text}
             <Popover bodyContent="" headerContent="Copied!" isVisible={copied}>
                 <AcmButton
+                    id={props.id}
                     variant={ButtonVariant.link}
                     icon={<CopyIcon />}
                     onClick={(event: any) => {
