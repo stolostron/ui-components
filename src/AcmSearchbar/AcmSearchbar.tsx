@@ -2,7 +2,7 @@
 // using the following line to override for time being
 declare module 'react-tag-autocomplete'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactTags from 'react-tag-autocomplete'
 import CloseIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
@@ -30,6 +30,12 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
     const { loadingSuggestions, suggestions, queryString, currentQueryCallback, toggleInfoModal } = props
     const [currentQuery, setCurrentQuery] = useState(queryString)
     const [searchbarTags, setSearchbarTags] = useState(convertStringToTags(currentQuery))
+
+    // rerender component with new props after initial load
+    useEffect(() => {
+        setCurrentQuery(queryString)
+        setSearchbarTags(convertStringToTags(queryString))
+    }, [queryString])
 
     return (
         <div className={'searchbar-container'}>

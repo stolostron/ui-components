@@ -44,15 +44,14 @@ function getSuggestions(query: string): DropdownSuggestionsProps[] {
 }
 
 export const Searchbar = () => {
-    const [currentQuery, setCurrentQuery] = useState('')
+    const [currentQuery, setCurrentQuery] = useState('kind:pod namespace:default name:')
     return (
         <AcmSearchbar
             loadingSuggestions={false}
-            queryString={'kind:pod namespace:default name:testing'}
+            queryString={currentQuery}
             suggestions={getSuggestions(currentQuery)}
             currentQueryCallback={(updatedQuery) => {
                 setCurrentQuery(updatedQuery)
-                return updatedQuery
             }}
             toggleInfoModal={() => null}
         />
