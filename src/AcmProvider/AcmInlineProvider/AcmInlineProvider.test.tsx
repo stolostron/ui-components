@@ -7,9 +7,9 @@ import { Provider, ProviderLongTextMap } from '../'
 describe('AcmInlineProvider', () => {
     Object.values(Provider).forEach((provider) => {
         test(`renders - ${provider}`, async () => {
-            const { container, getByRole, getByText } = render(<AcmInlineProvider provider={provider} />)
+            const { container, getByRole, queryAllByText } = render(<AcmInlineProvider provider={provider} />)
             expect(getByRole('presentation')).toBeInTheDocument()
-            expect(getByText(ProviderLongTextMap[provider])).toBeInTheDocument()
+            expect(queryAllByText(ProviderLongTextMap[provider])).toBeTruthy()
             expect(await axe(container)).toHaveNoViolations()
         })
     })

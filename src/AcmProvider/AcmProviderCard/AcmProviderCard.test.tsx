@@ -2,7 +2,8 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
-import { AcmOverviewProviders, AcmProviderCard, Provider } from './AcmProviderCard'
+import { AcmOverviewProviders, AcmProviderCard } from './AcmProviderCard'
+import { Provider } from '../'
 
 describe('AcmOverviewProviders', () => {
     const providers = Object.values(Provider).map((provider, i) => ({
