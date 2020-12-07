@@ -2,19 +2,7 @@ import '@patternfly/react-styles/css/components/CodeEditor/code-editor.css'
 import React, { useState, useEffect } from 'react'
 import { TooltipPosition } from '@patternfly/react-core'
 import { ClipboardCopyButton } from '@patternfly/react-core/dist/js/components/ClipboardCopy/ClipboardCopyButton'
-
-export const onCopy = (event: React.ClipboardEvent<HTMLDivElement>, text: string) => {
-    const clipboard = event.currentTarget.parentElement
-    /* istanbul ignore else */
-    if (clipboard) {
-        const el = document.createElement('textarea')
-        el.value = text
-        clipboard.appendChild(el)
-        el.select()
-        document.execCommand('copy')
-        clipboard.removeChild(el)
-    }
-}
+import { onCopy } from '../utils'
 
 export function AcmCodeSnippet(props: {
     id: string

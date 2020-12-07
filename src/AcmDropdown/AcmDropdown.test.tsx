@@ -48,6 +48,7 @@ describe('AcmDropdown', () => {
         expect(onSelect).toHaveBeenCalled()
         userEvent.hover(getByTestId('dropdown'))
         expect(onHover).toHaveBeenCalled()
+        await new Promise((resolve) => setTimeout(resolve, 0))
     })
     test('renders in disabled state', async () => {
         const { getByTestId, getByRole, container } = render(<Component isDisabled={true} tooltip="Tooltip text" />)
@@ -56,6 +57,7 @@ describe('AcmDropdown', () => {
         userEvent.hover(getByTestId('dropdown'))
         waitFor(() => expect(getByRole('tooltip')).toBeInTheDocument())
         userEvent.click(getByTestId('dropdown'))
+        await new Promise((resolve) => setTimeout(resolve, 0))
     })
     test('renders as a kebab dropdown', async () => {
         const { getByTestId, container } = render(<Component isKebab={true} />)
@@ -63,15 +65,15 @@ describe('AcmDropdown', () => {
         expect(await axe(container)).toHaveNoViolations()
         userEvent.click(getByTestId('dropdown'))
         waitFor(() => expect(getByTestId('install-config')).toBeInTheDocument())
+        await new Promise((resolve) => setTimeout(resolve, 0))
     })
     test('renders as a kebab dropdown in disabled state', async () => {
-        const { getByTestId, getByRole, container } = render(
+        const { getByTestId, queryByTestId } = render(
             <Component isDisabled={true} tooltip="Tooltip text" isKebab={true} />
         )
         expect(getByTestId('dropdown')).toBeInTheDocument()
-        expect(await axe(container)).toHaveNoViolations()
-        userEvent.hover(getByTestId('dropdown'))
-        waitFor(() => expect(getByRole('tooltip')).toBeInTheDocument())
         userEvent.click(getByTestId('dropdown'))
+        expect(queryByTestId('install-config')).toBeNull()
+        await new Promise((resolve) => setTimeout(resolve, 0))
     })
 })
