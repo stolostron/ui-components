@@ -1,9 +1,10 @@
 import '@patternfly/patternfly/patternfly.css'
 import React, { useState } from 'react'
-import { AcmOverviewProviders, AcmProviderCard, Provider } from './AcmProviderCard'
+import { AcmOverviewProviders, AcmProviderCard } from './AcmProviderCard'
+import { Provider } from '../'
 
 export default {
-    title: 'ProviderCard',
+    title: 'Provider',
     component: AcmProviderCard,
 }
 
