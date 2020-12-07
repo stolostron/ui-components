@@ -14,7 +14,8 @@ import {
 } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { makeStyles } from '@material-ui/styles'
-import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
+import { AcmIcon } from '../../AcmIcons/AcmIcons'
+import { Provider, ProviderShortTextMap, ProviderIconMap } from '../'
 
 const useStyles = makeStyles({
     card: {
@@ -42,36 +43,6 @@ const useStyles = makeStyles({
         fontWeight: 600,
     },
 })
-
-export enum Provider {
-    aws = 'aws',
-    gcp = 'gcp',
-    azure = 'azure',
-    vmware = 'vmware',
-    ibm = 'ibm',
-    baremetal = 'baremetal',
-    other = 'other',
-}
-
-const providerTextMap = {
-    [Provider.aws]: 'Amazon',
-    [Provider.gcp]: 'Google',
-    [Provider.azure]: 'Microsoft',
-    [Provider.ibm]: 'IBM',
-    [Provider.baremetal]: 'Bare metal',
-    [Provider.vmware]: 'VMware',
-    [Provider.other]: 'Other',
-}
-
-const iconMap = {
-    [Provider.aws]: AcmIconVariant.aws,
-    [Provider.gcp]: AcmIconVariant.gcp,
-    [Provider.azure]: AcmIconVariant.azure,
-    [Provider.ibm]: AcmIconVariant.ibm,
-    [Provider.baremetal]: AcmIconVariant.baremetal,
-    [Provider.vmware]: AcmIconVariant.vmware,
-    [Provider.other]: AcmIconVariant.cloud,
-}
 
 type ProviderCardProps = {
     provider: Provider
@@ -111,7 +82,7 @@ export function AcmProviderCard(props: ProviderCardProps) {
                     <CardHeader>
                         <CardHeaderMain>
                             <div className={classes.iconContainer}>
-                                <AcmIcon icon={iconMap[props.provider]} />
+                                <AcmIcon icon={ProviderIconMap[props.provider]} />
                             </div>
                             <Title
                                 headingLevel="h2"
@@ -119,7 +90,7 @@ export function AcmProviderCard(props: ProviderCardProps) {
                                 className={classes.providerTitle}
                                 style={{ fontWeight: 300 }}
                             >
-                                {providerTextMap[props.provider]}
+                                {ProviderShortTextMap[props.provider]}
                                 {props.danger && (
                                     <ExclamationCircleIcon
                                         color="var(--pf-global--palette--red-100)"
