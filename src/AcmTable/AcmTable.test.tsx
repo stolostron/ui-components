@@ -158,19 +158,48 @@ describe('AcmTable', () => {
         expect(deleteAction).toHaveBeenCalled()
     })
     test('can be searched', () => {
-        const { getByPlaceholderText, queryByText, getByLabelText, container } = render(<Table />)
+        const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
+
+        // verify manually deleting search, resets table with first column sorting
+        userEvent.type(getByPlaceholderText('Search'), 'B{backspace}')
+        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
+
+        // sort by non-default column (UID)
+        userEvent.click(getByText('UID'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
+
+        // search for 'Female'
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'Female')
         expect(queryByText('57 / 105')).toBeVisible()
 
-        // clear table
+        // clear filter
         expect(getByLabelText('Clear')).toBeVisible()
         userEvent.click(getByLabelText('Clear'))
         expect(queryByText('57 / 105')).toBeNull()
 
-        // verify manually deleting search, resets table with first column sorting
-        userEvent.type(getByPlaceholderText('Search'), 'A{backspace}')
-        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
+        // verify previous sort column (UID) maintained
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
+
+        // search for '.org'
+        expect(getByPlaceholderText('Search')).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText('Search'), '.org')
+        expect(queryByText('7 / 105')).toBeVisible()
+
+        // verify last sort order ignored
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('8')
+
+        // change sort during filter (Last Name)
+        userEvent.click(getByText('Last Name'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Barnham')
+
+        // clear filter
+        expect(getByLabelText('Clear')).toBeVisible()
+        userEvent.click(getByLabelText('Clear'))
+        expect(queryByText('7 / 105')).toBeNull()
+
+        // verify sort order set during filter (Last Name) persists
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
 
     const sortTest = (bulkActions: boolean) => {
@@ -283,13 +312,32 @@ describe('AcmTable', () => {
         userEvent.click(getByLabelText('Clear'))
         expect(setSearch).toHaveBeenCalled()
         expect(setPage).toHaveBeenCalled()
-        expect(setSort).not.toHaveBeenCalled()
+        expect(setSort).toHaveBeenCalled()
 
         userEvent.click(getByText('UID'))
-        expect(setSort).toHaveBeenCalled()
+        expect(setSort).toHaveBeenCalledTimes(2)
     })
     test('shows loading', () => {
         const { queryByText } = render(<Table items={undefined} />)
         expect(queryByText('Loading')).toBeVisible()
+    })
+    test('can have sort updated when all items filtered', () => {
+        const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
+
+        // search for 'ABSOLUTELYZEROMATCHES'
+        expect(getByPlaceholderText('Search')).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText('Search'), 'ABSOLUTELYZEROMATCHES')
+        expect(queryByText('0 / 105')).toBeVisible()
+
+        // change sort during filter (Last Name)
+        userEvent.click(getByText('Last Name'))
+
+        // clear filter
+        expect(getByLabelText('Clear')).toBeVisible()
+        userEvent.click(getByLabelText('Clear'))
+        expect(queryByText('0 / 105')).toBeNull()
+
+        // verify sort selection sticks
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
 })
