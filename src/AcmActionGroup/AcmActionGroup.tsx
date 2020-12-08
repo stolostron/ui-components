@@ -13,10 +13,10 @@ const useStyles = makeStyles({
 
 export function AcmActionGroup(props: { children: React.ReactNode[] }) {
     const classes = useStyles()
-    /* istanbul ignore next */
     const nodes: React.ReactNode[] = []
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     React.Children.forEach(props.children, (child: any) => {
+        /* istanbul ignore next */
         if (ReactDOMServer.renderToString(child?.type(child?.props)).length > 0) {
             nodes.push(child)
         }
