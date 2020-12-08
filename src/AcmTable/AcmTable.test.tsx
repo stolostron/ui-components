@@ -234,10 +234,23 @@ describe('AcmTable', () => {
         expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
         expect(getByLabelText('Items per page')).toBeVisible()
 
+        // Switch to 50 items per page
         userEvent.click(getByLabelText('Items per page'))
-        expect(getByText('100 per page')).toBeVisible()
-        userEvent.click(getByText('100 per page'))
-        expect(container.querySelectorAll('tbody tr')).toHaveLength(100)
+        expect(getByText('50 per page')).toBeVisible()
+        userEvent.click(getByText('50 per page'))
+        expect(container.querySelectorAll('tbody tr')).toHaveLength(50)
+
+        // Go to page 2
+        expect(getByLabelText('Go to next page')).toBeVisible()
+        userEvent.click(getByLabelText('Go to next page'))
+        expect(getByLabelText('Current page')).toHaveValue(2)
+
+        // Switch to 10 items per page; verify automatic move to page 6
+        userEvent.click(getByLabelText('Items per page'))
+        expect(getByText('10 per page')).toBeVisible()
+        userEvent.click(getByText('10 per page'))
+        expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
+        expect(getByLabelText('Current page')).toHaveValue(6)
     })
     test('can show paginated results', () => {
         const { getByLabelText } = render(<Table />)

@@ -308,6 +308,16 @@ export function AcmTable<T>(props: {
         [search, filtered]
     )
 
+    const updatePerPage = useCallback(
+        (newPerPage: number) => {
+            // keep the first item in view on pagination size change
+            const newPage = Math.floor(((page - 1) * perPage) / newPerPage) + 1
+            setPage(newPage)
+            setPerPage(newPerPage)
+        },
+        [page, perPage, setPage, setPerPage]
+    )
+
     const onSelect = useCallback(
         (_event: FormEvent, isSelected: boolean, rowId: number) => {
             /* istanbul ignore next */
@@ -488,7 +498,7 @@ export function AcmTable<T>(props: {
                                         setPage(page)
                                     }}
                                     onPerPageSelect={(_event, perPage) => {
-                                        setPerPage(perPage)
+                                        updatePerPage(perPage)
                                     }}
                                 />
                             )}
