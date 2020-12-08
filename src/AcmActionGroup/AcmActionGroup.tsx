@@ -14,13 +14,17 @@ const useStyles = makeStyles({
 export function AcmActionGroup(props: { children: React.ReactNode[] }) {
     const classes = useStyles()
     /* istanbul ignore next */
+    const nodes: React.ReactNode[] = []
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const nodes = props.children.filter((child: any) => ReactDOMServer.renderToString(child).length > 0) ?? []
-    const length = nodes.length
+    React.Children.forEach(props.children, (child: any) => {
+        if (ReactDOMServer.renderToString(child?.type(child?.props)).length > 0) {
+            nodes.push(child)
+        }
+    })
     return (
         <Flex className={classes.group}>
             {nodes.map((node, i) => {
-                if (i + 2 > length) {
+                if (i + 2 > nodes.length) {
                     return <FlexItem key={i}>{node}</FlexItem>
                 } else {
                     return (
