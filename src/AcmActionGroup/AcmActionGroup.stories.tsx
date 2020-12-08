@@ -3,7 +3,7 @@ import { Card, CardBody } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { AcmActionGroup } from './AcmActionGroup'
 import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
-// import { AcmLaunchLink } from '../AcmLaunchLink/AcmLaunchLink'
+import { AcmLaunchLink } from '../AcmLaunchLink/AcmLaunchLink'
 
 export default {
     title: 'ActionGroup',
@@ -15,9 +15,11 @@ export function ActionGroup() {
         <Card>
             <CardBody>
                 <AcmActionGroup>
+                    {false && <ConfigDropdown />}
+                    <AcmLaunchLink links={[{ id: 'link', text: 'Grafana', href: '/grafana' }]} />
                     <ConfigDropdown />
-                    <ActionGroup />
-                    {null && <TestNull />}
+                    <ActionDropdown />
+                    <TestNull />
                 </AcmActionGroup>
             </CardBody>
         </Card>
@@ -62,7 +64,7 @@ const ActionDropdown = () => {
             tooltip="Tooltip message"
             id="dropdown"
             onSelect={onSelect}
-            text="Download configuration"
+            text="Actions"
             dropdownItems={dropdownItems}
             isKebab={false}
         />
