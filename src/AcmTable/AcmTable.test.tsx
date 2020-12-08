@@ -1,4 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { SortByDirection } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
@@ -257,6 +258,35 @@ describe('AcmTable', () => {
     test('can use custom empty state', () => {
         const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
         expect(queryByText('Look elsewhere!')).toBeVisible()
+    })
+    test('can render as a controlled component', () => {
+        const setPage = jest.fn()
+        const setSearch = jest.fn()
+        const setSort = jest.fn()
+        const { container, getByLabelText, getByText } = render(
+            <Table
+                page={15}
+                setPage={setPage}
+                search="Male"
+                setSearch={setSearch}
+                sort={{ index: 4, direction: SortByDirection.desc }} // sort by IP Address
+                setSort={setSort}
+            />
+        )
+        expect(setPage).toHaveBeenCalled() // Only 11 pages; should automatically go back
+        expect(getByLabelText('Current page')).toHaveValue(11)
+        expect(setSearch).not.toHaveBeenCalled()
+        expect(setSort).not.toHaveBeenCalled()
+        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Danny')
+
+        expect(getByLabelText('Clear')).toBeVisible()
+        userEvent.click(getByLabelText('Clear'))
+        expect(setSearch).toHaveBeenCalled()
+        expect(setPage).toHaveBeenCalled()
+        expect(setSort).not.toHaveBeenCalled()
+
+        userEvent.click(getByText('UID'))
+        expect(setSort).toHaveBeenCalled()
     })
     test('shows loading', () => {
         const { queryByText } = render(<Table items={undefined} />)
