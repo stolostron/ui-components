@@ -210,10 +210,10 @@ export function AcmTable<T>(props: {
 
     // Compensate for off-by-one error in sort column when all items are filtered out
     const adjustedSort =
-        filtered.length === 0
+        sort && sort.index && sort.direction && filtered.length === 0
             ? {
-                  index: (sort && sort.index ? sort.index : 0) - sortIndexOffset,
-                  direction: sort && sort.direction,
+                  index: sort.index - sortIndexOffset,
+                  direction: sort.direction,
               }
             : sort
 
