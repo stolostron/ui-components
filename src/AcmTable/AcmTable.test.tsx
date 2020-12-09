@@ -1,4 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { SortByDirection } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
@@ -157,19 +158,48 @@ describe('AcmTable', () => {
         expect(deleteAction).toHaveBeenCalled()
     })
     test('can be searched', () => {
-        const { getByPlaceholderText, queryByText, getByLabelText, container } = render(<Table />)
+        const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
+
+        // verify manually deleting search, resets table with first column sorting
+        userEvent.type(getByPlaceholderText('Search'), 'B{backspace}')
+        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
+
+        // sort by non-default column (UID)
+        userEvent.click(getByText('UID'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
+
+        // search for 'Female'
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'Female')
         expect(queryByText('57 / 105')).toBeVisible()
 
-        // clear table
+        // clear filter
         expect(getByLabelText('Clear')).toBeVisible()
         userEvent.click(getByLabelText('Clear'))
         expect(queryByText('57 / 105')).toBeNull()
 
-        // verify manually deleting search, resets table with first column sorting
-        userEvent.type(getByPlaceholderText('Search'), 'A{backspace}')
-        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
+        // verify previous sort column (UID) maintained
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
+
+        // search for '.org'
+        expect(getByPlaceholderText('Search')).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText('Search'), '.org')
+        expect(queryByText('7 / 105')).toBeVisible()
+
+        // verify last sort order ignored
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('8')
+
+        // change sort during filter (Last Name)
+        userEvent.click(getByText('Last Name'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Barnham')
+
+        // clear filter
+        expect(getByLabelText('Clear')).toBeVisible()
+        userEvent.click(getByLabelText('Clear'))
+        expect(queryByText('7 / 105')).toBeNull()
+
+        // verify sort order set during filter (Last Name) persists
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
 
     const sortTest = (bulkActions: boolean) => {
@@ -204,10 +234,23 @@ describe('AcmTable', () => {
         expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
         expect(getByLabelText('Items per page')).toBeVisible()
 
+        // Switch to 50 items per page
         userEvent.click(getByLabelText('Items per page'))
-        expect(getByText('100 per page')).toBeVisible()
-        userEvent.click(getByText('100 per page'))
-        expect(container.querySelectorAll('tbody tr')).toHaveLength(100)
+        expect(getByText('50 per page')).toBeVisible()
+        userEvent.click(getByText('50 per page'))
+        expect(container.querySelectorAll('tbody tr')).toHaveLength(50)
+
+        // Go to page 2
+        expect(getByLabelText('Go to next page')).toBeVisible()
+        userEvent.click(getByLabelText('Go to next page'))
+        expect(getByLabelText('Current page')).toHaveValue(2)
+
+        // Switch to 10 items per page; verify automatic move to page 6
+        userEvent.click(getByLabelText('Items per page'))
+        expect(getByText('10 per page')).toBeVisible()
+        userEvent.click(getByText('10 per page'))
+        expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
+        expect(getByLabelText('Current page')).toHaveValue(6)
     })
     test('can show paginated results', () => {
         const { getByLabelText } = render(<Table />)
@@ -258,8 +301,56 @@ describe('AcmTable', () => {
         const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
         expect(queryByText('Look elsewhere!')).toBeVisible()
     })
+    test('can render as a controlled component', () => {
+        const setPage = jest.fn()
+        const setSearch = jest.fn()
+        const setSort = jest.fn()
+        const { container, getByLabelText, getByText } = render(
+            <Table
+                page={15}
+                setPage={setPage}
+                search="Male"
+                setSearch={setSearch}
+                sort={{ index: 4, direction: SortByDirection.desc }} // sort by IP Address
+                setSort={setSort}
+            />
+        )
+        expect(setPage).toHaveBeenCalled() // Only 11 pages; should automatically go back
+        expect(getByLabelText('Current page')).toHaveValue(11)
+        expect(setSearch).not.toHaveBeenCalled()
+        expect(setSort).not.toHaveBeenCalled()
+        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Danny')
+
+        expect(getByLabelText('Clear')).toBeVisible()
+        userEvent.click(getByLabelText('Clear'))
+        expect(setSearch).toHaveBeenCalled()
+        expect(setPage).toHaveBeenCalled()
+        expect(setSort).toHaveBeenCalled()
+
+        userEvent.click(getByText('UID'))
+        expect(setSort).toHaveBeenCalledTimes(2)
+    })
     test('shows loading', () => {
         const { queryByText } = render(<Table items={undefined} />)
         expect(queryByText('Loading')).toBeVisible()
+    })
+    test('can have sort updated when all items filtered', () => {
+        const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
+
+        // search for 'ABSOLUTELYZEROMATCHES'
+        expect(getByPlaceholderText('Search')).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText('Search'), 'ABSOLUTELYZEROMATCHES')
+        expect(queryByText('0 / 105')).toBeVisible()
+
+        // change sort during filter (Last Name)
+        userEvent.click(getByText('Last Name'))
+
+        // clear filter
+        expect(getByLabelText('Clear')).toBeVisible()
+        userEvent.click(getByLabelText('Clear'))
+        expect(queryByText('0 / 105')).toBeNull()
+
+        // verify sort selection sticks
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
 })
