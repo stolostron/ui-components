@@ -51,7 +51,6 @@ const Menu = () => {
     return <OptionsMenu id="fake" menuItems={menuItems} isOpen={isOpen} isPlain isText toggle={toggle} />
 }
 
-
 export const SummaryListSkeleton = () => {
     return (
         <MemoryRouter>

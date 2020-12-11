@@ -46,9 +46,9 @@ export const skeleton = (title: string) => {
                     <Skeleton width="150px" />
                 </FlexItem>
             </Flex>
-            <Divider/>
+            <Divider />
             <Grid sm={6} md={4} lg={2}>
-                {[1, 2, 3, 4, 5, 6].map((i)=>(
+                {[1, 2, 3, 4, 5, 6].map((i) => (
                     <GridItem key={i}>
                         <Card>
                             <CardBody>

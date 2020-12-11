@@ -25,9 +25,7 @@ describe('AcmSummaryList', () => {
     })
 
     test('renders skeleton component', () => {
-        const { queryByText } = render(
-            <AcmSummaryList title="Summary" list={[]} loading={true} />
-        )
+        const { queryByText } = render(<AcmSummaryList title="Summary" list={[]} loading={true} />)
         expect(queryByText('Summary')).toBeInTheDocument()
     })
 
