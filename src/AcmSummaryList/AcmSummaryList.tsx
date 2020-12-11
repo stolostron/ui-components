@@ -42,16 +42,18 @@ export const skeleton = (title: string) => {
                     <CardTitle>{title}</CardTitle>
                 </FlexItem>
                 <Divider isVertical inset={{ default: 'inset2xl' }} />
-                <FlexItem><Skeleton width="150px" /></FlexItem>
+                <FlexItem>
+                    <Skeleton width="150px" />
+                </FlexItem>
             </Flex>
-            <Divider />
+            <Divider/>
             <Grid sm={6} md={4} lg={2}>
-                {[1,2,3,4,5,6].map(()=>(
-                    <GridItem >
+                {[1, 2, 3, 4, 5, 6].map((i)=>(
+                    <GridItem key={i}>
                         <Card>
                             <CardBody>
                                 <Skeleton width="50px" fontSize="3xl" className={classes.divider} />
-                                <Skeleton width="100px" fontSize='sm' />
+                                <Skeleton width="100px" fontSize="sm" />
                             </CardBody>
                         </Card>
                     </GridItem>
