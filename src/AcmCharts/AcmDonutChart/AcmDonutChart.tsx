@@ -41,7 +41,7 @@ export const loadingDonutChart = (title: string) => {
         <Card>
             <CardTitle>{title}</CardTitle>
             <div className={classes.chartContainer}>
-                <Skeleton shape="circle" width="50%" className={classes.skeleton} />
+                <Skeleton shape="circle" width="45%" className={classes.skeleton} />
             </div>
         </Card>
     )
