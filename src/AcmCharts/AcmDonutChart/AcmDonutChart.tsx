@@ -25,9 +25,6 @@ const useStyles = makeStyles({
     chartContainer: {
         maxWidth: '376px',
     },
-    skeleton: {
-        height: '250px',
-    },
 })
 
 export const loadingDonutChart = (title: string) => {
