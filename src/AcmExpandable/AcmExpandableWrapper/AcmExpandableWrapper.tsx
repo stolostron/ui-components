@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
-import { AcmButton } from '../AcmButton/AcmButton'
+import { AcmButton } from '../../AcmButton/AcmButton'
 import { Title, Grid, GridItem } from '@patternfly/react-core'
 
 type AcmExpandableWrapperProps = {

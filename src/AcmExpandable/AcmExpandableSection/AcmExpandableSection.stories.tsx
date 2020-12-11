@@ -3,7 +3,7 @@ import React from 'react'
 import { AcmExpandableSection } from './AcmExpandableSection'
 
 export default {
-    title: 'ExpandableSection',
+    title: 'Expandable',
     component: AcmExpandableSection,
 }
 
