@@ -106,32 +106,6 @@ export const SavedSearchCard = () => {
     )
 }
 
-// export const ClustersOverview = () => {
-//     return (
-//         <AcmCountCard
-//             count={0}
-//             countTitle="Nodes"
-//             cardFooter={{
-//                 countDescription: '0 nodes inactive',
-//                 countLink: null,
-//             }}
-//         />
-//     )
-// }
-
-export const ClustersOverview = () => {
-    return (
-        <AcmCountCardSection
-            title="Status"
-            cards={[
-                { count: 0, countTitle: 'Nodes', cardFooter: { countDescription: '0 nodes inactive' } },
-                { count: 5, countTitle: 'Applications' },
-                { count: 3, countTitle: 'Policy violations' },
-            ]}
-        />
-    )
-}
-
 export const CardSkeleton = () => {
     const classes = useStyles()
     return (
