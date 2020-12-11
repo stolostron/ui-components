@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardTitle, Badge } from '@patternfly/react-core'
+import { Card, CardTitle, Badge, Skeleton } from '@patternfly/react-core'
 import { ChartDonut } from '@patternfly/react-charts'
 import { makeStyles } from '@material-ui/styles'
 import { useViewport } from '../AcmChartGroup'
@@ -27,10 +27,25 @@ const useStyles = makeStyles({
     },
 })
 
+export const loadingDonutChart = () => {
+    // const useStyles = makeStyles({
+    //     cardSkeleton: {
+    //         height: '250px',
+    //     },
+    // })
+    // const classes = useStyles()
+    return (
+        <Card >
+            <Skeleton />
+        </Card>
+    )
+}
+
 export function AcmDonutChart(props: {
     title: string
     description: string
     data: { key: string; value: number; isPrimary?: boolean; isDanger?: boolean }[]
+    loading?: boolean
 }) {
     const chartData = props.data.map((d) => ({ x: d.key, y: d.value }))
     const legendData = props.data.map((d) => ({ name: `${d.value} ${d.key}` }))
@@ -40,6 +55,8 @@ export function AcmDonutChart(props: {
 
     const { viewWidth } = useViewport()
     const classes = useStyles({ ...props, danger: props.data.some((d) => d.isDanger), viewWidth } as StyleProps)
+
+    if (props.loading) return loadingDonutChart()
     return (
         <Card className={classes.card} id={`${props.title.toLowerCase().replace(/\s+/g, '-')}-chart`}>
             <CardTitle className={classes.cardTitle}>
