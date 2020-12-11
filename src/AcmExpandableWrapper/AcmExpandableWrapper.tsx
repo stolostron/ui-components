@@ -51,7 +51,7 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
                     showAll ? `${classes.wrapperContainer}` : `${classes.wrapperContainer} ${classes.hideExtras}`
                 }
             >
-                <Gallery hasGutter sm={6} md={4} lg={4} xl={3}>
+                <Gallery hasGutter>
                     {React.Children.map(props.children, (child, idx) => {
                         return (
                             <GalleryItem>
