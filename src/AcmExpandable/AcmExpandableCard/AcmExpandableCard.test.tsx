@@ -14,5 +14,7 @@ describe('AcmExpandableCard', () => {
         expect(getByText('Body')).toBeInTheDocument()
         userEvent.click(getByRole('button'))
         await waitFor(() => expect(queryByText('Body')).toBeNull())
+        userEvent.click(getByRole('button'))
+        await waitFor(() => expect(getByText('Body')).toBeInTheDocument())
     })
 })

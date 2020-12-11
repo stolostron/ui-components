@@ -16,11 +16,16 @@ const ToggleIcon = (props: { open: boolean; toggle: () => void }) => {
     )
 }
 
-export function AcmExpandableCard(props: { title: string; children: React.ReactNode; className?: string }) {
+export function AcmExpandableCard(props: {
+    title: string
+    children: React.ReactNode
+    className?: string
+    id?: string
+}) {
     const [open, setOpen] = useState<boolean>(true)
     const classes = useStyles()
     return (
-        <Card className={props.className}>
+        <Card className={props.className} id={props.id}>
             <Split>
                 <SplitItem>
                     <CardTitle>{props.title}</CardTitle>

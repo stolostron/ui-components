@@ -50,6 +50,7 @@ const useStyles = makeStyles({
 })
 
 export type AcmCountCardSection = {
+    id?: string
     title: string
     cards: AcmCountCardSectionCard[]
 }
@@ -68,7 +69,7 @@ export type AcmCountCardSectionCard = {
 export const AcmCountCardSection = (props: AcmCountCardSection) => {
     const classes = useStyles()
     return (
-        <AcmExpandableCard title={props.title} className={classes.section}>
+        <AcmExpandableCard title={props.title} className={classes.section} id={props.id}>
             <Grid sm={4}>
                 {props.cards.map((card, i) => {
                     return (
