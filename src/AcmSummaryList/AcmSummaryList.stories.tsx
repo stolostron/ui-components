@@ -50,3 +50,17 @@ const Menu = () => {
     )
     return <OptionsMenu id="fake" menuItems={menuItems} isOpen={isOpen} isPlain isText toggle={toggle} />
 }
+
+export const SummaryListSkeleton = () => {
+    return (
+        <MemoryRouter>
+            <AcmSummaryList
+                loading={true}
+                title="Summary"
+                list={[]}
+                actions={[<Menu key="menu" />]}
+                rightAction={<Button variant={ButtonVariant.link}>Expand details</Button>}
+            />
+        </MemoryRouter>
+    )
+}
