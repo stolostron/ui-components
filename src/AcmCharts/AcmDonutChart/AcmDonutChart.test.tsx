@@ -24,6 +24,14 @@ describe('AcmDonutChart', () => {
         )
         expect(getByTestId('cluster-compliance-chart')).toBeInTheDocument()
     })
+
+    test('renders skeleton', () => {
+        const { queryByText } = render(
+            <AcmDonutChart loading={true} title="Cluster compliance" description="Policy compliance" data={[]} />
+        )
+        expect(queryByText('Cluster compliance')).toBeInTheDocument()
+    })
+
     test('has zero accessibility defects', async () => {
         const { container } = render(
             <AcmDonutChart title="Pods" description="Overview of pod count and status" data={podData} />
