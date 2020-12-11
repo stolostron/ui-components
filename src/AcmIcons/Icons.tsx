@@ -44,7 +44,7 @@ export const AcmVisibilityOffIcon = () => (
 )
 
 export const RedHatIcon = () => (
-    <svg width="40px" viewBox="0 0 54 40">
+    <svg width="40px" viewBox="0 0 54 40" role="presentation">
         <title>Red Hat</title>
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
             <g transform="translate(-129.000000, -361.000000)" fillRule="nonzero">
