@@ -23,6 +23,14 @@ describe('AcmSummaryList', () => {
         )
         expect(getByTestId('applications-summary')).toBeInTheDocument()
     })
+
+    test('renders skeleton component', () => {
+        const { queryByText } = render(
+            <AcmSummaryList title="Summary" list={[]} loading={true} />
+        )
+        expect(queryByText('Summary')).toBeInTheDocument()
+    })
+
     test('has zero accessibility defects', async () => {
         const { container } = render(
             <MemoryRouter>

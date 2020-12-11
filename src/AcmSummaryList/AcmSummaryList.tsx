@@ -6,6 +6,7 @@ import {
     CardBody,
     Text,
     TextVariants,
+    Skeleton,
     Split,
     SplitItem,
     Flex,
@@ -26,12 +27,46 @@ type AcmSummaryListProps = {
     actions?: React.ReactNode[]
     rightAction?: React.ReactNode
     list: SummarySectionProps[]
+    loading?: boolean
+}
+
+export const skeleton = (title: string) => {
+    const useStyles = makeStyles({
+        divider: { marginBottom: '6px' },
+    })
+    const classes = useStyles()
+    return (
+        <Card>
+            <Flex>
+                <FlexItem>
+                    <CardTitle>{title}</CardTitle>
+                </FlexItem>
+                <Divider isVertical inset={{ default: 'inset2xl' }} />
+                <FlexItem><Skeleton width="150px" /></FlexItem>
+            </Flex>
+            <Divider />
+            <Grid sm={6} md={4} lg={2}>
+                {[1,2,3,4,5,6].map(()=>(
+                    <GridItem >
+                        <Card>
+                            <CardBody>
+                                <Skeleton width="50px" fontSize="3xl" className={classes.divider} />
+                                <Skeleton width="100px" fontSize='sm' />
+                            </CardBody>
+                        </Card>
+                    </GridItem>
+                ))}
+            </Grid>
+        </Card>
+    )
 }
 
 export function AcmSummaryList(props: AcmSummaryListProps) {
     const classes = useStyles()
     const primary = props.list.find((item) => item.isPrimary)
     const secondary = props.list.filter((item) => !item.isPrimary)
+
+    if (props.loading) return skeleton(props.title)
     return (
         <Card>
             <Split>
