@@ -2,7 +2,6 @@ import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { Meta } from '@storybook/react'
 import { AcmCountCard } from './AcmCountCard'
-import { AcmCountCardSection } from './AcmCountCardSection'
 import { makeStyles } from '@material-ui/styles'
 
 const meta: Meta = {
