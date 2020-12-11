@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { AcmButton } from '../AcmButton/AcmButton'
-import { Title, Grid, GridItem } from '@patternfly/react-core'
+import { Title, Gallery, GalleryItem } from '@patternfly/react-core'
 
 type AcmExpandableWrapperProps = {
     headerLabel?: string
@@ -51,15 +51,15 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
                     showAll ? `${classes.wrapperContainer}` : `${classes.wrapperContainer} ${classes.hideExtras}`
                 }
             >
-                <Grid hasGutter sm={6} md={4} lg={4} xl={3}>
+                <Gallery hasGutter sm={6} md={4} lg={4} xl={3}>
                     {React.Children.map(props.children, (child, idx) => {
                         return (
-                            <GridItem>
+                            <GalleryItem>
                                 <div key={`item-${idx}`}>{child}</div>
-                            </GridItem>
+                            </GalleryItem>
                         )
                     })}
-                </Grid>
+                </Gallery>
             </div>
             {expandable && (
                 <AcmButton className={classes.showAllButton} variant={'secondary'} onClick={() => setShowAll(!showAll)}>
