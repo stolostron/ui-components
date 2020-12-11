@@ -33,7 +33,7 @@ const useStyles = makeStyles({
         },
     },
     title: {
-        fontSize: '14px',
+        fontSize: '14px !important',
     },
     titleIcon: {
         marginRight: '8px',
