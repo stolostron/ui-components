@@ -2,6 +2,7 @@ import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { Meta } from '@storybook/react'
 import { AcmCountCard } from './AcmCountCard'
+import { AcmCountCardGroup } from './AcmCountCardGroup'
 import { makeStyles } from '@material-ui/styles'
 
 const meta: Meta = {
@@ -105,15 +106,28 @@ export const SavedSearchCard = () => {
     )
 }
 
+// export const ClustersOverview = () => {
+//     return (
+//         <AcmCountCard
+//             count={0}
+//             countTitle="Nodes"
+//             cardFooter={{
+//                 countDescription: '0 nodes inactive',
+//                 countLink: null,
+//             }}
+//         />
+//     )
+// }
+
 export const ClustersOverview = () => {
     return (
-        <AcmCountCard
-            count={0}
-            countTitle="Nodes"
-            cardFooter={{
-                countDescription: '0 nodes inactive',
-                countLink: null,
-            }}
+        <AcmCountCardGroup
+            title="Status"
+            cards={[
+                { count: 0, countTitle: 'Nodes', cardFooter: { countDescription: '0 nodes inactive' } },
+                { count: 5, countTitle: 'Applications' },
+                { count: 3, countTitle: 'Policy violations' },
+            ]}
         />
     )
 }
