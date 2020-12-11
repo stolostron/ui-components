@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
-import { AcmCountCard } from '../AcmCountCard/AcmCountCard'
+import { AcmCountCard } from '../../AcmCountCard/AcmCountCard'
 import { AcmExpandableWrapper } from '../AcmExpandableWrapper/AcmExpandableWrapper'
 
 describe('AcmExpandableWrapper', () => {

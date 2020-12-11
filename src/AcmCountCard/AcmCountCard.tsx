@@ -44,7 +44,7 @@ interface CardDropdownProps {
     onSelect?: (event: React.SyntheticEvent) => void
 }
 
-type AcmCountCardProps = CardProps & {
+export type AcmCountCardProps = CardProps & {
     key?: number
     id?: string
     label?: string
