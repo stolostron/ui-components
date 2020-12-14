@@ -3,10 +3,10 @@ import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment } from 'react'
 
 export function AcmFormSection(
-    props: Omit<TitleProps, 'headingLevel'> & { title: string; tooltip?: string; addSpacing?: boolean }
+    props: Omit<TitleProps, 'headingLevel'> & { title: string; tooltip?: string; spacing?: boolean }
 ) {
     return (
-        <Split style={{ marginTop: props.addSpacing ? '16px' : undefined }}>
+        <Split style={{ marginTop: props.spacing ? '16px' : undefined }}>
             <SplitItem>
                 <Title {...props} headingLevel="h2" size="xl">
                     {props.title}

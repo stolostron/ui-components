@@ -62,7 +62,7 @@ export const Form = () => {
                     }}
                     isRequired
                 />
-                <AcmFormSection title="TextArea" addSpacing></AcmFormSection>
+                <AcmFormSection title="TextArea" spacing={true}></AcmFormSection>
                 <AcmTextArea
                     id="textArea"
                     label="Text Area"
@@ -72,7 +72,7 @@ export const Form = () => {
                     onChange={setDescription}
                     isRequired
                 />
-                <AcmFormSection title="Select" addSpacing></AcmFormSection>
+                <AcmFormSection title="Select" spacing={true}></AcmFormSection>
                 <AcmSelect
                     id="acm-select"
                     label="Select"
@@ -112,7 +112,7 @@ export const Form = () => {
                     </SelectOption>
                 </AcmMultiSelect>
 
-                <AcmFormSection title="Labels" addSpacing></AcmFormSection>
+                <AcmFormSection title="Labels" spacing={true}></AcmFormSection>
                 <AcmLabelsInput
                     id="labelsInput"
                     label="Labels Input"
@@ -132,11 +132,11 @@ export const Form = () => {
                         onClick={() => {
                             setErrors([])
                             setSubmitText('Processing')
-                            return new Promise((resolve) =>
+                            return new Promise<undefined>((resolve) =>
                                 setTimeout(() => {
                                     setSubmitText('Submit')
                                     setErrors(['Error - Not Implemented'])
-                                    resolve()
+                                    resolve(undefined)
                                 }, 2000)
                             )
                         }}

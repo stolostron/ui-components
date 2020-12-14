@@ -6,49 +6,63 @@ import { AcmPage, AcmPageHeader, AcmPageCard, AcmBreadcrumb } from './AcmPage'
 import { AcmButton } from '../AcmButton/AcmButton'
 
 describe('AcmPage', () => {
-    test('renders', () => {
+    test('AcmPage renders', () => {
         const { getByText } = render(<AcmPage>ACM page</AcmPage>)
         expect(getByText('ACM page')).toBeInTheDocument()
         expect(getByText('ACM page')).toBeInstanceOf(HTMLElement)
     })
-    test('has zero accessibility defects', async () => {
+    test('AcmPage has zero accessibility defects', async () => {
         const { container } = render(<AcmPage>ACM page</AcmPage>)
         expect(await axe(container)).toHaveNoViolations()
     })
 })
 
 describe('AcmPageHeader', () => {
-    test('renders', () => {
-        const { getByText } = render(<AcmPageHeader title="ACM header" />)
-        expect(getByText('ACM header')).toBeInTheDocument()
-        expect(getByText('ACM header')).toBeInstanceOf(HTMLHeadingElement)
-    })
-    test('can render page actions', () => {
+    test('AcmPageHeader renders', () => {
         const { getByText } = render(
-            <AcmPageHeader title="ACM header" actions={<AcmButton>Create resource</AcmButton>} />
+            <MemoryRouter>
+                <AcmPageHeader
+                    breadcrumb={[{ text: 'text', to: 'to' }]}
+                    title="title"
+                    navigation="navigation"
+                    controls="controls"
+                    actions="actions"
+                />
+            </MemoryRouter>
+        )
+        expect(getByText('text')).toBeInTheDocument()
+        expect(getByText('title')).toBeInTheDocument()
+        expect(getByText('title')).toBeInstanceOf(HTMLHeadingElement)
+        expect(getByText('navigation')).toBeInTheDocument()
+        expect(getByText('controls')).toBeInTheDocument()
+        expect(getByText('actions')).toBeInTheDocument()
+    })
+    test('AcmPageHeader can render page actions', () => {
+        const { getByText } = render(
+            <AcmPageHeader breadcrumb={[]} title="ACM header" actions={<AcmButton>Create resource</AcmButton>} />
         )
         expect(getByText('Create resource')).toBeInTheDocument()
     })
-    test('has zero accessibility defects', async () => {
+    test('AcmPageHeader has zero accessibility defects', async () => {
         const { container } = render(<AcmPageHeader title="ACM header" />)
         expect(await axe(container)).toHaveNoViolations()
     })
 })
 
 describe('AcmPageCard', () => {
-    test('renders', () => {
+    test('AcmPageCard renders', () => {
         const { getByText } = render(<AcmPageCard>ACM card</AcmPageCard>)
         expect(getByText('ACM card')).toBeInTheDocument()
         expect(getByText('ACM card')).toBeInstanceOf(HTMLDivElement)
     })
-    test('has zero accessibility defects', async () => {
+    test('AcmPageCard has zero accessibility defects', async () => {
         const { container } = render(<AcmPageCard>ACM card</AcmPageCard>)
         expect(await axe(container)).toHaveNoViolations()
     })
 })
 
 describe('AcmBreadcrumb', () => {
-    test('renders', () => {
+    test('AcmBreadcrumb renders', () => {
         const { getByText, container } = render(
             <MemoryRouter>
                 <AcmBreadcrumb
@@ -63,7 +77,7 @@ describe('AcmBreadcrumb', () => {
         expect(getByText('First')).toBeInstanceOf(HTMLAnchorElement)
         expect(container.querySelector('[aria-current="page"]')).toContainHTML('Second') // verify last crumb is disabled
     })
-    test('renders null when no breadcrumbs are provided', () => {
+    test('AcmBreadcrumb renders null when no breadcrumbs are provided', () => {
         const { container } = render(
             <MemoryRouter>
                 <AcmBreadcrumb breadcrumb={[]} />
@@ -71,7 +85,15 @@ describe('AcmBreadcrumb', () => {
         )
         expect(container).toMatchInlineSnapshot('<div />')
     })
-    test('should not disable a single breadcrumb', () => {
+    test('AcmBreadcrumb renders null when no breadcrumbs ', () => {
+        const { container } = render(
+            <MemoryRouter>
+                <AcmBreadcrumb />
+            </MemoryRouter>
+        )
+        expect(container).toMatchInlineSnapshot('<div />')
+    })
+    test('AcmBreadcrumb should not disable a single breadcrumb', () => {
         const { getByText } = render(
             <MemoryRouter>
                 <AcmBreadcrumb breadcrumb={[{ text: 'First', to: '/first' }]} />
@@ -79,7 +101,7 @@ describe('AcmBreadcrumb', () => {
         )
         expect(getByText('First')).not.toHaveAttribute('aria-current')
     })
-    test('has zero accessibility defects', async () => {
+    test('AcmBreadcrumb has zero accessibility defects', async () => {
         const { container } = render(
             <MemoryRouter>
                 <AcmBreadcrumb
