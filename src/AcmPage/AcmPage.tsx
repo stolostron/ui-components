@@ -3,10 +3,7 @@ import {
     BreadcrumbItem,
     Card,
     CardBody,
-    Flex,
-    FlexItem,
     Page,
-    PageBreadcrumb,
     PageSection,
     PageSectionVariants,
     Title,
@@ -21,20 +18,41 @@ export function AcmPage(props: { children: ReactNode }) {
 export function AcmPageHeader(props: {
     title: string
     breadcrumb?: { text: string; to: string }[]
+    navigation?: React.ReactNode
+    controls?: React.ReactNode
     actions?: React.ReactNode
 }) {
     return (
-        <React.Fragment>
-            <AcmBreadcrumb breadcrumb={props.breadcrumb} />
-            <PageSection variant={PageSectionVariants.light}>
-                <Flex style={{ minHeight: '36px' }}>
-                    <FlexItem grow={{ default: 'grow' }} alignSelf={{ default: 'alignSelfCenter' }}>
+        <PageSection variant={PageSectionVariants.light} padding={{ default: 'noPadding' }}>
+            <div style={{ display: 'flex', paddingTop: '16px', paddingRight: '24px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+                    {props.breadcrumb && (
+                        <div style={{ paddingLeft: '24px', paddingBottom: '12px' }}>
+                            <AcmBreadcrumb breadcrumb={props.breadcrumb} />
+                        </div>
+                    )}
+                    <div style={{ paddingLeft: '24px', flexGrow: 1 }}>
                         <Title headingLevel="h1">{props.title}</Title>
-                    </FlexItem>
-                    <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>{props.actions}</FlexItem>
-                </Flex>
-            </PageSection>
-        </React.Fragment>
+                    </div>
+                    {props.navigation ? (
+                        <div style={{ paddingLeft: '8px', paddingTop: '8px' }}>{props.navigation}</div>
+                    ) : (
+                        <div style={{ paddingBottom: '16px' }} />
+                    )}
+                </div>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        paddingBottom: '16px',
+                        alignItems: 'flex-end',
+                    }}
+                >
+                    <div style={{ flexGrow: 1 }}>{props.controls}</div>
+                    {props.actions && <div style={{ paddingTop: '16px' }}>{props.actions}</div>}
+                </div>
+            </div>
+        </PageSection>
     )
 }
 
@@ -49,26 +67,24 @@ export function AcmPageCard(props: { children: ReactNode }) {
 }
 
 export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to: string }[] | undefined }) {
-    const { breadcrumb = [] } = props
-    if (breadcrumb.length) {
+    const { breadcrumb } = props
+    if (breadcrumb?.length) {
         return (
-            <PageBreadcrumb>
-                <Breadcrumb>
-                    {breadcrumb.map((crumb, i) => (
-                        <BreadcrumbItem key={crumb.to}>
-                            {breadcrumb.length > 1 && i === breadcrumb.length - 1 ? (
-                                <a aria-current="page" className="pf-c-breadcrumb__link pf-m-current">
-                                    {crumb.text}
-                                </a>
-                            ) : (
-                                <Link to={crumb.to} className="pf-c-breadcrumb__link">
-                                    {crumb.text}
-                                </Link>
-                            )}
-                        </BreadcrumbItem>
-                    ))}
-                </Breadcrumb>
-            </PageBreadcrumb>
+            <Breadcrumb>
+                {breadcrumb.map((crumb, i) => (
+                    <BreadcrumbItem key={crumb.to}>
+                        {breadcrumb.length > 1 && i === breadcrumb.length - 1 ? (
+                            <a aria-current="page" className="pf-c-breadcrumb__link pf-m-current">
+                                {crumb.text}
+                            </a>
+                        ) : (
+                            <Link to={crumb.to} className="pf-c-breadcrumb__link">
+                                {crumb.text}
+                            </Link>
+                        )}
+                    </BreadcrumbItem>
+                ))}
+            </Breadcrumb>
         )
     }
     return null

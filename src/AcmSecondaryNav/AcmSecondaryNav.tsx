@@ -1,13 +1,11 @@
-import { Nav, NavItem, NavList, PageSection, PageSectionVariants } from '@patternfly/react-core'
+import { Nav, NavItem, NavList } from '@patternfly/react-core'
 import React, { ReactNode } from 'react'
 
 export function AcmSecondaryNav(props: { children: ReactNode }) {
     return (
-        <PageSection variant={PageSectionVariants.light} padding={{ default: 'noPadding' }}>
-            <Nav variant="tertiary" style={{ paddingLeft: '12px' }}>
-                <NavList>{props.children}</NavList>
-            </Nav>
-        </PageSection>
+        <Nav variant="tertiary">
+            <NavList>{props.children}</NavList>
+        </Nav>
     )
 }
 export function AcmSecondaryNavItem(props: {

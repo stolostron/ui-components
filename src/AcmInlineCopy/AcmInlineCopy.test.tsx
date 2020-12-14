@@ -6,7 +6,7 @@ import { AcmInlineCopy } from './AcmInlineCopy'
 
 document.execCommand = jest.fn()
 
-describe('AcmInlineCopy', async () => {
+describe('AcmInlineCopy', () => {
     test('renders', async () => {
         const { getByTestId, container } = render(<AcmInlineCopy text="copy text" id="copy" />)
         expect(getByTestId('copy')).toBeInTheDocument()

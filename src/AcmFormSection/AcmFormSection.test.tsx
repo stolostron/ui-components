@@ -5,7 +5,7 @@ import { AcmFormSection } from './AcmFormSection'
 
 describe('AcmFormSection', () => {
     test('renders', () => {
-        const { getByText } = render(<AcmFormSection title="TITLE" addSpacing />)
+        const { getByText } = render(<AcmFormSection title="TITLE" spacing={true} />)
         expect(getByText('TITLE')).toBeInTheDocument()
     })
 
