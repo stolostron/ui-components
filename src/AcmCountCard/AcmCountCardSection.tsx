@@ -60,7 +60,7 @@ export type AcmCountCardSectionCard = {
     count: number
     countClick?: () => void
     title: string
-    description?: string
+    description?: string | React.ReactNode
     linkText?: string
     onLinkClick?: () => void
     isDanger?: boolean
