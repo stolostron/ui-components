@@ -27,7 +27,17 @@ import {
 } from '@patternfly/react-table'
 import Fuse from 'fuse.js'
 import get from 'get-value'
-import React, { FormEvent, Fragment, ReactNode, createContext, useContext, useLayoutEffect, useState } from 'react'
+import React, {
+    FormEvent,
+    Fragment,
+    ReactNode,
+    createContext,
+    useContext,
+    useLayoutEffect,
+    useMemo,
+    useState,
+    useCallback,
+} from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 
@@ -114,30 +124,43 @@ export function AcmTable<T>(props: {
     bulkActions: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
+    page?: number
+    setPage?: (page: number) => void
+    search?: string
+    setSearch?: (search: string) => void
+    sort?: ISortBy | undefined
+    setSort?: (sort: ISortBy | undefined) => void
 }) {
     const { items, columns, keyFn, bulkActions } = props
     const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
-    const [hasSearch, setHasSearch] = useState(true)
-    const [searchItems, setSearchItems] = useState<ISearchItem<T>[]>()
-    const [filtered, setFiltered] = useState<T[] | undefined>(items)
-    const [sorted, setSorted] = useState<T[]>()
-    const [paged, setPaged] = useState<T[]>()
-    const [rows, setRows] = useState<IRow[] | undefined>([])
-    const [search, setSearch] = useState('')
-    const [sort, setSort] = useState<ISortBy | undefined>({
+    const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
+
+    const defaultSort = {
         index: sortIndexOffset,
         direction: SortByDirection.asc,
-    })
-    const [page, setPage] = useState(1)
+    }
+
+    // State that can come from context or component state (perPage)
     const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
     const { perPage: contextPerPage, setPerPage: contextSetPerPage } = useContext(AcmTablePaginationContext)
     const perPage = contextPerPage || statePerPage
     const setPerPage = contextSetPerPage || stateSetPerPage
-    const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
 
-    useLayoutEffect(() => {
-        setHasSearch(columns.some((column) => column.search))
-    }, [columns])
+    // State that can come from component props or from component state (page, search, sort)
+    const [statePage, stateSetPage] = useState(1)
+    const page = props.page || statePage
+    const setPage = props.setPage || stateSetPage
+    const [stateSearch, stateSetSearch] = useState('')
+    const search = props.search || stateSearch
+    const setSearch = props.setSearch || stateSetSearch
+    const [stateSort, stateSetSort] = useState<ISortBy | undefined>(defaultSort)
+    const sort = props.sort || stateSort
+    const setSort = props.setSort || stateSetSort
+
+    // Nice to have, but disposable state (preFilterSort)
+    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(defaultSort)
+
+    const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
 
     useLayoutEffect(() => {
         const newSelected: { [uid: string]: boolean } = {}
@@ -150,28 +173,26 @@ export function AcmTable<T>(props: {
         setSelected(newSelected)
     }, [items])
 
-    useLayoutEffect(() => {
+    const searchItems = useMemo<ISearchItem<T>[]>(() => {
         /* istanbul ignore if */
-        if (!items) return
-        setSearchItems(
-            items.map((item) => {
-                const searchItem: ISearchItem<T> = { item: item }
-                for (let i = 0; i < columns.length; i++) {
-                    const column = columns[i]
-                    if (column.search) {
-                        if (typeof column.search === 'string') {
-                            searchItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
-                        } else {
-                            searchItem[`column-${i}`] = column.search(item)
-                        }
+        if (!items) return []
+        return items.map((item) => {
+            const searchItem: ISearchItem<T> = { item: item }
+            for (let i = 0; i < columns.length; i++) {
+                const column = columns[i]
+                if (column.search) {
+                    if (typeof column.search === 'string') {
+                        searchItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
+                    } else {
+                        searchItem[`column-${i}`] = column.search(item)
                     }
                 }
-                return searchItem
-            })
-        )
+            }
+            return searchItem
+        })
     }, [items, columns])
 
-    useLayoutEffect(() => {
+    const filtered = useMemo<T[]>(() => {
         if (search && search !== '' && searchItems) {
             const fuse = new Fuse(searchItems, {
                 includeScore: true,
@@ -181,111 +202,158 @@ export function AcmTable<T>(props: {
                     .filter((value) => value !== undefined) as string[],
                 // TODO use FuseOptionKeyObject to allow for weights
             })
-            setFiltered(fuse.search(search).map((result) => result.item.item))
-            setSort(undefined)
+            return fuse.search(search).map((result) => result.item.item)
         } else {
-            setFiltered(items)
+            return items || []
         }
     }, [search, items, searchItems, columns])
 
-    useLayoutEffect(() => {
-        if (sort && sort.index != undefined && filtered) {
-            const compare = columns[sort.index - sortIndexOffset].sort
-            let sorted: T[] = [...filtered]
+    // Compensate for off-by-one error in sort column when all items are filtered out
+    const adjustedSort =
+        sort && sort.index && sort.direction && filtered.length === 0
+            ? {
+                  index: sort.index - sortIndexOffset,
+                  direction: sort.direction,
+              }
+            : sort
+
+    const sorted = useMemo<T[]>(() => {
+        if (sort) {
+            const compare = columns[(sort && sort.index ? sort.index : 0) - sortIndexOffset].sort
+            const sorted: T[] = [...filtered]
             /* istanbul ignore else */
             if (compare) {
                 if (typeof compare === 'string') {
-                    sorted = [...filtered].sort(compareItems(compare))
+                    sorted.sort(compareItems(compare))
                 } else {
-                    sorted = [...filtered].sort(compare)
+                    sorted.sort(compare)
                 }
             }
-            sorted = sort.direction === SortByDirection.asc ? sorted : sorted.reverse()
-            setSorted(sorted)
+            if (sort.direction === SortByDirection.desc) {
+                sorted.reverse()
+            }
+            return sorted
         } else {
-            setSorted(filtered)
+            return filtered
         }
     }, [filtered, sort, columns])
 
-    useLayoutEffect(() => {
-        const start = (page - 1) * perPage
-        if (start >= 0 && sorted && sorted.length > perPage) {
-            let paged = [...sorted]
-            if (start !== 0) {
-                /* istanbul ignore if */
-                if (start >= paged.length) {
-                    setPage(page - 1)
-                } else {
-                    paged = paged.slice(start)
-                }
-            }
-            /* istanbul ignore else */
-            if (paged.length > perPage) {
-                paged = paged.slice(0, perPage)
-            }
-            setPaged(paged)
-        } else {
-            setPaged(sorted)
+    const paged = useMemo<T[]>(() => {
+        let start = (page - 1) * perPage
+        let actualPage = page
+        if (start > sorted.length) {
+            actualPage = Math.floor(sorted.length / perPage) + 1
+            start = (actualPage - 1) * perPage
+            setPage(actualPage)
         }
+        return sorted.slice(start, start + perPage)
     }, [sorted, page, perPage])
 
-    useLayoutEffect(() => {
-        if (paged) {
-            const newRows = paged.map((item) => {
-                const key = keyFn(item)
-                return {
-                    selected: selected[key] === true,
-                    props: { key },
-                    cells: columns.map((column) => {
-                        return (
-                            <Fragment key={key}>
-                                {typeof column.cell === 'string'
-                                    ? get(item as Record<string, unknown>, column.cell)
-                                    : column.cell(item)}
-                            </Fragment>
-                        )
-                    }),
-                }
-            })
-            setRows(newRows)
-        } else {
-            setRows(undefined)
-        }
+    const rows = useMemo<IRow[] | undefined>(() => {
+        const newRows = paged.map((item) => {
+            const key = keyFn(item)
+            return {
+                selected: selected[key] === true,
+                props: { key },
+                cells: columns.map((column) => {
+                    return (
+                        <Fragment key={key}>
+                            {typeof column.cell === 'string'
+                                ? get(item as Record<string, unknown>, column.cell)
+                                : column.cell(item)}
+                        </Fragment>
+                    )
+                }),
+            }
+        })
+        return newRows
     }, [selected, paged, keyFn, columns])
 
-    function onSelect(_event: FormEvent, isSelected: boolean, rowId: number) {
-        /* istanbul ignore next */
-        if (!paged) return
-        /* istanbul ignore next */
-        if (!filtered) return
-        /* istanbul ignore next */
-        if (!rows) return
-        if (rowId === -1) {
-            let allSelected = true
-            for (const row of rows) {
-                if (!row.selected) {
-                    allSelected = false
-                    break
+    const updateSearch = useCallback(
+        (newSearch: string) => {
+            setSearch(newSearch)
+            setPage(1)
+            if (!newSearch) {
+                // clearing filtered state; restore previous sorting if applicable
+                if (preFilterSort) {
+                    setSort(preFilterSort)
                 }
+            } else if (!search) {
+                // entering a filtered state; save sort setting use fuzzy match sort
+                setPreFilterSort(sort)
+                setSort(undefined)
             }
-            const newSelected: { [uid: string]: boolean } = {}
-            /* istanbul ignore else */
-            if (!allSelected) {
-                for (const item of filtered) {
-                    newSelected[keyFn(item)] = true
-                }
-            }
-            setSelected(newSelected)
-        } else {
-            const newSelected = { ...selected }
-            if (isSelected) {
-                newSelected[keyFn(paged[rowId])] = true
+        },
+        // setSort/setSearch/setPage can come from props, but setPreFilterSort is only from state and therefore
+        // guaranteed stable - not needed in dependency list
+        [search, sort, preFilterSort, setSort, setSearch, setPage]
+    )
+
+    const updateSort = useCallback(
+        (newSort: ISortBy) => {
+            if (filtered.length === 0) {
+                /* istanbul ignore next */
+                setSort({
+                    index: (newSort && newSort.index ? newSort.index : 0) + sortIndexOffset,
+                    direction: newSort && newSort.direction,
+                })
             } else {
-                delete newSelected[keyFn(paged[rowId])]
+                setSort(newSort)
             }
-            setSelected(newSelected)
-        }
-    }
+            if (search) {
+                // sort changed while filtering; forget previous setting
+                setPreFilterSort(undefined)
+            }
+        },
+        [search, filtered]
+    )
+
+    const updatePerPage = useCallback(
+        (newPerPage: number) => {
+            // keep the first item in view on pagination size change
+            const newPage = Math.floor(((page - 1) * perPage) / newPerPage) + 1
+            setPage(newPage)
+            setPerPage(newPerPage)
+        },
+        [page, perPage, setPage, setPerPage]
+    )
+
+    const onSelect = useCallback(
+        (_event: FormEvent, isSelected: boolean, rowId: number) => {
+            /* istanbul ignore next */
+            if (!paged) return
+            /* istanbul ignore next */
+            if (!filtered) return
+            /* istanbul ignore next */
+            if (!rows) return
+            if (rowId === -1) {
+                let allSelected = true
+                for (const row of rows) {
+                    if (!row.selected) {
+                        allSelected = false
+                        break
+                    }
+                }
+                const newSelected: { [uid: string]: boolean } = {}
+                /* istanbul ignore else */
+                if (!allSelected) {
+                    for (const item of filtered) {
+                        newSelected[keyFn(item)] = true
+                    }
+                }
+                setSelected(newSelected)
+            } else {
+                const newSelected = { ...selected }
+                if (isSelected) {
+                    newSelected[keyFn(paged[rowId])] = true
+                } else {
+                    delete newSelected[keyFn(paged[rowId])]
+                }
+                setSelected(newSelected)
+            }
+        },
+        [paged, filtered, rows, keyFn]
+    )
 
     const actions = props.rowActions.map((rowAction) => {
         return {
@@ -315,17 +383,10 @@ export function AcmTable<T>(props: {
                                     placeholder="Search"
                                     value={search}
                                     onChange={(value) => {
-                                        setSearch(value)
-                                        if (value === '') {
-                                            /* istanbul ignore next */
-                                            if (!sort) {
-                                                setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
-                                            }
-                                        }
+                                        updateSearch(value)
                                     }}
                                     onClear={() => {
-                                        setSearch('')
-                                        setSort({ index: sortIndexOffset, direction: SortByDirection.asc })
+                                        updateSearch('')
                                     }}
                                     resultsCount={`${filtered.length} / ${items.length}`}
                                 />
@@ -411,9 +472,9 @@ export function AcmTable<T>(props: {
                         actions={actions}
                         canSelectAll={true}
                         aria-label="Simple Table"
-                        sortBy={sort}
+                        sortBy={adjustedSort}
                         onSort={(_event, index, direction) => {
-                            setSort({ index, direction })
+                            updateSort({ index, direction })
                         }}
                         onSelect={
                             /* istanbul ignore next */
@@ -437,7 +498,7 @@ export function AcmTable<T>(props: {
                                         setPage(page)
                                     }}
                                     onPerPageSelect={(_event, perPage) => {
-                                        setPerPage(perPage)
+                                        updatePerPage(perPage)
                                     }}
                                 />
                             )}
@@ -452,8 +513,7 @@ export function AcmTable<T>(props: {
                                 <AcmButton
                                     variant="link"
                                     onClick={() => {
-                                        setSearch('')
-                                        setSort({ index: 1, direction: SortByDirection.asc })
+                                        updateSearch('')
                                     }}
                                 >
                                     Clear all filters

@@ -57,7 +57,13 @@ export function AcmTile(props: AcmTileProps) {
             count = `${(parseInt(count) - (parseInt(count) % 100)) / 1000}k`
         }
         return (
-            <Tile className={classes.tileRoot} title={props.title} ref={null}>
+            <Tile
+                className={classes.tileRoot}
+                title={props.title}
+                onClick={props.onClick}
+                isSelected={props.isSelected}
+                ref={null}
+            >
                 <div className={classes.relatedResourceContainer}>
                     <div className={classes.relatedResourceCount}>{count}</div>
                     <div className={classes.relatedResourceKind}>{`Related ${props.relatedResourceData.kind}`}</div>
