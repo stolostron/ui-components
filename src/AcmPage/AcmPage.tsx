@@ -31,7 +31,7 @@ export function AcmPageHeader(props: {
                             <AcmBreadcrumb breadcrumb={props.breadcrumb} />
                         </div>
                     )}
-                    <div style={{ paddingLeft: '24px' }}>
+                    <div style={{ paddingLeft: '24px', flexGrow: 1 }}>
                         <Title headingLevel="h1">{props.title}</Title>
                     </div>
                     {props.navigation ? (
