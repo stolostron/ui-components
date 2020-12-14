@@ -28,6 +28,7 @@ export const PageHeader = (args) => {
     )
 }
 PageHeader.args = {
+    breadcrumb: [{ text: 'Page 1' }, { text: 'Page 2' }, { text: 'Page 3' }],
     title: 'Page title',
     navigation: (
         <AcmSecondaryNav>
@@ -37,5 +38,4 @@ PageHeader.args = {
     ),
     controls: 'Refresh every 5s',
     actions: <AcmButton>Create</AcmButton>,
-    breadcrumb: [{ text: 'Page 1' }, { text: 'Page 2' }, { text: 'Page 3' }],
 }
