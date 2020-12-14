@@ -14,9 +14,10 @@ describe('AcmLabels', () => {
         expect(getByText('cluster=management')).toBeInstanceOf(HTMLSpanElement)
     })
     test('renders with object', () => {
-        const { getByText } = render(<AcmLabels labels={{ foo: 'bar', cluster: 'management' }} />)
+        const { getByText } = render(<AcmLabels labels={{ foo: 'bar', cluster: 'management', empty: '' }} />)
         expect(getByText('foo=bar')).toBeInTheDocument()
         expect(getByText('cluster=management')).toBeInstanceOf(HTMLSpanElement)
+        expect(getByText('empty')).toBeInTheDocument()
     })
     test('returns null when no labels are provided', () => {
         const { container } = render(<AcmLabels labels={[]} />)
