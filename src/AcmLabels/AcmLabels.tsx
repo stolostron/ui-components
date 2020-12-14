@@ -1,7 +1,6 @@
 import { Label } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { Fragment } from 'react'
-import { Tooltip } from '@patternfly/react-core'
 
 export function AcmLabels(props: { labels: string[] | Record<string, string> | undefined }) {
     const { labels } = props
