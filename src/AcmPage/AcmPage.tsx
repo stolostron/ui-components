@@ -27,15 +27,15 @@ export function AcmPageHeader(props: {
             <div style={{ display: 'flex', paddingTop: '16px', paddingRight: '24px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
                     {props.breadcrumb && (
-                        <div style={{ paddingLeft: '24px', paddingBottom: '12px' }}>
+                        <div style={{ paddingLeft: '24px' }}>
                             <AcmBreadcrumb breadcrumb={props.breadcrumb} />
                         </div>
                     )}
-                    <div style={{ paddingLeft: '24px', flexGrow: 1 }}>
+                    <div style={{ paddingLeft: '24px', flexGrow: 1, paddingTop: '12px', paddingBottom: '12px' }}>
                         <Title headingLevel="h1">{props.title}</Title>
                     </div>
                     {props.navigation ? (
-                        <div style={{ paddingLeft: '8px', paddingTop: '8px' }}>{props.navigation}</div>
+                        <div style={{ paddingLeft: '8px' }}>{props.navigation}</div>
                     ) : (
                         <div style={{ paddingBottom: '16px' }} />
                     )}
@@ -49,7 +49,7 @@ export function AcmPageHeader(props: {
                     }}
                 >
                     <div style={{ flexGrow: 1 }}>{props.controls}</div>
-                    {props.actions && <div style={{ paddingTop: '16px' }}>{props.actions}</div>}
+                    {props.actions && <div style={{ paddingTop: '12px' }}>{props.actions}</div>}
                 </div>
             </div>
         </PageSection>
