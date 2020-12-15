@@ -19,6 +19,7 @@ const useStyles = makeStyles({
     },
     countContainer: {
         marginBottom: '8px',
+        fontSize: '36px',
     },
     count: {
         textDecoration: 'none !important',
@@ -34,6 +35,7 @@ const useStyles = makeStyles({
     },
     title: {
         fontSize: '14px !important',
+        fontWeight: 600,
     },
     titleIcon: {
         marginRight: '8px',
@@ -75,7 +77,7 @@ export const AcmCountCardSection = (props: AcmCountCardSection) => {
                     return (
                         <GridItem key={i}>
                             <div id={card.id} className={classes.card}>
-                                <Title headingLevel="h4" size={TitleSizes['4xl']} className={classes.countContainer}>
+                                <div className={classes.countContainer}>
                                     {card.countClick && card.count > 0 ? (
                                         <a
                                             onClick={card.countClick}
@@ -86,8 +88,8 @@ export const AcmCountCardSection = (props: AcmCountCardSection) => {
                                     ) : (
                                         card.count
                                     )}
-                                </Title>
-                                <Title headingLevel="h5" size="md" className={classes.title}>
+                                </div>
+                                <div className={classes.title}>
                                     <span>
                                         {card.isDanger && (
                                             <ExclamationCircleIcon
@@ -97,7 +99,7 @@ export const AcmCountCardSection = (props: AcmCountCardSection) => {
                                         )}
                                         {card.title}
                                     </span>
-                                </Title>
+                                </div>
                                 {card.description && <div className={classes.description}>{card.description}</div>}
                                 {card.linkText && (
                                     <div className={classes.link}>
