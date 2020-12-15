@@ -16,7 +16,7 @@ const useStyles = makeStyles({
         ['@media (max-width:768px)']: {
             'margin-bottom': 'var(--pf-global--gutter--md)',
         },
-    }
+    },
 })
 
 export type ListItems = {
