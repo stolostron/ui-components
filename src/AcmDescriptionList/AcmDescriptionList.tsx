@@ -11,9 +11,12 @@ import { AcmExpandableCard } from '../AcmExpandable'
 import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
-    descriptionList: {
+    leftCol: {
         'margin-bottom': 'var(--pf-global--gutter--md)',
     },
+    rightCol: {
+        'margin-bottom': '16px',
+    }
 })
 
 export type ListItems = {
@@ -31,11 +34,11 @@ export function AcmDescriptionList(props: {
     return (
         <AcmExpandableCard title={props.title}>
             <Grid sm={12} md={6}>
-                <GridItem className={classes.descriptionList}>
+                <GridItem className={classes.leftCol}>
                     <List items={props.leftItems} />
                 </GridItem>
                 {props.rightItems && (
-                    <GridItem className={classes.descriptionList}>
+                    <GridItem className={classes.rightCol}>
                         <List items={props.rightItems} />
                     </GridItem>
                 )}
