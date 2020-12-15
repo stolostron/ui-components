@@ -8,6 +8,16 @@ import {
     GridItem,
 } from '@patternfly/react-core'
 import { AcmExpandableCard } from '../AcmExpandable'
+import { makeStyles } from '@material-ui/styles'
+
+const useStyles = makeStyles({
+    leftCol: {
+        'margin-bottom': 'var(--pf-global--gutter--md)',
+    },
+    rightCol: {
+        'margin-bottom': '16px',
+    },
+})
 
 export type ListItems = {
     key: string
@@ -20,14 +30,15 @@ export function AcmDescriptionList(props: {
     leftItems: ListItems[]
     rightItems?: ListItems[] | undefined
 }) {
+    const classes = useStyles()
     return (
         <AcmExpandableCard title={props.title}>
             <Grid sm={12} md={6}>
-                <GridItem>
+                <GridItem className={classes.leftCol}>
                     <List items={props.leftItems} />
                 </GridItem>
                 {props.rightItems && (
-                    <GridItem>
+                    <GridItem className={classes.rightCol}>
                         <List items={props.rightItems} />
                     </GridItem>
                 )}
