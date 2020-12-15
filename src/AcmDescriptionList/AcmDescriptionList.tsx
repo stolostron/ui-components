@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     },
     rightCol: {
         'margin-bottom': '16px',
-    }
+    },
 })
 
 export type ListItems = {
