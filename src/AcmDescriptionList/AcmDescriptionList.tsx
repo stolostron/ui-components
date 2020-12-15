@@ -14,9 +14,9 @@ const useStyles = makeStyles({
     leftCol: {
         'margin-bottom': '0px',
         ['@media (max-width:768px)']: {
-            'margin-bottom': 'var(--pf-global--gutter--md)'
-        }
-      }
+            'margin-bottom': 'var(--pf-global--gutter--md)',
+        },
+    }
 })
 
 export type ListItems = {
