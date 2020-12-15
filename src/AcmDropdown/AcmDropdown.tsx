@@ -7,6 +7,7 @@ import {
     KebabToggle,
     DropdownProps,
 } from '@patternfly/react-core'
+import { makeStyles } from '@material-ui/styles'
 import { TooltipWrapper } from '../utils'
 
 // TODO this dropdown is not accessible when the dropdown items are wrapped by the Tooltip component
@@ -35,8 +36,26 @@ export type AcmDropdownItems = {
     icon?: React.ReactNode
 }
 
+const useStyles = makeStyles({
+    buttonTitle: {
+        '& button': {
+            '& span': {
+                color: (props: AcmDropdownProps) =>
+                    props.isKebab ? undefined : 'var(--pf-global--primary-color--100)',
+            },
+            '&:hover, &:focus': {
+                '& span': {
+                    color: (props: AcmDropdownProps) =>
+                        props.isKebab ? undefined : 'var(--pf-global--primary-color--200)',
+                },
+            },
+        },
+    },
+})
+
 export function AcmDropdown(props: AcmDropdownProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
+    const classes = useStyles(props)
 
     const onSelect = (id: string) => {
         props.onSelect(id)
@@ -46,6 +65,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
     return (
         <TooltipWrapper showTooltip={props.isDisabled && !!props.tooltip} tooltip={props.tooltip}>
             <Dropdown
+                className={classes.buttonTitle}
                 onMouseOver={props.onHover}
                 position={DropdownPosition.right}
                 dropdownItems={props.dropdownItems.map((item) => (
