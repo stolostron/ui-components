@@ -10,7 +10,7 @@ type AcmLogWindowProps = {
     namespace: string
     initialContainer: string
     // Callback to get new container to query logs from
-    onSwitchContainer: (newContainer: EventTarget) => void
+    onSwitchContainer: (newContainer: string | undefined) => void
     containers: string[]
     // A single string that contains \n for each new log line
     logs: string
@@ -72,15 +72,14 @@ export function AcmLogWindow(props: AcmLogWindowProps) {
                 label={''}
                 className={classes.containerSelect}
                 value={selectedContainer}
-                onChange={(value) => setSelectedContainer(value)}
+                onChange={(value) => {
+                    setSelectedContainer(value)
+                    onSwitchContainer(value)
+                }}
             >
                 {containers.map((container) => {
                     return (
-                        <SelectOption
-                            key={container}
-                            value={container}
-                            onClick={(event) => onSwitchContainer(event.target)}
-                        >
+                        <SelectOption key={container} value={container}>
                             {container}
                         </SelectOption>
                     )
