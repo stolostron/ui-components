@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, GridItem, Title, TitleSizes } from '@patternfly/react-core'
+import { Grid, GridItem } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { AcmExpandableCard } from '../AcmExpandable'
 import { makeStyles } from '@material-ui/styles'
