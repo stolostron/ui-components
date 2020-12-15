@@ -91,7 +91,7 @@ export const AcmCountCardSection = (props: AcmCountCardSection) => {
                                 </div>
                                 <div className={classes.title}>
                                     <span>
-                                        {card.isDanger && (
+                                        {card.isDanger && card.count > 0 && (
                                             <ExclamationCircleIcon
                                                 color="var(--pf-global--danger-color--100)"
                                                 className={classes.titleIcon}
