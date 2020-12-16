@@ -1,6 +1,6 @@
-import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import React from 'react'
 import { AcmFormSection } from './AcmFormSection'
 
 describe('AcmFormSection', () => {
@@ -13,10 +13,7 @@ describe('AcmFormSection', () => {
         const { getByText, getByTestId } = render(<AcmFormSection id="section" title="TITLE" tooltip="TOOLTIP" />)
         userEvent.tab()
         userEvent.hover(getByText('TITLE'))
-        expect(getByTestId('section-label-help-button')).toHaveFocus()
-        waitFor(() => expect(screen.getByRole('tooltip')).toBeInTheDocument())
+        await waitFor(() => expect(getByTestId('section-label-help-button')).toHaveFocus())
         userEvent.unhover(getByTestId('section-label-help-button'))
-        waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument())
-        await new Promise((resolve) => setTimeout(resolve, 0))
     })
 })
