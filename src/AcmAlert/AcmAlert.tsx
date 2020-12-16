@@ -53,7 +53,15 @@ export function AcmAlertProvider(props: { children: ReactNode }) {
     )
 }
 
-function AcmAlert(props: { alertInfo: AcmAlertInfo; isInline?: boolean; canClose?: boolean }) {
+export function AcmAlert(props: {
+    alertInfo?: AcmAlertInfo
+    isInline?: boolean
+    title?: string
+    subtitle?: React.ReactNode
+    message?: React.ReactNode
+    noClose?: boolean
+    variant?: 'success' | 'danger' | 'warning' | 'info' | 'default'
+}) {
     const alertContext = useContext(AcmAlertContext)
     const { alertInfo } = props
     const [open, setOpen] = useState(false)
@@ -63,15 +71,24 @@ function AcmAlert(props: { alertInfo: AcmAlertInfo; isInline?: boolean; canClose
         if (clear !== alertContext.clear) setOpen(false)
     }, [alertContext])
     return (
-        <Collapse timeout={200} in={open} onExit={() => setTimeout(() => alertContext.removeAlert(alertInfo), 200)}>
+        <Collapse
+            in={open}
+            onExit={() => {
+                /* istanbul ignore else */
+                if (alertInfo) {
+                    setTimeout(() => alertContext.removeAlert(alertInfo), 200)
+                }
+            }}
+            timeout={200}
+        >
             <div style={{ paddingBottom: '8px' }}>
                 <Alert
                     isInline={props.isInline}
-                    title={alertInfo.title}
-                    actionClose={props.canClose && <AlertActionCloseButton onClose={() => setOpen(false)} />}
-                    variant={alertInfo.type}
+                    title={alertInfo?.title || props.title}
+                    actionClose={!props.noClose && <AlertActionCloseButton onClose={() => setOpen(false)} />}
+                    variant={alertInfo?.type || props.variant}
                 >
-                    {alertInfo.message}
+                    {alertInfo?.message || props.message || props.subtitle}
                 </Alert>
             </div>
         </Collapse>
@@ -87,7 +104,7 @@ export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean })
                     key={alertInfo.id}
                     alertInfo={alertInfo}
                     isInline={props.isInline}
-                    canClose={props.canClose}
+                    noClose={!props.canClose}
                 />
             ))}
         </div>
