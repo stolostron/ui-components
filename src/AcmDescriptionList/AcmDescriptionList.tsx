@@ -12,10 +12,10 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     leftCol: {
-        'margin-bottom': 'var(--pf-global--gutter--md)',
-    },
-    rightCol: {
-        'margin-bottom': '16px',
+        'margin-bottom': '0px',
+        ['@media (max-width:768px)']: {
+            'margin-bottom': 'var(--pf-global--gutter--md)',
+        },
     },
 })
 
@@ -38,7 +38,7 @@ export function AcmDescriptionList(props: {
                     <List items={props.leftItems} />
                 </GridItem>
                 {props.rightItems && (
-                    <GridItem className={classes.rightCol}>
+                    <GridItem>
                         <List items={props.rightItems} />
                     </GridItem>
                 )}

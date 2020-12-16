@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     toggleContainer: { alignSelf: 'center', paddingRight: '12px' },
-    cardBody: { borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: '40px' },
+    cardBody: { borderTop: '1px solid rgba(0,0,0,0.1)', paddingTop: '32px', paddingBottom: '32px' },
 })
 
 const ToggleIcon = (props: { open: boolean; toggle: () => void }) => {
