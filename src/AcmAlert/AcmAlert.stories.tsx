@@ -1,46 +1,97 @@
 import '@patternfly/react-core/dist/styles/base.css'
-import React from 'react'
-import { AcmAlert, AcmAlertGroup } from './AcmAlert'
+import React, { useContext } from 'react'
+import { AcmAlertGroup, AcmAlertProvider, AcmAlertContext } from './AcmAlert'
 import { AcmPageCard } from '../AcmPage/AcmPage'
-import { AlertVariant } from '@patternfly/react-core'
+import { AcmButton } from '../AcmButton/AcmButton'
 
 export default {
-    title: 'Alert',
-    component: AcmAlert,
+    title: 'AcmAlertGroup',
+    component: AcmAlertGroup,
     argTypes: {
-        isInline: { control: 'boolean' },
-        title: { type: 'string' },
-        subtitle: { type: 'string' },
-        variant: {
-            control: { type: 'select', options: Object.values(AlertVariant) },
-        },
-        noClose: { type: 'boolean' },
+        isInline: { defaultValue: true },
+        canClose: { defaultValue: true },
     },
 }
 
-export const Alerts = (args) => {
+export const AlertGroup = (args) => {
+    const AddAlert = () => {
+        const alertContext = useContext(AcmAlertContext)
+        return (
+            <AcmButton
+                onClick={() => {
+                    alertContext.addAlert({ title: 'Alert', message: 'Message' })
+                }}
+            >
+                Add Alert
+            </AcmButton>
+        )
+    }
+    const AddInfo = () => {
+        const alertContext = useContext(AcmAlertContext)
+        return (
+            <AcmButton
+                onClick={() => {
+                    alertContext.addAlert({ title: 'Info Alert', message: 'Message', type: 'info' })
+                }}
+            >
+                Add Info
+            </AcmButton>
+        )
+    }
+    const AddSuccess = () => {
+        const alertContext = useContext(AcmAlertContext)
+        return (
+            <AcmButton
+                onClick={() => {
+                    alertContext.addAlert({ title: 'Success Alert', message: 'Message', type: 'success' })
+                }}
+            >
+                Add Success
+            </AcmButton>
+        )
+    }
+    const AddWarning = () => {
+        const alertContext = useContext(AcmAlertContext)
+        return (
+            <AcmButton
+                onClick={() => {
+                    alertContext.addAlert({ title: 'Warning Alert', message: 'Message', type: 'warning' })
+                }}
+            >
+                Add Warning
+            </AcmButton>
+        )
+    }
+    const AddError = () => {
+        const alertContext = useContext(AcmAlertContext)
+        return (
+            <AcmButton
+                onClick={() => {
+                    alertContext.addAlert({ title: 'Error Alert', message: 'Message', type: 'danger' })
+                }}
+            >
+                Add Error
+            </AcmButton>
+        )
+    }
+    const ClearAlerts = () => {
+        const alertContext = useContext(AcmAlertContext)
+        return (
+            <AcmButton
+                onClick={() => {
+                    alertContext.clearAlerts()
+                }}
+            >
+                Clear Alerts
+            </AcmButton>
+        )
+    }
     return (
-        <AcmPageCard>
-            <AcmAlert
-                variant={args.variant}
-                isInline={args.isInline}
-                title={args.title}
-                subtitle={args.subtitle}
-                noClose={args.noClose}
-            />
-        </AcmPageCard>
-    )
-}
-Alerts.args = { title: 'Alert title', subtitle: 'Alert subtitle' }
-
-export const AlertGroup = () => {
-    return (
-        <AcmPageCard>
-            <AcmAlertGroup>
-                {Object.values(AlertVariant).map((variant) => (
-                    <AcmAlert key={variant} variant={variant} title="Alert title" subtitle="Alert subtitle" />
-                ))}
-            </AcmAlertGroup>
-        </AcmPageCard>
+        <AcmAlertProvider>
+            <AcmPageCard>
+                <AcmAlertGroup isInline={args.isInline} canClose={args.canClose} />
+                <AddAlert /> <AddInfo /> <AddSuccess /> <AddWarning /> <AddError /> <ClearAlerts />
+            </AcmPageCard>
+        </AcmAlertProvider>
     )
 }
