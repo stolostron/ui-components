@@ -24,6 +24,8 @@ export type AcmDropdownProps = Props & {
     tooltip?: string | React.ReactNode
     isKebab?: boolean
     onHover?: () => void
+    isPlain?: boolean
+    isPrimary?: boolean
 }
 
 export type AcmDropdownItems = {
@@ -83,13 +85,13 @@ export function AcmDropdown(props: AcmDropdownProps) {
                     props.isKebab ? (
                         <KebabToggle id={props.id} isDisabled={props.isDisabled} onToggle={() => setOpen(!isOpen)} />
                     ) : (
-                        <DropdownToggle id={props.id} isDisabled={props.isDisabled} onToggle={() => setOpen(!isOpen)}>
+                        <DropdownToggle isPrimary={props.isPrimary} id={props.id} isDisabled={props.isDisabled} onToggle={() => setOpen(!isOpen)}>
                             {props.text}
                         </DropdownToggle>
                     )
                 }
                 isOpen={isOpen}
-                isPlain
+                isPlain={props.isPlain === false ? false : true}
             />
         </TooltipWrapper>
     )
