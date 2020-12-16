@@ -85,7 +85,12 @@ export function AcmDropdown(props: AcmDropdownProps) {
                     props.isKebab ? (
                         <KebabToggle id={props.id} isDisabled={props.isDisabled} onToggle={() => setOpen(!isOpen)} />
                     ) : (
-                        <DropdownToggle isPrimary={props.isPrimary} id={props.id} isDisabled={props.isDisabled} onToggle={() => setOpen(!isOpen)}>
+                        <DropdownToggle
+                            isPrimary={props.isPrimary}
+                            id={props.id}
+                            isDisabled={props.isDisabled}
+                            onToggle={() => setOpen(!isOpen)}
+                        >
                             {props.text}
                         </DropdownToggle>
                     )
