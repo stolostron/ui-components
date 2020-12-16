@@ -26,7 +26,9 @@ import {
     TableBody,
     TableHeader,
     TableVariant,
+    TableGridBreakpoint,
 } from '@patternfly/react-table'
+import { makeStyles } from '@material-ui/styles'
 import Fuse from 'fuse.js'
 import get from 'get-value'
 import React, {
@@ -40,6 +42,7 @@ import React, {
     useState,
     useCallback,
 } from 'react'
+import useResizeObserver from '@react-hook/resize-observer'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 
@@ -94,11 +97,30 @@ interface ISearchItem<T> {
     [key: string]: unknown
 }
 
+const useStyles = makeStyles({
+    tableDiv: {
+        display: 'table',
+        width: '100%',
+    },
+    outerDiv: {
+        display: 'block',
+    },
+})
+
 function OuiaIdRowWrapper(props: RowWrapperProps) {
     return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
 }
 
 const DEFAULT_ITEMS_PER_PAGE = 10
+
+const BREAKPOINT_SIZES = [
+    { name: TableGridBreakpoint.none, size: 0 },
+    { name: TableGridBreakpoint.gridMd, size: 768 },
+    { name: TableGridBreakpoint.gridLg, size: 992 },
+    { name: TableGridBreakpoint.gridXl, size: 1200 },
+    { name: TableGridBreakpoint.grid2xl, size: 1450 },
+    { name: TableGridBreakpoint.grid, size: Infinity },
+]
 
 const AcmTablePaginationContext: React.Context<{
     perPage?: number
@@ -136,6 +158,7 @@ export function AcmTable<T>(props: {
     setSearch?: (search: string) => void
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
+    gridBreakPoint?: TableGridBreakpoint
 }) {
     const { items, columns, keyFn, bulkActions } = props
     const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
@@ -167,6 +190,55 @@ export function AcmTable<T>(props: {
     const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(defaultSort)
 
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
+
+    // Dynamic gridBreakPoint
+    const [breakpoint, setBreakpoint] = useState<TableGridBreakpoint>(TableGridBreakpoint.none)
+    const [exactBreakpoint, setExactBreakpoint] = useState<number | undefined>()
+    const [outerDiv, setOuterDiv] = useState<HTMLDivElement | null>(null)
+    const [tableDiv, setTableDiv] = useState<HTMLDivElement | null>(null)
+    const outerDivRef = useCallback((elem) => setOuterDiv(elem), [])
+    const tableDivRef = useCallback((elem) => setTableDiv(elem), [])
+
+    /* istanbul ignore next */
+    const updateBreakpoint = (width: number, tableWidth: number) => {
+        const viewportWidth = window.innerWidth
+        if (tableWidth > width) {
+            // table needs to switch to grid; make the change and record viewport size when this happened
+            const newBreakpoint =
+                BREAKPOINT_SIZES.find((b) => viewportWidth <= b.size)?.name || TableGridBreakpoint.none
+            setBreakpoint(newBreakpoint)
+            setExactBreakpoint(viewportWidth)
+        } else if (exactBreakpoint && viewportWidth > exactBreakpoint) {
+            // viewport is now bigger than when we last switched to grid; try bigger breakpoint, which will
+            // be reverted in the layout effect if the table is still too wide
+            const newBreakpoint =
+                [...BREAKPOINT_SIZES].reverse().find((b) => viewportWidth > b.size)?.name || TableGridBreakpoint.grid
+            setBreakpoint(newBreakpoint)
+        }
+    }
+
+    useLayoutEffect(
+        () => {
+            if (outerDiv && tableDiv) {
+                updateBreakpoint(outerDiv.clientWidth, tableDiv.clientWidth)
+            }
+        },
+        // Check breakpoints as soon as ref callbacks are set, in case initial viewport is too small for table
+        // Need to check on every update to breakpoint as well for the same case, to that display
+        // doesn't thrash between table/grid on intial expansion of viewport
+        [breakpoint, outerDiv, tableDiv]
+    )
+
+    /* istanbul ignore next */
+    useResizeObserver(outerDiv, (entry) => {
+        if (entry.contentRect && tableDiv) {
+            const width = Math.floor(entry.contentRect.width)
+            const tableWidth = tableDiv.clientWidth
+            updateBreakpoint(width, tableWidth)
+        }
+    })
+
+    const classes = useStyles()
 
     useLayoutEffect(() => {
         const newSelected: { [uid: string]: boolean } = {}
@@ -456,40 +528,49 @@ export function AcmTable<T>(props: {
                 )
             ) : (
                 <Fragment>
-                    <Table
-                        cells={columns.map((column) => {
-                            return {
-                                title: column.header,
-                                header: column.tooltip
-                                    ? {
-                                          info: {
-                                              tooltip: column.tooltip,
-                                              tooltipProps: { isContentLeftAligned: true },
-                                          },
-                                      }
-                                    : {},
-                                transforms: [nowrap, ...(column.transforms || []), ...(column.sort ? [sortable] : [])],
-                                cellTransforms: column.cellTransforms || [],
-                            }
-                        })}
-                        rows={rows}
-                        rowWrapper={OuiaIdRowWrapper}
-                        actions={actions}
-                        canSelectAll={true}
-                        aria-label="Simple Table"
-                        sortBy={adjustedSort}
-                        onSort={(_event, index, direction) => {
-                            updateSort({ index, direction })
-                        }}
-                        onSelect={
-                            /* istanbul ignore next */
-                            rows.length && props.bulkActions?.length ? onSelect : undefined
-                        }
-                        variant={TableVariant.compact}
-                    >
-                        <TableHeader />
-                        <TableBody />
-                    </Table>
+                    <div ref={outerDivRef} className={classes.outerDiv}>
+                        <div ref={tableDivRef} className={classes.tableDiv}>
+                            <Table
+                                cells={columns.map((column) => {
+                                    return {
+                                        title: column.header,
+                                        header: column.tooltip
+                                            ? {
+                                                  info: {
+                                                      tooltip: column.tooltip,
+                                                      tooltipProps: { isContentLeftAligned: true },
+                                                  },
+                                              }
+                                            : {},
+                                        transforms: [
+                                            nowrap,
+                                            ...(column.transforms || []),
+                                            ...(column.sort ? [sortable] : []),
+                                        ],
+                                        cellTransforms: column.cellTransforms || [],
+                                    }
+                                })}
+                                rows={rows}
+                                rowWrapper={OuiaIdRowWrapper}
+                                actions={actions}
+                                canSelectAll={true}
+                                aria-label="Simple Table"
+                                sortBy={adjustedSort}
+                                onSort={(_event, index, direction) => {
+                                    updateSort({ index, direction })
+                                }}
+                                onSelect={
+                                    /* istanbul ignore next */
+                                    rows.length && props.bulkActions?.length ? onSelect : undefined
+                                }
+                                variant={TableVariant.compact}
+                                gridBreakPoint={breakpoint}
+                            >
+                                <TableHeader />
+                                <TableBody />
+                            </Table>
+                        </div>
+                    </div>
                     <Split>
                         <SplitItem isFilled></SplitItem>
                         <SplitItem>
