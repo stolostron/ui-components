@@ -99,7 +99,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                 noSuggestionsText={'No matching filters'}
                 autoresize={true}
                 minQueryLength={0}
-                allowNew={true}
+                allowNew={!currentQuery.endsWith(':')}
                 delimiters={[' ', ':', ',']}
                 maxSuggestionsLength={Number.MAX_SAFE_INTEGER}
             />
