@@ -1,62 +1,48 @@
-import React from 'react'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { AlertVariant } from '@patternfly/react-core'
-import { AcmAlert, AcmAlertGroup } from './AcmAlert'
-import userEvent from '@testing-library/user-event'
+import React, { Fragment } from 'react'
+import { AcmButton } from '../AcmButton/AcmButton'
+import { AcmAlert, AcmAlertContext, AcmAlertGroup, AcmAlertProvider } from './AcmAlert'
 
 describe('AcmAlert', () => {
-    test('renders with subtitle of type: string', () => {
-        const { getByText } = render(<AcmAlert title="Acm Alert title" subtitle="Acm Alert subtitle" />)
-        expect(getByText('Acm Alert title')).toBeInTheDocument()
-        expect(getByText('Acm Alert subtitle')).toBeInTheDocument()
-    })
-    test('renders with subtitle of type: node', () => {
-        const { getByTestId } = render(
-            <AcmAlert
-                title="Acm Alert title"
-                subtitle={
-                    <span id="subtitle">
-                        Acm Alert <strong>subtitle</strong>
-                    </span>
-                }
-            />
+    test('renders alerts in alert group', async () => {
+        const { getByText, queryAllByText, getByRole, container } = render(
+            <AcmAlertProvider>
+                <AcmAlertGroup isInline canClose />
+                <AcmAlertContext.Consumer>
+                    {(context) => (
+                        <Fragment>
+                            <AcmButton onClick={() => context.addAlert({ title: 'Info' })}>Add Info</AcmButton>
+                            <AcmButton onClick={() => context.addAlert({ title: 'Error' })}>Add Error</AcmButton>
+                            <AcmButton onClick={() => context.clearAlerts()}>Clear Alerts</AcmButton>
+                        </Fragment>
+                    )}
+                </AcmAlertContext.Consumer>
+            </AcmAlertProvider>
         )
-        expect(getByTestId('subtitle')).toBeInTheDocument()
-    })
-    test('renders without subtitle', () => {
-        const { queryByText } = render(<AcmAlert title="Acm Alert title" />)
-        expect(queryByText('Acm Alert subtitle')).toBeNull()
-    })
-    test('renders with close option', () => {
-        const { getByRole, container } = render(<AcmAlert title="Acm Alert title" />)
-        expect(getByRole('button', { name: 'Close Default alert: alert: Acm Alert title' })).toBeTruthy()
 
-        userEvent.click(getByRole('button', { name: 'Close Default alert: alert: Acm Alert title' }))
-        expect(container.querySelector('[class="pf-c-alert"]')).toBeNull()
-    })
-    test('renders without close option', () => {
-        const { queryByRole } = render(<AcmAlert title="Acm Alert title" noClose />)
-        expect(queryByRole('button', { name: 'Close Default alert: alert: Acm Alert title' })).toBeNull()
-    })
-    test('has zero accessibility defects', async () => {
-        const { container } = render(<AcmAlert title="Acm Alert title" />)
+        expect(queryAllByText('Info')).toHaveLength(0)
+        getByText('Add Info').click()
+        await waitFor(() => expect(queryAllByText('Info')).toHaveLength(1))
+
+        expect(queryAllByText('Error')).toHaveLength(0)
+        getByText('Add Error').click()
+        await waitFor(() => expect(queryAllByText('Error')).toHaveLength(1))
+        getByText('Add Error').click()
+        await waitFor(() => expect(queryAllByText('Error')).toHaveLength(2))
+
         expect(await axe(container)).toHaveNoViolations()
-    })
-})
 
-describe('AcmAlertGroup', () => {
-    const AlertGroup = () => {
-        return (
-            <AcmAlertGroup>
-                {Object.values(AlertVariant).map((variant) => (
-                    <AcmAlert key={variant} variant={variant} title="Alert title" subtitle="Alert subtitle" />
-                ))}
-            </AcmAlertGroup>
-        )
-    }
-    test('renders', () => {
-        const { getByRole } = render(<AlertGroup />)
-        expect(getByRole('list')).toBeInTheDocument()
+        getByRole('button', { name: 'Close Default alert: alert: Info' }).click()
+        await waitFor(() => expect(queryAllByText('Info')).toHaveLength(0))
+
+        getByText('Clear Alerts').click()
+        await waitFor(() => expect(queryAllByText('Error')).toHaveLength(0))
+    })
+
+    test('renders alert', async () => {
+        const { queryAllByText } = render(<AcmAlert title="TITLE" message="MESSAGE" variant="info" />)
+        await waitFor(() => expect(queryAllByText('TITLE')).toHaveLength(1))
+        await waitFor(() => expect(queryAllByText('MESSAGE')).toHaveLength(1))
     })
 })
