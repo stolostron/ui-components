@@ -1,12 +1,12 @@
 import Collapse from '@material-ui/core/Collapse'
 import { Alert, AlertActionCloseButton } from '@patternfly/react-core'
-import React, { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import React, { createContext, HTMLAttributes, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
 
 export interface AcmAlertInfo {
     type?: 'success' | 'danger' | 'warning' | 'info' | 'default'
-    title: string
+    title: ReactNode
     message?: ReactNode
-    actions?: React.ReactNode
+    actions?: ReactNode
     id?: string
 }
 
@@ -56,11 +56,12 @@ export function AcmAlertProvider(props: { children: ReactNode }) {
 export function AcmAlert(props: {
     alertInfo?: AcmAlertInfo
     isInline?: boolean
-    title?: string
-    subtitle?: React.ReactNode
-    message?: React.ReactNode
+    title?: ReactNode
+    subtitle?: ReactNode
+    message?: ReactNode
     noClose?: boolean
     variant?: 'success' | 'danger' | 'warning' | 'info' | 'default'
+    style?: HTMLAttributes<HTMLDivElement>
 }) {
     const alertContext = useContext(AcmAlertContext)
     const { alertInfo } = props
@@ -72,6 +73,7 @@ export function AcmAlert(props: {
     }, [alertContext])
     return (
         <Collapse
+            style={props.style}
             in={open}
             onExit={() => {
                 /* istanbul ignore else */
