@@ -9,6 +9,7 @@ type ComponentProps = {
     isDisabled?: boolean
     tooltip?: string
     isKebab?: boolean
+    isPlain?: boolean
 }
 
 describe('AcmDropdown', () => {
@@ -32,6 +33,7 @@ describe('AcmDropdown', () => {
                 text="Download configuration"
                 dropdownItems={dropdownItems}
                 isKebab={props.isKebab}
+                isPlain={false}
             />
         )
     }
