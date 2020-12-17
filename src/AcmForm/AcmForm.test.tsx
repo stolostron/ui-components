@@ -42,7 +42,7 @@ describe('AcmForm', () => {
         getByText('Submit').click()
         expect(mockClickCallback).not.toHaveBeenCalled()
 
-        expect(getByText('Submit')).toHaveAttribute('disabled')
+        await waitFor(() => expect(getByText('Submit')).toHaveAttribute('disabled'))
         expect(getByTestId('input')).toHaveAttribute('aria-invalid', 'true')
 
         userEvent.type(getByTestId('input'), 'Hello')
@@ -53,10 +53,5 @@ describe('AcmForm', () => {
         expect(mockClickCallback).not.toHaveBeenCalled()
         getByText('Submit').click()
         expect(mockClickCallback).toHaveBeenCalled()
-
-        userEvent.clear(getByTestId('input'))
-
-        waitFor(() => expect(getByText('Submit')).toHaveAttribute('disabled'))
-        waitFor(() => expect(getByTestId('input')).toHaveAttribute('aria-invalid', 'true'))
     })
 })
