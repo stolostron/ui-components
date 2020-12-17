@@ -74,8 +74,9 @@ export const SavedSearchCard = () => {
             <AcmCountCard
                 cardHeader={{
                     hasIcon: false,
-                    title: 'Test Search 1',
-                    description: 'Custom description with max amount of 60 characters',
+                    title: 'long name long name long name long name long names',
+                    description:
+                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat vitae ligula sit amet placerat.',
                     actions: [...savedSearchCardActions],
                     onActionClick: (e) => {
                         console.log(e.target)
