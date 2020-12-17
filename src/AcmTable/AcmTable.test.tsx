@@ -1,5 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { SortByDirection } from '@patternfly/react-table'
+import { fitContent, SortByDirection } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
@@ -22,7 +22,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
-    const Table = ({ bulkActions = false, ...otherProps }) => {
+    const Table = ({ bulkActions = false, transforms = false, ...otherProps }) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -63,6 +63,7 @@ describe('AcmTable', () => {
                         cell: 'uid',
                         search: 'uid',
                         tooltip: 'Tooltip Example',
+                        transforms: transforms ? [fitContent] : undefined,
                     },
                 ]}
                 keyFn={(item: IExampleData) => item.uid.toString()}
@@ -109,6 +110,10 @@ describe('AcmTable', () => {
     }
     test('renders', () => {
         const { container } = render(<Table />)
+        expect(container.querySelector('table')).toBeInTheDocument()
+    })
+    test('renders with transforms', () => {
+        const { container } = render(<Table transforms={true} />)
         expect(container.querySelector('table')).toBeInTheDocument()
     })
     test('can support table actions', () => {
