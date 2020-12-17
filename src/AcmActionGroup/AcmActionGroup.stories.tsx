@@ -1,9 +1,10 @@
-import React from 'react'
-import { Card, CardBody } from '@patternfly/react-core'
+import React, { useState } from 'react'
+import { Card, CardBody, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { AcmActionGroup } from './AcmActionGroup'
 import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 import { AcmLaunchLink } from '../AcmLaunchLink/AcmLaunchLink'
+import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 
 export default {
     title: 'ActionGroup',
@@ -20,6 +21,7 @@ export function ActionGroup() {
                     <ConfigDropdown />
                     <ActionDropdown />
                     <TestNull />
+                    <CreateDropdown />
                 </AcmActionGroup>
             </CardBody>
         </Card>
@@ -73,4 +75,41 @@ const ActionDropdown = () => {
 
 const TestNull = () => {
     return null
+}
+
+const CreateDropdown = () => {
+    const [isOpen, setOpen] = useState<boolean>(false)
+    return (
+        <Dropdown
+            isOpen={isOpen}
+            toggle={
+                <DropdownToggle
+                    onToggle={() => setOpen(!isOpen)}
+                    toggleIndicator={CaretDownIcon}
+                    isPrimary
+                    id="cluster-actions"
+                >
+                    Add cluster
+                </DropdownToggle>
+            }
+            dropdownItems={[
+                <DropdownItem
+                    key="create"
+                    component="a"
+                    onClick={() => console.log('create-cluster')}
+                    id="create-cluster"
+                >
+                    Create cluster
+                </DropdownItem>,
+                <DropdownItem
+                    key="import"
+                    component="a"
+                    onClick={() => console.log('import-cluster')}
+                    id="import-cluster"
+                >
+                    Import cluster
+                </DropdownItem>,
+            ]}
+        />
+    )
 }
