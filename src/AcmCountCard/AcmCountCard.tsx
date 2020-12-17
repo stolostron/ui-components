@@ -13,7 +13,6 @@ import {
     KebabToggle,
     Skeleton,
     CardActionsProps,
-    Tooltip,
 } from '@patternfly/react-core'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/styles'
