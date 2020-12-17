@@ -17,6 +17,7 @@ import {
     IRow,
     ISortBy,
     ITransform,
+    nowrap,
     RowWrapper,
     RowWrapperProps,
     sortable,
@@ -467,7 +468,7 @@ export function AcmTable<T>(props: {
                                           },
                                       }
                                     : {},
-                                transforms: [...(column.transforms || []), ...(column.sort ? [sortable] : [])],
+                                transforms: [nowrap, ...(column.transforms || []), ...(column.sort ? [sortable] : [])],
                                 cellTransforms: column.cellTransforms || [],
                             }
                         })}
