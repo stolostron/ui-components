@@ -13,6 +13,7 @@ import {
     KebabToggle,
     Skeleton,
     CardActionsProps,
+    Tooltip,
 } from '@patternfly/react-core'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/styles'
@@ -65,10 +66,29 @@ const useStyles = makeStyles({
     card: {
         height: (props: AcmCountCardProps) => (props.cardFooter ? 'auto' : '250px'),
     },
+    cardHeader: {
+        '& > div:first-child': {
+            padding: '0',
+            marginBottom: '8px',
+            overflowWrap: 'anywhere',
+            lineHeight: '19px',
+            display: '-webkit-box',
+            '-webkit-line-clamp': '3',
+            '-webkit-box-orient': 'vertical',
+            overflow: 'hidden',
+        },
+    },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
+        lineHeight: '1.4',
         color: 'var(--pf-global--palette--black-700)',
+        overflowWrap: 'anywhere',
+        display: '-webkit-box',
+        '-webkit-line-clamp': '5',
+        '-webkit-box-orient': 'vertical',
+        overflow: 'hidden',
     },
+    tooltip: {},
     actions: {
         width: '1rem',
         padding: '0',
@@ -170,7 +190,7 @@ export const AcmCountCard = (props: AcmCountCardProps) => {
                             <CardDropdown dropdownItems={cardHeader.actions} />
                         </CardActions>
                     )}
-                    <CardHeaderMain>
+                    <CardHeaderMain className={classes.cardHeader}>
                         {cardHeader.hasIcon && <AcmIcon icon={AcmIconVariant.template} />}
                         <CardTitle>{cardHeader.title}</CardTitle>
                         <p className={classes.headerDescription}>{cardHeader.description}</p>
