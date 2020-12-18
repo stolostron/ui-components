@@ -96,7 +96,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
                     )
                 }
                 isOpen={isOpen}
-                isPlain={props.isPlain === false ? false : true}
+                isPlain={props.isPlain}
             />
         </TooltipWrapper>
     )

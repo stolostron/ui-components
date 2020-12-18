@@ -36,6 +36,8 @@ export const Dropdown = (args) => {
                     text={args.text}
                     dropdownItems={dropdownItems}
                     isKebab={args.isKebab}
+                    isPlain={true}
+                    //isPrimary={true}
                 />
             </CardBody>
         </Card>
