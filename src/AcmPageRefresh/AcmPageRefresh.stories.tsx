@@ -12,7 +12,7 @@ export default meta
 
 export const PageRefresh = (args) => (
     <div style={{ margin: '50px 0px 0px 50px' }}>
-        <AcmPageRefresh {...args} onClick={() => console.log('clicked')}>
+        <AcmPageRefresh {...args} >
             {args.text}
         </AcmPageRefresh>
     </div>
