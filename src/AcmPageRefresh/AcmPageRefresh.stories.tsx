@@ -6,8 +6,7 @@ import { AcmPageRefresh } from './AcmPageRefresh'
 const meta: Meta = {
     title: 'PageRefresh',
     component: AcmPageRefresh,
-    argTypes: {
-    },
+    argTypes: {},
 }
 export default meta
 
@@ -18,4 +17,4 @@ export const PageRefresh = (args) => (
         </AcmPageRefresh>
     </div>
 )
-PageRefresh.args = { text: 'PageRefresh'}
+PageRefresh.args = { text: 'PageRefresh' }

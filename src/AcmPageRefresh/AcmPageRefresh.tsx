@@ -8,12 +8,14 @@ import {
     // DropdownProps,
 } from '@patternfly/react-core'
 
-
+export type RefreshOption = {
+    id: string
+    text: string
+}
 
 export function AcmPageRefresh() {
-
     const [isOpen, setOpen] = useState<boolean>(false)
-    const [selected, onSelect] = useState<any>({ id: 'refresh-30s', text: 'Refresh every 30s' })
+    const [selected, onSelect] = useState<RefreshOption>({ id: 'refresh-30s', text: 'Refresh every 30s' })
 
     const dropdownItems = [
         { id: 'refresh-10s', text: 'Refresh every 10s' },
@@ -23,23 +25,25 @@ export function AcmPageRefresh() {
         { id: 'refresh-30m', text: 'Refresh every 30m' },
         { id: 'refresh-disable', text: 'Disable refresh' },
     ]
-    
 
     return (
         <div>
             <SyncAltIcon />
             <Dropdown
                 id="dropdown"
-                onSelect={()=> setOpen(false)}
+                onSelect={() => setOpen(false)}
                 isOpen={isOpen}
                 isPlain
-                toggle={<DropdownToggle id="refresh-toggle" isDisabled={false} onToggle={() => setOpen(!isOpen)}>
-                {selected.text}
-            </DropdownToggle>}
-                dropdownItems={dropdownItems.map((item) => (      
+                toggle={
+                    <DropdownToggle id="refresh-toggle" isDisabled={false} onToggle={() => setOpen(!isOpen)}>
+                        {selected.text}
+                    </DropdownToggle>
+                }
+                dropdownItems={dropdownItems.map((item) => (
                     <DropdownItem key={item.id} {...item} onClick={() => onSelect(item)}>
                         {item.text}
-                    </DropdownItem>))}
+                    </DropdownItem>
+                ))}
             />
             <div>Last update: 10:10:10 AM </div>
         </div>
