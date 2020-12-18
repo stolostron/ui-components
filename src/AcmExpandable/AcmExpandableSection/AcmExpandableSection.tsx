@@ -1,5 +1,5 @@
 import { ExpandableSection } from '@patternfly/react-core'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useState, useEffect } from 'react'
 
 export function AcmExpandableSection(props: {
     label: string
@@ -9,6 +9,12 @@ export function AcmExpandableSection(props: {
     hidden?: boolean
 }) {
     const [expanded, setExpanded] = useState(props.expanded === true)
+    useEffect(() => {
+        if (props.expanded !== undefined && props.expanded !== expanded) {
+            setExpanded(props.expanded)
+        }
+    }, [props.expanded])
+
     if (props.hidden) return <></>
     return (
         <ExpandableSection

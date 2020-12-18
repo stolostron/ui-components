@@ -41,4 +41,18 @@ describe('AcmExpandableSection', () => {
         )
         expect(container).toMatchInlineSnapshot('<div />')
     })
+    test('Handles expanded prop change on rerender', () => {
+        const { rerender, container } = render(
+            <AcmExpandableSection expanded={true} label="Expandable Label" summary="Summary about this section">
+                Section content
+            </AcmExpandableSection>
+        )
+        expect(container.querySelector('.pf-c-expandable-section.pf-m-expanded')).toBeInTheDocument()
+        rerender(
+            <AcmExpandableSection expanded={false} label="Expandable Label" summary="Summary about this section">
+                Section content
+            </AcmExpandableSection>
+        )
+        expect(container.querySelector('.pf-c-expandable-section.pf-m-expanded')).not.toBeInTheDocument()
+    })
 })
