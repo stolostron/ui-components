@@ -5,6 +5,6 @@ import { ActionGroup } from './AcmActionGroup.stories'
 describe('AcmActionGroup', () => {
     test('renders', () => {
         const { container } = render(<ActionGroup />)
-        expect(container.querySelectorAll('hr')).toHaveLength(2)
+        expect(container.querySelectorAll('hr')).toHaveLength(3)
     })
 })

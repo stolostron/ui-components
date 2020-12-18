@@ -30,8 +30,9 @@ export const ExpandableSavedSearchWrapper = () => {
                 key={n}
                 cardHeader={{
                     hasIcon: false,
-                    title: 'Test Search 2',
-                    description: 'Custom description with max amount of 60 characters',
+                    title: 'Saved search title with a max length of 50 chars',
+                    description:
+                        'Custom description with max length of 120 characters - Custom description with max length of 120 characters - Custom de',
                     actions: [...savedSearchCardActions],
                     onActionClick: (e) => {
                         console.log(e.target)
@@ -45,7 +46,7 @@ export const ExpandableSavedSearchWrapper = () => {
         )
     })
     return (
-        <AcmExpandableWrapper maxHeight={'16rem'} headerLabel={'Saved searches'} withCount={true} expandable={true}>
+        <AcmExpandableWrapper maxHeight={'16.2rem'} headerLabel={'Saved searches'} withCount={true} expandable={true}>
             {renderAcmCountCards}
         </AcmExpandableWrapper>
     )
@@ -59,8 +60,8 @@ export const nonExpandableSuggestedSearchWrapper = () => {
                 key={n}
                 cardHeader={{
                     hasIcon: true,
-                    title: 'Test Search 2',
-                    description: 'Custom description with max amount of 60 characters',
+                    title: 'Suggested search title',
+                    description: 'Custom description with max length of 100 characters',
                     actions: [...suggestedSearchCardActions],
                     onActionClick: (e) => {
                         console.log(e.target)

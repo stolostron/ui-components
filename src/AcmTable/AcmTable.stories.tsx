@@ -1,4 +1,5 @@
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { fitContent, truncate } from '@patternfly/react-table'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useEffect, useState } from 'react'
 import { AcmPage, AcmPageCard } from '../AcmPage/AcmPage'
@@ -151,6 +152,7 @@ const columns = [
         sort: 'ip_address',
         cell: 'ip_address',
         search: 'ip_address',
+        cellTransforms: [truncate],
     },
     {
         header: 'UID',
@@ -158,6 +160,8 @@ const columns = [
         sort: 'uid',
         cell: 'uid',
         search: 'uid',
+        transforms: [fitContent],
+        cellTransforms: [truncate],
     },
 ]
 

@@ -22,6 +22,9 @@ const useStyles = makeStyles({
     wrapperContainer: {
         margin: '1rem 0',
     },
+    gallery: {
+        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+    },
     hideExtras: {
         maxHeight: (props: AcmExpandableWrapperProps) => props.maxHeight,
         overflow: 'hidden',
@@ -51,7 +54,7 @@ export const AcmExpandableWrapper = (props: AcmExpandableWrapperProps) => {
                     showAll ? `${classes.wrapperContainer}` : `${classes.wrapperContainer} ${classes.hideExtras}`
                 }
             >
-                <Gallery hasGutter>
+                <Gallery hasGutter className={classes.gallery}>
                     {React.Children.map(props.children, (child, idx) => {
                         return (
                             <GalleryItem>

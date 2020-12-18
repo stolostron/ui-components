@@ -46,7 +46,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                     loadingSuggestions !== true ? suggestions : [{ id: 'loading', name: 'Loading...', disabled: true }]
                 }
                 suggestionsFilter={(suggestion: DropdownSuggestionsProps, query: string) => {
-                    return suggestion.name.includes(query)
+                    return suggestion.name.toLowerCase().includes(query.toLowerCase())
                 }}
                 onDelete={(idx: number) => {
                     // need to check if there are 2+ values @ tag[idx] - if there are we only delete the last one
@@ -99,7 +99,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                 noSuggestionsText={'No matching filters'}
                 autoresize={true}
                 minQueryLength={0}
-                allowNew={true}
+                allowNew={!currentQuery.endsWith(':')}
                 delimiters={[' ', ':', ',']}
                 maxSuggestionsLength={Number.MAX_SAFE_INTEGER}
             />

@@ -5,8 +5,9 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     group: {
-        '& > div > button, & > div > a, & .pf-c-dropdown__toggle': {
-            padding: 0,
+        '& > div > a, & .pf-c-dropdown__toggle.pf-m-plain': {
+            paddingLeft: 0,
+            paddingRight: 0,
         },
     },
 })
