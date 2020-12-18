@@ -10,7 +10,7 @@ export function AcmExpandableSection(props: {
 }) {
     const [expanded, setExpanded] = useState(props.expanded === true)
     useEffect(() => {
-        if (props.expanded) {
+        if (props.expanded !== undefined && props.expanded !== expanded) {
             setExpanded(props.expanded)
         }
     }, [props.expanded])
