@@ -39,7 +39,7 @@ export const skeleton = (title: string) => {
         <Card>
             <Flex>
                 <FlexItem>
-                    <CardTitle>{title}</CardTitle>
+                    <CardTitle>{title} modified!!!</CardTitle>
                 </FlexItem>
                 <Divider isVertical inset={{ default: 'inset2xl' }} />
                 <FlexItem>
@@ -75,7 +75,7 @@ export function AcmSummaryList(props: AcmSummaryListProps) {
                 <SplitItem>
                     <Flex>
                         <FlexItem>
-                            <CardTitle>{props.title}</CardTitle>
+                            <CardTitle>{props.title} MODIFIED</CardTitle>
                         </FlexItem>
                         {props.actions?.map((action, i) => (
                             <Fragment key={`summary-action-${i}`}>
