@@ -7,15 +7,49 @@ import {
     // DropdownPosition,
     // DropdownProps,
 } from '@patternfly/react-core'
+import { makeStyles } from '@material-ui/styles'
+// import { Grid, GridItem } from '@patternfly/react-core';
 
 export type RefreshOption = {
     id: string
     text: string
 }
 
+const useStyles = makeStyles({
+    container: {
+        'max-width': '225px',
+    },
+    buttonTitle: {
+        'max-width': '200px',
+        '& button': {
+            '& span': {
+                color: 'var(--pf-global--primary-color--100)',
+            },
+            '&:hover, &:focus': {
+                '& span': {
+                    color: 'var(--pf-global--primary-color--200)',
+                },
+            },
+        },
+    },
+    icon: {
+        'max-width': '25px',
+        color: 'var(--pf-global--primary-color--100)',
+    },
+    timestamp: {
+        color: '#5A6872', // How to get equivalent 'var(--pf-global--primary-color--  ?
+        'font-family': 'RedHatText',
+        'font-size': '10px',
+        'line-height': '20px',
+        'text-align': 'right',
+        'margin-right': '50px',
+    },
+})
+
 export function AcmPageRefresh() {
     const [isOpen, setOpen] = useState<boolean>(false)
     const [selected, onSelect] = useState<RefreshOption>({ id: 'refresh-30s', text: 'Refresh every 30s' })
+    const classes = useStyles()
 
     const dropdownItems = [
         { id: 'refresh-10s', text: 'Refresh every 10s' },
@@ -27,10 +61,12 @@ export function AcmPageRefresh() {
     ]
 
     return (
-        <div>
-            <SyncAltIcon />
+        <div className={classes.container}>
+            <div>
+            <SyncAltIcon className={classes.icon} />
             <Dropdown
-                id="dropdown"
+                className={classes.buttonTitle}
+                id="refresh-dropdown"
                 onSelect={() => setOpen(false)}
                 isOpen={isOpen}
                 isPlain
@@ -45,7 +81,10 @@ export function AcmPageRefresh() {
                     </DropdownItem>
                 ))}
             />
-            <div>Last update: 10:10:10 AM </div>
+            </div>
+            <div className={classes.timestamp}>
+                Last update: 10:10:10 AM
+            </div>
         </div>
     )
 }
