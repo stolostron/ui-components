@@ -10,7 +10,7 @@ export interface AcmAlertInfo {
     id?: string
 }
 
-interface IAlertContext {
+export interface IAlertContext {
     readonly alertInfos: AcmAlertInfo[]
     addAlert: (alertInfo: AcmAlertInfo) => void
     removeAlert: (alertInfo: AcmAlertInfo) => void
