@@ -6,7 +6,6 @@ import {
     DropdownPosition,
     KebabToggle,
     DropdownProps,
-    DropdownToggleProps,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import { TooltipWrapper } from '../utils'
@@ -54,13 +53,6 @@ const useStyles = makeStyles({
             },
         },
     },
-    // toggleTitle: {
-    //     '& span':{
-    //         color: (props: AcmDropdownProps) => {
-    //             //props.isPrimary ? 'var(--pf-global--Color--light-100)' : 'var(--pf-global--primary-color--200)'
-    //         }
-    //     }
-    // }
 })
 
 export function AcmDropdown(props: AcmDropdownProps) {
