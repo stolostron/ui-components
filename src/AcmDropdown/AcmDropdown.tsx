@@ -43,12 +43,16 @@ const useStyles = makeStyles({
         '& button': {
             '& span': {
                 color: (props: AcmDropdownProps) =>
-                    props.isKebab ? undefined : 'var(--pf-global--primary-color--100)',
+                    props.isPrimary
+                        ? 'var(--pf-global--Color--light-100)'
+                        : props.isKebab
+                        ? undefined
+                        : 'var(--pf-global--primary-color--100)',
             },
             '&:hover, &:focus': {
                 '& span': {
                     color: (props: AcmDropdownProps) =>
-                        props.isKebab ? undefined : 'var(--pf-global--primary-color--200)',
+                        props.isKebab ? undefined : 'var(--pf-global--Color--light-100)',
                 },
             },
         },

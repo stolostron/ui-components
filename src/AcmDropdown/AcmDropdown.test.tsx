@@ -10,6 +10,7 @@ type ComponentProps = {
     tooltip?: string
     isKebab?: boolean
     isPlain?: boolean
+    isPrimary?: boolean
 }
 
 describe('AcmDropdown', () => {
@@ -33,7 +34,8 @@ describe('AcmDropdown', () => {
                 text="Download configuration"
                 dropdownItems={dropdownItems}
                 isKebab={props.isKebab}
-                isPlain={false}
+                isPlain={props.isPlain}
+                isPrimary={props.isPrimary}
             />
         )
     }
@@ -72,6 +74,15 @@ describe('AcmDropdown', () => {
     test('renders as a kebab dropdown in disabled state', async () => {
         const { getByTestId, queryByTestId } = render(
             <Component isDisabled={true} tooltip="Tooltip text" isKebab={true} />
+        )
+        expect(getByTestId('dropdown')).toBeInTheDocument()
+        userEvent.click(getByTestId('dropdown'))
+        expect(queryByTestId('install-config')).toBeNull()
+        await new Promise((resolve) => setTimeout(resolve, 0))
+    })
+    test('renders as primary toggle', async () => {
+        const { getByTestId, queryByTestId } = render(
+            <Component isDisabled={true} tooltip="Tooltip text" isPrimary={true} />
         )
         expect(getByTestId('dropdown')).toBeInTheDocument()
         userEvent.click(getByTestId('dropdown'))
