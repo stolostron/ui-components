@@ -6,6 +6,7 @@ import {
     DropdownPosition,
     KebabToggle,
     DropdownProps,
+    DropdownToggleProps,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import { TooltipWrapper } from '../utils'
@@ -42,17 +43,24 @@ const useStyles = makeStyles({
     buttonTitle: {
         '& button': {
             '& span': {
-                color: (props: AcmDropdownProps) =>
-                    props.isKebab ? undefined : 'var(--pf-global--primary-color--100)',
+                color: (props: AcmDropdownProps) => 
+                    props.isPrimary ? 'var(--pf-global--Color--light-100)' : props.isKebab ? undefined : 'var(--pf-global--primary-color--100)',
             },
             '&:hover, &:focus': {
                 '& span': {
                     color: (props: AcmDropdownProps) =>
-                        props.isKebab ? undefined : 'var(--pf-global--primary-color--200)',
+                        props.isKebab ? undefined : 'var(--pf-global--Color--light-100)',
                 },
             },
         },
     },
+    // toggleTitle: {
+    //     '& span':{
+    //         color: (props: AcmDropdownProps) => {
+    //             //props.isPrimary ? 'var(--pf-global--Color--light-100)' : 'var(--pf-global--primary-color--200)'
+    //         }
+    //     }
+    // }
 })
 
 export function AcmDropdown(props: AcmDropdownProps) {
