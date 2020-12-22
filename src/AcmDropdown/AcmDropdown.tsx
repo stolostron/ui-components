@@ -52,7 +52,7 @@ const useStyles = makeStyles({
             '&:hover, &:focus': {
                 '& span': {
                     color: (props: AcmDropdownProps) =>
-                        props.isKebab ? undefined : 'var(--pf-global--Color--light-100)',
+                        props.isKebab ? undefined : 'var(--pf-global--primary-color--100)',
                 },
             },
         },

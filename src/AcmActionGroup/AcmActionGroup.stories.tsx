@@ -48,6 +48,7 @@ const ConfigDropdown = () => {
             text="Download configuration"
             dropdownItems={dropdownItems}
             isKebab={false}
+            isPlain={true}
         />
     )
 }
@@ -69,6 +70,7 @@ const ActionDropdown = () => {
             text="Actions"
             dropdownItems={dropdownItems}
             isKebab={false}
+            isPlain={true}
         />
     )
 }
