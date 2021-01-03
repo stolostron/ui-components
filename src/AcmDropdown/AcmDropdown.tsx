@@ -66,9 +66,9 @@ const useStyles = makeStyles({
                 },
             },
             '& span.pf-c-dropdown__toggle-text': {
-                // centers dropdown text in plain non-primary button
+                // centers dropdown text in plain dropdown button
                 paddingLeft:(props: AcmDropdownProps) =>{
-                    if (!props.isPrimary && props.isPlain) {
+                    if (props.isPlain) {
                     return '8px'
                     }
                     return undefined
