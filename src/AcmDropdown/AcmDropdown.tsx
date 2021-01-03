@@ -39,20 +39,39 @@ export type AcmDropdownItems = {
 }
 
 const useStyles = makeStyles({
-    buttonTitle: {
+    button: {
         '& button': {
+            backgroundColor: (props: AcmDropdownProps) => {
+                if(props.isDisabled){
+                    return 'var(--pf-global--disabled-color--200)'
+                } 
+                return undefined
+            },
             '& span': {
-                color: (props: AcmDropdownProps) =>
-                    props.isPrimary
-                        ? 'var(--pf-global--Color--light-100)'
-                        : props.isKebab
-                        ? undefined
-                        : 'var(--pf-global--primary-color--100)',
+                color: (props: AcmDropdownProps) => {
+                    if (props.isDisabled) {
+                        return 'var(--pf-global--Color--100)'
+                    } else if (props.isPrimary) {
+                        return 'var(--pf-global--Color--light-100)'
+                    } else if (props.isKebab) {
+                        return undefined
+                    }
+                    return 'var(--pf-global--primary-color--100)'
+                },
             },
             '&:hover, &:focus': {
                 '& span': {
                     color: (props: AcmDropdownProps) =>
                         props.isKebab ? undefined : 'var(--pf-global--primary-color--100)',
+                },
+            },
+            '& span.pf-c-dropdown__toggle-text': {
+                // centers dropdown text in plain non-primary button
+                paddingLeft:(props: AcmDropdownProps) =>{
+                    if (!props.isPrimary && props.isPlain) {
+                    return '8px'
+                    }
+                    return undefined
                 },
             },
         },
@@ -71,7 +90,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
     return (
         <TooltipWrapper showTooltip={props.isDisabled && !!props.tooltip} tooltip={props.tooltip}>
             <Dropdown
-                className={classes.buttonTitle}
+                className={classes.button}
                 onMouseOver={props.onHover}
                 position={DropdownPosition.right}
                 dropdownItems={props.dropdownItems.map((item) => (
