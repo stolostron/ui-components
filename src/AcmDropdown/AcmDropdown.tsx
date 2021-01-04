@@ -92,7 +92,10 @@ export function AcmDropdown(props: AcmDropdownProps) {
                             id={props.id}
                             isDisabled={props.isDisabled}
                             onToggle={() => {
-                                if (props.onToggle) props.onToggle()
+                                /* istanbul ignore next */
+                                if (props.onToggle) {
+                                    props.onToggle()
+                                }
                                 setOpen(!isOpen)
                             }}
                         />
@@ -102,7 +105,9 @@ export function AcmDropdown(props: AcmDropdownProps) {
                             id={props.id}
                             isDisabled={props.isDisabled}
                             onToggle={() => {
-                                if (props.onToggle) props.onToggle()
+                                if (props.onToggle) {
+                                    props.onToggle()
+                                }
                                 setOpen(!isOpen)
                             }}
                         >
