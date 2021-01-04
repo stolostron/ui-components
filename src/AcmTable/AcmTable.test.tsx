@@ -4,7 +4,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { configureAxe } from 'jest-axe'
 import React, { useState } from 'react'
-import { AcmTable, AcmTablePaginationContextProvider } from './AcmTable'
+import { AcmTable, AcmTablePaginationContextProvider, AcmTableProps } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
 const axe = configureAxe({
     rules: {
@@ -27,7 +27,9 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
-    const Table = ({ bulkActions = false, transforms = false, ...otherProps }) => {
+    const Table = (
+        props: { useBulkActions?: boolean; transforms?: boolean } & Partial<AcmTableProps<IExampleData>>
+    ) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -68,7 +70,7 @@ describe('AcmTable', () => {
                         cell: 'uid',
                         search: 'uid',
                         tooltip: 'Tooltip Example',
-                        transforms: transforms ? [fitContent] : undefined,
+                        transforms: props.transforms ? [fitContent] : undefined,
                     },
                 ]}
                 keyFn={(item: IExampleData) => item.uid.toString()}
@@ -90,7 +92,7 @@ describe('AcmTable', () => {
                     },
                 ]}
                 bulkActions={
-                    bulkActions
+                    props.useBulkActions
                         ? [
                               {
                                   id: 'delete',
@@ -109,7 +111,7 @@ describe('AcmTable', () => {
                         <ToggleGroupItem text="View 2" />
                     </ToggleGroup>
                 }
-                {...otherProps}
+                {...props}
             />
         )
     }
@@ -129,7 +131,7 @@ describe('AcmTable', () => {
         expect(createAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with select all', () => {
-        const { getByLabelText, queryByText, getByText } = render(<Table bulkActions={true} />)
+        const { getByLabelText, queryByText, getByText } = render(<Table useBulkActions={true} />)
         expect(getByLabelText('Select all rows')).toBeVisible()
         userEvent.click(getByLabelText('Select all rows'))
         expect(queryByText('Delete items')).toBeVisible()
@@ -137,7 +139,7 @@ describe('AcmTable', () => {
         expect(bulkDeleteAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with single selection', () => {
-        const { queryByText, getAllByRole, getByLabelText } = render(<Table bulkActions={true} />)
+        const { queryByText, getAllByRole, getByLabelText } = render(<Table useBulkActions={true} />)
         expect(queryByText('Delete items')).toBeNull()
         expect(getAllByRole('checkbox')[1]).toBeVisible()
         userEvent.click(getAllByRole('checkbox')[1])
@@ -212,8 +214,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
 
-    const sortTest = (bulkActions: boolean) => {
-        const { getByText, container } = render(<Table bulkActions={bulkActions} />)
+    const sortTest = (useBulkActions: boolean) => {
+        const { getByText, container } = render(<Table useBulkActions={useBulkActions} />)
 
         // sort by string
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
