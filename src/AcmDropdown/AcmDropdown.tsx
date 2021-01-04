@@ -26,6 +26,7 @@ export type AcmDropdownProps = Props & {
     onHover?: () => void
     isPlain?: boolean
     isPrimary?: boolean
+    onToggle?: () => void
 }
 
 export type AcmDropdownItems = {
@@ -106,13 +107,28 @@ export function AcmDropdown(props: AcmDropdownProps) {
                 ))}
                 toggle={
                     props.isKebab ? (
-                        <KebabToggle id={props.id} isDisabled={props.isDisabled} onToggle={() => setOpen(!isOpen)} />
+                        <KebabToggle
+                            id={props.id}
+                            isDisabled={props.isDisabled}
+                            onToggle={() => {
+                                /* istanbul ignore next */
+                                if (props.onToggle) {
+                                    props.onToggle()
+                                }
+                                setOpen(!isOpen)
+                            }}
+                        />
                     ) : (
                         <DropdownToggle
                             isPrimary={props.isPrimary}
                             id={props.id}
                             isDisabled={props.isDisabled}
-                            onToggle={() => setOpen(!isOpen)}
+                            onToggle={() => {
+                                if (props.onToggle) {
+                                    props.onToggle()
+                                }
+                                setOpen(!isOpen)
+                            }}
                         >
                             {props.text}
                         </DropdownToggle>
