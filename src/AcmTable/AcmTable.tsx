@@ -142,7 +142,7 @@ export function AcmTablePaginationContextProvider(props: { children: ReactNode; 
     return <AcmTablePaginationContext.Provider value={paginationContext}>{children}</AcmTablePaginationContext.Provider>
 }
 
-export function AcmTable<T>(props: {
+export interface AcmTableProps<T> {
     plural: string
     items?: T[]
     columns: IAcmTableColumn<T>[]
@@ -159,7 +159,8 @@ export function AcmTable<T>(props: {
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
     gridBreakPoint?: TableGridBreakpoint
-}) {
+}
+export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, keyFn, bulkActions } = props
     const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
@@ -280,7 +281,7 @@ export function AcmTable<T>(props: {
                     .filter((value) => value !== undefined) as string[],
                 // TODO use FuseOptionKeyObject to allow for weights
             })
-            return fuse.search(search).map((result) => result.item.item)
+            return fuse.search<ISearchItem<T>>(search).map((result) => result.item.item)
         } else {
             return items || []
         }

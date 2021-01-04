@@ -1,7 +1,12 @@
-import React from 'react'
 import { render } from '@testing-library/react'
-import { axe } from 'jest-axe'
+import { configureAxe } from 'jest-axe'
+import React from 'react'
 import { AcmInlineStatus, StatusType } from './AcmInlineStatus'
+const axe = configureAxe({
+    rules: {
+        'aria-progressbar-name': { enabled: false },
+    },
+})
 
 describe('AcmInlineStatus', () => {
     Object.values(StatusType).forEach((type) => {
