@@ -42,9 +42,9 @@ const useStyles = makeStyles({
     button: {
         '& button': {
             backgroundColor: (props: AcmDropdownProps) => {
-                if(props.isDisabled){
+                if (props.isDisabled) {
                     return 'var(--pf-global--disabled-color--200)'
-                } 
+                }
                 return undefined
             },
             '& span': {
@@ -67,9 +67,9 @@ const useStyles = makeStyles({
             },
             '& span.pf-c-dropdown__toggle-text': {
                 // centers dropdown text in plain dropdown button
-                paddingLeft:(props: AcmDropdownProps) =>{
+                paddingLeft: (props: AcmDropdownProps) => {
                     if (props.isPlain) {
-                    return '8px'
+                        return '8px'
                     }
                     return undefined
                 },
