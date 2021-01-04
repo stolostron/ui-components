@@ -66,14 +66,7 @@ describe('AcmDropdown', () => {
     //     await new Promise((resolve) => setTimeout(resolve, 0))
     // })
     test('renders as a kebab dropdown', async () => {
-        const { getByTestId, container } = render(
-            <Component
-                isKebab={true}
-                onToggle={() => {
-                    console.log('testing!')
-                }}
-            />
-        )
+        const { getByTestId, container } = render(<Component isKebab={true} onToggle={() => null} />)
         expect(getByTestId('dropdown')).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
         userEvent.click(getByTestId('dropdown'))
@@ -82,14 +75,7 @@ describe('AcmDropdown', () => {
     })
     test('renders as a kebab dropdown in disabled state', async () => {
         const { getByTestId, queryByTestId } = render(
-            <Component
-                isDisabled={true}
-                tooltip="Tooltip text"
-                isKebab={true}
-                onToggle={() => {
-                    console.log('testing!')
-                }}
-            />
+            <Component isDisabled={true} tooltip="Tooltip text" isKebab={true} onToggle={() => null} />
         )
         expect(getByTestId('dropdown')).toBeInTheDocument()
         userEvent.click(getByTestId('dropdown'))
@@ -98,14 +84,7 @@ describe('AcmDropdown', () => {
     })
     test('renders as primary toggle', async () => {
         const { getByTestId, queryByTestId } = render(
-            <Component
-                isDisabled={false}
-                tooltip="Tooltip text"
-                isPrimary={true}
-                onToggle={() => {
-                    console.log('testing!')
-                }}
-            />
+            <Component isDisabled={false} tooltip="Tooltip text" isPrimary={true} onToggle={() => null} />
         )
         expect(getByTestId('dropdown')).toBeInTheDocument()
         userEvent.click(getByTestId('dropdown'))
@@ -115,14 +94,7 @@ describe('AcmDropdown', () => {
 
     test('renders as disabled primary toggle', async () => {
         const { getByTestId, queryByTestId } = render(
-            <Component
-                isDisabled={true}
-                tooltip="Tooltip text"
-                isPrimary={true}
-                onToggle={() => {
-                    console.log('testing!')
-                }}
-            />
+            <Component isDisabled={true} tooltip="Tooltip text" isPrimary={true} onToggle={() => null} />
         )
         expect(getByTestId('dropdown')).toBeInTheDocument()
         userEvent.click(getByTestId('dropdown'))
