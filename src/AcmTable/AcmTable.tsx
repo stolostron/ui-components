@@ -280,7 +280,7 @@ export function AcmTable<T>(props: {
                     .filter((value) => value !== undefined) as string[],
                 // TODO use FuseOptionKeyObject to allow for weights
             })
-            return fuse.search(search).map((result) => result.item.item)
+            return fuse.search<ISearchItem<T>>(search).map((result) => result.item.item)
         } else {
             return items || []
         }
