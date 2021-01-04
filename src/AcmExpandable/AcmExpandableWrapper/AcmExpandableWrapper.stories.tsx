@@ -13,13 +13,13 @@ export default meta
 const suggestedSearchCardActions = [
     {
         text: 'Share',
-        handleAction: () => console.log('share action'),
+        handleAction: () => alert('share action'),
     },
 ]
 const savedSearchCardActions = [
-    { text: 'Edit', handleAction: () => console.log('edit action') },
-    { text: 'Share', handleAction: () => console.log('share action') },
-    { text: 'Delete', handleAction: () => console.log('delete action') },
+    { text: 'Edit', handleAction: () => alert('edit action') },
+    { text: 'Share', handleAction: () => alert('share action') },
+    { text: 'Delete', handleAction: () => alert('delete action') },
 ]
 
 export const ExpandableSavedSearchWrapper = () => {
@@ -35,10 +35,10 @@ export const ExpandableSavedSearchWrapper = () => {
                         'Custom description with max length of 120 characters - Custom description with max length of 120 characters - Custom de',
                     actions: [...savedSearchCardActions],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
-                onCardClick={() => console.log('cardclicked')}
+                onCardClick={() => alert('cardclicked')}
                 count={0}
                 countTitle="Results"
                 isSelectable={true}
@@ -64,10 +64,10 @@ export const nonExpandableSuggestedSearchWrapper = () => {
                     description: 'Custom description with max length of 100 characters',
                     actions: [...suggestedSearchCardActions],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
-                onCardClick={() => console.log('cardclicked')}
+                onCardClick={() => alert('cardclicked')}
                 count={0}
                 countTitle="Results"
                 isSelectable={true}
@@ -90,7 +90,7 @@ export const ExpandableRelatedResWrapper = () => {
                 loading={false}
                 isSelected={false}
                 title={''}
-                onClick={() => console.log('tile clicked')}
+                onClick={() => alert('tile clicked')}
                 relatedResourceData={{ count: 99999, kind: 'veryLongKindNameForTestingPurposes' }}
             />
         )

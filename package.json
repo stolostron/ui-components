@@ -127,7 +127,8 @@
             ],
             "@typescript-eslint/explicit-module-boundary-types": [
                 "off"
-            ]
+            ],
+            "no-console": "error"
         },
         "overrides": [
             {

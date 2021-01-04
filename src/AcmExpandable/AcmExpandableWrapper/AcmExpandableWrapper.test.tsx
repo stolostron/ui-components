@@ -15,10 +15,10 @@ describe('AcmExpandableWrapper', () => {
                     description: 'Custom description with max amount of 60 characters',
                     actions: [],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
-                onCardClick={() => console.log('cardclicked')}
+                onCardClick={() => alert('cardclicked')}
                 count={1234}
                 countTitle="Results"
                 isSelectable={true}
@@ -35,10 +35,10 @@ describe('AcmExpandableWrapper', () => {
                     description: 'Custom description with max amount of 60 characters',
                     actions: [],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
-                onCardClick={() => console.log('cardclicked')}
+                onCardClick={() => alert('cardclicked')}
                 count={1234}
                 countTitle="Results"
                 isSelectable={true}

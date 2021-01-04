@@ -36,8 +36,8 @@ const ConfigDropdown = () => {
         { id: 'launch-out', text: 'Launch page', icon: <ExternalLinkAltIcon /> },
         { id: 'link item', text: 'Link item', href: 'www.google.com', component: 'a' },
     ]
-    const onSelect = (id: string) => console.log('clicked:', id)
-    const onHover = () => console.log('hovered')
+    const onSelect = (id: string) => alert(`clicked: ${id}`)
+    const onHover = () => alert('hovered')
     return (
         <AcmDropdown
             onHover={onHover}
@@ -60,7 +60,7 @@ const ActionDropdown = () => {
         { id: 'launch-dashboard', text: 'Launch to console', icon: <ExternalLinkAltIcon /> },
         { id: 'destroy', text: 'Destroy cluster' },
     ]
-    const onSelect = (id: string) => console.log('clicked:', id)
+    const onSelect = (id: string) => alert(`clicked: ${id}`)
     return (
         <AcmDropdown
             isDisabled={false}
@@ -95,20 +95,10 @@ const CreateDropdown = () => {
                 </DropdownToggle>
             }
             dropdownItems={[
-                <DropdownItem
-                    key="create"
-                    component="a"
-                    onClick={() => console.log('create-cluster')}
-                    id="create-cluster"
-                >
+                <DropdownItem key="create" component="a" onClick={() => alert('create-cluster')} id="create-cluster">
                     Create cluster
                 </DropdownItem>,
-                <DropdownItem
-                    key="import"
-                    component="a"
-                    onClick={() => console.log('import-cluster')}
-                    id="import-cluster"
-                >
+                <DropdownItem key="import" component="a" onClick={() => alert('import-cluster')} id="import-cluster">
                     Import cluster
                 </DropdownItem>,
             ]}

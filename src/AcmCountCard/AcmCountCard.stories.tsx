@@ -11,14 +11,14 @@ const meta: Meta = {
 export default meta
 
 const handleCardClick = () => {
-    console.log('Card clicked')
+    alert('Card clicked')
 }
 
-const suggestedSearchCardActions = [{ text: 'Share', handleAction: () => console.log('share action') }]
+const suggestedSearchCardActions = [{ text: 'Share', handleAction: () => alert('share action') }]
 const savedSearchCardActions = [
-    { text: 'Edit', handleAction: () => console.log('edit action') },
-    { text: 'Share', handleAction: () => console.log('share action') },
-    { text: 'Delete', handleAction: () => console.log('delete action') },
+    { text: 'Edit', handleAction: () => alert('edit action') },
+    { text: 'Share', handleAction: () => alert('share action') },
+    { text: 'Delete', handleAction: () => alert('delete action') },
 ]
 
 const useStyles = makeStyles({
@@ -40,7 +40,7 @@ export const SuggestedSearchCard = () => {
                     description: 'A pre-defined search to help you review your workloads',
                     actions: [...suggestedSearchCardActions],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
                 onCardClick={handleCardClick}
@@ -55,7 +55,7 @@ export const SuggestedSearchCard = () => {
                     description: 'Show pods with unhealthy status',
                     actions: [...suggestedSearchCardActions],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
                 onCardClick={handleCardClick}
@@ -79,7 +79,7 @@ export const SavedSearchCard = () => {
                         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed feugiat vitae ligula sit amet placerat.',
                     actions: [...savedSearchCardActions],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
                 onCardClick={handleCardClick}
@@ -94,7 +94,7 @@ export const SavedSearchCard = () => {
                     description: 'Custom description with max amount of 60 characters',
                     actions: [...savedSearchCardActions],
                     onActionClick: (e) => {
-                        console.log(e.target)
+                        alert(e.target)
                     },
                 }}
                 onCardClick={handleCardClick}

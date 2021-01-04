@@ -22,8 +22,8 @@ export const Dropdown = (args) => {
         { id: 'launch-out', text: 'Launch page', icon: <ExternalLinkAltIcon /> },
         { id: 'link item', text: 'Link item', href: 'www.google.com', component: 'a' },
     ]
-    const onSelect = (id: string) => console.log('clicked:', id)
-    const onHover = () => console.log('hovered')
+    const onSelect = (id: string) => alert(`clicked: ${id}`)
+    const onHover = () => alert('hovered')
     return (
         <Card>
             <CardBody style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', paddingTop: '50px' }}>
