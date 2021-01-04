@@ -80,7 +80,17 @@ describe('AcmDropdown', () => {
         expect(queryByTestId('install-config')).toBeNull()
         await new Promise((resolve) => setTimeout(resolve, 0))
     })
-    test('renders as primary toggle', async () => {
+    test('renders as enabled primary toggle', async () => {
+        const { getByTestId, queryByTestId } = render(
+            <Component isDisabled={false} tooltip="Tooltip text" isPrimary={true} />
+        )
+        expect(getByTestId('dropdown')).toBeInTheDocument()
+        userEvent.click(getByTestId('dropdown'))
+        expect(queryByTestId('install-config')).toBeInTheDocument()
+        await new Promise((resolve) => setTimeout(resolve, 0))
+    })
+
+    test('renders as disabled primary toggle', async () => {
         const { getByTestId, queryByTestId } = render(
             <Component isDisabled={true} tooltip="Tooltip text" isPrimary={true} />
         )
