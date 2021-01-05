@@ -7,6 +7,10 @@ const complianceData = [
     { key: 'Compliant', value: 1, isPrimary: true },
     { key: 'Non-compliant', value: 1, isDanger: true },
 ]
+const zeroData = [
+    { key: 'Key1', value: 0, isPrimary: true },
+    { key: 'Key2', value: 0, isDanger: true },
+]
 const podData = [
     { key: 'Running', value: 90, isPrimary: true },
     { key: 'Pending', value: 8 },
@@ -30,6 +34,19 @@ describe('AcmDonutChart', () => {
             <AcmDonutChart loading={true} title="Cluster compliance" description="Policy compliance" data={[]} />
         )
         expect(queryByText('Cluster compliance')).toBeInTheDocument()
+    })
+
+    test('renders with zero resources state', () => {
+        const { getByText } = render(
+            <AcmDonutChart
+                title="Some title"
+                description="Some description"
+                data={zeroData}
+            />
+        )
+        expect(getByText('0%')).toBeInTheDocument()
+        expect(getByText('0 Key1')).toBeInTheDocument()
+        expect(getByText('0 Key2')).toBeInTheDocument()
     })
 
     test('has zero accessibility defects', async () => {
