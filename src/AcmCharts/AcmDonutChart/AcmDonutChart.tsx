@@ -84,7 +84,7 @@ export function AcmDonutChart(props: {
                         right: 145,
                         top: 20,
                     }}
-                    title={`${Math.round((primary.value / total) * 100)}%`}
+                    title={total == 0 ? '0%' : `${Math.round((primary.value / total) * 100)}%`}
                     subTitle={primary.key}
                     width={/* istanbul ignore next */ viewWidth < 376 ? viewWidth : 376}
                     height={/* istanbul ignore next */ viewWidth < 376 ? 150 : 200}
