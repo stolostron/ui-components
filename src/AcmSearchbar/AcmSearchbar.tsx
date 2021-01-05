@@ -11,6 +11,8 @@ import '@patternfly/patternfly/base/patternfly-variables.css'
 import './AcmSearchbar.css'
 import { convertStringToTags } from './helper'
 
+const operators = ['=', '<', '>', '<=', '>=', '!=', '!']
+
 export type DropdownSuggestionsProps = {
     id: string | number
     name: string
@@ -85,6 +87,16 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                                 return t
                             })
                         }
+                        setCurrentQuery(tags.map((t) => t.name).join(' '))
+                        currentQueryCallback(tags.map((t) => t.name).join(' '))
+                        setSearchbarTags(tags)
+                    } else if (
+                        operators.some((operator: string) => currentQuery.endsWith(operator)) &&
+                        !isNaN(parseInt(tag.name, 10))
+                    ) {
+                        // case for user adding a number after operator
+                        const newQueryString = `${currentQuery}${tag.name}`
+                        const tags = convertStringToTags(newQueryString)
                         setCurrentQuery(tags.map((t) => t.name).join(' '))
                         currentQueryCallback(tags.map((t) => t.name).join(' '))
                         setSearchbarTags(tags)
