@@ -43,7 +43,7 @@ const useStyles = makeStyles({
     button: {
         '& button': {
             backgroundColor: (props: AcmDropdownProps) => {
-                if(!props.isKebab){
+                if (!props.isKebab) {
                     if (props.isDisabled) {
                         return 'var(--pf-global--disabled-color--200)'
                     } else if (!props.isDisabled && props.isPrimary) {
