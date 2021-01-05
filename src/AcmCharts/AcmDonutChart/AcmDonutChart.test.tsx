@@ -36,7 +36,7 @@ describe('AcmDonutChart', () => {
         expect(queryByText('Cluster compliance')).toBeInTheDocument()
     })
 
-    test('renders with zero resources state', () => {
+    test('renders with zero values state', () => {
         const { getByText } = render(
             <AcmDonutChart
                 title="Some title"
