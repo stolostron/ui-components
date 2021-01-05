@@ -51,6 +51,16 @@ describe('AcmSearchbar', () => {
         />
     )
 
+    const SearchbarWithOperator = () => (
+        <AcmSearchbar
+            loadingSuggestions={false}
+            queryString={'cpu:='}
+            suggestions={[]}
+            currentQueryCallback={(query: string) => query}
+            toggleInfoModal={() => null}
+        />
+    )
+
     test('has zero accessibility defects', async () => {
         const { container } = render(<BlankSearchbar />)
         expect(await axe(container)).toHaveNoViolations()
@@ -120,5 +130,13 @@ describe('AcmSearchbar', () => {
         userEvent.type(getByRole('combobox'), 'namespace2 ') // space at end triggers the addition of the text as a tag
         expect(queryByText('name:name1,name2')).toBeInTheDocument()
         expect(queryByText('namespace:namespace1,namespace2')).toBeInTheDocument()
+    })
+
+    test('validates adding search tag with operator', () => {
+        const { getByText, getByRole, queryByText } = render(<SearchbarWithOperator />)
+        expect(getByText('cpu:=')).toBeInTheDocument()
+        userEvent.click(getByRole('combobox'))
+        userEvent.type(getByRole('combobox'), '4 ')
+        expect(queryByText('cpu:=4')).toBeInTheDocument()
     })
 })
