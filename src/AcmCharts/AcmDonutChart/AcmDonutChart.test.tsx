@@ -38,11 +38,7 @@ describe('AcmDonutChart', () => {
 
     test('renders with zero values state', () => {
         const { getByText } = render(
-            <AcmDonutChart
-                title="Some title"
-                description="Some description"
-                data={zeroData}
-            />
+            <AcmDonutChart title="Some title" description="Some description" data={zeroData} />
         )
         expect(getByText('0%')).toBeInTheDocument()
         expect(getByText('0 Key1')).toBeInTheDocument()
