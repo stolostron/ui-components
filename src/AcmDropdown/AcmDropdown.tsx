@@ -43,8 +43,14 @@ const useStyles = makeStyles({
     button: {
         '& button': {
             backgroundColor: (props: AcmDropdownProps) => {
-                if (props.isDisabled) {
-                    return 'var(--pf-global--disabled-color--200)'
+                if (!props.isKebab) {
+                    if (props.isDisabled) {
+                        return 'var(--pf-global--disabled-color--200)'
+                    } else if (!props.isDisabled && props.isPrimary) {
+                        return 'var(--pf-c-dropdown__toggle--BackgroundColor)'
+                    } else {
+                        return 'transparent'
+                    }
                 }
                 return undefined
             },
