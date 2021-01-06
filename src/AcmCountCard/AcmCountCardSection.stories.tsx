@@ -38,5 +38,5 @@ export const CountCardSection = () => {
 }
 
 export const CountCardSectionSkeleton = () => {
-    return <AcmCountCardSection title="Status" cards={cards} loading={true} />
+    return <AcmCountCardSection title="Status" cards={cards} loading={true} loadingAriaLabel="Loading results" />
 }
