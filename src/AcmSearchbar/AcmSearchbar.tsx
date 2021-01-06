@@ -65,6 +65,15 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                     setSearchbarTags(searchbarTags)
                 }}
                 onAddition={(tag: DropdownSuggestionsProps) => {
+                    if (
+                        (!tag.id && tag.name === '') ||
+                        (operators.some((operator: string) => currentQuery.endsWith(operator)) &&
+                            isNaN(parseInt(tag.name, 10)))
+                    ) {
+                        // don't allow blank tags to be added to searchbar
+                        // don't allow non-ints to be added when using an operator
+                        return
+                    }
                     if (tag.kind === 'filter') {
                         const newQueryString = `${currentQuery === '' ? '' : `${currentQuery} `}${tag.name}:`
                         setCurrentQuery(newQueryString)
@@ -112,7 +121,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                 autoresize={true}
                 minQueryLength={0}
                 allowNew={!currentQuery.endsWith(':')}
-                delimiters={[' ', ':', ',']}
+                delimiters={[' ', ':', ',', 'Enter']}
                 maxSuggestionsLength={Number.MAX_SAFE_INTEGER}
             />
             <CloseIcon
