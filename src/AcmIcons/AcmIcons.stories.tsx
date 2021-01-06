@@ -18,7 +18,7 @@ export const Icons = () => {
             return {
                 key: icon,
                 value: (
-                    <div style={{ width: '40px', height: '40px' }}>
+                    <div style={{ width: '24px', height: '24px' }}>
                         <AcmIcon key={icon} icon={icon} />
                     </div>
                 ),

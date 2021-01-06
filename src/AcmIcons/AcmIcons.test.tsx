@@ -5,13 +5,12 @@ import { AcmIcon, AcmIconVariant } from './AcmIcons'
 
 describe('AcmIcon', () => {
     Object.values(AcmIconVariant).forEach((icon) => {
-        const Icon = () => <AcmIcon icon={icon} />
         test(`renders - ${icon}`, () => {
-            const { getByRole } = render(<Icon />)
+            const { getByRole } = render(<AcmIcon icon={icon} />)
             expect(getByRole('presentation')).toBeInTheDocument()
         })
         test(`has zero accessibility defects - ${icon}`, async () => {
-            const { container } = render(<Icon />)
+            const { container } = render(<AcmIcon icon={icon} size="large" />)
             expect(await axe(container)).toHaveNoViolations()
         })
     })

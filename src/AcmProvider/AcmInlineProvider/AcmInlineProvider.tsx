@@ -4,21 +4,18 @@ import { Provider, ProviderLongTextMap, ProviderIconMap } from '../'
 import { AcmIcon } from '../../AcmIcons/AcmIcons'
 
 const useStyles = makeStyles({
-    icon: {
+    container: {
         display: 'flex',
         alignItems: 'center',
-        '& svg, & img': {
-            width: '22px',
-            marginRight: '8px',
-        },
     },
 })
 
-export function AcmInlineProvider(props: { provider: Provider }) {
+export function AcmInlineProvider(props: { provider: Provider; size?: 'small' | 'medium' | 'large' | 'xlarge' }) {
     const classes = useStyles()
     return (
-        <div className={classes.icon}>
-            <AcmIcon icon={ProviderIconMap[props.provider]} />
+        <div className={classes.container}>
+            <AcmIcon icon={ProviderIconMap[props.provider]} size={props.size} />
+            &nbsp; &nbsp;
             <span>{ProviderLongTextMap[props.provider]}</span>
         </div>
     )
