@@ -36,6 +36,7 @@ const useStyles = makeStyles({
         alignItems: 'center',
         '& svg, & img': {
             width: '10px',
+            height: '10px',
         },
     },
     medium: {
@@ -43,6 +44,7 @@ const useStyles = makeStyles({
         alignItems: 'center',
         '& svg, & img': {
             width: '18px',
+            height: '18px',
         },
     },
     large: {
@@ -50,6 +52,7 @@ const useStyles = makeStyles({
         alignItems: 'center',
         '& svg, & img': {
             width: '24px',
+            height: '24px',
         },
     },
     xlarge: {
@@ -57,6 +60,7 @@ const useStyles = makeStyles({
         alignItems: 'center',
         '& svg, & img': {
             width: '54px',
+            height: '54px',
         },
     },
 })

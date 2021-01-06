@@ -19,15 +19,12 @@ import { Provider, ProviderShortTextMap, ProviderIconMap } from '../'
 
 const useStyles = makeStyles({
     card: {
-        height: '240px',
-        maxWidth: '278px',
+        // maxWidth: '300px',
     },
     providerTitle: {
+        marginTop: '4px',
         fontSize: 'var(--pf-c-title--m-3xl--FontSize)',
         lineHeight: 'var(--pf-c-title--m-3xl--LineHeight)',
-    },
-    iconContainer: {
-        '& svg, & img': { width: '40px' },
     },
     dangerIcon: {
         width: '16px',
@@ -81,9 +78,7 @@ export function AcmProviderCard(props: ProviderCardProps) {
                 <StackItem>
                     <CardHeader>
                         <CardHeaderMain>
-                            <div className={classes.iconContainer}>
-                                <AcmIcon icon={ProviderIconMap[props.provider]} />
-                            </div>
+                            <AcmIcon icon={ProviderIconMap[props.provider]} size={'xlarge'} />
                             <Title
                                 headingLevel="h2"
                                 size="3xl"
