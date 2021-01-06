@@ -422,6 +422,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     }
                 }
                 setSelected(newSelected)
+                /* istanbul ignore next */
                 if (props.onSelect && items) {
                     props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
                 }
@@ -433,6 +434,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     delete newSelected[keyFn(paged[rowId])]
                 }
                 setSelected(newSelected)
+                /* istanbul ignore next */
                 if (props.onSelect && items) {
                     props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
                 }
