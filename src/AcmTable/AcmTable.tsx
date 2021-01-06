@@ -422,8 +422,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     }
                 }
                 setSelected(newSelected)
-                if (props.onSelect) {
-                    props.onSelect(items!.filter((item) => newSelected[keyFn(item)]))
+                if (props.onSelect && items) {
+                    props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
                 }
             } else {
                 const newSelected = { ...selected }
@@ -433,8 +433,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     delete newSelected[keyFn(paged[rowId])]
                 }
                 setSelected(newSelected)
-                if (props.onSelect) {
-                    props.onSelect(items!.filter((item) => newSelected[keyFn(item)]))
+                if (props.onSelect && items) {
+                    props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
                 }
             }
         },
