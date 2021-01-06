@@ -1,0 +1,37 @@
+import React from 'react'
+import { makeStyles } from '@material-ui/styles'
+import moment from 'moment'
+import { Spinner } from '@patternfly/react-core'
+
+export type AcmRefreshTimeProps = {
+    timestamp: string
+    reloading?: boolean
+}
+
+const useStyles = makeStyles({
+    timestamp: {
+        color: 'var(--pf-global--Color--200)',
+        fontFamily: 'RedHatText',
+        fontSize: '10px',
+        lineHeight: '20px',
+        textAlign: 'right',
+        marginRight: '50px',
+
+        '& .pf-c-spinner': {
+            marginRight: '.4rem',
+        },
+    },
+})
+
+export const AcmRefreshTime = (props: AcmRefreshTimeProps) => {
+    const classes = useStyles()
+    const { reloading, timestamp } = props
+    const time = moment(new Date(timestamp)).format('LTS')
+
+    return (
+        <div className={classes.timestamp}>
+            {reloading && <Spinner size="sm" />}
+            <span>Last update: {time}</span>
+        </div>
+    )
+}
