@@ -38,6 +38,6 @@ describe('AcmRefreshTime', () => {
 
     test('validates RefreshTime component renders', () => {
         const { getByText } = render(<RefreshTime />)
-        expect(getByText('Last update: 7:00:00 PM')).toBeInTheDocument()
+        expect(getByText('Last update: 12:00:00 AM')).toBeInTheDocument()
     })
 })

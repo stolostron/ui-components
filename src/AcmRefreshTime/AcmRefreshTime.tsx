@@ -27,7 +27,6 @@ const useStyles = makeStyles({
 export const AcmRefreshTime = (props: AcmRefreshTimeProps) => {
     const classes = useStyles()
     const { reloading, timestamp } = props
-    moment.locale('en') // TODO: need to handle locale
     const time = moment(new Date(timestamp)).format('LTS')
 
     return (
