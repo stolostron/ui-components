@@ -25,7 +25,7 @@ describe('AcmRefreshTimeReloading', () => {
 // Timestamp tests
 
 describe('AcmRefreshTime', () => {
-    const timestamp = 'Wed Jan 06 2021 05:00:00 GMT+0000 (Coordinated Universal Time)'
+    const timestamp = 'Wed Jan 06 2021 00:00:00 GMT+0000 (Coordinated Universal Time)'
 
     const RefreshTime = () => {
         return <AcmRefreshTime timestamp={timestamp} />
@@ -38,6 +38,6 @@ describe('AcmRefreshTime', () => {
 
     test('validates RefreshTime component renders', () => {
         const { getByText } = render(<RefreshTime />)
-        expect(getByText('Last update: 12:00:00 AM')).toBeInTheDocument()
+        expect(getByText('Last update: 7:00:00 PM')).toBeInTheDocument()
     })
 })

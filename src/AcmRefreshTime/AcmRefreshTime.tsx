@@ -10,11 +10,13 @@ export type AcmRefreshTimeProps = {
 
 const useStyles = makeStyles({
     timestamp: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
         color: 'var(--pf-global--Color--200)',
         fontFamily: 'RedHatText',
         fontSize: '10px',
         lineHeight: '20px',
-        textAlign: 'right',
 
         '& .pf-c-spinner': {
             marginRight: '.4rem',
@@ -30,7 +32,7 @@ export const AcmRefreshTime = (props: AcmRefreshTimeProps) => {
     return (
         <div className={classes.timestamp}>
             {reloading && <Spinner size="sm" />}
-            <span>Last update: {time}</span>
+            <p>Last update: {time}</p>
         </div>
     )
 }
