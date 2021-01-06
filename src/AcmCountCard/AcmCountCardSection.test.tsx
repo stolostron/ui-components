@@ -49,4 +49,18 @@ describe('AcmCountCardSection', () => {
         const { container } = render(<Component />)
         expect(await axe(container)).toHaveNoViolations()
     })
+    test('renders skeleton state when loading', async () => {
+        const Component = () => (
+            <AcmCountCardSection
+                title="Status"
+                id="status"
+                cards={cards}
+                loading={true}
+                loadingAriaLabel="Loading results"
+            />
+        )
+        const { container, getAllByRole } = render(<Component />)
+        expect(getAllByRole('progressbar').length).toBeGreaterThan(0)
+        expect(await axe(container)).toHaveNoViolations()
+    })
 })

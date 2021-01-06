@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, GridItem } from '@patternfly/react-core'
+import { Grid, GridItem, Skeleton } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { AcmExpandableCard } from '../AcmExpandable'
 import { makeStyles } from '@material-ui/styles'
@@ -55,6 +55,8 @@ export type AcmCountCardSection = {
     id?: string
     title: string
     cards: AcmCountCardSectionCard[]
+    loading?: boolean
+    loadingAriaLabel?: string
 }
 
 export type AcmCountCardSectionCard = {
@@ -76,41 +78,71 @@ export const AcmCountCardSection = (props: AcmCountCardSection) => {
                 {props.cards.map((card, i) => {
                     return (
                         <GridItem key={i}>
-                            <div id={card.id} className={classes.card}>
-                                <div className={classes.countContainer}>
-                                    {card.countClick && card.count > 0 ? (
-                                        <a
-                                            onClick={card.countClick}
-                                            className={card.isDanger ? classes.countDanger : classes.count}
-                                        >
-                                            {card.count}
-                                        </a>
-                                    ) : (
-                                        card.count
+                            {props.loading ? (
+                                <LoadingCard {...card} loadingAriaLabel={props.loadingAriaLabel} />
+                            ) : (
+                                <div id={card.id} className={classes.card}>
+                                    <div className={classes.countContainer}>
+                                        {card.countClick && card.count > 0 ? (
+                                            <a
+                                                onClick={card.countClick}
+                                                className={card.isDanger ? classes.countDanger : classes.count}
+                                            >
+                                                {card.count}
+                                            </a>
+                                        ) : (
+                                            card.count
+                                        )}
+                                    </div>
+                                    <div className={classes.title}>
+                                        <span>
+                                            {card.isDanger && card.count > 0 && (
+                                                <ExclamationCircleIcon
+                                                    color="var(--pf-global--danger-color--100)"
+                                                    className={classes.titleIcon}
+                                                />
+                                            )}
+                                            {card.title}
+                                        </span>
+                                    </div>
+                                    {card.description && <div className={classes.description}>{card.description}</div>}
+                                    {card.linkText && (
+                                        <div className={classes.link}>
+                                            <a onClick={card.onLinkClick}>{card.linkText}</a>
+                                        </div>
                                     )}
                                 </div>
-                                <div className={classes.title}>
-                                    <span>
-                                        {card.isDanger && card.count > 0 && (
-                                            <ExclamationCircleIcon
-                                                color="var(--pf-global--danger-color--100)"
-                                                className={classes.titleIcon}
-                                            />
-                                        )}
-                                        {card.title}
-                                    </span>
-                                </div>
-                                {card.description && <div className={classes.description}>{card.description}</div>}
-                                {card.linkText && (
-                                    <div className={classes.link}>
-                                        <a onClick={card.onLinkClick}>{card.linkText}</a>
-                                    </div>
-                                )}
-                            </div>
+                            )}
                         </GridItem>
                     )
                 })}
             </Grid>
         </AcmExpandableCard>
+    )
+}
+
+const LoadingCard = (props: AcmCountCardSectionCard & { loadingAriaLabel?: string }) => {
+    const classes = useStyles()
+    return (
+        <div id={props.id} className={classes.card} role="progressbar" aria-label={props.loadingAriaLabel}>
+            <div className={classes.countContainer}>
+                <Skeleton style={{ width: '44px', height: '48px', marginBottom: '12px' }} />
+            </div>
+            <div className={classes.title} style={{ marginBottom: '12px' }}>
+                <span>
+                    <Skeleton style={{ width: '130px', height: '21px', padding: '3px 0' }} />
+                </span>
+            </div>
+            {props.description && (
+                <div className={classes.description}>
+                    <Skeleton style={{ width: '130px', height: '21px', padding: '3px 0' }} />
+                </div>
+            )}
+            {props.linkText && (
+                <div className={classes.link}>
+                    <Skeleton style={{ width: '130px', height: '21px', padding: '3px 0' }} />
+                </div>
+            )}
+        </div>
     )
 }
