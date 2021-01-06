@@ -90,6 +90,8 @@ export interface IAcmTableBulkAction<T> {
     id: string
     title: string | React.ReactNode
     click: (items: T[]) => void
+    isDisabled?: boolean
+    tooltip?: string | React.ReactNode
 }
 
 interface ISearchItem<T> {
@@ -479,13 +481,15 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     <ToolbarItem variant="separator" />
                                     {props.bulkActions.map((action) => (
                                         <ToolbarItem key={action.id}>
-                                            <Button
+                                            <AcmButton
                                                 onClick={() => {
                                                     action.click(items.filter((item) => selected[keyFn(item)]))
                                                 }}
+                                                isDisabled={action.isDisabled}
+                                                tooltip={action.tooltip}
                                             >
                                                 {action.title}
-                                            </Button>
+                                            </AcmButton>
                                         </ToolbarItem>
                                     ))}
                                 </Fragment>
