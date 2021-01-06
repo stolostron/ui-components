@@ -20,7 +20,7 @@ export default meta
 
 export const Button = (args) => (
     <div style={{ margin: '50px 0px 0px 50px' }}>
-        <AcmButton {...args} onClick={() => console.log('clicked')}>
+        <AcmButton {...args} onClick={() => alert('clicked')}>
             {args.text}
         </AcmButton>
     </div>
