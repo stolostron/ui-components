@@ -3,13 +3,13 @@ import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { AcmRefreshTime } from './AcmRefreshTime'
 
+jest.mock('moment', () => () => ({ format: () => '7:00:00 PM' }))
+
 // Reloading Timestamp tests
 
 describe('AcmRefreshTimeReloading', () => {
-    const timestamp = 'Wed Jan 06 2021 00:00:00 GMT+0000 (Coordinated Universal Time)'
-
     const ReloadingRefreshTime = () => {
-        return <AcmRefreshTime timestamp={timestamp} reloading={true} />
+        return <AcmRefreshTime timestamp={''} reloading={true} />
     }
     test('validates reloading spinner is present', () => {
         const { getByRole } = render(<ReloadingRefreshTime />)
@@ -25,10 +25,8 @@ describe('AcmRefreshTimeReloading', () => {
 // Timestamp tests
 
 describe('AcmRefreshTime', () => {
-    const timestamp = 'Wed Jan 06 2021 00:00:00 GMT+0000 (Coordinated Universal Time)'
-
     const RefreshTime = () => {
-        return <AcmRefreshTime timestamp={timestamp} />
+        return <AcmRefreshTime timestamp={''} />
     }
 
     test('has zero accessibility defects', async () => {
@@ -38,6 +36,6 @@ describe('AcmRefreshTime', () => {
 
     test('validates RefreshTime component renders', () => {
         const { getByText } = render(<RefreshTime />)
-        expect(getByText('Last update: 12:00:00 AM')).toBeInTheDocument()
+        expect(getByText('Last update: 7:00:00 PM')).toBeInTheDocument()
     })
 })
