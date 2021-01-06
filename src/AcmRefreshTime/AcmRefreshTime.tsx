@@ -15,7 +15,6 @@ const useStyles = makeStyles({
         fontSize: '10px',
         lineHeight: '20px',
         textAlign: 'right',
-        marginRight: '50px',
 
         '& .pf-c-spinner': {
             marginRight: '.4rem',
