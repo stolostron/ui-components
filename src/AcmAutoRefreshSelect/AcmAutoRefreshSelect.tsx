@@ -134,10 +134,8 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
                 className={classes.reloadButton}
                 tabIndex={0}
                 role={'button'}
-                onClick={() => {
-                    handleRefresh()
-                }}
-                onKeyPress={(e) => handleKeyPress(e)}
+                onClick={handleRefresh}
+                onKeyPress={handleKeyPress}
             >
                 <SyncAltIcon className={classes.icon} />
             </div>
