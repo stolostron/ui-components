@@ -92,6 +92,7 @@ export function AcmLabelsInput(props: {
                                     case ',':
                                     case 'Enter':
                                         {
+                                            e.preventDefault()
                                             e.stopPropagation()
                                             // istanbul ignore else
                                             if (inputValue) {
