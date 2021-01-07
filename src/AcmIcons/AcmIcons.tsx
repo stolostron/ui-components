@@ -1,4 +1,3 @@
-import { makeStyles } from '@material-ui/core'
 import React from 'react'
 import {
     AcmTemplateIcon,
@@ -30,42 +29,7 @@ export enum AcmIconVariant {
 
 // https://www.patternfly.org/v4/guidelines/icons
 
-const useStyles = makeStyles({
-    small: {
-        display: 'flex',
-        alignItems: 'center',
-        '& svg, & img': {
-            width: '10px',
-            height: '10px',
-        },
-    },
-    medium: {
-        display: 'flex',
-        alignItems: 'center',
-        '& svg, & img': {
-            width: '18px',
-            height: '18px',
-        },
-    },
-    large: {
-        display: 'flex',
-        alignItems: 'center',
-        '& svg, & img': {
-            width: '24px',
-            height: '24px',
-        },
-    },
-    xlarge: {
-        display: 'flex',
-        alignItems: 'center',
-        '& svg, & img': {
-            width: '54px',
-            height: '54px',
-        },
-    },
-})
-
-function AcmIconSvg(props: { icon: AcmIconVariant }) {
+export function AcmIcon(props: { icon: AcmIconVariant }) {
     switch (props.icon) {
         case AcmIconVariant.template:
             return <AcmTemplateIcon />
@@ -90,13 +54,4 @@ function AcmIconSvg(props: { icon: AcmIconVariant }) {
         case AcmIconVariant.cloud:
             return <CloudIcon />
     }
-}
-
-export function AcmIcon(props: { icon: AcmIconVariant; size?: 'small' | 'medium' | 'large' | 'xlarge' }) {
-    const classes = useStyles()
-    return (
-        <div className={classes[props.size ?? 'large']}>
-            <AcmIconSvg icon={props.icon} />
-        </div>
-    )
 }

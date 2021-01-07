@@ -10,7 +10,7 @@ describe('AcmIcon', () => {
             expect(getByRole('presentation')).toBeInTheDocument()
         })
         test(`has zero accessibility defects - ${icon}`, async () => {
-            const { container } = render(<AcmIcon icon={icon} size="large" />)
+            const { container } = render(<AcmIcon icon={icon} />)
             expect(await axe(container)).toHaveNoViolations()
         })
     })
