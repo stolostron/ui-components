@@ -1,5 +1,4 @@
 import {
-    Button,
     EmptyState,
     EmptyStateIcon,
     Pagination,
@@ -77,6 +76,7 @@ export interface IAcmTableAction {
     title: string | React.ReactNode
     click: () => void
     isDisabled?: boolean | undefined
+    tooltip?: string | React.ReactNode
 }
 
 /* istanbul ignore next */
@@ -507,14 +507,15 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 <Fragment>
                                     {props.tableActions.map((action) => (
                                         <ToolbarItem key={action.id}>
-                                            <Button
+                                            <AcmButton
                                                 onClick={() => {
                                                     action.click()
                                                 }}
                                                 isDisabled={action.isDisabled}
+                                                tooltip={action.tooltip}
                                             >
                                                 {action.title}
-                                            </Button>
+                                            </AcmButton>
                                         </ToolbarItem>
                                     ))}
                                 </Fragment>
