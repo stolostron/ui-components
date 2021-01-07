@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { fitContent, truncate } from '@patternfly/react-table'
 import '@patternfly/react-core/dist/styles/base.css'
