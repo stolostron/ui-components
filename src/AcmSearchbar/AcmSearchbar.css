@@ -162,6 +162,9 @@
     cursor: pointer;
     background: var(--pf-global--BackgroundColor--200);
 }
+.react-tags__suggestions li.is-active {
+    background: var(--pf-global--BackgroundColor--200);
+}
 .react-tags__suggestions li.is-disabled {
     color: var(--pf-global--palette--black-600);
     cursor: auto;

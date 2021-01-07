@@ -10,8 +10,8 @@ import {
     CloudIcon,
     BareMetalIcon,
     VMWareIcon,
+    IBMCloudIcon,
 } from './Icons'
-import ibmCloud from '../assets/IBM-Cloud.png'
 
 export enum AcmIconVariant {
     template = 'template',
@@ -26,6 +26,8 @@ export enum AcmIconVariant {
     vmware = 'vmware',
     cloud = 'cloud',
 }
+
+// https://www.patternfly.org/v4/guidelines/icons
 
 export function AcmIcon(props: { icon: AcmIconVariant }) {
     switch (props.icon) {
@@ -44,7 +46,7 @@ export function AcmIcon(props: { icon: AcmIconVariant }) {
         case AcmIconVariant.azure:
             return <AzureIcon />
         case AcmIconVariant.ibm:
-            return <img src={ibmCloud} role="presentation" />
+            return <IBMCloudIcon />
         case AcmIconVariant.baremetal:
             return <BareMetalIcon />
         case AcmIconVariant.vmware:

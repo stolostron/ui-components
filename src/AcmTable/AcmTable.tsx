@@ -90,6 +90,8 @@ export interface IAcmTableBulkAction<T> {
     id: string
     title: string | React.ReactNode
     click: (items: T[]) => void
+    isDisabled?: boolean
+    tooltip?: string | React.ReactNode
 }
 
 interface ISearchItem<T> {
@@ -152,6 +154,7 @@ export interface AcmTableProps<T> {
     bulkActions: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
+    onSelect?: (items: T[]) => void
     page?: number
     setPage?: (page: number) => void
     search?: string
@@ -419,6 +422,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     }
                 }
                 setSelected(newSelected)
+                /* istanbul ignore next */
+                if (props.onSelect && items) {
+                    props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
+                }
             } else {
                 const newSelected = { ...selected }
                 if (isSelected) {
@@ -427,6 +434,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     delete newSelected[keyFn(paged[rowId])]
                 }
                 setSelected(newSelected)
+                /* istanbul ignore next */
+                if (props.onSelect && items) {
+                    props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
+                }
             }
         },
         [paged, filtered, rows, keyFn]
@@ -479,13 +490,15 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     <ToolbarItem variant="separator" />
                                     {props.bulkActions.map((action) => (
                                         <ToolbarItem key={action.id}>
-                                            <Button
+                                            <AcmButton
                                                 onClick={() => {
                                                     action.click(items.filter((item) => selected[keyFn(item)]))
                                                 }}
+                                                isDisabled={action.isDisabled}
+                                                tooltip={action.tooltip}
                                             >
                                                 {action.title}
-                                            </Button>
+                                            </AcmButton>
                                         </ToolbarItem>
                                     ))}
                                 </Fragment>

@@ -6,6 +6,17 @@ import {
     ExclamationTriangleIcon,
     MinusCircleIcon,
 } from '@patternfly/react-icons'
+import { makeStyles } from '@material-ui/core'
+
+const useStyles = makeStyles({
+    container: {
+        display: 'flex',
+    },
+    icon: {
+        width: '18px', // Progress size md is 18px
+        height: '18px',
+    },
+})
 
 export enum StatusType {
     'healthy' = 'healthy',
@@ -16,9 +27,12 @@ export enum StatusType {
 }
 
 export function AcmInlineStatus(props: { type: StatusType; status: string }) {
+    const classes = useStyles()
     return (
-        <div className={`inline-status-${props.type}`}>
-            <StatusIcon type={props.type} />
+        <div className={classes.container}>
+            <div className={classes.icon}>
+                <StatusIcon type={props.type} />
+            </div>
             <span style={{ marginLeft: '.4rem' }}>{props.status}</span>
         </div>
     )

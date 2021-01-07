@@ -18,16 +18,16 @@ import { AcmIcon } from '../../AcmIcons/AcmIcons'
 import { Provider, ProviderShortTextMap, ProviderIconMap } from '../'
 
 const useStyles = makeStyles({
-    card: {
-        height: '240px',
-        maxWidth: '278px',
+    icon: {
+        '& svg, & img': {
+            width: '56px',
+            height: '56px',
+        },
     },
     providerTitle: {
+        marginTop: '4px',
         fontSize: 'var(--pf-c-title--m-3xl--FontSize)',
         lineHeight: 'var(--pf-c-title--m-3xl--LineHeight)',
-    },
-    iconContainer: {
-        '& svg, & img': { width: '40px' },
     },
     dangerIcon: {
         width: '16px',
@@ -74,14 +74,13 @@ export function AcmProviderCard(props: ProviderCardProps) {
             }
             isSelectable
             isSelected={props.isSelected}
-            className={classes.card}
             id={`${props.provider}-provider-card`}
         >
             <Stack>
                 <StackItem>
                     <CardHeader>
                         <CardHeaderMain>
-                            <div className={classes.iconContainer}>
+                            <div className={classes.icon}>
                                 <AcmIcon icon={ProviderIconMap[props.provider]} />
                             </div>
                             <Title

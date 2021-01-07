@@ -139,4 +139,12 @@ describe('AcmSearchbar', () => {
         userEvent.type(getByRole('combobox'), '4 ')
         expect(queryByText('cpu:=4')).toBeInTheDocument()
     })
+
+    test('Validate a user cannot enter a string when using an operator', () => {
+        const { getByText, getByRole, queryByText } = render(<SearchbarWithOperator />)
+        expect(getByText('cpu:=')).toBeInTheDocument()
+        userEvent.click(getByRole('combobox'))
+        userEvent.type(getByRole('combobox'), 'notANumber ')
+        expect(queryByText('cpu:=')).toBeInTheDocument()
+    })
 })

@@ -35,6 +35,7 @@ describe('AcmTable', () => {
             <AcmTable<IExampleData>
                 plural="addresses"
                 items={items}
+                onSelect={() => null}
                 columns={[
                     {
                         header: 'First Name',
