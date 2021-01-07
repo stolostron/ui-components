@@ -17,6 +17,7 @@ const useStyles = makeStyles({
 
 export function AcmInlineProvider(props: { provider: Provider }) {
     const classes = useStyles()
+
     return (
         <div className={classes.container}>
             <AcmIcon icon={ProviderIconMap[props.provider]} />
