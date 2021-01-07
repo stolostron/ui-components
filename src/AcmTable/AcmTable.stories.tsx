@@ -3,7 +3,10 @@ import { fitContent, truncate } from '@patternfly/react-table'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useEffect, useState } from 'react'
 import { AcmPage, AcmPageCard } from '../AcmPage/AcmPage'
-import { AcmTable } from '../AcmTable/AcmTable'
+import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
+import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
+import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
+import { Provider } from '../AcmProvider'
 
 interface IExampleData {
     uid: number
@@ -122,7 +125,7 @@ export function TableLoading() {
     )
 }
 
-const columns = [
+const columns: IAcmTableColumn<IExampleData>[] = [
     {
         header: 'First Name',
         sort: 'firstName',
@@ -162,6 +165,48 @@ const columns = [
         search: 'uid',
         transforms: [fitContent],
         cellTransforms: [truncate],
+    },
+    {
+        header: 'Provider',
+        cell: (item) => {
+            const chr = item.last_name.charCodeAt(0)
+            switch (chr % 8) {
+                case 0:
+                    return <AcmInlineProvider provider={Provider.aws} />
+                case 1:
+                    return <AcmInlineProvider provider={Provider.azure} />
+                case 2:
+                    return <AcmInlineProvider provider={Provider.baremetal} />
+                case 3:
+                    return <AcmInlineProvider provider={Provider.gcp} />
+                case 4:
+                    return <AcmInlineProvider provider={Provider.ibm} />
+                case 5:
+                    return <AcmInlineProvider provider={Provider.other} />
+                case 6:
+                    return <AcmInlineProvider provider={Provider.redhatcloud} />
+                default:
+                    return <AcmInlineProvider provider={Provider.vmware} />
+            }
+        },
+    },
+    {
+        header: 'Status',
+        cell: (item) => {
+            const chr = item.last_name.charCodeAt(0)
+            switch (chr % 5) {
+                case 0:
+                    return <AcmInlineStatus type={StatusType.healthy} status="Healthy" />
+                case 1:
+                    return <AcmInlineStatus type={StatusType.unknown} status="Unknown" />
+                case 2:
+                    return <AcmInlineStatus type={StatusType.warning} status="Warning" />
+                case 3:
+                    return <AcmInlineStatus type={StatusType.danger} status="Danger" />
+                default:
+                    return <AcmInlineStatus type={StatusType.progress} status="Progressing" />
+            }
+        },
     },
 ]
 

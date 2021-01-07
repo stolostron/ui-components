@@ -5,7 +5,6 @@ import { AcmIcon } from '../../AcmIcons/AcmIcons'
 
 const useStyles = makeStyles({
     container: {
-        display: 'flex',
         '& svg, & img': {
             width: '1.8em',
             height: '1.8em',
