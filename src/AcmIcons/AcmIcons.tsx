@@ -32,35 +32,35 @@ export enum AcmIconVariant {
 
 const useStyles = makeStyles({
     small: {
-        display: 'flex',
-        alignItems: 'center',
         '& svg, & img': {
             width: '10px',
             height: '10px',
+            marginTop: 'calc(-10px + 0.66rem)',
+            marginBottom: 'calc(-10px + 0.33rem)',
         },
     },
     medium: {
-        display: 'flex',
-        alignItems: 'center',
         '& svg, & img': {
             width: '18px',
             height: '18px',
+            marginTop: 'calc(-9px + 0.66rem)',
+            marginBottom: 'calc(-9px + 0.33rem)',
         },
     },
     large: {
-        display: 'flex',
-        alignItems: 'center',
         '& svg, & img': {
             width: '24px',
             height: '24px',
+            marginTop: 'calc(-12px + 0.66rem)',
+            marginBottom: 'calc(-12px + 0.33rem)',
         },
     },
     xlarge: {
-        display: 'flex',
-        alignItems: 'center',
         '& svg, & img': {
             width: '54px',
             height: '54px',
+            marginTop: 'calc(-27px + 0.66rem)',
+            marginBottom: 'calc(-27px + 0.33rem)',
         },
     },
 })
