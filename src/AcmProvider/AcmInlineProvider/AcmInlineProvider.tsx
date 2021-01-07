@@ -5,7 +5,6 @@ import { AcmIcon } from '../../AcmIcons/AcmIcons'
 
 const useStyles = makeStyles({
     container: {
-        display: 'flex',
         '& svg, & img': {
             width: '1.8em',
             height: '1.8em',
@@ -18,6 +17,7 @@ const useStyles = makeStyles({
 
 export function AcmInlineProvider(props: { provider: Provider }) {
     const classes = useStyles()
+
     return (
         <div className={classes.container}>
             <AcmIcon icon={ProviderIconMap[props.provider]} />

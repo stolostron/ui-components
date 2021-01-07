@@ -11,12 +11,8 @@ import { makeStyles } from '@material-ui/core'
 const useStyles = makeStyles({
     container: {
         display: 'flex',
-        alignItems: 'center',
     },
     icon: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         width: '18px', // Progress size md is 18px
         height: '18px',
     },
