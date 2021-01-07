@@ -76,6 +76,7 @@ export interface IAcmTableAction {
     id: string
     title: string | React.ReactNode
     click: () => void
+    isDisabled?: boolean | undefined
 }
 
 /* istanbul ignore next */
@@ -510,6 +511,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                                 onClick={() => {
                                                     action.click()
                                                 }}
+                                                isDisabled={action.isDisabled}
                                             >
                                                 {action.title}
                                             </Button>
