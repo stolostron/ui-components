@@ -16,11 +16,7 @@ const pollInterval = getPollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE)
 
 export const AutoRefreshSelect = () => (
     <AcmPageCard>
-        <AcmAutoRefreshSelect
-            refetch={() => console.log('Refetch')}
-            pollInterval={pollInterval}
-            refreshCookie={OVERVIEW_REFRESH_INTERVAL_COOKIE}
-        ></AcmAutoRefreshSelect>
+        <AcmAutoRefreshSelect refetch={() => console.log('Refetch')} pollInterval={pollInterval}></AcmAutoRefreshSelect>
     </AcmPageCard>
 )
 AutoRefreshSelect.args = {}

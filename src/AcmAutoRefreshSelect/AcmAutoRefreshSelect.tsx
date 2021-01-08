@@ -4,17 +4,11 @@ import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
 const DEFAULT_REFRESH_TIME = 30
-const REFRESH_VALUES = [1, 5, 10, 30, 60, 5 * 60, 30 * 60, 0]
+const REFRESH_VALUES = [1, 30, 60, 5 * 60, 30 * 60, 0]
+const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-overview-interval-refresh-cookie'
 
 export type AcmAutoRefreshSelectProps = {
     refetch: () => void
-    refreshCookie: string
-    pollInterval: number
-}
-
-interface RefreshOption {
-    id: string
-    text: string
     pollInterval: number
 }
 
@@ -47,58 +41,86 @@ const useStyles = makeStyles({
     },
 })
 
-export const getPollInterval = (cookieKey: string) => {
+export const getPollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string) => {
     let pollInterval = DEFAULT_REFRESH_TIME * 1000
-    if (cookieKey) {
-        const savedInterval = localStorage.getItem(cookieKey)
+    if (OVERVIEW_REFRESH_INTERVAL_COOKIE) {
+        const savedInterval = localStorage.getItem(OVERVIEW_REFRESH_INTERVAL_COOKIE)
         if (savedInterval) {
             try {
                 const saved = JSON.parse(savedInterval)
                 if (saved.pollInterval !== undefined) {
-                    console.log('saved', saved.pollInterval)
-
                     pollInterval = saved.pollInterval
                 }
             } catch (e) {
                 //
             }
         } else {
-            savePollInterval(cookieKey, pollInterval)
+            savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, pollInterval)
         }
     }
     return pollInterval
 }
 
-export const savePollInterval = (cookieKey: string, pollInterval: number) => {
-    localStorage.setItem(cookieKey, JSON.stringify({ pollInterval }))
+export const savePollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string, pollInterval: number) => {
+    localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, JSON.stringify({ pollInterval }))
+}
+
+const useLocalStorage = (key: string, initialValue: number) => {
+    const [storedValue, setStoredValue] = useState(() => {
+        try {
+            const item = window.localStorage.getItem(key)
+            return item ? JSON.parse(item) : initialValue
+        } catch (error) {
+            console.log(error)
+            return initialValue
+        }
+    })
+    const setValue = (value: Record<number, unknown>) => {
+        try {
+            const valueToStore = value instanceof Function ? value(storedValue) : value
+            setStoredValue(valueToStore)
+            window.localStorage.setItem(key, JSON.stringify(valueToStore))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return [storedValue, setValue]
 }
 
 export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
-    const [selected, setSelected] = useState<RefreshOption>({
-        id: 'refresh-30s',
-        text: 'Refresh every 30s',
-        pollInterval: 30000,
-    })
+    const [selected, setSelected] = useLocalStorage('pollInterval', 30000)
+    const [addedListener, setAddedListener] = useState<boolean>(false)
+    const [docHidden, setDocHidden] = useState<boolean>(false)
+    const onVisibilityChange = () => {
+        setDocHidden(window.document.hidden)
+    }
+    if (!addedListener) {
+        document.addEventListener('visibilitychange', onVisibilityChange)
+        setAddedListener(true)
+    }
+
     const [pollInterval, setPollInterval] = useState(props.pollInterval)
     const classes = useStyles()
-    const { refetch, refreshCookie } = props
+    const { refetch } = props
 
     useEffect(() => {
         refetch()
         setPollInterval(selected.pollInterval)
-        savePollInterval(refreshCookie, selected.pollInterval)
-        if (selected.pollInterval !== 0) {
+        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, selected.pollInterval)
+        if (!docHidden && selected.pollInterval !== 0) {
             const interval = setInterval(() => {
-                console.log('Refetching every: ', selected.pollInterval)
+                refetch()
             }, selected.pollInterval)
-            return () => clearInterval(interval)
+            return () => {
+                document.removeEventListener('visibilitychange', onVisibilityChange)
+                setAddedListener(false)
+                clearInterval(interval)
+            }
         }
-    }, [selected])
+    }, [selected, docHidden])
 
     const handleRefresh = () => {
-        console.log('refetch', pollInterval)
-
         refetch()
     }
 
