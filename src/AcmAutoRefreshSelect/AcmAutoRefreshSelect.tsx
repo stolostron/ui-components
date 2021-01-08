@@ -3,15 +3,13 @@ import { SyncAltIcon } from '@patternfly/react-icons'
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
-const DEFAULT_REFRESH_TIME = 60
+const DEFAULT_REFRESH_TIME = 30
+const REFRESH_VALUES = [1, 5, 10, 30, 60, 5 * 60, 30 * 60, 0]
 
 export type AcmAutoRefreshSelectProps = {
     refetch: () => void
-    refreshValues: number[]
     refreshCookie: string
     pollInterval: number
-    startPolling: (pollInterval: number) => void
-    stopPolling: () => void
 }
 
 interface RefreshOption {
@@ -57,6 +55,8 @@ export const getPollInterval = (cookieKey: string) => {
             try {
                 const saved = JSON.parse(savedInterval)
                 if (saved.pollInterval !== undefined) {
+                    console.log('saved', saved.pollInterval)
+
                     pollInterval = saved.pollInterval
                 }
             } catch (e) {
@@ -78,13 +78,37 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     const [selected, setSelected] = useState<RefreshOption>({
         id: 'refresh-30s',
         text: 'Refresh every 30s',
-        pollInterval: 30,
+        pollInterval: 30000,
     })
     const [pollInterval, setPollInterval] = useState(props.pollInterval)
     const classes = useStyles()
-    const { refetch, refreshValues = [] } = props
+    const { refetch, refreshCookie } = props
 
-    const autoRefreshChoices = refreshValues.map((pollInterval) => {
+    useEffect(() => {
+        refetch()
+        setPollInterval(selected.pollInterval)
+        savePollInterval(refreshCookie, selected.pollInterval)
+        if (selected.pollInterval !== 0) {
+            const interval = setInterval(() => {
+                console.log('Refetching every: ', selected.pollInterval)
+            }, selected.pollInterval)
+            return () => clearInterval(interval)
+        }
+    }, [selected])
+
+    const handleRefresh = () => {
+        console.log('refetch', pollInterval)
+
+        refetch()
+    }
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            refetch()
+        }
+    }
+
+    const autoRefreshChoices = REFRESH_VALUES.map((pollInterval) => {
         let id, text
         if (pollInterval >= 60) {
             id = `refresh-${pollInterval / 60}m`
@@ -100,44 +124,14 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         return { id, text, pollInterval }
     })
 
-    const handleOptionClick = (item: RefreshOption) => {
-        setSelected(item)
-        setPollInterval(item.pollInterval)
-    }
-
-    useEffect(() => {
-        console.log('selected', selected)
-        console.log('pollInterval', pollInterval)
-
-        const { refreshCookie, startPolling, stopPolling } = props
-        if (pollInterval === 0) {
-            stopPolling()
-        } else {
-            startPolling(pollInterval)
-        }
-        savePollInterval(refreshCookie, pollInterval)
-    }, [selected])
-
-    const handleRefresh = () => {
-        refetch()
-    }
-
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            refetch()
-        }
-    }
-
     return (
         <div className={classes.container}>
             <div
                 className={classes.reloadButton}
                 tabIndex={0}
                 role={'button'}
-                onClick={() => {
-                    handleRefresh()
-                }}
-                onKeyPress={(e) => handleKeyPress(e)}
+                onClick={handleRefresh}
+                onKeyPress={handleKeyPress}
             >
                 <SyncAltIcon className={classes.icon} />
             </div>
@@ -153,7 +147,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
                     </DropdownToggle>
                 }
                 dropdownItems={autoRefreshChoices.map((item) => (
-                    <DropdownItem key={item.id} {...item} onClick={() => handleOptionClick(item)}>
+                    <DropdownItem key={item.id} {...item} onClick={() => setSelected(item)}>
                         {item.text}
                     </DropdownItem>
                 ))}
