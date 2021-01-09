@@ -4,7 +4,7 @@ import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
 const DEFAULT_REFRESH_TIME = 30
-const REFRESH_VALUES = [30, 60, 5 * 60, 30 * 60, 0]
+const REFRESH_VALUES = [1, 30, 60, 5 * 60, 30 * 60, 0]
 const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-overview-interval-refresh-cookie'
 
 export type AcmAutoRefreshSelectProps = {
@@ -106,18 +106,19 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
 
     useEffect(() => {
         refetch()
-        setPollInterval(selected.pollInterval)
-        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, selected.pollInterval)
-        if (!docHidden && selected.pollInterval !== 0) {
+        setPollInterval(selected.pi)
+        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, pollInterval)
+        if (!docHidden && selected.pi !== 0) {
             const interval = setInterval(() => {
                 refetch()
-            }, selected.pollInterval)
+            }, selected.pi)
             return () => {
                 document.removeEventListener('visibilitychange', onVisibilityChange)
                 setAddedListener(false)
                 clearInterval(interval)
             }
         }
+        return
     }, [selected, docHidden])
 
     const handleRefresh = () => {
@@ -130,20 +131,20 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         }
     }
 
-    const autoRefreshChoices = REFRESH_VALUES.map((pollInterval) => {
+    const autoRefreshChoices = REFRESH_VALUES.map((pi) => {
         let id, text
-        if (pollInterval >= 60) {
-            id = `refresh-${pollInterval / 60}m`
-            text = `Refresh every ${pollInterval / 60}m`
-        } else if (pollInterval !== 0) {
-            id = `refresh-${pollInterval}s`
-            text = `Refresh every ${pollInterval}s`
+        if (pi >= 60) {
+            id = `refresh-${pi / 60}m`
+            text = `Refresh every ${pi / 60}m`
+        } else if (pi !== 0) {
+            id = `refresh-${pi}s`
+            text = `Refresh every ${pi}s`
         } else {
             id = 'refresh-disable'
             text = 'Disable refresh'
         }
-        pollInterval *= 1000
-        return { id, text, pollInterval }
+        pi *= 1000
+        return { id, text, pi }
     })
 
     return (

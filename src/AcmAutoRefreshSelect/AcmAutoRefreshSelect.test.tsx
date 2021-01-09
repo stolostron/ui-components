@@ -8,13 +8,7 @@ describe('AcmAutoRefreshSelect ', () => {
     const pollInterval = getPollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE)
 
     const RefreshSelect = () => {
-        return (
-            <AcmAutoRefreshSelect
-                refetch={() => console.log('Refetch')}
-                pollInterval={pollInterval}
-                refreshCookie={OVERVIEW_REFRESH_INTERVAL_COOKIE}
-            />
-        )
+        return <AcmAutoRefreshSelect refetch={() => console.log('Refetch')} pollInterval={pollInterval} />
     }
 
     test('validates RefreshSelect component renders with default selection', () => {
