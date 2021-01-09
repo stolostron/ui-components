@@ -152,6 +152,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
             <div
                 className={classes.reloadButton}
                 tabIndex={0}
+                aria-label={'refresh-icon'}
                 role={'button'}
                 onClick={handleRefresh}
                 onKeyPress={handleKeyPress}
@@ -160,12 +161,18 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
             </div>
             <Dropdown
                 className={classes.buttonTitle}
+                aria-label={'refetch-intervals'}
                 id="refresh-dropdown"
                 onSelect={() => setOpen(!isOpen)}
                 isOpen={isOpen}
                 isPlain
                 toggle={
-                    <DropdownToggle id="refresh-toggle" isDisabled={false} onToggle={() => setOpen(!isOpen)}>
+                    <DropdownToggle
+                        id="refresh-toggle"
+                        aria-label="refresh-label"
+                        isDisabled={false}
+                        onToggle={() => setOpen(!isOpen)}
+                    >
                         {selected.text}
                     </DropdownToggle>
                 }
