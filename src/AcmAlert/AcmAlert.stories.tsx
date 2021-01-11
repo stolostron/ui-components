@@ -101,7 +101,7 @@ export const AlertGroup = (args) => {
     return (
         <AcmAlertProvider>
             <AcmPageCard>
-                <AcmAlertGroup isInline={args.isInline} canClose={args.canClose} />
+                <AcmAlertGroup isInline={args.isInline} canClose={args.canClose} alertMargin="0 0 24px 0" />
                 <AddAlert /> <AddInfo /> <AddSuccess /> <AddWarning /> <AddError /> <ClearAlerts /> <ClearInfoAlerts />
             </AcmPageCard>
         </AcmAlertProvider>

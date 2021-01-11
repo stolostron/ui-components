@@ -141,7 +141,7 @@ export function AcmAlert(props: {
     )
 }
 
-export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean }) {
+export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean; alertMargin?: string }) {
     const alertContext = useContext(AcmAlertContext)
     return alertContext.alertInfos.length > 0 ? (
         <Fragment>
@@ -153,7 +153,7 @@ export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean })
                         isInline={props.isInline}
                         noClose={!props.canClose}
                         style={{
-                            marginBottom: '24px',
+                            margin: props.alertMargin,
                         }}
                     />
                 )
