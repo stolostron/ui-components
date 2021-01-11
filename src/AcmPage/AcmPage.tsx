@@ -46,7 +46,7 @@ export function AcmPageHeader(props: {
                     >
                         <Title headingLevel="h1">{props.title}</Title>
                         {props.titleTooltip && (
-                            <Tooltip position="top" content={<>{props.titleTooltip}</>}>
+                            <Tooltip position="top" content={<>{props.titleTooltip}</>} exitDelay={1000}>
                                 <OutlinedQuestionCircleIcon style={{ marginLeft: '8px' }} />
                             </Tooltip>
                         )}
