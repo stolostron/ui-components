@@ -24,6 +24,7 @@ describe('AcmPageHeader', () => {
                 <AcmPageHeader
                     breadcrumb={[{ text: 'text', to: 'to' }]}
                     title="title"
+                    titleTooltip="tooltip for title"
                     navigation="navigation"
                     controls="controls"
                     actions="actions"
