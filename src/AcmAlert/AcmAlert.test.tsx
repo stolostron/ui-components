@@ -12,9 +12,19 @@ describe('AcmAlert', () => {
                 <AcmAlertContext.Consumer>
                     {(context) => (
                         <Fragment>
-                            <AcmButton onClick={() => context.addAlert({ title: 'Info' })}>Add Info</AcmButton>
-                            <AcmButton onClick={() => context.addAlert({ title: 'Error' })}>Add Error</AcmButton>
+                            <AcmButton onClick={() => context.addAlert({ title: 'Info', type: 'info' })}>
+                                Add Info
+                            </AcmButton>
+                            <AcmButton onClick={() => context.addAlert({ title: 'Error', type: 'danger' })}>
+                                Add Error
+                            </AcmButton>
+                            <AcmButton onClick={() => context.addAlert({ title: 'Warning', type: 'warning' })}>
+                                Add Warning
+                            </AcmButton>
                             <AcmButton onClick={() => context.clearAlerts()}>Clear Alerts</AcmButton>
+                            <AcmButton onClick={() => context.clearAlerts((a) => a.type === 'warning')}>
+                                Clear Warnings
+                            </AcmButton>
                         </Fragment>
                     )}
                 </AcmAlertContext.Consumer>
@@ -31,9 +41,18 @@ describe('AcmAlert', () => {
         getByText('Add Error').click()
         await waitFor(() => expect(queryAllByText('Error')).toHaveLength(2))
 
+        expect(queryAllByText('Warning')).toHaveLength(0)
+        getByText('Add Warning').click()
+        await waitFor(() => expect(queryAllByText('Warning')).toHaveLength(1))
+
         expect(await axe(container)).toHaveNoViolations()
 
-        getByRole('button', { name: 'Close Default alert: alert: Info' }).click()
+        getByText('Clear Warnings').click()
+        await waitFor(() => expect(queryAllByText('Warning')).toHaveLength(0))
+        await waitFor(() => expect(queryAllByText('Info')).toHaveLength(1))
+        await waitFor(() => expect(queryAllByText('Error')).toHaveLength(2))
+
+        getByRole('button', { name: 'Close Info alert: alert: Info' }).click()
         await waitFor(() => expect(queryAllByText('Info')).toHaveLength(0))
 
         getByText('Clear Alerts').click()
