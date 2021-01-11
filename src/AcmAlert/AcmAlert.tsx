@@ -1,6 +1,15 @@
 import Collapse from '@material-ui/core/Collapse'
 import { Alert, AlertActionCloseButton } from '@patternfly/react-core'
-import React, { createContext, HTMLAttributes, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import React, {
+    createContext,
+    CSSProperties,
+    Fragment,
+    ReactNode,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from 'react'
 
 export interface AcmAlertInfo {
     type?: 'success' | 'danger' | 'warning' | 'info' | 'default'
@@ -61,7 +70,7 @@ export function AcmAlert(props: {
     message?: ReactNode
     noClose?: boolean
     variant?: 'success' | 'danger' | 'warning' | 'info' | 'default'
-    style?: HTMLAttributes<HTMLDivElement>
+    style?: CSSProperties
 }) {
     const alertContext = useContext(AcmAlertContext)
     const { alertInfo } = props
@@ -73,7 +82,6 @@ export function AcmAlert(props: {
     }, [alertContext])
     return (
         <Collapse
-            style={props.style}
             in={open}
             onExit={() => {
                 /* istanbul ignore else */
@@ -83,16 +91,15 @@ export function AcmAlert(props: {
             }}
             timeout={200}
         >
-            <div style={{ paddingBottom: '8px' }}>
-                <Alert
-                    isInline={props.isInline}
-                    title={alertInfo?.title || props.title}
-                    actionClose={!props.noClose && <AlertActionCloseButton onClose={() => setOpen(false)} />}
-                    variant={alertInfo?.type || props.variant}
-                >
-                    {alertInfo?.message || props.message || props.subtitle}
-                </Alert>
-            </div>
+            <Alert
+                isInline={props.isInline}
+                title={alertInfo?.title || props.title}
+                actionClose={!props.noClose && <AlertActionCloseButton onClose={() => setOpen(false)} />}
+                variant={alertInfo?.type || props.variant}
+                style={props.style}
+            >
+                {alertInfo?.message || props.message || props.subtitle}
+            </Alert>
         </Collapse>
     )
 }
@@ -100,16 +107,21 @@ export function AcmAlert(props: {
 export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean }) {
     const alertContext = useContext(AcmAlertContext)
     return alertContext.alertInfos.length > 0 ? (
-        <div style={{ paddingBottom: '16px' }}>
-            {alertContext.alertInfos.map((alertInfo) => (
-                <AcmAlert
-                    key={alertInfo.id}
-                    alertInfo={alertInfo}
-                    isInline={props.isInline}
-                    noClose={!props.canClose}
-                />
-            ))}
-        </div>
+        <Fragment>
+            {alertContext.alertInfos.map((alertInfo) => {
+                return (
+                    <AcmAlert
+                        key={alertInfo.id}
+                        alertInfo={alertInfo}
+                        isInline={props.isInline}
+                        noClose={!props.canClose}
+                        style={{
+                            marginBottom: '24px',
+                        }}
+                    />
+                )
+            })}
+        </Fragment>
     ) : (
         <></>
     )
