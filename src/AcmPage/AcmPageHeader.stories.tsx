@@ -30,6 +30,7 @@ export const PageHeader = (args) => {
 PageHeader.args = {
     breadcrumb: [{ text: 'Page 1' }, { text: 'Page 2' }, { text: 'Page 3' }],
     title: 'Page title',
+    titleTooltip: 'Doc link',
     navigation: (
         <AcmSecondaryNav>
             <AcmSecondaryNavItem isActive={true}>Clusters</AcmSecondaryNavItem>

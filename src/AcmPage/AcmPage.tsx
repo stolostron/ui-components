@@ -7,7 +7,9 @@ import {
     PageSection,
     PageSectionVariants,
     Title,
+    Tooltip,
 } from '@patternfly/react-core'
+import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
 import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -17,6 +19,7 @@ export function AcmPage(props: { children: ReactNode }) {
 
 export function AcmPageHeader(props: {
     title: string
+    titleTooltip?: string | React.ReactNode
     breadcrumb?: { text: string; to: string }[]
     navigation?: React.ReactNode
     controls?: React.ReactNode
@@ -31,8 +34,22 @@ export function AcmPageHeader(props: {
                             <AcmBreadcrumb breadcrumb={props.breadcrumb} />
                         </div>
                     )}
-                    <div style={{ paddingLeft: '24px', flexGrow: 1, paddingTop: '8px', paddingBottom: '8px' }}>
+                    <div
+                        style={{
+                            paddingLeft: '24px',
+                            flexGrow: 1,
+                            paddingTop: '8px',
+                            paddingBottom: '8px',
+                            display: 'flex',
+                            alignItems: 'center',
+                        }}
+                    >
                         <Title headingLevel="h1">{props.title}</Title>
+                        {props.titleTooltip && (
+                            <Tooltip position="top" content={<>{props.titleTooltip}</>}>
+                                <OutlinedQuestionCircleIcon style={{ marginLeft: '8px' }} />
+                            </Tooltip>
+                        )}
                     </div>
                     {props.navigation ? (
                         <div style={{ paddingLeft: '8px' }}>{props.navigation}</div>
