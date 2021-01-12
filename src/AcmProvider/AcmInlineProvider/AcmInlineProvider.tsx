@@ -12,6 +12,7 @@ const useStyles = makeStyles({
             top: '0.12em',
             position: 'relative',
         },
+        whiteSpace: 'nowrap',
     },
 })
 
