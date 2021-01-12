@@ -7,7 +7,5 @@ export default {
 }
 
 export const ExpandableCard = () => {
-    return (
-        <AcmHeaderPrototype href="https://patternfly.org" target="_blank"></AcmHeaderPrototype>
-    )
+    return <AcmHeaderPrototype href="https://patternfly.org" target="_blank"></AcmHeaderPrototype>
 }

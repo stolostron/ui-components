@@ -1,10 +1,5 @@
 import React, { useState } from 'react'
-import {
-  Page,
-  PageHeader,
-  PageHeaderTools,
-  PageSidebar,
-} from '@patternfly/react-core'
+import { Page, PageHeader, PageHeaderTools, PageSidebar } from '@patternfly/react-core'
 
 export type AcmHeaderPrototypeProps = {
     href: string
@@ -16,18 +11,16 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
 
     const Header = (
         <PageHeader
-          logo="Logo"
-          logoProps={props}
-          headerTools={<PageHeaderTools>header-tools</PageHeaderTools>}
-          showNavToggle
-          isNavOpen={isOpen}
-          onNavToggle={() => setOpen(!isOpen)}
+            logo="Logo"
+            logoProps={props}
+            headerTools={<PageHeaderTools>header-tools</PageHeaderTools>}
+            showNavToggle
+            isNavOpen={isOpen}
+            onNavToggle={() => setOpen(!isOpen)}
         />
-      )
+    )
 
     const Sidebar = <PageSidebar nav="Navigation" isNavOpen={isOpen} />
 
-    return (
-        <Page header={Header} sidebar={Sidebar}></Page>
-    )
+    return <Page header={Header} sidebar={Sidebar}></Page>
 }
