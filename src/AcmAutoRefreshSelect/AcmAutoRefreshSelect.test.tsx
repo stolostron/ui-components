@@ -3,6 +3,7 @@ import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { AcmAutoRefreshSelect, getPollInterval } from './AcmAutoRefreshSelect'
+import { act } from 'react-dom/test-utils'
 
 describe('AcmAutoRefreshSelect ', () => {
     const refetch = jest.fn()
@@ -29,5 +30,36 @@ describe('AcmAutoRefreshSelect ', () => {
         userEvent.hover(getByTestId('refresh-dropdown'))
     })
 
-    test('saves to localStorage', () => {})
+    test('should call getPollInterval and savePollInterval on component load', async () => {
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: jest.fn(() => null),
+                setItem: jest.fn(() => null),
+            },
+            writable: true,
+        })
+        act(() => {
+            render(<RefreshSelect />)
+        })
+        expect(window.localStorage.getItem).toHaveBeenCalledTimes(1)
+        expect(window.localStorage.setItem).toHaveBeenCalledTimes(1)
+        expect(window.localStorage.setItem).toHaveBeenCalledWith(
+            'acm-overview-interval-refresh-cookie',
+            '{"pollInterval":30000}'
+        )
+        // await waitFor(() => expect(getByTestId('test')).toBeInTheDocument())
+    })
+
+    test('checks for savedInterval in getPollInterval', async () => {
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: jest.fn(() => null),
+                setItem: jest.fn(() => null),
+            },
+            writable: true,
+        })
+        act(() => {
+            render(<RefreshSelect />)
+        })
+    })
 })

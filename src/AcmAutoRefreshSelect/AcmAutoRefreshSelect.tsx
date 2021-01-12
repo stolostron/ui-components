@@ -43,25 +43,27 @@ const useStyles = makeStyles({
 
 export const getPollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string) => {
     let pollInterval = DEFAULT_REFRESH_TIME * 1000
-    if (OVERVIEW_REFRESH_INTERVAL_COOKIE) {
-        const savedInterval = localStorage.getItem(OVERVIEW_REFRESH_INTERVAL_COOKIE)
-        if (savedInterval) {
-            try {
-                const saved = JSON.parse(savedInterval)
-                if (saved.pollInterval !== undefined) {
-                    pollInterval = saved.pollInterval
-                }
-            } catch (e) {
-                //
+    const savedInterval = localStorage.getItem(OVERVIEW_REFRESH_INTERVAL_COOKIE)
+    console.log('savedInterval', savedInterval)
+
+    if (savedInterval) {
+        try {
+            const saved = JSON.parse(savedInterval)
+            if (saved.pollInterval !== undefined) {
+                pollInterval = saved.pollInterval
             }
-        } else {
-            savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, pollInterval)
+        } catch (e) {
+            //
         }
+    } else {
+        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, 30000)
     }
     return pollInterval
 }
 
 export const savePollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string, pollInterval: number) => {
+    console.log('savepollinterval', pollInterval)
+
     localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, JSON.stringify({ pollInterval }))
 }
 
@@ -71,7 +73,7 @@ const useLocalStorage = (key: string, initialValue: number) => {
             const item = window.localStorage.getItem(key)
             return item ? JSON.parse(item) : initialValue
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             return initialValue
         }
     })
@@ -81,7 +83,7 @@ const useLocalStorage = (key: string, initialValue: number) => {
             setStoredValue(valueToStore)
             window.localStorage.setItem(key, JSON.stringify(valueToStore))
         } catch (error) {
-            console.log(error)
+            // console.log(error)
         }
     }
     return [storedValue, setValue]
@@ -107,11 +109,11 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     useEffect(() => {
         refetch()
         setPollInterval(selected.pi)
-        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, pollInterval)
+        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, selected?.pi || pollInterval)
         if (!docHidden && selected.pi !== 0) {
             const interval = setInterval(() => {
                 refetch()
-            }, selected.pi)
+            }, selected?.pi || 30000)
             return () => {
                 document.removeEventListener('visibilitychange', onVisibilityChange)
                 setAddedListener(false)
@@ -173,7 +175,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
                         isDisabled={false}
                         onToggle={() => setOpen(!isOpen)}
                     >
-                        {selected.text}
+                        {selected?.text || `Refresh every ${DEFAULT_REFRESH_TIME}s`}
                     </DropdownToggle>
                 }
                 dropdownItems={autoRefreshChoices.map((item) => (
