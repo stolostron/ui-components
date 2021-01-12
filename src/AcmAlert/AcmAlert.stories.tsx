@@ -86,11 +86,23 @@ export const AlertGroup = (args) => {
             </AcmButton>
         )
     }
+    const ClearInfoAlerts = () => {
+        const alertContext = useContext(AcmAlertContext)
+        return (
+            <AcmButton
+                onClick={() => {
+                    alertContext.clearAlerts((a) => a.type === 'info')
+                }}
+            >
+                Clear Info Alerts
+            </AcmButton>
+        )
+    }
     return (
         <AcmAlertProvider>
             <AcmPageCard>
-                <AcmAlertGroup isInline={args.isInline} canClose={args.canClose} />
-                <AddAlert /> <AddInfo /> <AddSuccess /> <AddWarning /> <AddError /> <ClearAlerts />
+                <AcmAlertGroup isInline={args.isInline} canClose={args.canClose} alertMargin="0 0 24px 0" />
+                <AddAlert /> <AddInfo /> <AddSuccess /> <AddWarning /> <AddError /> <ClearAlerts /> <ClearInfoAlerts />
             </AcmPageCard>
         </AcmAlertProvider>
     )
