@@ -79,7 +79,7 @@ const useStyles = makeStyles({
         '& > svg': {
             width: '32px',
             height: '32px',
-        }
+        },
     },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
