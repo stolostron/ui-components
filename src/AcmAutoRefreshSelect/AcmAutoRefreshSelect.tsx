@@ -54,13 +54,13 @@ export const getPollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string) => {
             //
         }
     } else {
-        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, 30000)
+        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, pollInterval)
     }
     return pollInterval
 }
 
 export const savePollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string, pollInterval: number) => {
-    localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, JSON.stringify({ pollInterval }))
+    localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, `${pollInterval}`)
 }
 
 const useLocalStorage = (key: string, initialValue: number) => {
@@ -87,7 +87,7 @@ const useLocalStorage = (key: string, initialValue: number) => {
 
 export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
-    const [selected, setSelected] = useLocalStorage('pollInterval', 30000)
+    const [selected, setSelected] = useLocalStorage(OVERVIEW_REFRESH_INTERVAL_COOKIE, DEFAULT_REFRESH_TIME * 1000)
     const [addedListener, setAddedListener] = useState<boolean>(false)
     const [docHidden, setDocHidden] = useState<boolean>(false)
     const onVisibilityChange = () => {
@@ -97,19 +97,16 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         document.addEventListener('visibilitychange', onVisibilityChange)
         setAddedListener(true)
     }
-
-    const [pollInterval, setPollInterval] = useState(props.pollInterval)
     const classes = useStyles()
     const { refetch } = props
 
     useEffect(() => {
         refetch()
-        setPollInterval(selected.pi)
-        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, selected?.pi || pollInterval)
-        if (!docHidden && selected.pi !== 0) {
+        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, selected)
+        if (!docHidden && selected !== 0) {
             const interval = setInterval(() => {
                 refetch()
-            }, selected?.pi || 30000)
+            }, selected)
             return () => {
                 document.removeEventListener('visibilitychange', onVisibilityChange)
                 setAddedListener(false)
@@ -130,27 +127,34 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     }
 
     const autoRefreshChoices = REFRESH_VALUES.map((pi) => {
-        let id, text
+        let id
         if (pi >= 60) {
             id = `refresh-${pi / 60}m`
-            text = `Refresh every ${pi / 60}m`
         } else if (pi !== 0) {
             id = `refresh-${pi}s`
-            text = `Refresh every ${pi}s`
         } else {
             id = 'refresh-disable'
-            text = 'Disable refresh'
         }
         pi *= 1000
-        return { id, text, pi }
+        return { id, pi }
     })
+
+    const conversion = (pi: number) => {
+        if (pi >= 60000) {
+            return `Refresh every ${pi / 60000}m`
+        } else if (pi !== 0) {
+            return `Refresh every ${pi / 1000}s`
+        } else {
+            return 'Disable refresh'
+        }
+    }
 
     return (
         <div className={classes.container}>
             <div
                 className={classes.reloadButton}
-                id="refresh-icon"
                 tabIndex={0}
+                id={'refresh-icon'}
                 aria-label={'refresh-icon'}
                 role={'button'}
                 onClick={handleRefresh}
@@ -172,12 +176,12 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
                         isDisabled={false}
                         onToggle={() => setOpen(!isOpen)}
                     >
-                        {selected?.text || `Refresh every ${DEFAULT_REFRESH_TIME}s`}
+                        {conversion(selected)}
                     </DropdownToggle>
                 }
                 dropdownItems={autoRefreshChoices.map((item) => (
-                    <DropdownItem key={item.id} {...item} onClick={() => setSelected(item)}>
-                        {item.text}
+                    <DropdownItem key={item.id} {...item} onClick={() => setSelected(item.pi)}>
+                        {conversion(item.pi)}
                     </DropdownItem>
                 ))}
             />

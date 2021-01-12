@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, waitFor } from '@testing-library/react'
+import { fireEvent, render, waitFor, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { AcmAutoRefreshSelect, getPollInterval } from './AcmAutoRefreshSelect'
@@ -30,7 +30,7 @@ describe('AcmAutoRefreshSelect ', () => {
         userEvent.hover(getByTestId('refresh-dropdown'))
     })
 
-    test('should call getPollInterval and savePollInterval on component load', async () => {
+    test('should call getPollInterval and savePollInterval with default value on component load', async () => {
         Object.defineProperty(window, 'localStorage', {
             value: {
                 getItem: jest.fn(() => null),
@@ -43,24 +43,23 @@ describe('AcmAutoRefreshSelect ', () => {
         })
         expect(window.localStorage.getItem).toHaveBeenCalledTimes(1)
         expect(window.localStorage.setItem).toHaveBeenCalledTimes(1)
-        expect(window.localStorage.setItem).toHaveBeenCalledWith(
-            'acm-overview-interval-refresh-cookie',
-            '{"pollInterval":30000}'
-        )
+        expect(window.localStorage.setItem).toHaveBeenCalledWith('acm-overview-interval-refresh-cookie', '60000')
     })
 
     test('checks for savedInterval in getPollInterval', async () => {
         Object.defineProperty(window, 'localStorage', {
             value: {
-                getItem: jest.fn(() => 'pollInterval:3000'),
+                getItem: jest.fn(() => 'pollInterval:60000'),
                 setItem: jest.fn(() => null),
             },
             writable: true,
         })
+
         act(() => {
             render(<RefreshSelect />)
         })
-        expect(window.localStorage.getItem).toReturnWith('pollInterval:3000')
+        expect(window.localStorage.getItem).toReturnWith('pollInterval:60000')
+        expect(screen.getByText('Refresh every 1m')).toBeInTheDocument()
     })
 
     // test('refetch is not run when browser hidden', () => {
