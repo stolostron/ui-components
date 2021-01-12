@@ -76,7 +76,7 @@ const useStyles = makeStyles({
             '-webkit-box-orient': 'vertical',
             overflow: 'hidden',
         },
-        ' & > svg': {
+        '& > svg': {
             width: '32px',
             height: '32px',
         }
