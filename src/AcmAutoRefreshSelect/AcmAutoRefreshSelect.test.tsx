@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, waitFor } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { AcmAutoRefreshSelect, getPollInterval } from './AcmAutoRefreshSelect'
@@ -47,13 +47,12 @@ describe('AcmAutoRefreshSelect ', () => {
             'acm-overview-interval-refresh-cookie',
             '{"pollInterval":30000}'
         )
-        // await waitFor(() => expect(getByTestId('test')).toBeInTheDocument())
     })
 
     test('checks for savedInterval in getPollInterval', async () => {
         Object.defineProperty(window, 'localStorage', {
             value: {
-                getItem: jest.fn(() => null),
+                getItem: jest.fn(() => 'pollInterval:3000'),
                 setItem: jest.fn(() => null),
             },
             writable: true,
@@ -61,5 +60,23 @@ describe('AcmAutoRefreshSelect ', () => {
         act(() => {
             render(<RefreshSelect />)
         })
+        expect(window.localStorage.getItem).toReturnWith('pollInterval:3000')
+    })
+
+    // test('refetch is not run when browser hidden', () => {
+    //     act(() => {
+    //         render(<RefreshSelect />)
+    //     })
+    //     let docHidden = true
+    // })
+
+    test('refresh button fires refetch', () => {
+        const { getByTestId } = render(<RefreshSelect />)
+        const refreshIcon = getByTestId('refresh-icon')
+        expect(refreshIcon).toBeInTheDocument()
+        userEvent.click(refreshIcon)
+        expect(refetch).toHaveBeenCalled()
+        fireEvent.keyPress(refreshIcon, { key: 'Enter', code: 13, charCode: 13 })
+        expect(refetch).toHaveBeenCalled()
     })
 })

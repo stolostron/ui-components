@@ -3,8 +3,8 @@ import { SyncAltIcon } from '@patternfly/react-icons'
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
-const DEFAULT_REFRESH_TIME = 30
-const REFRESH_VALUES = [1, 30, 60, 5 * 60, 30 * 60, 0]
+const DEFAULT_REFRESH_TIME = 60
+const REFRESH_VALUES = [30, 60, 5 * 60, 30 * 60, 0]
 const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-overview-interval-refresh-cookie'
 
 export type AcmAutoRefreshSelectProps = {
@@ -44,8 +44,6 @@ const useStyles = makeStyles({
 export const getPollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string) => {
     let pollInterval = DEFAULT_REFRESH_TIME * 1000
     const savedInterval = localStorage.getItem(OVERVIEW_REFRESH_INTERVAL_COOKIE)
-    console.log('savedInterval', savedInterval)
-
     if (savedInterval) {
         try {
             const saved = JSON.parse(savedInterval)
@@ -62,8 +60,6 @@ export const getPollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string) => {
 }
 
 export const savePollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string, pollInterval: number) => {
-    console.log('savepollinterval', pollInterval)
-
     localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, JSON.stringify({ pollInterval }))
 }
 
@@ -153,6 +149,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         <div className={classes.container}>
             <div
                 className={classes.reloadButton}
+                id="refresh-icon"
                 tabIndex={0}
                 aria-label={'refresh-icon'}
                 role={'button'}
