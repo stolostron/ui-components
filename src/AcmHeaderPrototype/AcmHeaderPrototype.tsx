@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React, { useState } from 'react'
 import { Page, PageHeader, PageHeaderTools, PageSidebar, PageHeaderToolsGroup, PageHeaderToolsItem, Button } from '@patternfly/react-core'
 
