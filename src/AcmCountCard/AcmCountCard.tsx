@@ -76,6 +76,10 @@ const useStyles = makeStyles({
             '-webkit-box-orient': 'vertical',
             overflow: 'hidden',
         },
+        '& > svg': {
+            width: '32px',
+            height: '32px',
+        },
     },
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
