@@ -1,12 +1,12 @@
+import { makeStyles } from '@material-ui/styles'
 import {
     EmptyState,
     EmptyStateIcon,
     Pagination,
     PaginationVariant,
+    PerPageOptions,
     SearchInput,
     Spinner,
-    Split,
-    SplitItem,
     Title,
     Toolbar,
     ToolbarContent,
@@ -23,25 +23,24 @@ import {
     SortByDirection,
     Table,
     TableBody,
+    TableGridBreakpoint,
     TableHeader,
     TableVariant,
-    TableGridBreakpoint,
 } from '@patternfly/react-table'
-import { makeStyles } from '@material-ui/styles'
+import useResizeObserver from '@react-hook/resize-observer'
 import Fuse from 'fuse.js'
 import get from 'get-value'
 import React, {
+    createContext,
     FormEvent,
     Fragment,
     ReactNode,
-    createContext,
+    useCallback,
     useContext,
     useLayoutEffect,
     useMemo,
     useState,
-    useCallback,
 } from 'react'
-import useResizeObserver from '@react-hook/resize-observer'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
 
@@ -163,6 +162,7 @@ export interface AcmTableProps<T> {
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
     gridBreakPoint?: TableGridBreakpoint
+    perPageOptions?: PerPageOptions[]
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, keyFn, bulkActions } = props
@@ -588,25 +588,21 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             </Table>
                         </div>
                     </div>
-                    <Split>
-                        <SplitItem isFilled></SplitItem>
-                        <SplitItem>
-                            {filtered.length !== 0 && (
-                                <Pagination
-                                    itemCount={filtered.length}
-                                    perPage={perPage}
-                                    page={page}
-                                    variant={PaginationVariant.bottom}
-                                    onSetPage={(_event, page) => {
-                                        setPage(page)
-                                    }}
-                                    onPerPageSelect={(_event, perPage) => {
-                                        updatePerPage(perPage)
-                                    }}
-                                />
-                            )}
-                        </SplitItem>
-                    </Split>
+                    {filtered.length !== 0 && (
+                        <Pagination
+                            itemCount={filtered.length}
+                            perPage={perPage}
+                            page={page}
+                            variant={PaginationVariant.bottom}
+                            onSetPage={(_event, page) => {
+                                setPage(page)
+                            }}
+                            onPerPageSelect={(_event, perPage) => {
+                                updatePerPage(perPage)
+                            }}
+                            perPageOptions={props.perPageOptions}
+                        />
+                    )}
                     {!filtered.length && (
                         <AcmEmptyState
                             title="No results found"

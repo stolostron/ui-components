@@ -79,7 +79,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                         setCurrentQuery(newQueryString)
                         currentQueryCallback(newQueryString)
                         setSearchbarTags(convertStringToTags(newQueryString))
-                    } else if (tag.kind === 'value') {
+                    } else if (tag.kind === 'value' || currentQuery.endsWith(':')) {
                         const newQueryString = `${currentQuery}${tag.name}`
                         const tags = convertStringToTags(newQueryString)
                         if (tags.length > 1) {

@@ -77,7 +77,7 @@ export function AcmSubmit(props: AcmSubmitProps) {
     }, [context.errors])
     return (
         <Button
-            variant="primary"
+            variant={props.variant ?? 'primary'}
             spinnerAriaValueText={isLoading ? 'Loading' : undefined}
             isLoading={isLoading}
             onClick={async (event) => {
@@ -109,7 +109,7 @@ export function AcmSubmit(props: AcmSubmitProps) {
                     }
                 }
             }}
-            isDisabled={isDisabled || props.isDisabled}
+            isDisabled={isLoading || isDisabled || props.isDisabled}
         >
             {props.label ? (isLoading ? props.processingLabel : props.label) : props.children}
         </Button>
