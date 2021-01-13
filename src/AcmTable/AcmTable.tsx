@@ -163,6 +163,7 @@ export interface AcmTableProps<T> {
     setSort?: (sort: ISortBy | undefined) => void
     gridBreakPoint?: TableGridBreakpoint
     perPageOptions?: PerPageOptions[]
+    autoHidePagination?: boolean
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, keyFn, bulkActions } = props
@@ -588,7 +589,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             </Table>
                         </div>
                     </div>
-                    {filtered.length !== 0 && (
+                    {filtered.length !== 0 && (!props.autoHidePagination || filtered.length > perPage) && (
                         <Pagination
                             itemCount={filtered.length}
                             perPage={perPage}
