@@ -7,7 +7,7 @@ import userEvent from '@testing-library/user-event'
 describe('AcmHeaderPrototype', () => {
     test('renders', async () => {
         const { container, getByRole, getByText } = render(
-            <AcmHeaderPrototype href="https://patternfly.org" target="_blank">
+            <AcmHeaderPrototype href="/" target="_self">
                 <div>test</div>
             </AcmHeaderPrototype>
         )
