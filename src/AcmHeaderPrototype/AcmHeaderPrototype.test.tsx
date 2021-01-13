@@ -13,7 +13,5 @@ describe('AcmHeaderPrototype', () => {
             </AcmHeaderPrototype>
         )
         expect(await axe(container)).toHaveNoViolations()
-        userEvent.click(getByText('Logo'))
-        expect(getByText('test')).toBeInTheDocument()
     })
 })
