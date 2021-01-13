@@ -4,7 +4,7 @@ import { Page, PageHeader, PageHeaderTools, PageSidebar } from '@patternfly/reac
 export type AcmHeaderPrototypeProps = {
     href: string
     target: string
-    children: React.Component | React.ReactElement
+    children: React.Component | React.ReactElement | React.ReactElement[]
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
