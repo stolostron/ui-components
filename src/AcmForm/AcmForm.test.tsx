@@ -4,6 +4,7 @@ import { axe } from 'jest-axe'
 import { AcmForm, AcmSubmit } from './AcmForm'
 import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
 import userEvent from '@testing-library/user-event'
+import { ButtonVariant } from '@patternfly/react-core'
 
 describe('AcmForm', () => {
     test('renders', () => {
@@ -29,7 +30,12 @@ describe('AcmForm', () => {
             return (
                 <AcmForm>
                     <AcmTextInput id="input" label="Input" isRequired value={value} onChange={setValue} />
-                    <AcmSubmit onClick={mockClickPromise} label="Submit" processingLabel="Loading" />
+                    <AcmSubmit
+                        variant={ButtonVariant.danger}
+                        onClick={mockClickPromise}
+                        label="Submit"
+                        processingLabel="Loading"
+                    />
                 </AcmForm>
             )
         }
