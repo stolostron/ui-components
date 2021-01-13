@@ -6,6 +6,8 @@ export default {
     component: AcmHeaderPrototype,
 }
 
-export const ExpandableCard = () => {
-    return <AcmHeaderPrototype href="https://patternfly.org" target="_blank"></AcmHeaderPrototype>
+export const HeaderPrototype = () => {
+    return <AcmHeaderPrototype href="https://patternfly.org" target="_blank">
+        <div>test content</div>
+    </AcmHeaderPrototype>
 }

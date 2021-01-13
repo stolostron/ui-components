@@ -4,6 +4,7 @@ import { Page, PageHeader, PageHeaderTools, PageSidebar } from '@patternfly/reac
 export type AcmHeaderPrototypeProps = {
     href: string
     target: string
+    children: React.Component | React.ReactElement
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
@@ -22,5 +23,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
 
     const Sidebar = <PageSidebar nav="Navigation" isNavOpen={isOpen} />
 
-    return <Page header={Header} sidebar={Sidebar}></Page>
+    return <Page header={Header} sidebar={Sidebar}>
+        {props.children}
+    </Page>
 }
