@@ -7,7 +7,9 @@ export default {
 }
 
 export const HeaderPrototype = () => {
-    return <AcmHeaderPrototype href="https://patternfly.org" target="_blank">
-        <div>test content</div>
-    </AcmHeaderPrototype>
+    return (
+        <AcmHeaderPrototype href="https://patternfly.org" target="_blank">
+            <div>test content</div>
+        </AcmHeaderPrototype>
+    )
 }

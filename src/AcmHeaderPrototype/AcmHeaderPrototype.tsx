@@ -23,7 +23,9 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
 
     const Sidebar = <PageSidebar nav="Navigation" isNavOpen={isOpen} />
 
-    return <Page header={Header} sidebar={Sidebar}>
-        {props.children}
-    </Page>
+    return (
+        <Page header={Header} sidebar={Sidebar}>
+            {props.children}
+        </Page>
+    )
 }
