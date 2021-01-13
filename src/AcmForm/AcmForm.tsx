@@ -1,5 +1,6 @@
 import { Button, ButtonProps, Form, FormProps } from '@patternfly/react-core'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { AcmAlertContext } from '../AcmAlert/AcmAlert'
 
 export const FormContext = createContext<{
     readonly validate: boolean
@@ -59,6 +60,7 @@ type AcmSubmitProps = ButtonProps & { label?: string; processingLabel?: string }
 
 export function AcmSubmit(props: AcmSubmitProps) {
     const context = useContext(FormContext)
+    const alertContext = useContext(AcmAlertContext)
     const [isDisabled, setDisabled] = useState(false)
     const [isLoading, setIsLoading] = React.useState(false)
     const isMountedRef = React.useRef(false)
@@ -85,9 +87,16 @@ export function AcmSubmit(props: AcmSubmitProps) {
                 if (hasError) {
                     context.setValidate(true)
                     setDisabled(hasError)
+                    alertContext.addAlert({
+                        type: 'danger',
+                        title: 'Validation errors detected',
+                        group: 'validation',
+                        id: 'validation',
+                    })
                 } else {
                     setIsLoading(true)
                     context.setReadOnly(true)
+                    alertContext.clearAlerts()
                     /* istanbul ignore else */
                     if (props.onClick) {
                         try {
