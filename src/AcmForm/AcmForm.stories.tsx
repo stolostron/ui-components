@@ -1,7 +1,7 @@
 import { ActionGroup, SelectOption } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
-import { AcmAlert, AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
+import { AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
 import { AcmLabelsInput } from '../AcmLabelsInput/AcmLabelsInput'
 import { AcmMultiSelect } from '../AcmMultiSelect/AcmMultiSelect'
 import { AcmPageCard } from '../AcmPage/AcmPage'
