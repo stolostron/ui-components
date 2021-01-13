@@ -120,6 +120,14 @@ describe('AcmTable', () => {
         const { container } = render(<Table />)
         expect(container.querySelector('table')).toBeInTheDocument()
     })
+    test('renders pagination with autoHidePagination when more that perPage items', () => {
+        const { container } = render(<Table items={exampleData} autoHidePagination />)
+        expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
+    })
+    test('hides pagination with autoHidePagination when less than perPage items', () => {
+        const { container } = render(<Table items={exampleData.slice(0, 8)} autoHidePagination />)
+        expect(container.querySelector('.pf-c-pagination')).toBeNull()
+    })
     test('renders with transforms', () => {
         const { container } = render(<Table transforms={true} />)
         expect(container.querySelector('table')).toBeInTheDocument()
