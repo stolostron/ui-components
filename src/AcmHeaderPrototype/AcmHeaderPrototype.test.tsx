@@ -6,10 +6,13 @@ import userEvent from '@testing-library/user-event'
 
 describe('AcmHeaderPrototype', () => {
     test('renders', async () => {
-        const { container, getByRole } = render(
-            <AcmHeaderPrototype href="https://patternfly.org" target="_blank"></AcmHeaderPrototype>
+        const { container, getByRole, getByText } = render(
+            <AcmHeaderPrototype href="https://patternfly.org" target="_blank">
+                <div>test</div>
+            </AcmHeaderPrototype>
         )
         expect(await axe(container)).toHaveNoViolations()
         userEvent.click(getByRole('button'))
+        expect(getByText('test')).toBeInTheDocument()
     })
 })
