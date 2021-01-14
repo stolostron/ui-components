@@ -9,7 +9,8 @@ const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-overview-interval-refresh-cookie'
 
 export type AcmAutoRefreshSelectProps = {
     refetch: () => void
-    pollInterval: number
+    pollInterval?: number
+    refreshIntervals?: Array<number>
 }
 
 const useStyles = makeStyles({
@@ -41,53 +42,31 @@ const useStyles = makeStyles({
     },
 })
 
-export const getPollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string) => {
-    let pollInterval = DEFAULT_REFRESH_TIME * 1000
-    const savedInterval = localStorage.getItem(OVERVIEW_REFRESH_INTERVAL_COOKIE)
-    if (savedInterval) {
-        try {
-            const saved = JSON.parse(savedInterval)
-            if (saved.pollInterval !== undefined) {
-                pollInterval = saved.pollInterval
-            }
-        } catch (e) {
-            //
-        }
-    } else {
-        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, pollInterval)
-    }
-    return pollInterval
-}
 
-export const savePollInterval = (OVERVIEW_REFRESH_INTERVAL_COOKIE: string, pollInterval: number) => {
+export const savePollInterval = (pollInterval: number|string|null) => {
     localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, `${pollInterval}`)
 }
 
-const useLocalStorage = (key: string, initialValue: number) => {
-    const [storedValue, setStoredValue] = useState(() => {
-        try {
-            const item = window.localStorage.getItem(key)
-            return item ? JSON.parse(item) : initialValue
-        } catch (error) {
-            // console.log(error)
+const initializeLocalStorage = (initialValue: number|undefined) => {
+    const key = OVERVIEW_REFRESH_INTERVAL_COOKIE
+    return useState<number>(():number => {
+        if (initialValue){
+            window.localStorage.setItem(key, `${initialValue}`)
             return initialValue
         }
-    })
-    const setValue = (value: Record<number, unknown>) => {
-        try {
-            const valueToStore = value instanceof Function ? value(storedValue) : value
-            setStoredValue(valueToStore)
-            window.localStorage.setItem(key, JSON.stringify(valueToStore))
-        } catch (error) {
-            // console.log(error)
+        else if (window && window.localStorage && window.localStorage.getItem(key)) {
+            /* istanbul ignore next */
+            const value = window.localStorage.getItem(key) ?? `${DEFAULT_REFRESH_TIME * 1000}`
+            return parseInt(value, 10)
         }
-    }
-    return [storedValue, setValue]
+        window.localStorage.setItem(key, `${DEFAULT_REFRESH_TIME * 1000}`)
+        return DEFAULT_REFRESH_TIME * 1000
+    })
 }
 
 export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
-    const [selected, setSelected] = useLocalStorage(OVERVIEW_REFRESH_INTERVAL_COOKIE, DEFAULT_REFRESH_TIME * 1000)
+    const [selected, setStoredValue] = initializeLocalStorage(props.pollInterval)
     const [addedListener, setAddedListener] = useState<boolean>(false)
     const [docHidden, setDocHidden] = useState<boolean>(false)
     const onVisibilityChange = () => {
@@ -97,12 +76,17 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         document.addEventListener('visibilitychange', onVisibilityChange)
         setAddedListener(true)
     }
+    const setValue = (value: number) => {
+        setStoredValue(value)
+        window.localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, `${value}`)
+    }
+
     const classes = useStyles()
     const { refetch } = props
 
     useEffect(() => {
         refetch()
-        savePollInterval(OVERVIEW_REFRESH_INTERVAL_COOKIE, selected)
+        savePollInterval(selected)
         if (!docHidden && selected !== 0) {
             const interval = setInterval(() => {
                 refetch()
@@ -116,17 +100,14 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         return
     }, [selected, docHidden])
 
-    const handleRefresh = () => {
-        refetch()
-    }
-
     const handleKeyPress = (e: React.KeyboardEvent) => {
+        /* istanbul ignore else */
         if (e.key === 'Enter') {
             refetch()
         }
     }
 
-    const autoRefreshChoices = REFRESH_VALUES.map((pi) => {
+    const autoRefreshChoices = (props.refreshIntervals || REFRESH_VALUES).map((pi) => {
         let id
         if (pi >= 60) {
             id = `refresh-${pi / 60}m`
@@ -157,7 +138,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
                 id={'refresh-icon'}
                 aria-label={'refresh-icon'}
                 role={'button'}
-                onClick={handleRefresh}
+                onClick={refetch}
                 onKeyPress={handleKeyPress}
             >
                 <SyncAltIcon className={classes.icon} />
@@ -180,7 +161,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
                     </DropdownToggle>
                 }
                 dropdownItems={autoRefreshChoices.map((item) => (
-                    <DropdownItem key={item.id} {...item} onClick={() => setSelected(item.pi)}>
+                    <DropdownItem key={item.id} {...item} onClick={() => setValue(item.pi)}>
                         {conversion(item.pi)}
                     </DropdownItem>
                 ))}
