@@ -4,7 +4,7 @@ import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
 const DEFAULT_REFRESH_TIME = 60
-const REFRESH_VALUES = [30, 60, 5 * 60, 30 * 60, 0]
+const REFRESH_VALUES = [1, 30, 60, 5 * 60, 30 * 60, 0]
 const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-overview-interval-refresh-cookie'
 
 export type AcmAutoRefreshSelectProps = {
@@ -42,19 +42,17 @@ const useStyles = makeStyles({
     },
 })
 
-
-export const savePollInterval = (pollInterval: number|string|null) => {
+export const savePollInterval = (pollInterval: number | string | null) => {
     localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, `${pollInterval}`)
 }
 
-const initializeLocalStorage = (initialValue: number|undefined) => {
+const initializeLocalStorage = (initialValue: number | undefined) => {
     const key = OVERVIEW_REFRESH_INTERVAL_COOKIE
-    return useState<number>(():number => {
-        if (initialValue){
+    return useState<number>((): number => {
+        if (initialValue) {
             window.localStorage.setItem(key, `${initialValue}`)
             return initialValue
-        }
-        else if (window && window.localStorage && window.localStorage.getItem(key)) {
+        } else if (window && window.localStorage && window.localStorage.getItem(key)) {
             /* istanbul ignore next */
             const value = window.localStorage.getItem(key) ?? `${DEFAULT_REFRESH_TIME * 1000}`
             return parseInt(value, 10)
