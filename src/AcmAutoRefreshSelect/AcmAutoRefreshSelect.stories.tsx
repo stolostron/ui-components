@@ -14,7 +14,12 @@ export default meta
 const REFRESH_VALUES = [1, 30, 60, 5 * 60, 30 * 60, 0]
 export const AutoRefreshSelect = () => (
     <AcmPageCard>
-        <AcmAutoRefreshSelect refetch={() => console.log('Refetch')} refreshIntervals={REFRESH_VALUES} />
+        <AcmAutoRefreshSelect
+            refetch={() => {
+                return null
+            }}
+            refreshIntervals={REFRESH_VALUES}
+        />
     </AcmPageCard>
 )
 AutoRefreshSelect.args = {}
