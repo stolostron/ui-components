@@ -75,7 +75,7 @@ describe('AcmAutoRefreshSelect ', () => {
             get: () => hidden,
         })
         Object.defineProperty(document, 'addEventListener', {
-            value: (eventName: string, eventCallback: any) => {
+            value: (eventName: string, eventCallback: () => void) => {
                 if (eventName == 'visibilitychange') {
                     act(() => {
                         setTimeout(() => {
