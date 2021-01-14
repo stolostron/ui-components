@@ -21,13 +21,19 @@ const useStyles = makeStyles({
     },
     reloadButton: {
         cursor: 'pointer',
+        marginRight: '0.6rem',
     },
     buttonTitle: {
         maxWidth: '200px',
         '& button': {
+            paddingLeft: '0',
+            paddingRight: '0',
             '& span': {
                 fontSize: 'var(--pf-global--FontSize--sm)',
                 color: 'var(--pf-global--primary-color--100)',
+            },
+            '& span:last-of-type': {
+                marginRight: '0',
             },
             '&:hover, &:focus': {
                 '& span': {
