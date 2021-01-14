@@ -11,10 +11,9 @@ const meta: Meta = {
 }
 export default meta
 
-
 export const AutoRefreshSelect = () => (
     <AcmPageCard>
-        <AcmAutoRefreshSelect refetch={() => console.log('Refetch')} ></AcmAutoRefreshSelect>
+        <AcmAutoRefreshSelect refetch={() => console.log('Refetch')}></AcmAutoRefreshSelect>
     </AcmPageCard>
 )
 AutoRefreshSelect.args = {}
