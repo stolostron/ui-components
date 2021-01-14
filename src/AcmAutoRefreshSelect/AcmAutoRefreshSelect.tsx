@@ -3,8 +3,8 @@ import { SyncAltIcon } from '@patternfly/react-icons'
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
-const DEFAULT_REFRESH_TIME = 60
-const REFRESH_VALUES = [30, 60, 5 * 60, 30 * 60, 0]
+const DEFAULT_REFRESH_TIME = 1
+const REFRESH_VALUES = [1, 30, 60, 5 * 60, 30 * 60, 0]
 const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-overview-interval-refresh-cookie'
 
 export type AcmAutoRefreshSelectProps = {
