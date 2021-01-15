@@ -16,7 +16,7 @@ export const AutoRefreshSelect = () => (
     <AcmPageCard>
         <AcmAutoRefreshSelect
             refetch={() => {
-                console.log('AcmAutoRefreshSelect refetch. (This log is from storybook)')
+                console.log('AcmAutoRefreshSelect refetch. (This log is from storybook)') // eslint-disable-line no-console
                 return null
             }}
             refreshIntervals={REFRESH_VALUES}
