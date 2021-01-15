@@ -71,6 +71,12 @@ const useStyles = makeStyles({
                     color: (props: AcmDropdownProps) =>
                         props.isKebab ? undefined : 'var(--pf-global--primary-color--100)',
                 },
+                '& span.pf-c-dropdown__toggle-text': {
+                    color: (props: AcmDropdownProps) => props.isPrimary && 'var(--pf-global--Color--light-100)',
+                },
+                '& span.pf-c-dropdown__toggle-icon': {
+                    color: (props: AcmDropdownProps) => props.isPrimary && 'var(--pf-global--Color--light-100)',
+                },
             },
             '& span.pf-c-dropdown__toggle-text': {
                 // centers dropdown text in plain dropdown button
