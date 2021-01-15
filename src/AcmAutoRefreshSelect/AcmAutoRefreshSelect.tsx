@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles'
 
 const DEFAULT_REFRESH_TIME = 60
 const REFRESH_VALUES = [30, 60, 5 * 60, 30 * 60, 0]
-const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-overview-interval-refresh-cookie'
+const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-page-refresh-interval'
 
 export type AcmAutoRefreshSelectProps = {
     refetch: () => void

@@ -41,7 +41,7 @@ describe('AcmAutoRefreshSelect ', () => {
 
         expect(window.localStorage.getItem).toHaveBeenCalledTimes(1)
         expect(window.localStorage.setItem).toHaveBeenCalledTimes(2)
-        expect(window.localStorage.setItem).toHaveBeenCalledWith('acm-overview-interval-refresh-cookie', '60000')
+        expect(window.localStorage.setItem).toHaveBeenCalledWith('acm-page-refresh-interval', '60000')
     })
 
     test('should use poll interrval from localStorage', async () => {

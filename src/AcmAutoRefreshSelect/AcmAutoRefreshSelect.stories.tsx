@@ -16,6 +16,7 @@ export const AutoRefreshSelect = () => (
     <AcmPageCard>
         <AcmAutoRefreshSelect
             refetch={() => {
+                console.log('AcmAutoRefreshSelect refetch. (This log is from storybook)')
                 return null
             }}
             refreshIntervals={REFRESH_VALUES}
