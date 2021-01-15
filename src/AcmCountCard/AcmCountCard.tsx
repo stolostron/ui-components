@@ -55,7 +55,7 @@ export type AcmCountCardProps = CardProps & {
     count?: number
     countTitle?: string
     isFlat?: boolean
-    onKeyPress?: () => void
+    onKeyPress?: (e: React.KeyboardEvent) => void
 }
 
 type SkeletonCard = CardProps & {
