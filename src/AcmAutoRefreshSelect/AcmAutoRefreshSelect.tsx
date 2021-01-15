@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/styles'
 
 const DEFAULT_REFRESH_TIME = 60
 const REFRESH_VALUES = [30, 60, 5 * 60, 30 * 60, 0]
-const OVERVIEW_REFRESH_INTERVAL_COOKIE = 'acm-page-refresh-interval'
+const REFRESH_INTERVAL_COOKIE = 'acm-page-refresh-interval'
 
 export type AcmAutoRefreshSelectProps = {
     refetch: () => void
@@ -49,11 +49,11 @@ const useStyles = makeStyles({
 })
 
 export const savePollInterval = (pollInterval: number | string | null) => {
-    localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, `${pollInterval}`)
+    localStorage.setItem(REFRESH_INTERVAL_COOKIE, `${pollInterval}`)
 }
 
 const initializeLocalStorage = (initialValue: number | undefined) => {
-    const key = OVERVIEW_REFRESH_INTERVAL_COOKIE
+    const key = REFRESH_INTERVAL_COOKIE
     return useState<number>((): number => {
         if (initialValue) {
             window.localStorage.setItem(key, `${initialValue}`)
@@ -82,7 +82,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     }
     const setValue = (value: number) => {
         setStoredValue(value)
-        window.localStorage.setItem(OVERVIEW_REFRESH_INTERVAL_COOKIE, `${value}`)
+        window.localStorage.setItem(REFRESH_INTERVAL_COOKIE, `${value}`)
     }
 
     const classes = useStyles()
