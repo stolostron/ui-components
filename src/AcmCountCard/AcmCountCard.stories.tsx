@@ -14,6 +14,10 @@ const handleCardClick = () => {
     alert('Card clicked')
 }
 
+const handleKeyPress = () => {
+    alert('Key pressed')
+}
+
 const suggestedSearchCardActions = [{ text: 'Share', handleAction: () => alert('share action') }]
 const savedSearchCardActions = [
     { text: 'Edit', handleAction: () => alert('edit action') },
@@ -47,6 +51,7 @@ export const SuggestedSearchCard = () => {
                 count={13000}
                 countTitle="Results"
                 isSelectable={true}
+                onKeyPress={handleKeyPress}
             />
             <AcmCountCard
                 cardHeader={{
@@ -62,6 +67,7 @@ export const SuggestedSearchCard = () => {
                 count={0}
                 countTitle="Unhealthy"
                 isSelectable={true}
+                onKeyPress={handleKeyPress}
             />
         </div>
     )
