@@ -142,7 +142,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
                 id={'refresh-icon'}
                 aria-label={'refresh-icon'}
                 role={'button'}
-                onClick={refetch}
+                onClick={() => refetch()}
                 onKeyPress={handleKeyPress}
             >
                 <SyncAltIcon className={classes.icon} />
