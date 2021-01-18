@@ -96,7 +96,7 @@ export function AcmSubmit(props: AcmSubmitProps) {
                 } else {
                     setIsLoading(true)
                     context.setReadOnly(true)
-                    alertContext.clearAlerts()
+                    alertContext.clearAlerts((alertInfo) => alertInfo.group === 'validation')
                     /* istanbul ignore else */
                     if (props.onClick) {
                         try {
