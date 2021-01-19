@@ -3,6 +3,7 @@ import {
     AcmTemplateIcon,
     AcmVisibilityOnIcon,
     AcmVisibilityOffIcon,
+    BrokenLinkIcon,
     RedHatIcon,
     AWSIcon,
     GCPIcon,
@@ -17,6 +18,7 @@ export enum AcmIconVariant {
     template = 'template',
     visibilityon = 'visibilityon',
     visibilityoff = 'visibilityoff',
+    brokenlink = 'brokenlink',
     redhat = 'redhat',
     aws = 'aws',
     gcp = 'gcp',
@@ -37,6 +39,8 @@ export function AcmIcon(props: { icon: AcmIconVariant }) {
             return <AcmVisibilityOffIcon />
         case AcmIconVariant.visibilityon:
             return <AcmVisibilityOnIcon />
+        case AcmIconVariant.brokenlink:
+            return <BrokenLinkIcon />
         case AcmIconVariant.redhat:
             return <RedHatIcon />
         case AcmIconVariant.aws:
