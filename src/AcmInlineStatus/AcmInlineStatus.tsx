@@ -6,6 +6,7 @@ import {
     ExclamationTriangleIcon,
     MinusCircleIcon,
 } from '@patternfly/react-icons'
+import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles({
@@ -23,6 +24,7 @@ export enum StatusType {
     'danger' = 'danger',
     'warning' = 'warning',
     'progress' = 'progress',
+    'detached' = 'detached',
     'unknown' = 'unknown',
 }
 
@@ -48,6 +50,8 @@ function StatusIcon(props: { type: StatusType }) {
             return <ExclamationTriangleIcon color="var(--pf-global--warning-color--100)" />
         case StatusType.progress:
             return <Spinner size="md" style={{ verticalAlign: 'middle' }} />
+        case StatusType.detached:
+            return <AcmIcon icon={AcmIconVariant.brokenlink} />
         case 'unknown':
         default:
             return <MinusCircleIcon color="var(--pf-global--disabled-color--100)" />
