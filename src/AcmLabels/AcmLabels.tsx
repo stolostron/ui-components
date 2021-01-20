@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles'
 import { Label } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
-import React, { useMemo, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 
 const useStyles = makeStyles({
     container: {
@@ -52,6 +52,8 @@ export function AcmLabels(props: {
             .filter((key) => !showAll && props.collapse?.includes(key))
             .map((key: string) => (labelsRecord[key] ? `${key}=${labelsRecord[key]}` : `${key}`))
     }, [labelsRecord, props.collapse, showAll])
+
+    if (props.labels === undefined) return <Fragment></Fragment>
 
     return (
         <div className={classes.container} style={props.style}>
