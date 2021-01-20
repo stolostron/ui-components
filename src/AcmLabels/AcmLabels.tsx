@@ -1,17 +1,26 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { makeStyles } from '@material-ui/core'
+import { CSSProperties } from '@material-ui/styles'
 import { Label } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useMemo, useState } from 'react'
 
 const useStyles = makeStyles({
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
     label: {
         margin: 1,
         overflow: 'hidden',
     },
 })
 
-export function AcmLabels(props: { labels?: string[] | Record<string, string>; collapse?: string[] }) {
+export function AcmLabels(props: {
+    labels?: string[] | Record<string, string>
+    collapse?: string[]
+    style?: CSSProperties
+}) {
     const classes = useStyles()
     const [showAll, setShowAll] = useState(false)
 
@@ -45,7 +54,7 @@ export function AcmLabels(props: { labels?: string[] | Record<string, string>; c
     }, [labelsRecord, props.collapse, showAll])
 
     return (
-        <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        <div className={classes.container} style={props.style}>
             {labels.map((label) => (
                 <Label key={label} className={classes.label} title={label}>
                     {label}
