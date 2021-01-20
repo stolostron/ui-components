@@ -9,9 +9,10 @@ describe('AcmLabels', () => {
         expect(container).toMatchInlineSnapshot('<div />')
     })
     test('renders with string array', () => {
-        const { getByText } = render(<AcmLabels labels={['foo=bar', 'cluster=management']} />)
+        const { getByText } = render(<AcmLabels labels={['foo=bar', 'cluster=management', 'test=']} />)
         expect(getByText('foo=bar')).toBeInTheDocument()
         expect(getByText('cluster=management')).toBeInstanceOf(HTMLSpanElement)
+        expect(getByText('test')).toBeInstanceOf(HTMLSpanElement)
     })
     test('renders with object', () => {
         const { getByText } = render(<AcmLabels labels={{ foo: 'bar', cluster: 'management', empty: '' }} />)
@@ -26,5 +27,15 @@ describe('AcmLabels', () => {
     test('has zero accessibility defects', async () => {
         const { container } = render(<AcmLabels labels={['foo=bar', 'cluster=management']} />)
         expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders with collapsed labels', () => {
+        const { getByText } = render(
+            <AcmLabels labels={{ foo: 'bar', cluster: 'management', empty: '' }} collapse={['cluster', 'empty']} />
+        )
+        expect(getByText('foo=bar')).toBeInTheDocument()
+        expect(getByText('+2')).toBeInTheDocument()
+        getByText('+2').click()
+        expect(getByText('cluster=management')).toBeInstanceOf(HTMLSpanElement)
+        expect(getByText('empty')).toBeInTheDocument()
     })
 })
