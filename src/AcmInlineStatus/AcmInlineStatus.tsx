@@ -15,7 +15,9 @@ const useStyles = makeStyles({
     },
     icon: {
         width: '18px', // Progress size md is 18px
-        height: '18px',
+    },
+    iconMargin: {
+        margin: '3px 2px 1px 2px',
     },
 })
 
@@ -41,19 +43,22 @@ export function AcmInlineStatus(props: { type: StatusType; status: string }) {
 }
 
 function StatusIcon(props: { type: StatusType }) {
+    const classes = useStyles()
     switch (props.type) {
         case StatusType.healthy:
-            return <CheckCircleIcon color="var(--pf-global--success-color--100)" />
+            return <CheckCircleIcon className={classes.iconMargin} color="var(--pf-global--success-color--100)" />
         case StatusType.danger:
-            return <ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />
+            return <ExclamationCircleIcon className={classes.iconMargin} color="var(--pf-global--danger-color--100)" />
         case StatusType.warning:
-            return <ExclamationTriangleIcon color="var(--pf-global--warning-color--100)" />
+            return (
+                <ExclamationTriangleIcon className={classes.iconMargin} color="var(--pf-global--warning-color--100)" />
+            )
         case StatusType.progress:
             return <Spinner size="md" style={{ verticalAlign: 'middle' }} />
         case StatusType.detached:
             return <AcmIcon icon={AcmIconVariant.brokenlink} />
         case 'unknown':
         default:
-            return <MinusCircleIcon color="var(--pf-global--disabled-color--100)" />
+            return <MinusCircleIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
     }
 }
