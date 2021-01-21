@@ -70,6 +70,7 @@ export function AcmLabels(props: {
                         setShowAll(true)
                     }}
                     variant="outline"
+                    title={hidden.join('\n')}
                 >
                     +{hidden.length}
                 </Label>
