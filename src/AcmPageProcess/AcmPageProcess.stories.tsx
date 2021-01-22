@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { AcmPageProcess } from './AcmPageProcess'
 import { AcmButton } from '../AcmButton/AcmButton'
 
@@ -24,6 +25,11 @@ export const PageProcess = (args) => {
         <AcmPageProcess
             {...args}
             isLoading={isLoading}
+            loadingPrimaryAction={
+                <AcmButton variant="link" icon={<ExternalLinkAltIcon />} iconPosition="right">
+                    View logs
+                </AcmButton>
+            }
             primaryAction={<AcmButton>Back to Cluster management</AcmButton>}
             secondaryActions={
                 <>
