@@ -6,6 +6,11 @@ import { AcmLoadingPage } from '../AcmLoadingPage/AcmLoadingPage'
 import DestroyedImage from '../assets/resource-destroyed.svg'
 
 const useStyles = makeStyles({
+    container: {
+        '& .pf-c-card': {
+            height: '100vh',
+        },
+    },
     body: {
         maxWidth: '335px',
         margin: '0 auto',
@@ -34,23 +39,31 @@ export function AcmPageProcess(props: AcmPageProccessProps) {
 
     if (props.isLoading) {
         return (
-            <AcmLoadingPage title={props.loadingTitle} message={props.loadingMessage} actions={props.loadingAction} />
+            <div className={classes.container}>
+                <AcmLoadingPage
+                    title={props.loadingTitle}
+                    message={props.loadingMessage}
+                    actions={props.loadingAction}
+                />
+            </div>
         )
     }
 
     return (
-        <AcmPageCard>
-            <EmptyState>
-                <img src={DestroyedImage} role="presentation" className={classes.image} />
-                <div className={classes.body}>
-                    <Title size="lg" headingLevel="h4">
-                        {props.successTitle ?? 'Success'}
-                    </Title>
-                    <EmptyStateBody>{props.successMessage}</EmptyStateBody>
-                </div>
-                {props.primaryAction}
-                <EmptyStateSecondaryActions>{props.secondaryActions}</EmptyStateSecondaryActions>
-            </EmptyState>
-        </AcmPageCard>
+        <div className={classes.container}>
+            <AcmPageCard>
+                <EmptyState>
+                    <img src={DestroyedImage} role="presentation" className={classes.image} />
+                    <div className={classes.body}>
+                        <Title size="lg" headingLevel="h4">
+                            {props.successTitle ?? 'Success'}
+                        </Title>
+                        <EmptyStateBody>{props.successMessage}</EmptyStateBody>
+                    </div>
+                    {props.primaryAction}
+                    <EmptyStateSecondaryActions>{props.secondaryActions}</EmptyStateSecondaryActions>
+                </EmptyState>
+            </AcmPageCard>
+        </div>
     )
 }
