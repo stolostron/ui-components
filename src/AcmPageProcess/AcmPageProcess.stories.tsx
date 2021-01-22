@@ -26,7 +26,9 @@ export const PageProcess = (args) => {
             {...args}
             isLoading={isLoading}
             loadingAction={
-                <AcmButton variant="link" icon={<ExternalLinkAltIcon />} iconPosition="right">View logs</AcmButton>
+                <AcmButton variant="link" icon={<ExternalLinkAltIcon />} iconPosition="right">
+                    View logs
+                </AcmButton>
             }
             primaryAction={<AcmButton>Back to Cluster management</AcmButton>}
             secondaryActions={
