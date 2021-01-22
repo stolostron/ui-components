@@ -25,7 +25,7 @@ export const PageProcess = (args) => {
         <AcmPageProcess
             {...args}
             isLoading={isLoading}
-            loadingAction={
+            loadingPrimaryAction={
                 <AcmButton variant="link" icon={<ExternalLinkAltIcon />} iconPosition="right">
                     View logs
                 </AcmButton>

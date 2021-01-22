@@ -27,7 +27,7 @@ export type AcmPageProccessProps = {
     loadingTitle?: string | React.ReactNode
     loadingMessage?: string | React.ReactNode
     loadingPrimaryAction?: React.ReactNode
-    loadingSecondaryAction?: React.ReactNode
+    loadingSecondaryActions?: React.ReactNode
     successTitle?: string | React.ReactNode
     successMessage?: string | React.ReactNode
     successAction?: React.ReactNode
@@ -45,7 +45,7 @@ export function AcmPageProcess(props: AcmPageProccessProps) {
                     title={props.loadingTitle}
                     message={props.loadingMessage}
                     primaryAction={props.loadingPrimaryAction}
-                    secondaryActions={props.loadingSecondaryAction}
+                    secondaryActions={props.loadingSecondaryActions}
                 />
             </div>
         )
