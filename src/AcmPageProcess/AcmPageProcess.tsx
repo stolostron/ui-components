@@ -21,6 +21,7 @@ export type AcmPageProccessProps = {
     isLoading: boolean
     loadingTitle?: string | React.ReactNode
     loadingMessage?: string | React.ReactNode
+    loadingAction?: React.ReactNode
     successTitle?: string | React.ReactNode
     successMessage?: string | React.ReactNode
     successAction?: React.ReactNode
@@ -32,7 +33,9 @@ export function AcmPageProcess(props: AcmPageProccessProps) {
     const classes = useStyles()
 
     if (props.isLoading) {
-        return <AcmLoadingPage title={props.loadingTitle} message={props.loadingMessage} />
+        return (
+            <AcmLoadingPage title={props.loadingTitle} message={props.loadingMessage} actions={props.loadingAction} />
+        )
     }
 
     return (

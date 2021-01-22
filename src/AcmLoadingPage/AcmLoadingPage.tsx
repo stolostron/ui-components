@@ -9,7 +9,11 @@ const useStyles = makeStyles({
     },
 })
 
-export function AcmLoadingPage(props: { title?: string | React.ReactNode; message?: string | React.ReactNode }) {
+export function AcmLoadingPage(props: {
+    title?: string | React.ReactNode
+    message?: string | React.ReactNode
+    actions?: React.ReactNode
+}) {
     const classes = useStyles()
     return (
         <AcmPageCard>
@@ -20,6 +24,7 @@ export function AcmLoadingPage(props: { title?: string | React.ReactNode; messag
                         {props.title ?? 'Loading'}
                     </Title>
                     <EmptyStateBody>{props.message}</EmptyStateBody>
+                    {props.actions}
                 </div>
             </EmptyState>
         </AcmPageCard>
