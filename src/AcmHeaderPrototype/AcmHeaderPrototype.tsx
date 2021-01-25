@@ -29,7 +29,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     }
 
     function logout() {
-        api<{ admin: boolean; logoutPath: string }>('/logout')
+        api<{ admin: boolean; logoutPath: string }>('/multicloud/logout')
             .then(({ admin, logoutPath }) => {
                 const onLogout = (delay = 0) => {
                     return setTimeout(() => {
