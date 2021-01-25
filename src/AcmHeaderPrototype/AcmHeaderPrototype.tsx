@@ -29,7 +29,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     }
 
     function logout() {
-        api<{ admin: boolean; logoutPath: string }>('/logout')
+        api<{ admin: boolean; logoutPath: string }>('/multicloud/logout')
             .then(({ admin, logoutPath }) => {
                 const onLogout = (delay = 0) => {
                     return setTimeout(() => {
@@ -42,7 +42,6 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                     form.method = 'POST'
                     form.action = logoutPath
                     const iframe = document.createElement('iframe')
-                    iframe.setAttribute('type', 'hidden')
                     iframe.name = 'hidden-form'
                     iframe.onload = () => onLogout(500)
                     document.body.appendChild(iframe)
