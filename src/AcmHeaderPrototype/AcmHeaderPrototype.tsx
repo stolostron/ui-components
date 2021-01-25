@@ -42,6 +42,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                     form.method = 'POST'
                     form.action = logoutPath
                     const iframe = document.createElement('iframe')
+                    iframe.setAttribute('type', 'hidden')
                     iframe.name = 'hidden-form'
                     iframe.onload = () => onLogout(500)
                     document.body.appendChild(iframe)

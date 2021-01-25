@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { AcmForm, AcmSubmit } from './AcmForm'
+import { AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
 import { AcmTextInput } from '../AcmTextInput/AcmTextInput'
 import userEvent from '@testing-library/user-event'
 import { ButtonVariant } from '@patternfly/react-core'
@@ -29,13 +30,16 @@ describe('AcmForm', () => {
             const [value, setValue] = useState<string>('')
             return (
                 <AcmForm>
-                    <AcmTextInput id="input" label="Input" isRequired value={value} onChange={setValue} />
-                    <AcmSubmit
-                        variant={ButtonVariant.danger}
-                        onClick={mockClickPromise}
-                        label="Submit"
-                        processingLabel="Loading"
-                    />
+                    <AcmAlertProvider>
+                        <AcmTextInput id="input" label="Input" isRequired value={value} onChange={setValue} />
+                        <AcmAlertGroup />
+                        <AcmSubmit
+                            variant={ButtonVariant.danger}
+                            onClick={mockClickPromise}
+                            label="Submit"
+                            processingLabel="Loading"
+                        />
+                    </AcmAlertProvider>
                 </AcmForm>
             )
         }
