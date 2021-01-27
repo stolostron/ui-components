@@ -1,8 +1,6 @@
 import React from 'react'
 import {
     Card,
-    CardHeader,
-    CardBody,
     EmptyState,
     EmptyStateVariant,
     EmptyStateIcon,
@@ -15,7 +13,7 @@ import {
     Bullseye,
 } from '@patternfly/react-core'
 import { ExclamationTriangleIcon } from '@patternfly/react-icons'
-import { withStyles } from '@material-ui/styles'
+import { withStyles, Styles } from '@material-ui/styles'
 
 type ErrorBoundaryStyles = {
     emptyState: string
@@ -26,7 +24,7 @@ type ErrorBoundaryStyles = {
     sectionTitle: string
 }
 
-const styles = {
+const styles: Styles<any, any, string> = {
     emptyState: {
         height: '100%',
         width: '100%',
