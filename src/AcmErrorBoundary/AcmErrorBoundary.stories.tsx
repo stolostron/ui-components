@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
-import { AcmPageErrorBoundary } from './AcmPageErrorBoundary'
+import { AcmErrorBoundary } from './AcmErrorBoundary'
 
 export default {
-    title: 'PageErrorBoundary',
-    component: AcmPageErrorBoundary,
+    title: 'ErrorBoundary',
+    component: AcmErrorBoundary,
 }
 
-export const PageErrorBoundary = () => {
+export const ErrorBoundary = () => {
     return (
-        <AcmPageErrorBoundary>
+        <AcmErrorBoundary actions={<AcmButton>Refresh page</AcmButton>}>
             <ErrorButton />
             <div>Hello</div>
-        </AcmPageErrorBoundary>
+        </AcmErrorBoundary>
     )
 }
 
@@ -21,7 +21,8 @@ const ErrorButton = () => {
 
     useEffect(() => {
         if (error) {
-            throw new Error('An error occurred.')
+            const object = '{"foo": "ba}'
+            JSON.parse(object)
         }
     }, [error])
 
