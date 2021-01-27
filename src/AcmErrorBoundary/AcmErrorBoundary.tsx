@@ -24,6 +24,7 @@ type ErrorBoundaryStyles = {
     sectionTitle: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const styles: Styles<any, any, string> = {
     emptyState: {
         height: '100%',
