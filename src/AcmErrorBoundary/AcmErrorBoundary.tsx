@@ -32,6 +32,7 @@ const styles: Styles<any, any, string> = {
         maxWidth: 'unset',
         '& .pf-c-empty-state__content': {
             width: '100%',
+            maxWidth: 'unset',
         },
     },
     actions: {
