@@ -16,6 +16,7 @@ import { ExclamationTriangleIcon } from '@patternfly/react-icons'
 import { withStyles, Styles } from '@material-ui/styles'
 
 type ErrorBoundaryStyles = {
+    card: string
     emptyState: string
     actions: string
     emptyStateBody: string
@@ -26,6 +27,9 @@ type ErrorBoundaryStyles = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const styles: Styles<any, any, string> = {
+    card: {
+        margin: '24px',
+    },
     emptyState: {
         height: '100%',
         width: '100%',
@@ -86,7 +90,7 @@ class ErrorBoundary extends React.Component<
         const { classes } = this.props
         if (this.state.hasError) {
             return (
-                <Card>
+                <Card className={classes.card}>
                     <EmptyState className={classes.emptyState} variant={EmptyStateVariant.large}>
                         <EmptyStateIcon icon={ExclamationTriangleIcon} />
                         <Title headingLevel="h4" size={TitleSizes['2xl']}>
