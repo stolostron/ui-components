@@ -5,6 +5,12 @@ import { AcmLoadingPage } from './AcmLoadingPage'
 export default {
     title: 'LoadingPage',
     component: AcmLoadingPage,
+    argTypes: {
+        title: { type: 'string' },
+        message: { type: 'string' },
+    },
 }
 
-export const LoadingPage = () => <AcmLoadingPage />
+export const LoadingPage = (args) => <AcmLoadingPage {...args} />
+
+LoadingPage.args = {}
