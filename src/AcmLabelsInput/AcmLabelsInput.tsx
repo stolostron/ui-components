@@ -11,7 +11,6 @@ export function AcmLabelsInput(props: {
     placeholder?: string
 }) {
     const [inputValue, setInputValue] = useState<string>()
-    // const [showInput, setShowInput] = useState(false)
 
     function addLabel(input: string) {
         /* istanbul ignore next */
@@ -59,10 +58,7 @@ export function AcmLabelsInput(props: {
                         minHeight: '36px',
                         borderBottom: 'none',
                     }}
-                    onClick={() => {
-                        setInputValue(undefined)
-                        // setShowInput(true)
-                    }}
+                    onClick={() => setInputValue(undefined)}
                 >
                     {props.value &&
                         Object.keys(props.value).map((key) => (
@@ -70,16 +66,12 @@ export function AcmLabelsInput(props: {
                                 key={key}
                                 style={{ margin: 2 }}
                                 onClose={() => removeLabel(key)}
-                                // variant="outline"
                                 closeBtnProps={{ id: `remove-${key}` }}
                             >
                                 {key}
                                 {props.value && props.value[key].trim() != '' && '=' + props.value[key]}
                             </Label>
                         ))}
-                    {/* {!showInput ? (
-                        <Fragment />
-                    ) : ( */}
                     <TextInput
                         style={{
                             marginTop: '1px',
@@ -92,7 +84,6 @@ export function AcmLabelsInput(props: {
                         onChange={(value) => {
                             setInputValue(value)
                         }}
-                        // hidden={!showInput}
                         autoFocus
                         onKeyDown={(e) => {
                             switch (e.key) {
@@ -112,20 +103,13 @@ export function AcmLabelsInput(props: {
                                         setTimeout(() => (inputElement.value = ''), 0)
                                     }
                                     break
-                                case 'Escape':
-                                    // setShowInput(false)
-                                    break
                             }
                         }}
                         onBlur={
                             /* istanbul ignore next */
-                            (e) => {
-                                addLabel(e.target.value)
-                                // setShowInput(false)
-                            }
+                            (e) => addLabel(e.target.value)
                         }
                     />
-                    {/* )} */}
                 </div>
             </FormGroup>
         </Fragment>
