@@ -1,5 +1,5 @@
 import { FormGroup, Label, TextInput } from '@patternfly/react-core'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useRef } from 'react'
 
 export function AcmLabelsInput(props: {
     id: string
@@ -11,6 +11,7 @@ export function AcmLabelsInput(props: {
     placeholder?: string
 }) {
     const [inputValue, setInputValue] = useState<string>()
+    const inputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     function addLabel(input: string) {
         /* istanbul ignore next */
@@ -63,9 +64,14 @@ export function AcmLabelsInput(props: {
                     {props.value &&
                         Object.keys(props.value).map((key) => (
                             <Label
+                                className="label-pill"
                                 key={key}
                                 style={{ margin: 2 }}
-                                onClose={() => removeLabel(key)}
+                                onClose={(e) => {
+                                    removeLabel(key)
+                                    /* istanbul ignore next */
+                                    e.detail === 0 && inputRef.current?.focus() // only refocus on keyboard event, detail is 0 on key event
+                                }}
                                 closeBtnProps={{ id: `remove-${key}` }}
                             >
                                 {key}
@@ -73,6 +79,7 @@ export function AcmLabelsInput(props: {
                             </Label>
                         ))}
                     <TextInput
+                        ref={inputRef}
                         style={{
                             marginTop: '1px',
                             borderTop: 'none',
@@ -101,6 +108,18 @@ export function AcmLabelsInput(props: {
                                         setInputValue('')
                                         inputElement.value = ''
                                         setTimeout(() => (inputElement.value = ''), 0)
+                                    }
+                                    break
+                                case 'Backspace':
+                                    /* istanbul ignore else */
+                                    if (!inputValue) {
+                                        const labels = (document.querySelectorAll(
+                                            '.label-pill button'
+                                        ) as unknown) as HTMLButtonElement[]
+                                        /* istanbul ignore else */
+                                        if (labels && labels.length > 0) {
+                                            labels[labels.length - 1].focus()
+                                        }
                                     }
                                     break
                             }

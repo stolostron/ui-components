@@ -83,6 +83,15 @@ describe('AcmLabelsInput', () => {
             expect(queryByText('label=null')).toBeNull()
         })
     })
+    test('can delete labels with keyboard controls', () => {
+        const { queryByText, getByTestId } = render(<LabelsInput />)
+
+        userEvent.click(getByTestId('label-input-button'))
+        userEvent.type(getByTestId('label-input'), 'foo=bar{enter}')
+        expect(queryByText('foo=bar')).toBeVisible()
+        userEvent.type(getByTestId('label-input'), '{backspace}{enter}')
+        expect(queryByText('foo=bar')).toBeNull()
+    })
 
     test('has zero accessibility defects', async () => {
         const { getByTestId, container } = render(<LabelsInput />)
