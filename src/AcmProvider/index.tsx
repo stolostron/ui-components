@@ -29,7 +29,7 @@ export const ProviderShortTextMap = {
 
 export const ProviderLongTextMap = {
     [Provider.redhatcloud]: 'cloud.redhat.com',
-    [Provider.openstack]: 'Red Hat OpenStack Platform',
+    [Provider.openstack]: 'Red Hat OpenStack',
     [Provider.aws]: 'Amazon Web Services',
     [Provider.gcp]: 'Google Cloud Platform',
     [Provider.azure]: 'Microsoft Azure',
