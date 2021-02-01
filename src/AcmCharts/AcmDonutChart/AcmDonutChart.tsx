@@ -58,15 +58,16 @@ export const loadingDonutChart = (title: string) => {
     )
 }
 
-const LegendLabel = ({ datum, ...rest }: { datum: Data }) => {
-    if (datum?.link) {
-        return (
-            <a href={datum.link}>
-                <ChartLabel {...rest} />
-            </a>
-        )
-    }
-    return <ChartLabel {...rest} />
+const LegendLabel = ({ ...props }: { datum?: Data }) => {
+    /*istanbul ignore next */
+    const link = props.datum?.link
+    return link ? (
+        <a href={link}>
+            <ChartLabel {...props} />
+        </a>
+    ) : (
+        <ChartLabel {...props} />
+    )
 }
 
 function buildLegendWithLinks(legendData: Array<LegendData>) {
