@@ -7,7 +7,9 @@ import {
     PageSidebar,
     PageHeaderToolsGroup,
     PageHeaderToolsItem,
-    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownToggle
 } from '@patternfly/react-core'
 
 export type AcmHeaderPrototypeProps = {
@@ -18,6 +20,7 @@ export type AcmHeaderPrototypeProps = {
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
+    const [dropIsOpen, dropSetOpen] = useState<boolean>(false)
 
     function api<T>(url: string): Promise<T> {
         return fetch(url).then((response) => {
@@ -26,6 +29,29 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
             }
             return response.json() as Promise<T>
         })
+    }
+
+    function configureClient() {
+        api<{ token_endpoint: string }>('/multicloud/common/configure')
+            .then(({ token_endpoint }) => {
+                window.open(`${token_endpoint}/request`, '_blank')
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error)
+            })
+    }
+
+    function getName(): string {
+        api<{ username: string }>('/multicloud/common/username')
+            .then(({ username }) => {
+                return username
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error)
+            })
+        return 'unknown'
     }
 
     function logout() {
@@ -65,9 +91,22 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                 }}
             >
                 <PageHeaderToolsItem>
-                    <Button aria-label="Settings actions" onClick={() => logout()}>
-                        Logout
-                    </Button>
+                    <Dropdown
+                        toggle={
+                            <DropdownToggle id="toggle-id" onToggle={() => dropSetOpen(!dropIsOpen)}>
+                                {getName()}
+                            </DropdownToggle>}
+                        dropdownItems={[
+                            <DropdownItem onClick={() => logout()} key={'logoutbutton'}>
+                                Logout
+                            </DropdownItem>,
+                            <DropdownItem onClick={() => configureClient()} key={'configurebutton'}>
+                                Configure client
+                            </DropdownItem>,
+                        ]}
+                        isOpen={dropIsOpen}
+                    >
+                    </Dropdown>
                 </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
         </PageHeaderTools>
@@ -75,7 +114,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
 
     const Header = (
         <PageHeader
-            logo="Logo"
+            logo="RHACM"
             logoProps={props}
             headerTools={headerTools}
             showNavToggle
