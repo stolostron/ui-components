@@ -32,6 +32,7 @@
         "@react-hook/resize-observer": "^1.1.0",
         "fuse.js": "^6.4.5",
         "get-value": "^3.0.1",
+        "moment": "^2.29.1",
         "react-router-dom": "^5.2.0",
         "react-tag-autocomplete": "^6.1.0"
     },

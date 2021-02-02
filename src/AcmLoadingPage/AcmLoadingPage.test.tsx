@@ -15,7 +15,7 @@ describe('AcmLoadingPage', () => {
         expect(getByText('Loading')).toBeInstanceOf(HTMLHeadingElement)
     })
     test('has zero accessibility defects', async () => {
-        const { container } = render(<AcmLoadingPage />)
+        const { container } = render(<AcmLoadingPage title="Loading title" message="Loading message here" />)
         expect(await axe(container)).toHaveNoViolations()
     })
 })
