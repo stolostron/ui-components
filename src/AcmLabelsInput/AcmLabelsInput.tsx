@@ -91,7 +91,6 @@ export function AcmLabelsInput(props: {
                         onChange={(value) => {
                             setInputValue(value)
                         }}
-                        autoFocus
                         onKeyDown={(e) => {
                             switch (e.key) {
                                 case ' ':
