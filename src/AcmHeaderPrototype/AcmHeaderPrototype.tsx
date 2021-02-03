@@ -9,7 +9,7 @@ import {
     PageHeaderToolsItem,
     Dropdown,
     DropdownItem,
-    DropdownToggle
+    DropdownToggle,
 } from '@patternfly/react-core'
 
 export type AcmHeaderPrototypeProps = {
@@ -98,7 +98,8 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                         toggle={
                             <DropdownToggle id="toggle-id" onToggle={() => dropSetOpen(!dropIsOpen)}>
                                 {getName()}
-                            </DropdownToggle>}
+                            </DropdownToggle>
+                        }
                         dropdownItems={[
                             <DropdownItem onClick={() => logout()} key={'logoutbutton'}>
                                 Logout
@@ -108,8 +109,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                             </DropdownItem>,
                         ]}
                         isOpen={dropIsOpen}
-                    >
-                    </Dropdown>
+                    ></Dropdown>
                 </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
         </PageHeaderTools>
