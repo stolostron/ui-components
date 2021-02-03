@@ -43,7 +43,9 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     }
 
     function getName(): string {
-        api<{ username: string }>('/multicloud/common/username')
+        const dev = process.env.NODE_ENV !== 'production'
+        const serverForTest = dev ? 'https://localhost:3000' : ''
+        api<{ username: string }>(`${serverForTest}/multicloud/common/username`)
             .then(({ username }) => {
                 return username
             })
