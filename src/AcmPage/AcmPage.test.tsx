@@ -40,10 +40,16 @@ describe('AcmPageHeader', () => {
         expect(getByText('switches')).toBeInTheDocument()
         expect(getByText('actions')).toBeInTheDocument()
     })
-    test('AcmPageHeader can render page actions', () => {
+    test('AcmPageHeader can render page switches and actions', () => {
         const { getByText } = render(
-            <AcmPageHeader breadcrumb={[]} title="ACM header" actions={<AcmButton>Create resource</AcmButton>} />
+            <AcmPageHeader
+                breadcrumb={[]}
+                title="ACM header"
+                switches={<AcmButton>Switch action</AcmButton>}
+                actions={<AcmButton>Create resource</AcmButton>}
+            />
         )
+        expect(getByText('Switch action')).toBeInTheDocument()
         expect(getByText('Create resource')).toBeInTheDocument()
     })
     test('AcmPageHeader has zero accessibility defects', async () => {
