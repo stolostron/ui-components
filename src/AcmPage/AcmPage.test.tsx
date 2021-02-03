@@ -27,6 +27,7 @@ describe('AcmPageHeader', () => {
                     titleTooltip="tooltip for title"
                     navigation="navigation"
                     controls="controls"
+                    switches="switches"
                     actions="actions"
                 />
             </MemoryRouter>
@@ -36,6 +37,7 @@ describe('AcmPageHeader', () => {
         expect(getByText('title')).toBeInstanceOf(HTMLHeadingElement)
         expect(getByText('navigation')).toBeInTheDocument()
         expect(getByText('controls')).toBeInTheDocument()
+        expect(getByText('switches')).toBeInTheDocument()
         expect(getByText('actions')).toBeInTheDocument()
     })
     test('AcmPageHeader can render page actions', () => {
