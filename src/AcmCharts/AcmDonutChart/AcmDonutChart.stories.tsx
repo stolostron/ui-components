@@ -9,11 +9,26 @@ export default {
 
 export const DonutChart = () => {
     const complianceData = [
-        { key: 'Compliant', value: 1, isPrimary: true },
-        { key: 'Non-compliant', value: 1, isDanger: true },
+        {
+            key: 'Compliant',
+            value: 1,
+            isPrimary: true,
+            link: '/search?filters={"textsearch":"kind%3Apolicy%20compliant%3Acompliant"}',
+        },
+        {
+            key: 'Non-compliant',
+            value: 1,
+            isDanger: true,
+            link: '/search?filters={"textsearch":"kind%3Apolicy%20compliant%3Anoncompliant"}',
+        },
     ]
     const podData = [
-        { key: 'Running', value: 90, isPrimary: true },
+        {
+            key: 'Running',
+            value: 90,
+            isPrimary: true,
+            link: '/search?filters={"textsearch":"kind%3Apod%20status%3ARunning"}',
+        },
         { key: 'Pending', value: 8 },
         { key: 'Failed', value: 2, isDanger: true },
     ]

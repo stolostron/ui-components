@@ -18,6 +18,7 @@ export const LabelsInput = () => {
                 value={value}
                 onChange={setValue}
                 buttonLabel="Add label"
+                placeholder="Enter key=value, then press enter, space, or comma"
             />
         </AcmForm>
     )

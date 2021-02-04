@@ -1,5 +1,5 @@
-import { FormGroup, Label } from '@patternfly/react-core'
-import React, { Fragment, useState } from 'react'
+import { FormGroup, Label, TextInput } from '@patternfly/react-core'
+import React, { Fragment, useState, useRef } from 'react'
 
 export function AcmLabelsInput(props: {
     id: string
@@ -8,9 +8,10 @@ export function AcmLabelsInput(props: {
     onChange: (labels: Record<string, string> | undefined) => void
     buttonLabel: string
     hidden?: boolean
+    placeholder?: string
 }) {
     const [inputValue, setInputValue] = useState<string>()
-    const [showInput, setShowInput] = useState(false)
+    const inputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     function addLabel(input: string) {
         /* istanbul ignore next */
@@ -56,68 +57,77 @@ export function AcmLabelsInput(props: {
                         flexWrap: 'wrap',
                         height: 'unset',
                         minHeight: '36px',
+                        borderBottom: 'none',
                     }}
-                    onClick={() => {
-                        setInputValue(undefined)
-                        setShowInput(true)
-                    }}
+                    onClick={() => setInputValue(undefined)}
                 >
                     {props.value &&
                         Object.keys(props.value).map((key) => (
                             <Label
+                                className="label-pill"
                                 key={key}
                                 style={{ margin: 2 }}
-                                onClose={() => removeLabel(key)}
-                                variant="outline"
+                                onClose={(e) => {
+                                    removeLabel(key)
+                                    /* istanbul ignore next */
+                                    e.detail === 0 && inputRef.current?.focus() // only refocus on keyboard event, detail is 0 on key event
+                                }}
                                 closeBtnProps={{ id: `remove-${key}` }}
                             >
                                 {key}
                                 {props.value && props.value[key].trim() != '' && '=' + props.value[key]}
                             </Label>
                         ))}
-                    {!showInput ? (
-                        <Fragment />
-                    ) : (
-                        <input
-                            style={{ marginLeft: '2px', marginTop: '1px' }}
-                            id={props.id}
-                            onChange={(e) => {
-                                setInputValue(e.target.value)
-                            }}
-                            hidden={!showInput}
-                            autoFocus
-                            onKeyDown={(e) => {
-                                switch (e.key) {
-                                    case ' ':
-                                    case ',':
-                                    case 'Enter':
-                                        {
-                                            e.preventDefault()
-                                            e.stopPropagation()
-                                            // istanbul ignore else
-                                            if (inputValue) {
-                                                addLabel(inputValue)
-                                            }
-                                            const inputElement = e.target as HTMLInputElement
-                                            setInputValue('')
-                                            inputElement.value = ''
-                                            setTimeout(() => (inputElement.value = ''), 0)
+                    <TextInput
+                        ref={inputRef}
+                        style={{
+                            marginTop: '1px',
+                            borderTop: 'none',
+                            borderLeft: 'none',
+                            marginLeft: 0,
+                        }}
+                        id={props.id}
+                        placeholder={props.placeholder}
+                        onChange={(value) => {
+                            setInputValue(value)
+                        }}
+                        onKeyDown={(e) => {
+                            switch (e.key) {
+                                case ' ':
+                                case ',':
+                                case 'Enter':
+                                    {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                        // istanbul ignore else
+                                        if (inputValue) {
+                                            addLabel(inputValue)
                                         }
-                                        break
-                                    case 'Escape':
-                                        setShowInput(false)
-                                        break
-                                }
-                            }}
-                            onBlur={
-                                /* istanbul ignore next */
-                                (e) => {
-                                    addLabel(e.target.value)
-                                    setShowInput(false)
-                                }
+                                        const inputElement = e.target as HTMLInputElement
+                                        setInputValue('')
+                                        inputElement.value = ''
+                                        setTimeout(() => (inputElement.value = ''), 0)
+                                    }
+                                    break
+                                case 'Backspace':
+                                    /* istanbul ignore else */
+                                    if (!inputValue) {
+                                        const labels = (document.querySelectorAll(
+                                            '.label-pill button'
+                                        ) as unknown) as HTMLButtonElement[]
+                                        /* istanbul ignore else */
+                                        if (labels && labels.length > 0) {
+                                            labels[labels.length - 1].focus()
+                                        }
+                                    }
+                                    break
                             }
-                        />
-                    )}
+                        }}
+                        onBlur={
+                            /* istanbul ignore next */
+                            (e) => addLabel(e.target.value)
+                        }
+                    />
                 </div>
             </FormGroup>
         </Fragment>

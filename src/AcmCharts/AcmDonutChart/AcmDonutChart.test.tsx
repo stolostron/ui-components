@@ -4,7 +4,7 @@ import { axe } from 'jest-axe'
 import { AcmDonutChart } from './AcmDonutChart'
 
 const complianceData = [
-    { key: 'Compliant', value: 1, isPrimary: true },
+    { key: 'Compliant', value: 1, isPrimary: true, link: '/linkToCompiantResources' },
     { key: 'Non-compliant', value: 1, isDanger: true },
 ]
 const zeroData = [
@@ -19,7 +19,7 @@ const podData = [
 
 describe('AcmDonutChart', () => {
     test('renders', () => {
-        const { getByTestId } = render(
+        const { getByRole, getByTestId } = render(
             <AcmDonutChart
                 title="Cluster compliance"
                 description="Overview of policy compliance status"
@@ -27,6 +27,7 @@ describe('AcmDonutChart', () => {
             />
         )
         expect(getByTestId('cluster-compliance-chart')).toBeInTheDocument()
+        expect(getByRole('link')).toBeInTheDocument()
     })
 
     test('renders skeleton', () => {
@@ -37,12 +38,13 @@ describe('AcmDonutChart', () => {
     })
 
     test('renders with zero values state', () => {
-        const { getByText } = render(
+        const { queryByRole, getByText } = render(
             <AcmDonutChart title="Some title" description="Some description" data={zeroData} />
         )
         expect(getByText('0%')).toBeInTheDocument()
         expect(getByText('0 Key1')).toBeInTheDocument()
         expect(getByText('0 Key2')).toBeInTheDocument()
+        expect(queryByRole('link')).toBeNull() // zeroData doesn't declare links.
     })
 
     test('has zero accessibility defects', async () => {
