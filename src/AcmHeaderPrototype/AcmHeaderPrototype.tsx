@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Page,
     PageHeader,
@@ -27,32 +27,24 @@ function api<T>(url: string): Promise<T> {
     })
 }
 
-type NameProps = unknown
-type NameState = unknown
-class DropdownName extends React.PureComponent<NameProps, NameState> {
-    constructor(props: NameProps) {
-        super(props)
-    }
-    state = { name: '' }
+function DropdownName() {
+    const [name, setName] = useState<string>('')
 
-    componentDidMount() {
+    useEffect(() => {
         const dev = process.env.NODE_ENV !== 'production'
         const serverForTest = dev ? 'https://localhost:3000' : ''
         api<{ username: string }>(`${serverForTest}/multicloud/common/username`)
             .then(({ username }) => {
-                this.setState({ name: username })
+                setName(username)
             })
             .catch((error) => {
                 // eslint-disable-next-line no-console
                 console.error(error)
-                this.setState({ name: '' })
+                setName('')
             })
-    }
+    })
 
-    render() {
-        const { name } = this.state
-        return <span aria-label="dropdown-username">{name}</span>
-    }
+    return <span aria-label="dropdown-username">{name}</span>
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
