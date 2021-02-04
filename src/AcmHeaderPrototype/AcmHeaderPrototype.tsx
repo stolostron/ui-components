@@ -42,7 +42,7 @@ function DropdownName() {
                 console.error(error)
                 setName('')
             })
-    })
+    }, [])
 
     return <span aria-label="dropdown-username">{name}</span>
 }
