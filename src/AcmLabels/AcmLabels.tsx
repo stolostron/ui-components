@@ -6,10 +6,6 @@ import '@patternfly/react-core/dist/styles/base.css'
 import React, { Fragment, useMemo } from 'react'
 
 const useStyles = makeStyles({
-    container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-    },
     label: {
         margin: 1,
         overflow: 'hidden',
