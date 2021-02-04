@@ -33,8 +33,8 @@ describe('AcmLabels', () => {
             <AcmLabels labels={{ foo: 'bar', cluster: 'management', empty: '' }} collapse={['cluster', 'empty']} />
         )
         expect(getByText('foo=bar')).toBeInTheDocument()
-        expect(getByText('+2')).toBeInTheDocument()
-        getByText('+2').click()
+        expect(getByText('2 more')).toBeInTheDocument()
+        getByText('2 more').click()
         expect(getByText('cluster=management')).toBeInstanceOf(HTMLSpanElement)
         expect(getByText('empty')).toBeInTheDocument()
     })
