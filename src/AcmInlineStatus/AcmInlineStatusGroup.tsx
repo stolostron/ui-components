@@ -34,16 +34,17 @@ export function AcmInlineStatusGroup(props: AcmInlineStatusGroupProps) {
                     {props.healthy}
                 </Label>
             )}
-            {show(props.warning) && (
-                <Label color="orange" icon={<ExclamationTriangleIcon />}>
-                    {props.warning}
-                </Label>
-            )}
             {show(props.progress) && (
                 <Label color="grey" icon={<InProgressIcon />}>
                     {props.progress}
                 </Label>
             )}
+            {show(props.warning) && (
+                <Label color="orange" icon={<ExclamationTriangleIcon />}>
+                    {props.warning}
+                </Label>
+            )}
+
             {show(props.danger) && (
                 <Label color="red" icon={<ExclamationCircleIcon />}>
                     {props.danger}
