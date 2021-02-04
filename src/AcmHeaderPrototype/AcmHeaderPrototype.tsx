@@ -18,6 +18,45 @@ export type AcmHeaderPrototypeProps = {
     children: React.Component | React.ReactElement | React.ReactElement[]
 }
 
+function api<T>(url: string): Promise<T> {
+    return fetch(url).then((response) => {
+        if (!response.ok) {
+            throw new Error(response.statusText)
+        }
+        return response.json() as Promise<T>
+    })
+}
+
+type NameProps = {}
+type NameState = {}
+class DropdownName extends React.PureComponent<NameProps, NameState> {
+    constructor(props: NameProps) {
+        super(props)
+    }
+    state = { name: '' }
+
+    componentDidMount() {
+        const dev = process.env.NODE_ENV !== 'production'
+        const serverForTest = dev ? 'https://localhost:3000' : ''
+        api<{ username: string }>(`${serverForTest}/multicloud/common/username`)
+            .then(({ username }) => {
+                this.setState({ name: username })
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error)
+                this.setState({ name: '' })
+            })
+    }
+    
+    render() {
+        const { name } = this.state
+        return (
+            <span>{name}</span>
+        )
+    }
+}
+
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
     const [dropIsOpen, dropSetOpen] = useState<boolean>(false)
@@ -40,20 +79,6 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                 // eslint-disable-next-line no-console
                 console.error(error)
             })
-    }
-
-    function getName(): string {
-        const dev = process.env.NODE_ENV !== 'production'
-        const serverForTest = dev ? 'https://localhost:3000' : ''
-        api<{ username: string }>(`${serverForTest}/multicloud/common/username`)
-            .then(({ username }) => {
-                return username
-            })
-            .catch((error) => {
-                // eslint-disable-next-line no-console
-                console.error(error)
-            })
-        return 'unknown'
     }
 
     function logout() {
@@ -97,7 +122,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                     <Dropdown
                         toggle={
                             <DropdownToggle id="toggle-id" onToggle={() => dropSetOpen(!dropIsOpen)}>
-                                {getName()}
+                                <DropdownName></DropdownName>
                             </DropdownToggle>
                         }
                         dropdownItems={[
