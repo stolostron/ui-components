@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Page,
     PageHeader,
@@ -16,6 +16,35 @@ export type AcmHeaderPrototypeProps = {
     href: string
     target: string
     children: React.Component | React.ReactElement | React.ReactElement[]
+}
+
+function api<T>(url: string): Promise<T> {
+    return fetch(url).then((response) => {
+        if (!response.ok) {
+            throw new Error(response.statusText)
+        }
+        return response.json() as Promise<T>
+    })
+}
+
+function DropdownName() {
+    const [name, setName] = useState<string>('')
+
+    useEffect(() => {
+        const dev = process.env.NODE_ENV !== 'production'
+        const serverForTest = dev ? 'https://localhost:3000' : ''
+        api<{ username: string }>(`${serverForTest}/multicloud/common/username`)
+            .then(({ username }) => {
+                setName(username)
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error)
+                setName('')
+            })
+    }, [])
+
+    return <span aria-label="dropdown-username">{name}</span>
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
@@ -40,20 +69,6 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                 // eslint-disable-next-line no-console
                 console.error(error)
             })
-    }
-
-    function getName(): string {
-        const dev = process.env.NODE_ENV !== 'production'
-        const serverForTest = dev ? 'https://localhost:3000' : ''
-        api<{ username: string }>(`${serverForTest}/multicloud/common/username`)
-            .then(({ username }) => {
-                return username
-            })
-            .catch((error) => {
-                // eslint-disable-next-line no-console
-                console.error(error)
-            })
-        return 'unknown'
     }
 
     function logout() {
@@ -97,7 +112,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                     <Dropdown
                         toggle={
                             <DropdownToggle id="toggle-id" onToggle={() => dropSetOpen(!dropIsOpen)}>
-                                {getName()}
+                                <DropdownName></DropdownName>
                             </DropdownToggle>
                         }
                         dropdownItems={[
