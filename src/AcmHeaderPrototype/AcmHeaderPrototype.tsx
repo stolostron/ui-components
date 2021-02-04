@@ -52,7 +52,7 @@ class DropdownName extends React.PureComponent<NameProps, NameState> {
     render() {
         const { name } = this.state
         return (
-            <span>{name}</span>
+            <span aria-label='dropdown-username'>{name}</span>
         )
     }
 }
