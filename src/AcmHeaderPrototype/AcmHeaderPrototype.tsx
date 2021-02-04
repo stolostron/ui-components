@@ -27,8 +27,8 @@ function api<T>(url: string): Promise<T> {
     })
 }
 
-type NameProps = {}
-type NameState = {}
+type NameProps = unknown
+type NameState = unknown
 class DropdownName extends React.PureComponent<NameProps, NameState> {
     constructor(props: NameProps) {
         super(props)
@@ -48,12 +48,10 @@ class DropdownName extends React.PureComponent<NameProps, NameState> {
                 this.setState({ name: '' })
             })
     }
-    
+
     render() {
         const { name } = this.state
-        return (
-            <span aria-label='dropdown-username'>{name}</span>
-        )
+        return <span aria-label="dropdown-username">{name}</span>
     }
 }
 
