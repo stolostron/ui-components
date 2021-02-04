@@ -23,6 +23,7 @@ export function AcmPageHeader(props: {
     breadcrumb?: { text: string; to: string }[]
     navigation?: React.ReactNode
     controls?: React.ReactNode
+    switches?: React.ReactNode
     actions?: React.ReactNode
 }) {
     return (
@@ -50,6 +51,7 @@ export function AcmPageHeader(props: {
                                 <OutlinedQuestionCircleIcon style={{ marginLeft: '8px' }} />
                             </Tooltip>
                         )}
+                        {props.switches && <div style={{ paddingLeft: '8px' }}>{props.switches}</div>}
                     </div>
                     {props.navigation ? (
                         <div style={{ paddingLeft: '8px' }}>{props.navigation}</div>

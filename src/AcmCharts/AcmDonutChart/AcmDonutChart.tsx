@@ -1,12 +1,23 @@
 import React from 'react'
 import { Card, CardTitle, Badge, Skeleton } from '@patternfly/react-core'
-import { ChartDonut } from '@patternfly/react-charts'
+import { ChartDonut, ChartLabel, ChartLegend } from '@patternfly/react-charts'
 import { makeStyles } from '@material-ui/styles'
 import { useViewport } from '../AcmChartGroup'
 
 type StyleProps = {
     danger?: boolean
     viewWidth: number
+}
+type Data = {
+    key: string
+    value: number
+    isPrimary?: boolean
+    isDanger?: boolean
+    link?: string
+}
+type LegendData = {
+    name?: string
+    link?: string
 }
 
 /* istanbul ignore next */
@@ -47,14 +58,25 @@ export const loadingDonutChart = (title: string) => {
     )
 }
 
-export function AcmDonutChart(props: {
-    title: string
-    description: string
-    data: { key: string; value: number; isPrimary?: boolean; isDanger?: boolean }[]
-    loading?: boolean
-}) {
+const LegendLabel = ({ ...props }: { datum?: Data }) => {
+    /*istanbul ignore next */
+    const link = props.datum?.link
+    return link ? (
+        <a href={link}>
+            <ChartLabel {...props} />
+        </a>
+    ) : (
+        <ChartLabel {...props} />
+    )
+}
+
+function buildLegendWithLinks(legendData: Array<LegendData>) {
+    return <ChartLegend data={legendData} labelComponent={<LegendLabel />} />
+}
+
+export function AcmDonutChart(props: { title: string; description: string; data: Array<Data>; loading?: boolean }) {
     const chartData = props.data.map((d) => ({ x: d.key, y: d.value }))
-    const legendData = props.data.map((d) => ({ name: `${d.value} ${d.key}` }))
+    const legendData: Array<LegendData> = props.data.map((d) => ({ name: `${d.value} ${d.key}`, link: d.link }))
     const total = props.data.reduce((a, b) => a + b.value, 0)
     /* istanbul ignore next */
     const primary = props.data.find((d) => d.isPrimary) || { key: '', value: 0 }
@@ -77,6 +99,7 @@ export function AcmDonutChart(props: {
                     constrainToVisibleArea={true}
                     data={chartData}
                     legendData={legendData}
+                    legendComponent={buildLegendWithLinks(legendData)}
                     labels={({ datum }) => `${datum.x}: ${(datum.y / total) * 100}%`}
                     padding={{
                         bottom: 20,

@@ -185,7 +185,7 @@ const columns: IAcmTableColumn<IExampleData>[] = [
                 case 5:
                     return <AcmInlineProvider provider={Provider.other} />
                 case 6:
-                    return <AcmInlineProvider provider={Provider.redhatcloud} />
+                    return <AcmInlineProvider provider={Provider.openstack} />
                 default:
                     return <AcmInlineProvider provider={Provider.vmware} />
             }
