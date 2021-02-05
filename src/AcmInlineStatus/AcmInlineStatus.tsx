@@ -32,7 +32,7 @@ export enum StatusType {
     'unknown' = 'unknown',
 }
 
-export function AcmInlineStatus(props: { type: StatusType; status: string }) {
+export function AcmInlineStatus(props: { type: StatusType; status: string | React.ReactNode }) {
     const classes = useStyles()
     return (
         <div className={classes.container}>
