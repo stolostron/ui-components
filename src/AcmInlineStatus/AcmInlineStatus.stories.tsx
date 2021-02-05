@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, CardBody, Popover, Button } from '@patternfly/react-core'
+import { Card, CardBody } from '@patternfly/react-core'
 import { AcmInlineStatus, StatusType } from './AcmInlineStatus'
 
 export default {
