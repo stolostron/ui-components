@@ -3,7 +3,7 @@ import { Button, ButtonProps } from '@patternfly/react-core'
 import { TooltipWrapper } from '../utils'
 import { LinkProps } from 'react-router-dom'
 
-export function AcmButton(props: ButtonProps & { tooltip?: string | React.ReactNode } & LinkProps) {
+export function AcmButton(props: ButtonProps & { tooltip?: string | React.ReactNode } & Partial<LinkProps>) {
     const { isDisabled, tooltip, children, ...otherProps } = props
     return (
         <TooltipWrapper showTooltip={isDisabled && !!tooltip} tooltip={tooltip}>
