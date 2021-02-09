@@ -34,7 +34,7 @@ export const DonutChart = () => {
     ]
     const clusterData = [
         { key: 'Ready', value: 2, isPrimary: true },
-        { key: 'Offline', value: 0, isDanger: true },
+        { key: 'Offline', value: 1, isDanger: true },
     ]
     return (
         <AcmChartGroup>
