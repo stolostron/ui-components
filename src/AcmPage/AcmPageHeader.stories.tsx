@@ -30,7 +30,14 @@ export const PageHeader = (args) => {
 PageHeader.args = {
     breadcrumb: [{ text: 'Page 1' }, { text: 'Page 2' }, { text: 'Page 3' }],
     title: 'Page title',
-    titleTooltip: 'Doc link',
+    titleTooltip: (
+        <>
+            View all resources
+            <a href="#" style={{ display: 'block', marginTop: '4px' }}>
+                Learn more
+            </a>
+        </>
+    ),
     navigation: (
         <AcmSecondaryNav>
             <AcmSecondaryNavItem isActive={true}>Clusters</AcmSecondaryNavItem>

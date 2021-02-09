@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, CardBody } from '@patternfly/react-core'
+import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { AcmInlineStatus, StatusType } from './AcmInlineStatus'
 
 export default {
@@ -22,6 +23,29 @@ export const InlineStatus = (args) => {
         </Card>
     )
 }
+
+export const InlineStatusWithPopover = () => {
+    return (
+        <Card>
+            <CardBody>
+                <AcmInlineStatus
+                    type={StatusType.healthy}
+                    status="Ready"
+                    popover={{
+                        headerContent: 'Status header',
+                        bodyContent: 'Some information about the status here.',
+                        footerContent: (
+                            <a href="#">
+                                Status link <ExternalLinkAltIcon />
+                            </a>
+                        ),
+                    }}
+                />
+            </CardBody>
+        </Card>
+    )
+}
+
 InlineStatus.args = {
     status: 'Ready',
     type: StatusType.healthy,
