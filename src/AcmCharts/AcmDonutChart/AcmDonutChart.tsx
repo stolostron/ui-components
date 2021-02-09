@@ -100,7 +100,7 @@ export function AcmDonutChart(props: { title: string; description: string; data:
                     data={chartData}
                     legendData={legendData}
                     legendComponent={buildLegendWithLinks(legendData)}
-                    labels={({ datum }) => `${datum.x}: ${(datum.y / total) * 100}%`}
+                    labels={({ datum }) => `${datum.x}: ${((datum.y / total) * 100).toFixed(2)}%`}
                     padding={{
                         bottom: 20,
                         left: 20,
