@@ -10,6 +10,9 @@ import {
     Dropdown,
     DropdownItem,
     DropdownToggle,
+    Modal,
+    ModalVariant,
+    Spinner
 } from '@patternfly/react-core'
 
 export type AcmHeaderPrototypeProps = {
@@ -47,9 +50,31 @@ function DropdownName() {
     return <span aria-label="dropdown-username">{name}</span>
 }
 
+function AboutModalVersion() {
+    const [version, setVersion] = useState<string>('undefined')
+
+    useEffect(() => {
+        const dev = process.env.NODE_ENV !== 'production'
+        const serverForTest = dev ? 'https://localhost:3000' : ''
+        api<{ version: string }>(`${serverForTest}/multicloud/common/version`)
+            .then(({ version }) => {
+                setVersion(version)
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-consoleß
+                console.error(error)
+                setVersion('undefined')
+            })
+    }, [])
+
+    return <span className='version-details__no'>{ version === 'undefined' ? <Spinner size="md"/> : version }</span>
+}
+
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
     const [dropIsOpen, dropSetOpen] = useState<boolean>(false)
+    const [aboutDropIsOpen, aboutDropSetOpen] = useState<boolean>(false)
+    const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
 
     function api<T>(url: string): Promise<T> {
         return fetch(url).then((response) => {
@@ -111,6 +136,22 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                 <PageHeaderToolsItem>
                     <Dropdown
                         toggle={
+                            <DropdownToggle id="toggle-about" onToggle={() => aboutDropSetOpen(!aboutDropIsOpen)}>
+                                About
+                            </DropdownToggle>
+                        }
+                        dropdownItems={[
+                            <DropdownItem onClick={() => window.open('https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.2/', '_blank')} key={'docbutton'}>
+                                Documentation
+                            </DropdownItem>,
+                            <DropdownItem onClick={() => setAboutModalOpen(!aboutModalOpen)} key={'aboutbutton'}>
+                                About
+                            </DropdownItem>,
+                        ]}
+                        isOpen={aboutDropIsOpen}
+                    ></Dropdown>
+                    <Dropdown
+                        toggle={
                             <DropdownToggle id="toggle-id" onToggle={() => dropSetOpen(!dropIsOpen)}>
                                 <DropdownName></DropdownName>
                             </DropdownToggle>
@@ -125,6 +166,22 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                         ]}
                         isOpen={dropIsOpen}
                     ></Dropdown>
+                    <Modal
+                        variant={ModalVariant.small}
+                        isOpen={aboutModalOpen}
+                        aria-label="about-modal"
+                        showClose={true}
+                        aria-describedby="about-modal"
+                        onClose={() => setAboutModalOpen(!aboutModalOpen)}
+                    >
+                        <span className='version-details__label'>Version </span>
+                        <AboutModalVersion></AboutModalVersion>
+                        <span className='spacer' />
+                        <div className='copyright'>
+                            <p>Copyright © 2020 IBM Corporation. All rights reserved.</p>
+                            <p>Copyright © 2020 Red Hat, Inc. All rights reserved.</p>
+                        </div>
+                    </Modal>
                 </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
         </PageHeaderTools>
