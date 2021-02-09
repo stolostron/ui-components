@@ -12,7 +12,7 @@ import {
     DropdownToggle,
     Modal,
     ModalVariant,
-    Spinner
+    Spinner,
 } from '@patternfly/react-core'
 
 export type AcmHeaderPrototypeProps = {
@@ -61,13 +61,13 @@ function AboutModalVersion() {
                 setVersion(version)
             })
             .catch((error) => {
-                // eslint-disable-next-line no-consoleß
+                // eslint-disable-next-line no-console
                 console.error(error)
                 setVersion('undefined')
             })
     }, [])
 
-    return <span className='version-details__no'>{ version === 'undefined' ? <Spinner size="md"/> : version }</span>
+    return <span className="version-details__no">{version === 'undefined' ? <Spinner size="md" /> : version}</span>
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
@@ -141,7 +141,15 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                             </DropdownToggle>
                         }
                         dropdownItems={[
-                            <DropdownItem onClick={() => window.open('https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.2/', '_blank')} key={'docbutton'}>
+                            <DropdownItem
+                                onClick={() =>
+                                    window.open(
+                                        'https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.2/',
+                                        '_blank'
+                                    )
+                                }
+                                key={'docbutton'}
+                            >
                                 Documentation
                             </DropdownItem>,
                             <DropdownItem onClick={() => setAboutModalOpen(!aboutModalOpen)} key={'aboutbutton'}>
@@ -174,10 +182,10 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                         aria-describedby="about-modal"
                         onClose={() => setAboutModalOpen(!aboutModalOpen)}
                     >
-                        <span className='version-details__label'>Version </span>
+                        <span className="version-details__label">Version </span>
                         <AboutModalVersion></AboutModalVersion>
-                        <span className='spacer' />
-                        <div className='copyright'>
+                        <span className="spacer" />
+                        <div className="copyright">
                             <p>Copyright © 2020 IBM Corporation. All rights reserved.</p>
                             <p>Copyright © 2020 Red Hat, Inc. All rights reserved.</p>
                         </div>
