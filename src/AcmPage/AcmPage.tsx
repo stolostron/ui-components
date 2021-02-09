@@ -7,7 +7,8 @@ import {
     PageSection,
     PageSectionVariants,
     Title,
-    Tooltip,
+    Popover,
+    Button,
 } from '@patternfly/react-core'
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
 import React, { ReactNode } from 'react'
@@ -47,9 +48,11 @@ export function AcmPageHeader(props: {
                     >
                         <Title headingLevel="h1">{props.title}</Title>
                         {props.titleTooltip && (
-                            <Tooltip position="top" content={<>{props.titleTooltip}</>} exitDelay={1000}>
-                                <OutlinedQuestionCircleIcon style={{ marginLeft: '8px' }} />
-                            </Tooltip>
+                            <Popover hasAutoWidth bodyContent={props.titleTooltip}>
+                                <Button variant="link" style={{ padding: 0, marginLeft: '8px' }}>
+                                    <OutlinedQuestionCircleIcon style={{ verticalAlign: 'middle' }} />
+                                </Button>
+                            </Popover>
                         )}
                         {props.switches && <div style={{ paddingLeft: '8px' }}>{props.switches}</div>}
                     </div>
