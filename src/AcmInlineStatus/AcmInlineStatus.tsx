@@ -5,6 +5,7 @@ import {
     ExclamationCircleIcon,
     ExclamationTriangleIcon,
     MinusCircleIcon,
+    UnknownIcon,
 } from '@patternfly/react-icons'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/core'
@@ -27,10 +28,11 @@ export enum StatusType {
     'warning' = 'warning',
     'progress' = 'progress',
     'detached' = 'detached',
+    'pending' = 'pending',
     'unknown' = 'unknown',
 }
 
-export function AcmInlineStatus(props: { type: StatusType; status: string }) {
+export function AcmInlineStatus(props: { type: StatusType; status: string | React.ReactNode }) {
     const classes = useStyles()
     return (
         <div className={classes.container}>
@@ -57,8 +59,10 @@ function StatusIcon(props: { type: StatusType }) {
             return <Spinner size="md" style={{ verticalAlign: 'middle' }} />
         case StatusType.detached:
             return <AcmIcon icon={AcmIconVariant.brokenlink} />
+        case StatusType.pending:
+            return <MinusCircleIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
         case 'unknown':
         default:
-            return <MinusCircleIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
+            return <UnknownIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
     }
 }
