@@ -19,6 +19,7 @@ import {
     NavItemSeparator,
     NavList,
 } from '@patternfly/react-core'
+import { makeStyles } from '@material-ui/styles'
 
 export type AcmHeaderPrototypeProps = {
     href: string
@@ -83,10 +84,26 @@ function AboutModalVersion() {
     return <span className="version-details__no">{version === 'undefined' ? <Spinner size="md" /> : version}</span>
 }
 
+const useStyles = makeStyles({
+    list: {
+        '& li.pf-c-nav__item.pf-m-expandable.pf-m-expanded': {
+            '& section': {
+                display: 'list-item',
+            },
+        },
+        '& li.pf-c-nav__item.pf-m-expandable': {
+            '& section': {
+                display: 'none',
+            },
+        },
+    },
+})
+
 function NavExpandableList() {
     const [activeGroup, setActiveGroup] = useState<string>('grp-1')
     const [activeItem, setActiveItem] = useState<string>('grp-1_itm-1')
     const [switcherIsOpen, switcherSetOpen] = useState<boolean>(false)
+    const classes = useStyles()
 
     function select(result: { groupId?: string | number; itemId?: string | number }) {
         if (result.groupId !== undefined) {
@@ -133,7 +150,7 @@ function NavExpandableList() {
                 isOpen={switcherIsOpen}
             ></Dropdown>
             <NavItemSeparator />
-            <NavList>
+            <NavList className={classes.list}>
                 <NavItem
                     preventDefault
                     to="#mixed-1"
