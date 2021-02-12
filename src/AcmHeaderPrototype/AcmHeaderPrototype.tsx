@@ -19,6 +19,7 @@ import {
     NavItemSeparator,
     NavList,
 } from '@patternfly/react-core'
+import { makeStyles } from '@material-ui/styles'
 
 export type AcmHeaderPrototypeProps = {
     href: string
@@ -83,27 +84,26 @@ function AboutModalVersion() {
     return <span className="version-details__no">{version === 'undefined' ? <Spinner size="md" /> : version}</span>
 }
 
-//helper function to get auth token from cookie
-function getAuthToken(): string {
-    if (!document.cookie) {
-        return ''
-    }
-
-    const xsrfCookies = document.cookie
-        .split(';')
-        .map((c) => c.trim())
-        .filter((c) => c.startsWith('acm-access-token-cookie='))
-
-    if (xsrfCookies.length === 0) {
-        return ''
-    }
-    return decodeURIComponent(xsrfCookies[0].split('=')[1])
-}
+const useStyles = makeStyles({
+    list: {
+        '& li.pf-c-nav__item.pf-m-expandable.pf-m-expanded': {
+            '& section': {
+                display: 'list-item',
+            },
+        },
+        '& li.pf-c-nav__item.pf-m-expandable': {
+            '& section': {
+                display: 'none',
+            },
+        },
+    },
+})
 
 function NavExpandableList() {
     const [activeGroup, setActiveGroup] = useState<string>('grp-1')
     const [activeItem, setActiveItem] = useState<string>('grp-1_itm-1')
     const [switcherIsOpen, switcherSetOpen] = useState<boolean>(false)
+    const classes = useStyles()
 
     function select(result: { groupId?: string | number; itemId?: string | number }) {
         if (result.groupId !== undefined) {
@@ -116,18 +116,10 @@ function NavExpandableList() {
 
     function launchToOCP(searchParam: string) {
         api<{ data: { consoleURL: string } }>(
-            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public',
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${getAuthToken()}`,
-                },
-            }
+            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public'
         )
             .then(({ data }) => {
-                window.open(`${data.consoleURL}${searchParam}`, '_blank')
+                window.open(`${data.consoleURL}${searchParam}`, '_self')
             })
             .catch((error) => {
                 // eslint-disable-next-line no-console
@@ -158,9 +150,10 @@ function NavExpandableList() {
                 isOpen={switcherIsOpen}
             ></Dropdown>
             <NavItemSeparator />
-            <NavList>
+            <NavList className={classes.list}>
                 <NavItem
                     preventDefault
+                    to="#mixed-1"
                     groupId="home"
                     itemId="home_welcome"
                     isActive={activeItem === 'home_welcome'}
@@ -171,6 +164,7 @@ function NavExpandableList() {
                 <NavExpandable title="Observe Environments" groupId="observe" isActive={activeGroup === 'observe'}>
                     <NavItem
                         preventDefault
+                        to="#mixed-2"
                         groupId="observe"
                         itemId="observe_overview"
                         isActive={activeItem === 'observe_overview'}
@@ -182,6 +176,7 @@ function NavExpandableList() {
                 <NavExpandable title="Automate Infrastructure" groupId="automate" isActive={activeGroup === 'automate'}>
                     <NavItem
                         preventDefault
+                        to="#mixed-3"
                         groupId="automate"
                         itemId="automate_clusters"
                         isActive={activeItem === 'automate_clusters'}
@@ -191,6 +186,7 @@ function NavExpandableList() {
                     </NavItem>
                     <NavItem
                         preventDefault
+                        to="#mixed-4"
                         groupId="automate"
                         itemId="automate_baremetal"
                         isActive={activeItem === 'automate_baremetal'}
@@ -201,6 +197,7 @@ function NavExpandableList() {
                 </NavExpandable>
                 <NavItem
                     preventDefault
+                    to="#mixed-5"
                     groupId="manage"
                     itemId="manage_applications"
                     isActive={activeItem === 'manage_applications'}
@@ -210,6 +207,7 @@ function NavExpandableList() {
                 </NavItem>
                 <NavItem
                     preventDefault
+                    to="#mixed-6"
                     groupId="grc"
                     itemId="grc_govern_risk"
                     isActive={activeItem === 'grc_govern_risk'}
