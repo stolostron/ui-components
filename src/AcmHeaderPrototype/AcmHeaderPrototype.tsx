@@ -100,8 +100,61 @@ const useStyles = makeStyles({
 })
 
 function NavExpandableList() {
-    const [activeGroup, setActiveGroup] = useState<string>('grp-1')
-    const [activeItem, setActiveItem] = useState<string>('grp-1_itm-1')
+    const navData: { [key: string]: Record<string, string> } = {
+        home: {
+            path: '/multicloud/welcome',
+            groupId: 'home',
+            itemId: 'home_welcome',
+            name: 'Home',
+        },
+        overview: {
+            path: '/multicloud/overview',
+            groupId: 'observe',
+            itemId: 'observe_overview',
+            name: 'Overview',
+        },
+        clusters: {
+            path: '/multicloud/clusters',
+            groupId: 'automate',
+            itemId: 'automate_clusters',
+            name: 'Clusters',
+        },
+        baremetal: {
+            path: '/iframe.html',
+            groupId: 'automate',
+            itemId: 'automate_baremetal',
+            name: 'Bare metal assets',
+        },
+        applications: {
+            path: '/multicloud/applications',
+            groupId: 'manage',
+            itemId: 'manage_applications',
+            name: 'Manage applications',
+        },
+        grc: {
+            path: '/multicloud/policies',
+            groupId: 'grc',
+            itemId: 'grc_govern_risk',
+            name: 'Govern risk',
+        },
+    }
+
+    const pathname = window.location.pathname
+    console.log('----- pathname -------')
+    console.log(window.location);
+
+    let currentGroup = ''
+    let currentItem = ''
+    Object.keys(navData).forEach((key: string) => {
+        const n = navData[key]
+        if (n.path === pathname) {
+            currentGroup = n.groupId
+            currentItem = n.itemId
+        }
+    })
+
+    const [activeGroup, setActiveGroup] = useState<string>(currentGroup)
+    const [activeItem, setActiveItem] = useState<string>(currentItem)
     const [switcherIsOpen, switcherSetOpen] = useState<boolean>(false)
     const classes = useStyles()
 
@@ -126,6 +179,24 @@ function NavExpandableList() {
                 console.error(error)
             })
     }
+
+    // type SidebarNavItemProps = {
+    //     name: string
+    // }
+    // function SidebarNavItem(props: SidebarNavItemProps) {
+    //     const data = navData[props.name]
+    //     return (
+    //         <NavItem
+    //             preventDefault
+    //             groupId={data.groupId}
+    //             itemId={data.itemId}
+    //             isActive={activeItem === data.itemId}
+    //             onClick={() => window.open(data.path, '_self')}
+    //         >
+    //             {data.name}
+    //         </NavItem>
+    //     )
+    // }
 
     const toggleStyles: CSSProperties = {
         color: 'white',
@@ -161,7 +232,12 @@ function NavExpandableList() {
                 >
                     Home
                 </NavItem>
-                <NavExpandable title="Observe Environments" groupId="observe" isActive={activeGroup === 'observe'}>
+                <NavExpandable
+                    title="Observe Environments"
+                    groupId="observe"
+                    isActive={activeGroup === 'observe'}
+                    isExpanded={activeGroup === 'observe'}
+                >
                     <NavItem
                         preventDefault
                         to="#mixed-2"
@@ -173,7 +249,12 @@ function NavExpandableList() {
                         Overview
                     </NavItem>
                 </NavExpandable>
-                <NavExpandable title="Automate Infrastructure" groupId="automate" isActive={activeGroup === 'automate'}>
+                <NavExpandable
+                    title="Automate Infrastructure"
+                    groupId="automate"
+                    isActive={activeGroup === 'automate'}
+                    isExpanded={activeGroup === 'automate'}
+                >
                     <NavItem
                         preventDefault
                         to="#mixed-3"
@@ -221,7 +302,7 @@ function NavExpandableList() {
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
-    const [isOpen, setOpen] = useState<boolean>(false)
+    const [isOpen, setOpen] = useState<boolean>(true)
     const [dropIsOpen, dropSetOpen] = useState<boolean>(false)
     const [aboutDropIsOpen, aboutDropSetOpen] = useState<boolean>(false)
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
