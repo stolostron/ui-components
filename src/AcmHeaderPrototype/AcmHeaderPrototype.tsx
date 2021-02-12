@@ -120,7 +120,7 @@ function NavExpandableList() {
             name: 'Clusters',
         },
         baremetal: {
-            path: '/iframe.html',
+            path: '/multicloud/bare-metal-assets',
             groupId: 'automate',
             itemId: 'automate_baremetal',
             name: 'Bare metal assets',
@@ -140,8 +140,6 @@ function NavExpandableList() {
     }
 
     const pathname = window.location.pathname
-    console.log('----- pathname -------')
-    console.log(window.location);
 
     let currentGroup = ''
     let currentItem = ''
@@ -180,23 +178,23 @@ function NavExpandableList() {
             })
     }
 
-    // type SidebarNavItemProps = {
-    //     name: string
-    // }
-    // function SidebarNavItem(props: SidebarNavItemProps) {
-    //     const data = navData[props.name]
-    //     return (
-    //         <NavItem
-    //             preventDefault
-    //             groupId={data.groupId}
-    //             itemId={data.itemId}
-    //             isActive={activeItem === data.itemId}
-    //             onClick={() => window.open(data.path, '_self')}
-    //         >
-    //             {data.name}
-    //         </NavItem>
-    //     )
-    // }
+    type SidebarNavItemProps = {
+        data: Record<string, string>
+    }
+    function SidebarNavItem(props: SidebarNavItemProps) {
+        const data = props.data
+        return (
+            <NavItem
+                preventDefault
+                groupId={data.groupId}
+                itemId={data.itemId}
+                isActive={activeItem === data.itemId}
+                onClick={() => window.open(data.path, '_self')}
+            >
+                {data.name}
+            </NavItem>
+        )
+    }
 
     const toggleStyles: CSSProperties = {
         color: 'white',
@@ -222,32 +220,14 @@ function NavExpandableList() {
             ></Dropdown>
             <NavItemSeparator />
             <NavList className={classes.list}>
-                <NavItem
-                    preventDefault
-                    to="#mixed-1"
-                    groupId="home"
-                    itemId="home_welcome"
-                    isActive={activeItem === 'home_welcome'}
-                    onClick={() => window.open('/', '_self')}
-                >
-                    Home
-                </NavItem>
+                <SidebarNavItem data={navData.home} />
                 <NavExpandable
                     title="Observe Environments"
                     groupId="observe"
                     isActive={activeGroup === 'observe'}
                     isExpanded={activeGroup === 'observe'}
                 >
-                    <NavItem
-                        preventDefault
-                        to="#mixed-2"
-                        groupId="observe"
-                        itemId="observe_overview"
-                        isActive={activeItem === 'observe_overview'}
-                        onClick={() => window.open('/multicloud/overview', '_self')}
-                    >
-                        Overview
-                    </NavItem>
+                    <SidebarNavItem data={navData.overview} />
                 </NavExpandable>
                 <NavExpandable
                     title="Automate Infrastructure"
@@ -255,47 +235,11 @@ function NavExpandableList() {
                     isActive={activeGroup === 'automate'}
                     isExpanded={activeGroup === 'automate'}
                 >
-                    <NavItem
-                        preventDefault
-                        to="#mixed-3"
-                        groupId="automate"
-                        itemId="automate_clusters"
-                        isActive={activeItem === 'automate_clusters'}
-                        onClick={() => window.open('/multicloud/clusters', '_self')}
-                    >
-                        Clusters
-                    </NavItem>
-                    <NavItem
-                        preventDefault
-                        to="#mixed-4"
-                        groupId="automate"
-                        itemId="automate_baremetal"
-                        isActive={activeItem === 'automate_baremetal'}
-                        onClick={() => window.open('/multicloud/bare-metal-assets', '_self')}
-                    >
-                        Bare metal assets
-                    </NavItem>
+                    <SidebarNavItem data={navData.clusters} />
+                    <SidebarNavItem data={navData.baremetal} />
                 </NavExpandable>
-                <NavItem
-                    preventDefault
-                    to="#mixed-5"
-                    groupId="manage"
-                    itemId="manage_applications"
-                    isActive={activeItem === 'manage_applications'}
-                    onClick={() => window.open('/multicloud/applications', '_self')}
-                >
-                    Manage applications
-                </NavItem>
-                <NavItem
-                    preventDefault
-                    to="#mixed-6"
-                    groupId="grc"
-                    itemId="grc_govern_risk"
-                    isActive={activeItem === 'grc_govern_risk'}
-                    onClick={() => window.open('/multicloud/policies', '_self')}
-                >
-                    Govern risk
-                </NavItem>
+                <SidebarNavItem data={navData.applications} />
+                <SidebarNavItem data={navData.grc} />
             </NavList>
         </Nav>
     )
