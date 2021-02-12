@@ -98,7 +98,9 @@ function NavExpandableList() {
     }
 
     function launchToOCP(searchParam: string) {
-        api<{ data: { consoleURL: string } }>('/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public')
+        api<{ data: { consoleURL: string } }>(
+            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public'
+        )
             .then(({ data }) => {
                 window.open(`${data.consoleURL}${searchParam}`, '_self')
             })
