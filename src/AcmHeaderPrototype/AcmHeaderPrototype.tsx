@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, CSSProperties } from 'react'
 import {
     Page,
     PageHeader,
@@ -13,6 +13,11 @@ import {
     Modal,
     ModalVariant,
     Spinner,
+    Nav,
+    NavExpandable,
+    NavItem,
+    NavItemSeparator,
+    NavList,
 } from '@patternfly/react-core'
 
 export type AcmHeaderPrototypeProps = {
@@ -21,7 +26,15 @@ export type AcmHeaderPrototypeProps = {
     children: React.Component | React.ReactElement | React.ReactElement[]
 }
 
-function api<T>(url: string): Promise<T> {
+function api<T>(url: string, headers?: Record<string, unknown>): Promise<T> {
+    if (headers) {
+        return fetch(url, headers).then((response) => {
+            if (!response.ok) {
+                throw new Error(response.statusText)
+            }
+            return response.json() as Promise<T>
+        })
+    }
     return fetch(url).then((response) => {
         if (!response.ok) {
             throw new Error(response.statusText)
@@ -68,6 +81,145 @@ function AboutModalVersion() {
     }, [])
 
     return <span className="version-details__no">{version === 'undefined' ? <Spinner size="md" /> : version}</span>
+}
+
+//helper function to get auth token from cookie
+function getAuthToken(): string {
+    if (!document.cookie) {
+        return ''
+    }
+
+    const xsrfCookies = document.cookie
+        .split(';')
+        .map((c) => c.trim())
+        .filter((c) => c.startsWith('acm-access-token-cookie='))
+
+    if (xsrfCookies.length === 0) {
+        return ''
+    }
+    return decodeURIComponent(xsrfCookies[0].split('=')[1])
+}
+
+function NavExpandableList() {
+    const [activeGroup, setActiveGroup] = useState<string>('grp-1')
+    const [activeItem, setActiveItem] = useState<string>('grp-1_itm-1')
+    const [switcherIsOpen, switcherSetOpen] = useState<boolean>(false)
+
+    function select(result: { groupId?: string | number; itemId?: string | number }) {
+        if (result.groupId !== undefined) {
+            setActiveGroup(result.groupId.toString())
+        }
+        if (result.itemId !== undefined) {
+            setActiveItem(result.itemId.toString())
+        }
+    }
+
+    function launchToOCP(searchParam: string) {
+        api<{ data: { consoleURL: string } }>(
+            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public',
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${getAuthToken()}`,
+                },
+            }
+        )
+            .then(({ data }) => {
+                window.open(`${data.consoleURL}${searchParam}`, '_blank')
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error)
+            })
+    }
+
+    const toggleStyles: CSSProperties = {
+        color: 'white',
+    }
+
+    return (
+        <Nav onSelect={select}>
+            <Dropdown
+                toggle={
+                    <DropdownToggle id="toggle-perspective" onToggle={() => switcherSetOpen(!switcherIsOpen)}>
+                        <span style={toggleStyles}>Advanced Cluster Management</span>
+                    </DropdownToggle>
+                }
+                dropdownItems={[
+                    <DropdownItem onClick={() => launchToOCP('')} key={'administrator'}>
+                        Administrator
+                    </DropdownItem>,
+                    <DropdownItem onClick={() => launchToOCP('')} key={'devbutton'}>
+                        Developer
+                    </DropdownItem>,
+                ]}
+                isOpen={switcherIsOpen}
+            ></Dropdown>
+            <NavItemSeparator />
+            <NavList>
+                <NavItem
+                    preventDefault
+                    groupId="home"
+                    itemId="home_welcome"
+                    isActive={activeItem === 'home_welcome'}
+                    onClick={() => window.open('/', '_self')}
+                >
+                    Home
+                </NavItem>
+                <NavExpandable title="Observe Environments" groupId="observe" isActive={activeGroup === 'observe'}>
+                    <NavItem
+                        preventDefault
+                        groupId="observe"
+                        itemId="observe_overview"
+                        isActive={activeItem === 'observe_overview'}
+                        onClick={() => window.open('/multicloud/overview', '_self')}
+                    >
+                        Overview
+                    </NavItem>
+                </NavExpandable>
+                <NavExpandable title="Automate Infrastructure" groupId="automate" isActive={activeGroup === 'automate'}>
+                    <NavItem
+                        preventDefault
+                        groupId="automate"
+                        itemId="automate_clusters"
+                        isActive={activeItem === 'automate_clusters'}
+                        onClick={() => window.open('/multicloud/clusters', '_self')}
+                    >
+                        Clusters
+                    </NavItem>
+                    <NavItem
+                        preventDefault
+                        groupId="automate"
+                        itemId="automate_baremetal"
+                        isActive={activeItem === 'automate_baremetal'}
+                        onClick={() => window.open('/multicloud/bare-metal-assets', '_self')}
+                    >
+                        Bare metal assets
+                    </NavItem>
+                </NavExpandable>
+                <NavItem
+                    preventDefault
+                    groupId="manage"
+                    itemId="manage_applications"
+                    isActive={activeItem === 'manage_applications'}
+                    onClick={() => window.open('/multicloud/applications', '_self')}
+                >
+                    Manage applications
+                </NavItem>
+                <NavItem
+                    preventDefault
+                    groupId="grc"
+                    itemId="grc_govern_risk"
+                    isActive={activeItem === 'grc_govern_risk'}
+                    onClick={() => window.open('/multicloud/policies', '_self')}
+                >
+                    Govern risk
+                </NavItem>
+            </NavList>
+        </Nav>
+    )
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
@@ -206,7 +358,9 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
         />
     )
 
-    const Sidebar = <PageSidebar nav="Navigation" isNavOpen={isOpen} />
+    const SidebarNav = <NavExpandableList></NavExpandableList>
+
+    const Sidebar = <PageSidebar nav={SidebarNav} isNavOpen={isOpen} />
 
     return (
         <Page header={Header} sidebar={Sidebar}>

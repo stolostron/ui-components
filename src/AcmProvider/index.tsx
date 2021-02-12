@@ -16,7 +16,7 @@ export enum Provider {
 }
 
 export const ProviderShortTextMap = {
-    [Provider.redhatcloud]: 'cloud.redhat.com',
+    [Provider.redhatcloud]: 'OCM',
     [Provider.openstack]: 'OpenStack',
     [Provider.aws]: 'Amazon',
     [Provider.gcp]: 'Google',
@@ -28,7 +28,7 @@ export const ProviderShortTextMap = {
 }
 
 export const ProviderLongTextMap = {
-    [Provider.redhatcloud]: 'cloud.redhat.com',
+    [Provider.redhatcloud]: 'Red Hat OpenShift Cluster Manager',
     [Provider.openstack]: 'Red Hat OpenStack',
     [Provider.aws]: 'Amazon Web Services',
     [Provider.gcp]: 'Google Cloud Platform',

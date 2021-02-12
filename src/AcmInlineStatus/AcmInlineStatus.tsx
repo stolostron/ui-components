@@ -1,5 +1,5 @@
 import React from 'react'
-import { Spinner } from '@patternfly/react-core'
+import { Spinner, Popover, PopoverProps, Button } from '@patternfly/react-core'
 import {
     CheckCircleIcon,
     ExclamationCircleIcon,
@@ -20,6 +20,10 @@ const useStyles = makeStyles({
     iconMargin: {
         margin: '3px 2px 1px 2px',
     },
+    button: {
+        padding: 0,
+        fontSize: 'inherit',
+    },
 })
 
 export enum StatusType {
@@ -32,14 +36,24 @@ export enum StatusType {
     'unknown' = 'unknown',
 }
 
-export function AcmInlineStatus(props: { type: StatusType; status: string | React.ReactNode }) {
+export function AcmInlineStatus(props: { type: StatusType; status: string | React.ReactNode; popover?: PopoverProps }) {
     const classes = useStyles()
     return (
         <div className={classes.container}>
             <div className={classes.icon}>
                 <StatusIcon type={props.type} />
             </div>
-            <span style={{ marginLeft: '.4rem' }}>{props.status}</span>
+            <span style={{ marginLeft: '.4rem' }}>
+                {props.popover ? (
+                    <Popover hasAutoWidth {...props.popover}>
+                        <Button variant="link" className={classes.button}>
+                            {props.status}
+                        </Button>
+                    </Popover>
+                ) : (
+                    props.status
+                )}
+            </span>
         </div>
     )
 }
