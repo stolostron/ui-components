@@ -19,6 +19,7 @@ import {
     NavItemSeparator,
     NavList,
 } from '@patternfly/react-core'
+import { makeStyles } from '@material-ui/styles'
 
 export type AcmHeaderPrototypeProps = {
     href: string
@@ -83,27 +84,77 @@ function AboutModalVersion() {
     return <span className="version-details__no">{version === 'undefined' ? <Spinner size="md" /> : version}</span>
 }
 
-//helper function to get auth token from cookie
-function getAuthToken(): string {
-    if (!document.cookie) {
-        return ''
-    }
-
-    const xsrfCookies = document.cookie
-        .split(';')
-        .map((c) => c.trim())
-        .filter((c) => c.startsWith('acm-access-token-cookie='))
-
-    if (xsrfCookies.length === 0) {
-        return ''
-    }
-    return decodeURIComponent(xsrfCookies[0].split('=')[1])
-}
+const useStyles = makeStyles({
+    list: {
+        '& li.pf-c-nav__item.pf-m-expandable.pf-m-expanded': {
+            '& section': {
+                display: 'list-item',
+            },
+        },
+        '& li.pf-c-nav__item.pf-m-expandable': {
+            '& section': {
+                display: 'none',
+            },
+        },
+    },
+})
 
 function NavExpandableList() {
-    const [activeGroup, setActiveGroup] = useState<string>('grp-1')
-    const [activeItem, setActiveItem] = useState<string>('grp-1_itm-1')
+    const navData: { [key: string]: Record<string, string> } = {
+        home: {
+            path: '/multicloud/welcome',
+            groupId: 'home',
+            itemId: 'home_welcome',
+            name: 'Home',
+        },
+        overview: {
+            path: '/multicloud/overview',
+            groupId: 'observe',
+            itemId: 'observe_overview',
+            name: 'Overview',
+        },
+        clusters: {
+            path: '/multicloud/clusters',
+            groupId: 'automate',
+            itemId: 'automate_clusters',
+            name: 'Clusters',
+        },
+        baremetal: {
+            path: '/multicloud/bare-metal-assets',
+            groupId: 'automate',
+            itemId: 'automate_baremetal',
+            name: 'Bare metal assets',
+        },
+        applications: {
+            path: '/multicloud/applications',
+            groupId: 'manage',
+            itemId: 'manage_applications',
+            name: 'Manage applications',
+        },
+        grc: {
+            path: '/multicloud/policies',
+            groupId: 'grc',
+            itemId: 'grc_govern_risk',
+            name: 'Govern risk',
+        },
+    }
+
+    const pathname = window.location.pathname
+
+    let currentGroup = ''
+    let currentItem = ''
+    Object.keys(navData).forEach((key: string) => {
+        const n = navData[key]
+        if (n.path === pathname) {
+            currentGroup = n.groupId
+            currentItem = n.itemId
+        }
+    })
+
+    const [activeGroup, setActiveGroup] = useState<string>(currentGroup)
+    const [activeItem, setActiveItem] = useState<string>(currentItem)
     const [switcherIsOpen, switcherSetOpen] = useState<boolean>(false)
+    const classes = useStyles()
 
     function select(result: { groupId?: string | number; itemId?: string | number }) {
         if (result.groupId !== undefined) {
@@ -116,23 +167,33 @@ function NavExpandableList() {
 
     function launchToOCP(searchParam: string) {
         api<{ data: { consoleURL: string } }>(
-            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public',
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${getAuthToken()}`,
-                },
-            }
+            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public'
         )
             .then(({ data }) => {
-                window.open(`${data.consoleURL}${searchParam}`, '_blank')
+                window.open(`${data.consoleURL}${searchParam}`, '_self')
             })
             .catch((error) => {
                 // eslint-disable-next-line no-console
                 console.error(error)
             })
+    }
+
+    type SidebarNavItemProps = {
+        data: Record<string, string>
+    }
+    function SidebarNavItem(props: SidebarNavItemProps) {
+        const data = props.data
+        return (
+            <NavItem
+                preventDefault
+                groupId={data.groupId}
+                itemId={data.itemId}
+                isActive={activeItem === data.itemId}
+                onClick={() => window.open(data.path, '_self')}
+            >
+                {data.name}
+            </NavItem>
+        )
     }
 
     const toggleStyles: CSSProperties = {
@@ -158,72 +219,34 @@ function NavExpandableList() {
                 isOpen={switcherIsOpen}
             ></Dropdown>
             <NavItemSeparator />
-            <NavList>
-                <NavItem
-                    preventDefault
-                    groupId="home"
-                    itemId="home_welcome"
-                    isActive={activeItem === 'home_welcome'}
-                    onClick={() => window.open('/', '_self')}
+            <NavList className={classes.list}>
+                <SidebarNavItem data={navData.home} />
+                <NavExpandable
+                    title="Observe Environments"
+                    groupId="observe"
+                    isActive={activeGroup === 'observe'}
+                    isExpanded={activeGroup === 'observe'}
                 >
-                    Home
-                </NavItem>
-                <NavExpandable title="Observe Environments" groupId="observe" isActive={activeGroup === 'observe'}>
-                    <NavItem
-                        preventDefault
-                        groupId="observe"
-                        itemId="observe_overview"
-                        isActive={activeItem === 'observe_overview'}
-                        onClick={() => window.open('/multicloud/overview', '_self')}
-                    >
-                        Overview
-                    </NavItem>
+                    <SidebarNavItem data={navData.overview} />
                 </NavExpandable>
-                <NavExpandable title="Automate Infrastructure" groupId="automate" isActive={activeGroup === 'automate'}>
-                    <NavItem
-                        preventDefault
-                        groupId="automate"
-                        itemId="automate_clusters"
-                        isActive={activeItem === 'automate_clusters'}
-                        onClick={() => window.open('/multicloud/clusters', '_self')}
-                    >
-                        Clusters
-                    </NavItem>
-                    <NavItem
-                        preventDefault
-                        groupId="automate"
-                        itemId="automate_baremetal"
-                        isActive={activeItem === 'automate_baremetal'}
-                        onClick={() => window.open('/multicloud/bare-metal-assets', '_self')}
-                    >
-                        Bare metal assets
-                    </NavItem>
+                <NavExpandable
+                    title="Automate Infrastructure"
+                    groupId="automate"
+                    isActive={activeGroup === 'automate'}
+                    isExpanded={activeGroup === 'automate'}
+                >
+                    <SidebarNavItem data={navData.clusters} />
+                    <SidebarNavItem data={navData.baremetal} />
                 </NavExpandable>
-                <NavItem
-                    preventDefault
-                    groupId="manage"
-                    itemId="manage_applications"
-                    isActive={activeItem === 'manage_applications'}
-                    onClick={() => window.open('/multicloud/applications', '_self')}
-                >
-                    Manage applications
-                </NavItem>
-                <NavItem
-                    preventDefault
-                    groupId="grc"
-                    itemId="grc_govern_risk"
-                    isActive={activeItem === 'grc_govern_risk'}
-                    onClick={() => window.open('/multicloud/policies', '_self')}
-                >
-                    Govern risk
-                </NavItem>
+                <SidebarNavItem data={navData.applications} />
+                <SidebarNavItem data={navData.grc} />
             </NavList>
         </Nav>
     )
 }
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
-    const [isOpen, setOpen] = useState<boolean>(false)
+    const [isOpen, setOpen] = useState<boolean>(true)
     const [dropIsOpen, dropSetOpen] = useState<boolean>(false)
     const [aboutDropIsOpen, aboutDropSetOpen] = useState<boolean>(false)
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
