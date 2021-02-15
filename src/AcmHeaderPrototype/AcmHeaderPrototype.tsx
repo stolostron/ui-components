@@ -18,11 +18,14 @@ import {
     NavItem,
     NavItemSeparator,
     NavList,
+    Brand,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
+import logo from '../assets/RHACM-Logo.svg';
 
 export type AcmHeaderPrototypeProps = {
     href: string
+    urlPath: string
     target: string
     children: React.Component | React.ReactElement | React.ReactElement[]
 }
@@ -99,7 +102,10 @@ const useStyles = makeStyles({
     },
 })
 
-function NavExpandableList() {
+type NavExpandableProps = {
+    urlPath: string
+}
+function NavExpandableList(props: NavExpandableProps) {
     const navData: { [key: string]: Record<string, string> } = {
         home: {
             path: '/multicloud/welcome',
@@ -139,13 +145,13 @@ function NavExpandableList() {
         },
     }
 
-    const pathname = window.location.pathname
+    const pathname = props.urlPath
 
     let currentGroup = ''
     let currentItem = ''
     Object.keys(navData).forEach((key: string) => {
         const n = navData[key]
-        if (n.path === pathname) {
+        if (pathname && pathname.indexOf(n.path) !== -1) {
             currentGroup = n.groupId
             currentItem = n.itemId
         }
@@ -372,7 +378,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
 
     const Header = (
         <PageHeader
-            logo="RHACM"
+            logo={<Brand src={logo} alt="RHACM Logo" />}
             logoProps={props}
             headerTools={headerTools}
             showNavToggle
@@ -381,7 +387,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
         />
     )
 
-    const SidebarNav = <NavExpandableList></NavExpandableList>
+    const SidebarNav = <NavExpandableList urlPath={props.urlPath}></NavExpandableList>
 
     const Sidebar = <PageSidebar nav={SidebarNav} isNavOpen={isOpen} />
 
