@@ -1,11 +1,23 @@
-import React from 'react'
+import React, { useEffect, useContext } from 'react'
 import { Modal, ModalProps } from '@patternfly/react-core'
-import { AcmAlertProvider } from '../AcmAlert/AcmAlert'
+import { AcmAlertProvider, AcmAlertContext } from '../AcmAlert/AcmAlert'
 
 export function AcmModal(props: ModalProps) {
     return (
         <AcmAlertProvider>
-            <Modal {...props} ref={null} />
+            <AcmModalContent {...props} />
         </AcmAlertProvider>
     )
+}
+
+function AcmModalContent(props: ModalProps) {
+    const alertContext = useContext(AcmAlertContext)
+
+    useEffect(() => {
+        if (!props.isOpen) {
+            alertContext.clearAlerts()
+        }
+    }, [props.isOpen])
+
+    return <Modal {...props} ref={null} />
 }
