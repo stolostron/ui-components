@@ -1,4 +1,5 @@
-import React, { useRef, useState, useContext, createContext } from 'react'
+import React, { useRef, useState, useContext, useEffect, createContext } from 'react'
+import { useHistory } from 'react-router-dom'
 import {
     Drawer,
     DrawerPanelContent,
@@ -10,6 +11,7 @@ import {
     DrawerCloseButton,
     DrawerPanelContentProps,
 } from '@patternfly/react-core'
+import { AcmAlertProvider, AcmAlertContext } from '../AcmAlert/AcmAlert'
 
 export const AcmDrawerContext = createContext<{
     drawerContext?: AcmDrawerProps
@@ -21,6 +23,13 @@ export const AcmDrawerContext = createContext<{
 
 export function AcmDrawerProvider(props: { children: React.ReactNode | React.ReactNode[] }) {
     const [drawerContext, setDrawerContext] = useState<AcmDrawerProps | undefined>()
+
+    // close the drawer on location changes
+    const history = useHistory()
+    const historyListener = history.listen(() => setDrawerContext(undefined))
+    useEffect(() => {
+        return () => historyListener()
+    }, [])
 
     return (
         <AcmDrawerContext.Provider value={{ drawerContext, setDrawerContext }}>
@@ -58,21 +67,43 @@ export function AcmDrawer(props: AcmDrawerProps) {
             <DrawerContent
                 style={{ backgroundColor: 'unset' }}
                 panelContent={
-                    <DrawerPanelContent {...panelContentProps}>
-                        <DrawerHead>
-                            <div ref={drawerRef} tabIndex={0} style={{ fontSize: '24px', outline: 'none' }}>
-                                {title}
-                            </div>
-                            <DrawerActions>
-                                <DrawerCloseButton onClick={onCloseClick} />
-                            </DrawerActions>
-                        </DrawerHead>
-                        <DrawerPanelBody>{panelContent}</DrawerPanelBody>
-                    </DrawerPanelContent>
+                    <AcmAlertProvider>
+                        <AcmDrawerPanelContent
+                            isExpanded={isExpanded}
+                            onCloseClick={onCloseClick}
+                            panelContent={panelContent}
+                            panelContentProps={panelContentProps}
+                            title={title}
+                            drawerRef={drawerRef}
+                        />
+                    </AcmAlertProvider>
                 }
             >
                 <DrawerContentBody>{props.children}</DrawerContentBody>
             </DrawerContent>
         </Drawer>
+    )
+}
+
+function AcmDrawerPanelContent(props: AcmDrawerProps & { drawerRef: React.RefObject<HTMLDivElement> }) {
+    const alertContext = useContext(AcmAlertContext)
+    useEffect(() => {
+        if (props.isExpanded === undefined || props.isExpanded === false) {
+            alertContext.clearAlerts()
+        }
+    }, [props.isExpanded])
+
+    return (
+        <DrawerPanelContent {...props.panelContentProps}>
+            <DrawerHead>
+                <div ref={props.drawerRef} tabIndex={0} style={{ fontSize: '24px', outline: 'none' }}>
+                    {props.title}
+                </div>
+                <DrawerActions>
+                    <DrawerCloseButton onClick={props.onCloseClick} />
+                </DrawerActions>
+            </DrawerHead>
+            <DrawerPanelBody>{props.panelContent}</DrawerPanelBody>
+        </DrawerPanelContent>
     )
 }
