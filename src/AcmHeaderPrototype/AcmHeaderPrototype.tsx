@@ -21,7 +21,7 @@ import {
     Brand,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
-import logo from '../assets/RHACM-Logo.svg';
+import logo from '../assets/RHACM-Logo.svg'
 
 export type AcmHeaderPrototypeProps = {
     href: string
