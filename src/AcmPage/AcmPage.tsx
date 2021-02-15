@@ -13,9 +13,21 @@ import {
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
 import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { AcmDrawerProvider, AcmDrawer } from '../AcmDrawer/AcmDrawer'
 
-export function AcmPage(props: { children: ReactNode }) {
-    return <Page>{props.children}</Page>
+export function AcmPage(props: { children: ReactNode; hasDrawer?: boolean }) {
+    /* istanbul ignore if */
+    if (props.hasDrawer) {
+        return (
+            <AcmDrawerProvider>
+                <AcmDrawer>
+                    <Page>{props.children}</Page>
+                </AcmDrawer>
+            </AcmDrawerProvider>
+        )
+    } else {
+        return <Page>{props.children}</Page>
+    }
 }
 
 export function AcmPageHeader(props: {
