@@ -1,5 +1,5 @@
 import { FormGroup, Label, TextInput } from '@patternfly/react-core'
-import React, { Fragment, useState, useContext, useRef } from 'react'
+import React, { Fragment, useState, useRef } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
 
 export function AcmLabelsInput(props: {
@@ -91,7 +91,7 @@ export function AcmLabelsInput(props: {
                         }}
                         id={props.id}
                         placeholder={props.placeholder}
-                        isDisabled={props.isDisabled ?? formContext.isReadOnly}
+                        isDisabled={/* istanbul ignore next */ props.isDisabled || formContext.isReadOnly}
                         onChange={(value) => {
                             setInputValue(value)
                         }}
