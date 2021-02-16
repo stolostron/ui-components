@@ -1,5 +1,6 @@
 import { FormGroup, Label, TextInput } from '@patternfly/react-core'
-import React, { Fragment, useState, useRef } from 'react'
+import React, { Fragment, useState, useContext, useRef } from 'react'
+import { useFormContext } from '../AcmForm/AcmForm'
 
 export function AcmLabelsInput(props: {
     id: string
@@ -9,8 +10,10 @@ export function AcmLabelsInput(props: {
     buttonLabel: string
     hidden?: boolean
     placeholder?: string
+    isDisabled?: boolean
 }) {
     const [inputValue, setInputValue] = useState<string>()
+    const formContext = useFormContext()
     const inputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
 
     function addLabel(input: string) {
@@ -88,6 +91,7 @@ export function AcmLabelsInput(props: {
                         }}
                         id={props.id}
                         placeholder={props.placeholder}
+                        isDisabled={props.isDisabled ?? formContext.isReadOnly}
                         onChange={(value) => {
                             setInputValue(value)
                         }}
