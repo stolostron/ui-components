@@ -13,7 +13,7 @@ describe('AcmHeaderPrototype', () => {
     })
     test('renders', async () => {
         const { container } = render(
-            <AcmHeaderPrototype urlPath="/multicloud/policies/all" href="https://patternfly.org" target="_blank">
+            <AcmHeaderPrototype urlpath="/multicloud/policies/all" href="https://patternfly.org" target="_blank">
                 <div>test</div>
             </AcmHeaderPrototype>
         )

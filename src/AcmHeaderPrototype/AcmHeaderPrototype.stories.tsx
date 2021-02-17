@@ -8,7 +8,7 @@ export default {
 
 export const HeaderPrototype = () => {
     return (
-        <AcmHeaderPrototype urlPath="/multicloud/policies/all" href="https://patternfly.org" target="_blank">
+        <AcmHeaderPrototype urlpath="/multicloud/policies/all" href="https://patternfly.org" target="_blank">
             <div>test content</div>
         </AcmHeaderPrototype>
     )
