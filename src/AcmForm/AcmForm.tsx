@@ -51,7 +51,7 @@ export function useFormContext() {
 export function AcmForm(props: FormProps) {
     return (
         <AcmFormProvider>
-            <Form {...props} />
+            <Form {...props} onSubmit={/* istanbul ignore next */ (e) => e.preventDefault()} />
         </AcmFormProvider>
     )
 }
