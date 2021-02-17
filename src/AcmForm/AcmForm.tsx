@@ -51,7 +51,7 @@ export function useFormContext() {
 export function AcmForm(props: FormProps) {
     return (
         <AcmFormProvider>
-            <Form {...props} />
+            <Form {...props} onSubmit={(e) => e.preventDefault()} />
         </AcmFormProvider>
     )
 }
@@ -79,7 +79,7 @@ export function AcmSubmit(props: AcmSubmitProps) {
     }, [context.errors])
     return (
         <Button
-            type="button"
+            type="submit"
             variant={props.variant ?? 'primary'}
             spinnerAriaValueText={isLoading ? 'Loading' : undefined}
             isLoading={isLoading}
