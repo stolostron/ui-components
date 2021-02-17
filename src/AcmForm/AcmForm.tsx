@@ -79,7 +79,7 @@ export function AcmSubmit(props: AcmSubmitProps) {
     }, [context.errors])
     return (
         <Button
-            type="submit"
+            type="button"
             variant={props.variant ?? 'primary'}
             spinnerAriaValueText={isLoading ? 'Loading' : undefined}
             isLoading={isLoading}
