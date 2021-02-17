@@ -25,7 +25,7 @@ import logo from '../assets/RHACM-Logo.svg'
 
 export type AcmHeaderPrototypeProps = {
     href: string
-    urlPath: string
+    urlpath: string
     target: string
     children: React.Component | React.ReactElement | React.ReactElement[]
 }
@@ -103,7 +103,7 @@ const useStyles = makeStyles({
 })
 
 type NavExpandableProps = {
-    urlPath: string
+    urlpath: string
 }
 function NavExpandableList(props: NavExpandableProps) {
     const navData: { [key: string]: Record<string, string> } = {
@@ -145,7 +145,7 @@ function NavExpandableList(props: NavExpandableProps) {
         },
     }
 
-    const pathname = props.urlPath
+    const pathname = props.urlpath
 
     let currentGroup = ''
     let currentItem = ''
@@ -387,7 +387,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
         />
     )
 
-    const SidebarNav = <NavExpandableList urlPath={props.urlPath}></NavExpandableList>
+    const SidebarNav = <NavExpandableList urlpath={props.urlpath}></NavExpandableList>
 
     const Sidebar = <PageSidebar nav={SidebarNav} isNavOpen={isOpen} />
 
