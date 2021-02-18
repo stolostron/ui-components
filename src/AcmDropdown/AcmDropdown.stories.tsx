@@ -23,12 +23,10 @@ export const Dropdown = (args) => {
         { id: 'link item', text: 'Link item', href: 'www.google.com', component: 'a' },
     ]
     const onSelect = (id: string) => alert(`clicked: ${id}`)
-    const onHover = () => alert('hovered')
     return (
         <Card>
             <CardBody style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', paddingTop: '50px' }}>
                 <AcmDropdown
-                    onHover={onHover}
                     isDisabled={args.isDisabled}
                     tooltip={args.tooltip}
                     id="dropdown"

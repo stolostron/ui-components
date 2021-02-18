@@ -26,7 +26,7 @@ export type AcmDropdownProps = Props & {
     onHover?: () => void
     isPlain?: boolean
     isPrimary?: boolean
-    onToggle?: () => void
+    onToggle?: (isOpen?: boolean) => void
 }
 
 export type AcmDropdownItems = {
@@ -125,7 +125,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
                             onToggle={() => {
                                 /* istanbul ignore next */
                                 if (props.onToggle) {
-                                    props.onToggle()
+                                    props.onToggle(!isOpen)
                                 }
                                 setOpen(!isOpen)
                             }}
@@ -137,7 +137,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
                             isDisabled={props.isDisabled}
                             onToggle={() => {
                                 if (props.onToggle) {
-                                    props.onToggle()
+                                    props.onToggle(!isOpen)
                                 }
                                 setOpen(!isOpen)
                             }}
