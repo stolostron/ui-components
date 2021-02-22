@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import React from 'react'
@@ -78,9 +78,15 @@ describe('AcmSearchbar', () => {
         expect(getByText('namespace:default')).toBeInTheDocument()
     })
 
+    test('validates delete search tag function - no tags present', async () => {
+        const { queryByText, getByRole } = render(<BlankSearchbar />)
+        userEvent.click(getByRole('combobox'))
+        fireEvent.keyDown(getByRole('combobox'), { key: 'Backspace', code: 'Backspace' })
+        expect(queryByText('Search items')).toBeInTheDocument()
+    })
+
     test('validates delete search tag function - whole tag', async () => {
         const { getByText, queryByText } = render(<PrefilledSearchbar />)
-        expect(getByText('namespace:default')).toBeInTheDocument()
         userEvent.click(getByText('namespace:default'))
         expect(queryByText('namespace:default')).not.toBeInTheDocument()
     })
