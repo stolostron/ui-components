@@ -64,6 +64,7 @@ export function AcmLabelsInput(props: {
                     }}
                     onClick={() => {
                         setInputValue(undefined)
+                        /* istanbul ignore next */
                         inputRef.current?.focus()
                     }}
                 >
