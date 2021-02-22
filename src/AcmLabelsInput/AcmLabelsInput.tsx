@@ -62,7 +62,11 @@ export function AcmLabelsInput(props: {
                         minHeight: '36px',
                         borderBottom: 'none',
                     }}
-                    onClick={() => setInputValue(undefined)}
+                    onClick={() => {
+                        setInputValue(undefined)
+                        /* istanbul ignore next */
+                        inputRef.current?.focus()
+                    }}
                 >
                     {props.value &&
                         Object.keys(props.value).map((key) => (
