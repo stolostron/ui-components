@@ -70,11 +70,17 @@ const LegendLabel = ({ ...props }: { datum?: Data }) => {
     )
 }
 
-function buildLegendWithLinks(legendData: Array<LegendData>) {
-    return <ChartLegend data={legendData} labelComponent={<LegendLabel />} />
+function buildLegendWithLinks(legendData: Array<LegendData>, colorScale?: string[]) {
+    return <ChartLegend data={legendData} labelComponent={<LegendLabel />} colorScale={colorScale} />
 }
 
-export function AcmDonutChart(props: { title: string; description: string; data: Array<Data>; loading?: boolean }) {
+export function AcmDonutChart(props: {
+    title: string
+    description: string
+    data: Array<Data>
+    loading?: boolean
+    colorScale?: string[]
+}) {
     const chartData = props.data.map((d) => ({ x: d.key, y: d.value }))
     const legendData: Array<LegendData> = props.data.map((d) => ({ name: `${d.value} ${d.key}`, link: d.link }))
     const total = props.data.reduce((a, b) => a + b.value, 0)
@@ -99,7 +105,7 @@ export function AcmDonutChart(props: { title: string; description: string; data:
                     constrainToVisibleArea={true}
                     data={chartData}
                     legendData={legendData}
-                    legendComponent={buildLegendWithLinks(legendData)}
+                    legendComponent={buildLegendWithLinks(legendData, props.colorScale)}
                     labels={({ datum }) => `${datum.x}: ${((datum.y / total) * 100).toFixed(2)}%`}
                     padding={{
                         bottom: 20,
@@ -111,6 +117,9 @@ export function AcmDonutChart(props: { title: string; description: string; data:
                     subTitle={primary.key}
                     width={/* istanbul ignore next */ viewWidth < 376 ? viewWidth : 376}
                     height={/* istanbul ignore next */ viewWidth < 376 ? 150 : 200}
+                    // Devs can supply an array of colors the donut chart will use ex: ['#E62325', '#EC7A08', '#F4C145', '#2B9AF3', '#72767B']
+                    // Defaults to blue theme
+                    colorScale={props.colorScale}
                 />
             </div>
         </Card>
