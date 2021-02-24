@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, GridItem, Skeleton } from '@patternfly/react-core'
+import { Grid, GridItem, Skeleton, gridItemSpanValueShape } from '@patternfly/react-core'
 import { ExclamationCircleIcon } from '@patternfly/react-icons'
 import { AcmExpandableCard } from '../AcmExpandable'
 import { makeStyles } from '@material-ui/styles'
@@ -72,9 +72,14 @@ export type AcmCountCardSectionCard = {
 
 export const AcmCountCardSection = (props: AcmCountCardSection) => {
     const classes = useStyles()
+    const cardCount = props.cards.length
+    // Grid uses a 12 column layout - here we find the number of coulumns to evenly use per item
+    // If 12 / cardCount doesnt come out to a whole number we round up and the extra card will be displayed on a second row
+    const gridNum = Math.ceil(12 / cardCount) as gridItemSpanValueShape
+
     return (
         <AcmExpandableCard title={props.title} className={classes.section} id={props.id}>
-            <Grid sm={4}>
+            <Grid sm={gridNum}>
                 {props.cards.map((card, i) => {
                     return (
                         <GridItem key={i}>
