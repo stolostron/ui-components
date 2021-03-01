@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { render, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import React, { Fragment } from 'react'

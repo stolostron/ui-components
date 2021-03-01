@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { makeStyles } from '@material-ui/styles'
 import {
     EmptyState,

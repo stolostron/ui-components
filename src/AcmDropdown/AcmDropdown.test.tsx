@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React from 'react'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { render, waitFor } from '@testing-library/react'

@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 export const convertStringToTags = (searchText: string) => {
     if (searchText !== null && searchText !== '') {
         const queryItems = searchText.split(' ')

@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import Collapse from '@material-ui/core/Collapse'
 import { Alert, AlertActionCloseButton } from '@patternfly/react-core'
 import React, {

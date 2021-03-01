@@ -1,3 +1,5 @@
+[comment]: # ( Copyright Contributors to the Open Cluster Management project )
+
 # Open Cluster Management UI Components
 
 React shared UI component library for open cluster management

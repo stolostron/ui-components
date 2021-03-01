@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useRef, useState, useContext, useEffect, createContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import {

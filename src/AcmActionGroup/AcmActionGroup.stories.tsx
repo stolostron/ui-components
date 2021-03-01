@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useState } from 'react'
 import { Card, CardBody, Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'

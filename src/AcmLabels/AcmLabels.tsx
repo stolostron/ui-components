@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { makeStyles } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles'

@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { ReactNode, useRef, useState, useCallback, useEffect } from 'react'
 
 /** Scollable container that adds a top shadow on scroll */

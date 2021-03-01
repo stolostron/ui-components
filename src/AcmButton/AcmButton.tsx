@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { Button, ButtonProps } from '@patternfly/react-core'
 import { Location, LocationDescriptor, LocationState } from 'history'
 import React from 'react'

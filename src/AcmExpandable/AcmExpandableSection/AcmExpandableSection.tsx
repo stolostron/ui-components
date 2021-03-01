@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { ExpandableSection } from '@patternfly/react-core'
 import React, { ReactNode, useState, useEffect } from 'react'
 

@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useState, useEffect } from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'

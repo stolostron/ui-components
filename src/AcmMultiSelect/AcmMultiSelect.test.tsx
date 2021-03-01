@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { SelectOption } from '@patternfly/react-core'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'

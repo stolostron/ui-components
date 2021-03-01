@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { EmptyState, EmptyStateBody, EmptyStatePrimary, EmptyStateVariant, Title } from '@patternfly/react-core'
 import React, { ReactNode } from 'react'
 import emptyPagePng from '../assets/EmptyPageIcon.png'

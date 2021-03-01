@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useContext } from 'react'
 import { AcmAlertGroup, AcmAlertProvider, AcmAlertContext } from './AcmAlert'

@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 // @types/react-tag-autocomplete is not up-to-date with react-tag-autocomplete library
 // using the following line to override for time being
 declare module 'react-tag-autocomplete'

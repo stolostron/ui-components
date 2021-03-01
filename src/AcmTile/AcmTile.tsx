@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React from 'react'
 import { Skeleton, Tile, TileProps } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'

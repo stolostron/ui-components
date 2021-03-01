@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import '@patternfly/patternfly/patternfly.css'
 import React, { useState } from 'react'
 import { AcmOverviewProviders, AcmProviderCard } from './AcmProviderCard'

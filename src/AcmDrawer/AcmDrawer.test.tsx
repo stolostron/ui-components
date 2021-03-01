@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React from 'react'
 import { MemoryRouter, Route, Link } from 'react-router-dom'
 import { render, screen, waitFor } from '@testing-library/react'

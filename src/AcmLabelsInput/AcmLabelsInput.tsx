@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { FormGroup, Label, TextInput } from '@patternfly/react-core'
 import React, { Fragment, useState, useRef } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
