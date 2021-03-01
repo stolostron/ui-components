@@ -13,7 +13,7 @@ PACKAGE_NAME=`cat package.json | jq -r .name | cut -c 2-`
 
 git remote remove origin
 git remote add origin https://${GITHUB_TOKEN}@github.com/${PACKAGE_NAME}.git > /dev/null 2>&1
-git checkout master
+git checkout main
 
 rm -rf node_modules
 rm -f package-lock.json
@@ -34,7 +34,7 @@ if git diff --name-only | grep 'package.json\|package-lock.json'; then
     git config --global user.name "Travis CI"
     git add -u :/
     git commit -m "fix(deps): upgrade dependencies"
-    git push origin master
+    git push origin main
 else
     echo No upgrades available
 fi
