@@ -6,6 +6,7 @@ import {
     ExclamationTriangleIcon,
     MinusCircleIcon,
     UnknownIcon,
+    AsleepIcon,
 } from '@patternfly/react-icons'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/core'
@@ -34,6 +35,7 @@ export enum StatusType {
     'detached' = 'detached',
     'pending' = 'pending',
     'unknown' = 'unknown',
+    'sleep' = 'sleep',
 }
 
 export function AcmInlineStatus(props: { type: StatusType; status: string | React.ReactNode; popover?: PopoverProps }) {
@@ -75,6 +77,8 @@ function StatusIcon(props: { type: StatusType }) {
             return <AcmIcon icon={AcmIconVariant.brokenlink} />
         case StatusType.pending:
             return <MinusCircleIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
+        case StatusType.sleep:
+            return <AsleepIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
         case 'unknown':
         default:
             return <UnknownIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
