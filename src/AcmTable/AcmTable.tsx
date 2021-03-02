@@ -227,7 +227,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     useLayoutEffect(
         () => {
-            if (outerDiv && tableDiv) {
+            if (!props.gridBreakPoint && outerDiv && tableDiv) {
                 updateBreakpoint(outerDiv.clientWidth, tableDiv.clientWidth)
             }
         },
@@ -239,7 +239,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     /* istanbul ignore next */
     useResizeObserver(outerDiv, (entry) => {
-        if (entry.contentRect && tableDiv) {
+        if (!props.gridBreakPoint && entry.contentRect && tableDiv) {
             const width = Math.floor(entry.contentRect.width)
             const tableWidth = tableDiv.clientWidth
             updateBreakpoint(width, tableWidth)
@@ -584,7 +584,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     rows.length && props.bulkActions?.length ? onSelect : undefined
                                 }
                                 variant={TableVariant.compact}
-                                gridBreakPoint={breakpoint}
+                                gridBreakPoint={props.gridBreakPoint ?? breakpoint}
                             >
                                 <TableHeader />
                                 <TableBody />

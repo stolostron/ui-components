@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { fitContent, SortByDirection } from '@patternfly/react-table'
+import { fitContent, SortByDirection, TableGridBreakpoint } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { configureAxe } from 'jest-axe'
@@ -30,7 +30,9 @@ describe('AcmTable', () => {
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
     const Table = (
-        props: { useBulkActions?: boolean; transforms?: boolean } & Partial<AcmTableProps<IExampleData>>
+        props: { useBulkActions?: boolean; transforms?: boolean; gridBreakPoint?: TableGridBreakpoint } & Partial<
+            AcmTableProps<IExampleData>
+        >
     ) => {
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
@@ -133,6 +135,13 @@ describe('AcmTable', () => {
     test('renders with transforms', () => {
         const { container } = render(<Table transforms={true} />)
         expect(container.querySelector('table')).toBeInTheDocument()
+    })
+    test('renders table with gridbreakpoint override', () => {
+        const { container } = render(
+            <Table items={exampleData.slice(0, 8)} gridBreakPoint={TableGridBreakpoint.none} />
+        )
+        expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
+        expect(container.querySelector('.pf-c-table__sort-indicator')).toBeInTheDOM()
     })
     test('can support table actions', () => {
         const { getByText } = render(<Table />)
