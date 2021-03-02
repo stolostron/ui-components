@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useEffect, useContext } from 'react'
 import { Modal, ModalProps } from '@patternfly/react-core'
 import { AcmAlertProvider, AcmAlertContext } from '../AcmAlert/AcmAlert'

@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { fitContent, SortByDirection } from '@patternfly/react-table'
 import { render } from '@testing-library/react'

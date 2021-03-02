@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import {

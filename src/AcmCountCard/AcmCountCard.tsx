@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { ReactNode, useState } from 'react'
 import {
     Card,

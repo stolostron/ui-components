@@ -1,3 +1,5 @@
+[comment]: # ( Copyright Contributors to the Open Cluster Management project )
+
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge

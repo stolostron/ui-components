@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React from 'react'
 import { PageSection } from '@patternfly/react-core'
 import { AcmInlineProvider } from './AcmInlineProvider'

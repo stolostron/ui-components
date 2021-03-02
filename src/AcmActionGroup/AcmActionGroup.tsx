@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { Fragment } from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Flex, FlexItem, Divider } from '@patternfly/react-core'

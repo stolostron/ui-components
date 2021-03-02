@@ -1,3 +1,5 @@
+# Copyright Contributors to the Open Cluster Management project
+
 language: node_js
 node_js: '12'
 install: npm ci --no-optional
@@ -16,7 +18,7 @@ jobs:
                 npm run build:storybook
 
         - stage: Build and Publish
-          if: type = push AND branch = master
+          if: type = push AND branch = main
           script:
               - npm test &&
                 npm run build &&
@@ -30,9 +32,9 @@ jobs:
               keep_history: true
               local_dir: storybook-static
               on:
-                  branch: master
+                  branch: main
 
         - stage: Automated Dependency Upgrade
-          if: type = cron AND branch = master
+          if: type = cron AND branch = main
           install: echo skip install
           script: scripts/update.sh

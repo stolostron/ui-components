@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { Nav, NavItem, NavList } from '@patternfly/react-core'
 import React, { ReactNode } from 'react'
 

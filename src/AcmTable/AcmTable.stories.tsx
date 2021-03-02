@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 /* eslint-disable react/display-name */
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { fitContent, truncate } from '@patternfly/react-table'

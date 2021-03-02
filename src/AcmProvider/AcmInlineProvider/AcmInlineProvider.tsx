@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React from 'react'
 import { makeStyles } from '@material-ui/styles'
 import { Provider, ProviderLongTextMap, ProviderIconMap } from '../'

@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import '@patternfly/react-styles/css/components/CodeEditor/code-editor.css'
 import React, { useState, useEffect } from 'react'
 import { TooltipPosition } from '@patternfly/react-core'

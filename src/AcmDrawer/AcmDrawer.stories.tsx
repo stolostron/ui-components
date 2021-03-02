@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useState } from 'react'
 import { ActionGroup, ButtonVariant } from '@patternfly/react-core'
 import { AcmButton } from '../AcmButton/AcmButton'

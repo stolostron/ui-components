@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useState } from 'react'
 import { Card, CardTitle, CardBody, Split, SplitItem, Button, ButtonVariant } from '@patternfly/react-core'
 import { AngleDownIcon, AngleRightIcon } from '@patternfly/react-icons'

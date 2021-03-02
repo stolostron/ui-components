@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React from 'react'
 import { Card, CardTitle, Badge, Skeleton } from '@patternfly/react-core'
 import { ChartDonut, ChartLabel, ChartLegend } from '@patternfly/react-charts'

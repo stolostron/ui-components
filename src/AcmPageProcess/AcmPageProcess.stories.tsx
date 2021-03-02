@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useState, useEffect } from 'react'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { AcmPageProcess } from './AcmPageProcess'

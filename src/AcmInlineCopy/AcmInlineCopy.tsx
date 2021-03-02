@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import React, { useState, useEffect } from 'react'
 import { CopyIcon } from '@patternfly/react-icons'
 import { Popover, ButtonVariant } from '@patternfly/react-core'

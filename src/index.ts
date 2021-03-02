@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 export * from './AcmAlert/AcmAlert'
 export * from './AcmAutoRefreshSelect/AcmAutoRefreshSelect'
 export * from './AcmBackdrop/AcmBackdrop'

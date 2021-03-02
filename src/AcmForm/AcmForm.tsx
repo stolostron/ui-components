@@ -1,3 +1,5 @@
+/* Copyright Contributors to the Open Cluster Management project */
+
 import { Button, ButtonProps, Form, FormProps } from '@patternfly/react-core'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { AcmAlertContext } from '../AcmAlert/AcmAlert'
