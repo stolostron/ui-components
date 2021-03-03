@@ -64,6 +64,13 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
+        if (formContext.errors?.[props.id] !== undefined && !error) {
+            setValidated('error')
+            setError(formContext.errors[props.id])
+        }
+    }, [formContext.errors, error])
+
+    useLayoutEffect(() => {
         setValidated(error ? 'error' : undefined)
     }, [formContext.validate])
 

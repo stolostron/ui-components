@@ -32,7 +32,6 @@ export const Form = () => {
         <AcmAlertProvider>
             <AcmPageCard>
                 <AcmForm>
-                    <AcmFormSection title="TextInput"></AcmFormSection>
                     <AcmTextInput
                         id="textInput"
                         label="Email"

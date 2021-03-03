@@ -2,7 +2,7 @@
 
 import { Button, ButtonProps, Form, FormProps } from '@patternfly/react-core'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import { AcmAlertContext } from '../AcmAlert/AcmAlert'
+import { AcmAlertProvider, AcmAlertContext } from '../AcmAlert/AcmAlert'
 
 export const FormContext = createContext<{
     readonly validate: boolean
@@ -31,9 +31,11 @@ export function AcmFormProvider(props: { children: ReactNode }) {
             return copy
         })
     }
+
     // useEffect(() => {
     //     if (validate) {
-    //         setErrors({})
+    //         const hasError = Object.keys(errors).find((id) => errors[id] != undefined) != undefined
+    //         setErrors(errors)
     //     }
     // }, [validate])
 
@@ -53,7 +55,9 @@ export function useFormContext() {
 export function AcmForm(props: FormProps) {
     return (
         <AcmFormProvider>
-            <Form {...props} onSubmit={/* istanbul ignore next */ (e) => e.preventDefault()} />
+            <AcmAlertProvider>
+                <Form {...props} onSubmit={/* istanbul ignore next */ (e) => e.preventDefault()} />
+            </AcmAlertProvider>
         </AcmFormProvider>
     )
 }
@@ -73,12 +77,13 @@ export function AcmSubmit(props: AcmSubmitProps) {
         }
     }, [])
 
-    useEffect(() => {
-        if (context.validate) {
-            const hasError = Object.keys(context.errors).find((id) => context.errors[id] != undefined) != undefined
-            setDisabled(hasError)
-        }
-    }, [context.errors])
+    // useEffect(() => {
+    //     if (context.validate) {
+    //         const hasError = Object.keys(context.errors).find((id) => context.errors[id] != undefined) != undefined
+    //         setDisabled(hasError)
+    //     }
+    // }, [context.errors])
+
     return (
         <Button
             type="submit"

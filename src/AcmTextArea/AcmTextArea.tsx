@@ -44,6 +44,13 @@ export function AcmTextArea(props: AcmTextAreaProps) {
         setValidated(error ? 'error' : undefined)
     }, [formContext.validate])
 
+    useLayoutEffect(() => {
+        if (formContext.errors?.[props.id] !== undefined && !error) {
+            setValidated('error')
+            setError(formContext.errors[props.id])
+        }
+    }, [formContext.errors, error])
+
     return (
         <FormGroup
             id={`${props.id}-label`}
