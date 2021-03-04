@@ -56,7 +56,7 @@ function DropdownName() {
     useEffect(() => {
         const dev = process.env.NODE_ENV !== 'production'
         const serverForTest = dev ? 'https://localhost:3000' : ''
-        api<{ username: string }>(`${serverForTest}/multicloud/common/username`)
+        api<{ username: string }>(`${serverForTest}/multicloud/common/username/`)
             .then(({ username }) => {
                 setName(username)
             })
@@ -76,7 +76,7 @@ function AboutModalVersion() {
     useEffect(() => {
         const dev = process.env.NODE_ENV !== 'production'
         const serverForTest = dev ? 'https://localhost:3000' : ''
-        api<{ version: string }>(`${serverForTest}/multicloud/common/version`)
+        api<{ version: string }>(`${serverForTest}/multicloud/common/version/`)
             .then(({ version }) => {
                 setVersion(version)
             })
@@ -111,49 +111,49 @@ type NavExpandableProps = {
 function NavExpandableList(props: NavExpandableProps) {
     const navData: { [key: string]: Record<string, string> } = {
         home: {
-            path: '/multicloud/welcome',
+            path: '/multicloud/welcome/',
             groupId: 'home',
             itemId: 'home_welcome',
             name: 'Home',
         },
         overview: {
-            path: '/multicloud/overview',
+            path: '/multicloud/overview/',
             groupId: 'home',
             itemId: 'home_overview',
             name: 'Overview',
         },
         clusters: {
-            path: '/multicloud/clusters',
+            path: '/multicloud/clusters/',
             groupId: 'automate',
             itemId: 'automate_clusters',
             name: 'Clusters',
         },
         baremetal: {
-            path: '/multicloud/bare-metal-assets',
+            path: '/multicloud/bare-metal-assets/',
             groupId: 'automate',
             itemId: 'automate_baremetal',
             name: 'Bare metal assets',
         },
         applications: {
-            path: '/multicloud/applications',
+            path: '/multicloud/applications/',
             groupId: 'manage',
             itemId: 'manage_applications',
             name: 'Manage applications',
         },
         grc: {
-            path: '/multicloud/policies',
+            path: '/multicloud/policies/',
             groupId: 'grc',
             itemId: 'grc_govern_risk',
             name: 'Govern risk',
         },
         credentials: {
-            path: '/multicloud/connections',
+            path: '/multicloud/connections/',
             groupId: 'credentials',
             itemId: 'manage_credentials',
             name: 'Manage credentials',
         },
         kui: {
-            path: '/kui',
+            path: '/kui/',
             groupId: 'kui',
             itemId: 'kui',
             name: 'Visual Web Terminal',
@@ -188,7 +188,7 @@ function NavExpandableList(props: NavExpandableProps) {
 
     function launchToOCP(searchParam: string) {
         api<{ data: { consoleURL: string } }>(
-            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public'
+            '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
         )
             .then(({ data }) => {
                 window.open(`${data.consoleURL}${searchParam}`, '_self')
@@ -284,7 +284,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     }
 
     function configureClient() {
-        api<{ token_endpoint: string }>('/multicloud/common/configure')
+        api<{ token_endpoint: string }>('/multicloud/common/configure/')
             .then(({ token_endpoint }) => {
                 window.open(`${token_endpoint}/request`, '_blank')
             })
@@ -295,7 +295,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     }
 
     function logout() {
-        api<{ admin: boolean; logoutPath: string }>('/multicloud/logout')
+        api<{ admin: boolean; logoutPath: string }>('/multicloud/logout/')
             .then(({ admin, logoutPath }) => {
                 const onLogout = (delay = 0) => {
                     return setTimeout(() => {
