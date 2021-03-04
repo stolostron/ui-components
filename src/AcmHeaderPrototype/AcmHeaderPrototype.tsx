@@ -333,14 +333,15 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
             >
                 <PageHeaderToolsItem>
                     <Button
+                        aria-label="search-button"
                         onClick={() => window.open('/search/', '_self')}
                         variant="link"
                         icon={
                             <svg width="18px" height="19px" viewBox="0 0 18 19" version="1.1">
                                 <title>search-icon</title>
-                                <g id="Getting-Started" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                <g id="Search-icon" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                     <g
-                                        id="01.00-Getting-Started"
+                                        id="search-svg"
                                         transform="translate(-1127.000000, -29.000000)"
                                         fill="#EDEDED"
                                     >
@@ -354,14 +355,15 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                         }
                     ></Button>
                     <Button
+                        aria-label="create-button"
                         onClick={() => window.open('/multicloud/common/create', '_self')}
                         variant="link"
                         icon={
                             <svg width="18px" height="20px" viewBox="0 0 18 20" version="1.1">
                                 <title>add-resource-icon</title>
-                                <g id="Getting-Started" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                <g id="create-icon" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                                     <g
-                                        id="01.00-Getting-Started"
+                                        id="create-svg"
                                         transform="translate(-1177.000000, -29.000000)"
                                         fill="#EDEDED"
                                         fillRule="nonzero"
