@@ -17,7 +17,11 @@ export function AcmScrollable(props: { children?: ReactNode }) {
         <div
             style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflowY: 'hidden', position: 'relative' }}
         >
-            <div ref={divEl} style={{ flexGrow: 1, overflowY: 'auto' }} onScroll={update}>
+            <div
+                ref={divEl}
+                style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflowY: 'auto' }}
+                onScroll={update}
+            >
                 {props.children}
             </div>
             {
