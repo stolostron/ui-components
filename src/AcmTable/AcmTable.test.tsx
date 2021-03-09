@@ -206,8 +206,8 @@ describe('AcmTable', () => {
         expect(queryByText('57 / 105')).toBeVisible()
 
         // clear filter
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(queryByText('57 / 105')).toBeNull()
 
         // verify previous sort column (UID) maintained
@@ -226,8 +226,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Barnham')
 
         // clear filter
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(queryByText('7 / 105')).toBeNull()
 
         // verify sort order set during filter (Last Name) persists
@@ -353,8 +353,8 @@ describe('AcmTable', () => {
         expect(setSort).not.toHaveBeenCalled()
         expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Danny')
 
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(setSearch).toHaveBeenCalled()
         expect(setPage).toHaveBeenCalled()
         expect(setSort).toHaveBeenCalled()
@@ -378,8 +378,8 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Last Name'))
 
         // clear filter
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(queryByText('0 / 105')).toBeNull()
 
         // verify sort selection sticks
