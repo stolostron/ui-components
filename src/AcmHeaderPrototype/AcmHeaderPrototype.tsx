@@ -12,8 +12,6 @@ import {
     Dropdown,
     DropdownItem,
     DropdownToggle,
-    Modal,
-    ModalVariant,
     Spinner,
     Nav,
     NavExpandable,
@@ -24,6 +22,10 @@ import {
     Button,
     ApplicationLauncher,
     ApplicationLauncherItem,
+    AboutModal,
+    TextContent,
+    TextListItem,
+    TextList,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import logo from '../assets/RHACM-Logo.svg'
@@ -183,6 +185,19 @@ function AboutModalVersion() {
     return <span className="version-details__no">{version === 'undefined' ? <Spinner size="md" /> : version}</span>
 }
 
+function AboutContent() {
+    return (
+        <TextContent>
+            <TextList component="dl">
+                <TextListItem component="dt">ACM Version</TextListItem>
+                <TextListItem component="dd">
+                    <AboutModalVersion />
+                </TextListItem>
+            </TextList>
+        </TextContent>
+      )
+}
+
 const useStyles = makeStyles({
     list: {
         '& li.pf-c-nav__item.pf-m-expandable.pf-m-expanded': {
@@ -196,6 +211,9 @@ const useStyles = makeStyles({
             },
         },
     },
+    about: {
+        height: 'min-content'
+    }
 })
 
 type NavExpandableProps = {
@@ -366,6 +384,8 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     const [aboutDropIsOpen, aboutDropSetOpen] = useState<boolean>(false)
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
 
+    const classes = useStyles()
+
     function api<T>(url: string): Promise<T> {
         return fetch(url).then((response) => {
             if (!response.ok) {
@@ -452,38 +472,16 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                         ]}
                         isOpen={aboutDropIsOpen}
                     ></Dropdown>
-                    {/* <Dropdown
-                        toggle={
-                            <DropdownToggle id="toggle-id" onToggle={() => dropSetOpen(!dropIsOpen)}>
-                                <DropdownName></DropdownName>
-                            </DropdownToggle>
-                        }
-                        dropdownItems={[
-                            <DropdownItem onClick={() => logout()} key={'logoutbutton'}>
-                                Logout
-                            </DropdownItem>,
-                            <DropdownItem onClick={() => configureClient()} key={'configurebutton'}>
-                                Configure client
-                            </DropdownItem>,
-                        ]}
-                        isOpen={dropIsOpen}
-                    ></Dropdown> */}
-                    <Modal
-                        variant={ModalVariant.small}
+                    <AboutModal
                         isOpen={aboutModalOpen}
-                        aria-label="about-modal"
-                        showClose={true}
-                        aria-describedby="about-modal"
                         onClose={() => setAboutModalOpen(!aboutModalOpen)}
+                        trademark={"Copyright © 2020 IBM Corporation. All rights reserved. \nCopyright © 2020 Red Hat, Inc. All rights reserved."}
+                        brandImageSrc={logo}
+                        brandImageAlt="ACM logo"
+                        className={classes.about}
                     >
-                        <span className="version-details__label">Version </span>
-                        <AboutModalVersion></AboutModalVersion>
-                        <span className="spacer" />
-                        <div className="copyright">
-                            <p>Copyright © 2020 IBM Corporation. All rights reserved.</p>
-                            <p>Copyright © 2020 Red Hat, Inc. All rights reserved.</p>
-                        </div>
-                    </Modal>
+                        <AboutContent />
+                    </AboutModal>
                 </PageHeaderToolsItem>
                 <PageHeaderToolsItem>
                     <UserDropdown />
