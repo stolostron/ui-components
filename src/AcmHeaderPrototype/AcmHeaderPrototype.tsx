@@ -30,11 +30,7 @@ import {
 import { makeStyles } from '@material-ui/styles'
 import logo from '../assets/RHACM-Logo.svg'
 import {
-    // BellIcon,
     CaretDownIcon,
-    // EllipsisVIcon,
-    // PlusCircleIcon,
-    // QuestionCircleIcon,
   } from '@patternfly/react-icons'
 
 export type AcmHeaderPrototypeProps = {
@@ -85,6 +81,57 @@ function UserDropdownToggle() {
             </span>
             <CaretDownIcon className="pf-c-dropdown__toggle-icon" />
         </span>
+    )
+}
+
+type AboutDropdownProps = {
+    aboutClick: Function
+}
+function AboutDropdown(props: AboutDropdownProps) {
+    const [aboutDDIsOpen, aboutDDSetOpen] = useState<boolean>(false)
+
+    function DocsButton() {
+        return (
+            <ApplicationLauncherItem href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.2/">
+                Documentation
+            </ApplicationLauncherItem>
+          )
+    }
+    function AboutButton() {
+        return (
+            <ApplicationLauncherItem component="button" onClick={() => props.aboutClick()}>
+                About
+            </ApplicationLauncherItem>
+          )
+    }
+
+    return (
+        <ApplicationLauncher
+            aria-label="about-menu"
+            data-test="about-dropdown"
+            className="co-app-launcher co-about-menu"
+            onSelect={() => aboutDDSetOpen(false)}
+            onToggle={() => aboutDDSetOpen(!aboutDDIsOpen)}
+            isOpen={aboutDDIsOpen}
+            items={[
+                <DocsButton key="docs" />,
+                <AboutButton key="about_modal_button"/>
+            ]}
+            data-quickstart-id="qs-masthead-helpmenu"
+            position="right"
+            toggleIcon={
+                <svg width="18px" height="20px" viewBox="0 0 18 20" version="1.1">
+                    <title>help-icon</title>
+                    <g id="Help" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <g id="01.00-Help" transform="translate(-1277.000000, -29.000000)" fill="#EDEDED" fill-rule="nonzero">
+                            <g id="help-icon" transform="translate(1277.000000, 29.381579)">
+                                <path d="M9.00103711,0.0025467465 C4.03806445,0.0025467465 0,4.09288877 0,9.12141303 C0,14.1478536 4.03806445,18.2393889 9.00103711,18.2393889 C13.9630078,18.2393889 18,14.1479426 18,9.12141303 C18,4.09288877 13.9630254,0.0025467465 9.00103711,0.0025467465 Z M9.00103711,16.0250729 C5.24237695,16.0250729 2.18550586,12.9287991 2.18550586,9.12137742 C2.18550586,5.3121214 5.24241211,2.21677364 9.00103711,2.21677364 C12.7577812,2.21677364 15.8155664,5.31210359 15.8155664,9.12137742 C15.8155664,12.9287634 12.7577285,16.0250729 9.00103711,16.0250729 Z M10.2857168,4.23609429 L10.2857168,6.19003657 C10.2857168,6.27821099 10.2539355,6.35454215 10.1902852,6.41901223 C10.1266348,6.48348232 10.0513125,6.51569955 9.9642832,6.51569955 L8.0357168,6.51569955 C7.94865234,6.51569955 7.8733125,6.48350013 7.80971484,6.41901223 C7.74611719,6.35452434 7.7142832,6.27821099 7.7142832,6.19003657 L7.7142832,4.23609429 C7.7142832,4.14791987 7.74609961,4.07158871 7.80971484,4.00711863 C7.87333008,3.94264854 7.94865234,3.91043131 8.0357168,3.91043131 L9.9642832,3.91043131 C10.0513125,3.91043131 10.1266523,3.94263073 10.1902852,4.00711863 C10.253918,4.07160652 10.2857168,4.14791987 10.2857168,4.23609429 L10.2857168,4.23609429 Z M9.16903125,7.81833368 C11.2492793,7.81833368 12.9357773,9.40274838 12.9357773,11.1563347 C12.9357773,12.9099211 11.2492793,14.3315043 9.16903125,14.3315043 C6.12722461,14.3315043 5.51118164,12.6625127 5.40796289,11.2840817 C5.40796289,11.1427461 5.52624609,11.1088726 5.68696289,11.1088726 C5.84767969,11.1088726 7.58668359,11.1088726 7.67580469,11.1088726 C7.78296094,11.1088726 7.93024805,11.120146 7.98437109,11.297136 C7.98437109,12.1672506 10.3744336,12.2758168 10.3744336,11.1563703 C10.3744336,10.5952669 9.85206445,10.0198268 9.16908398,9.97749386 C8.48610352,9.93516088 7.72265039,9.84201763 7.72265039,9.01224131 C7.72265039,8.7803271 7.72265039,8.55502017 7.72265039,8.21628508 C7.72265039,7.87763903 7.89345703,7.81833368 8.20483594,7.81833368 C8.51621484,7.81833368 9.16904883,7.81833368 9.16904883,7.81833368 L9.16903125,7.81833368 Z" id="Shape" transform="translate(9.000000, 9.120968) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -9.120968) "></path>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+            }
+      />
     )
 }
 
@@ -448,30 +495,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                             </svg>
                         }
                     ></Button>
-                    <Dropdown
-                        toggle={
-                            <DropdownToggle id="toggle-about" onToggle={() => aboutDropSetOpen(!aboutDropIsOpen)}>
-                                About
-                            </DropdownToggle>
-                        }
-                        dropdownItems={[
-                            <DropdownItem
-                                onClick={() =>
-                                    window.open(
-                                        'https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.2/',
-                                        '_blank'
-                                    )
-                                }
-                                key={'docbutton'}
-                            >
-                                Documentation
-                            </DropdownItem>,
-                            <DropdownItem onClick={() => setAboutModalOpen(!aboutModalOpen)} key={'aboutbutton'}>
-                                About
-                            </DropdownItem>,
-                        ]}
-                        isOpen={aboutDropIsOpen}
-                    ></Dropdown>
+                    <AboutDropdown aboutClick={() => setAboutModalOpen(!aboutModalOpen)} />
                     <AboutModal
                         isOpen={aboutModalOpen}
                         onClose={() => setAboutModalOpen(!aboutModalOpen)}
@@ -483,6 +507,8 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                         <AboutContent />
                     </AboutModal>
                 </PageHeaderToolsItem>
+            </PageHeaderToolsGroup>
+            <PageHeaderToolsGroup>
                 <PageHeaderToolsItem>
                     <UserDropdown />
                 </PageHeaderToolsItem>
