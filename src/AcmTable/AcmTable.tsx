@@ -282,6 +282,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         if (search && search !== '' && searchItems) {
             const fuse = new Fuse(searchItems, {
                 includeScore: true,
+                shouldSort: true,
                 threshold: 0.3,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
