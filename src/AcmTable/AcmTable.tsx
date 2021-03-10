@@ -281,8 +281,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const filtered = useMemo<T[]>(() => {
         if (search && search !== '' && searchItems) {
             const fuse = new Fuse(searchItems, {
-                includeScore: true,
-                shouldSort: true,
                 threshold: 0.3,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
@@ -305,8 +303,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             : sort
 
     const sorted = useMemo<T[]>(() => {
-        if (sort) {
-            const compare = columns[(sort && sort.index ? sort.index : 0) - sortIndexOffset].sort
+        if (sort && sort.index !== undefined) {
+            const compare = columns[sort.index - sortIndexOffset].sort
             const sorted: T[] = [...filtered]
             /* istanbul ignore else */
             if (compare) {
