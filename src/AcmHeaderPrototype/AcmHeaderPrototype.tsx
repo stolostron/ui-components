@@ -22,9 +22,18 @@ import {
     NavList,
     Brand,
     Button,
+    ApplicationLauncher,
+    ApplicationLauncherItem,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import logo from '../assets/RHACM-Logo.svg'
+import {
+    // BellIcon,
+    CaretDownIcon,
+    // EllipsisVIcon,
+    // PlusCircleIcon,
+    // QuestionCircleIcon,
+  } from '@patternfly/react-icons'
 
 export type AcmHeaderPrototypeProps = {
     href: string
@@ -50,8 +59,8 @@ function api<T>(url: string, headers?: Record<string, unknown>): Promise<T> {
     })
 }
 
-function DropdownName() {
-    const [name, setName] = useState<string>('')
+function UserDropdownToggle() {
+    const [name, setName] = useState<string>('loading...')
 
     useEffect(() => {
         const dev = process.env.NODE_ENV !== 'production'
@@ -63,11 +72,95 @@ function DropdownName() {
             .catch((error) => {
                 // eslint-disable-next-line no-console
                 console.error(error)
-                setName('')
+                setName('undefined')
             })
     }, [])
 
-    return <span aria-label="dropdown-username">{name}</span>
+    return (
+        <span className="pf-c-dropdown__toggle">
+            <span className="co-username" data-test="username">
+                {name}
+            </span>
+            <CaretDownIcon className="pf-c-dropdown__toggle-icon" />
+        </span>
+    )
+}
+
+function UserDropdown() {
+    const [userIsOpen, userSetOpen] = useState<boolean>(false)
+
+    function configureClient() {
+        api<{ token_endpoint: string }>('/multicloud/common/configure/')
+            .then(({ token_endpoint }) => {
+                window.open(`${token_endpoint}/request`, '_blank')
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error)
+            })
+    }
+
+    function logout() {
+        api<{ admin: boolean; logoutPath: string }>('/multicloud/logout/')
+            .then(({ admin, logoutPath }) => {
+                const onLogout = (delay = 0) => {
+                    return setTimeout(() => {
+                        location.reload(true)
+                    }, delay)
+                }
+                if (admin) {
+                    const form = document.createElement('form')
+                    form.target = 'hidden-form'
+                    form.method = 'POST'
+                    form.action = logoutPath
+                    const iframe = document.createElement('iframe')
+                    iframe.setAttribute('type', 'hidden')
+                    iframe.name = 'hidden-form'
+                    iframe.onload = () => onLogout(500)
+                    document.body.appendChild(iframe)
+                    document.body.appendChild(form)
+                    form.submit()
+                }
+                onLogout(500)
+            })
+            .catch((error) => {
+                // eslint-disable-next-line no-console
+                console.error(error)
+            })
+    }
+
+    function LogoutButton() {
+        return (
+            <ApplicationLauncherItem component="button" onClick={() => logout()}>
+                Logout
+            </ApplicationLauncherItem>
+          )
+    }
+    function ConfigureButton() {
+        return (
+            <ApplicationLauncherItem component="button" onClick={() => configureClient()}>
+                Configure client
+            </ApplicationLauncherItem>
+          )
+    }
+
+    return (
+        <ApplicationLauncher
+            aria-label="user-menu"
+            data-test="user-dropdown"
+            className="co-app-launcher co-user-menu"
+            onSelect={() => userSetOpen(false)}
+            onToggle={() => userSetOpen(!userIsOpen)}
+            isOpen={userIsOpen}
+            items={[
+                <LogoutButton key="user_logout" />,
+                <ConfigureButton key="user_configure"/>
+            ]}
+            data-quickstart-id="qs-masthead-usermenu"
+            position="right"
+            toggleIcon={<UserDropdownToggle />}
+      />
+    )
 }
 
 function AboutModalVersion() {
@@ -270,7 +363,6 @@ function NavExpandableList(props: NavExpandableProps) {
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     const [isOpen, setOpen] = useState<boolean>(true)
-    const [dropIsOpen, dropSetOpen] = useState<boolean>(false)
     const [aboutDropIsOpen, aboutDropSetOpen] = useState<boolean>(false)
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
 
@@ -281,46 +373,6 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
             }
             return response.json() as Promise<T>
         })
-    }
-
-    function configureClient() {
-        api<{ token_endpoint: string }>('/multicloud/common/configure/')
-            .then(({ token_endpoint }) => {
-                window.open(`${token_endpoint}/request`, '_blank')
-            })
-            .catch((error) => {
-                // eslint-disable-next-line no-console
-                console.error(error)
-            })
-    }
-
-    function logout() {
-        api<{ admin: boolean; logoutPath: string }>('/multicloud/logout/')
-            .then(({ admin, logoutPath }) => {
-                const onLogout = (delay = 0) => {
-                    return setTimeout(() => {
-                        location.reload(true)
-                    }, delay)
-                }
-                if (admin) {
-                    const form = document.createElement('form')
-                    form.target = 'hidden-form'
-                    form.method = 'POST'
-                    form.action = logoutPath
-                    const iframe = document.createElement('iframe')
-                    iframe.setAttribute('type', 'hidden')
-                    iframe.name = 'hidden-form'
-                    iframe.onload = () => onLogout(500)
-                    document.body.appendChild(iframe)
-                    document.body.appendChild(form)
-                    form.submit()
-                }
-                onLogout(500)
-            })
-            .catch((error) => {
-                // eslint-disable-next-line no-console
-                console.error(error)
-            })
     }
 
     const headerTools = (
@@ -400,7 +452,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                         ]}
                         isOpen={aboutDropIsOpen}
                     ></Dropdown>
-                    <Dropdown
+                    {/* <Dropdown
                         toggle={
                             <DropdownToggle id="toggle-id" onToggle={() => dropSetOpen(!dropIsOpen)}>
                                 <DropdownName></DropdownName>
@@ -415,7 +467,7 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                             </DropdownItem>,
                         ]}
                         isOpen={dropIsOpen}
-                    ></Dropdown>
+                    ></Dropdown> */}
                     <Modal
                         variant={ModalVariant.small}
                         isOpen={aboutModalOpen}
@@ -432,6 +484,9 @@ export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
                             <p>Copyright © 2020 Red Hat, Inc. All rights reserved.</p>
                         </div>
                     </Modal>
+                </PageHeaderToolsItem>
+                <PageHeaderToolsItem>
+                    <UserDropdown />
                 </PageHeaderToolsItem>
             </PageHeaderToolsGroup>
         </PageHeaderTools>
