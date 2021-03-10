@@ -26,6 +26,7 @@ import {
     TextContent,
     TextListItem,
     TextList,
+    Title,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import logo from '../assets/RHACM-Logo.svg'
@@ -260,6 +261,50 @@ const useStyles = makeStyles({
     },
     about: {
         height: 'min-content'
+    },
+    perspective: {
+        padding: 'var(--pf-global--spacer--md) var(--pf-global--spacer--sm)',
+        // 'border-bottom': '1px solid black !important;',
+        'font-size': '$co-side-nav-font-size',
+        'justify-content': 'space-between',
+        width: '100%',
+    
+        '& .pf-c-dropdown__toggle-icon': {
+            color: 'var(--pf-global--Color--light-100)',
+            'font-size': '$co-side-nav-section-font-size',
+        },
+        
+        '& .pf-c-dropdown__menu-item': {
+            'padding-left': '7px',
+            '& h2': {
+                'font-size': '12px',
+                'padding-left': '7px',
+            }
+        },
+
+        '& .pf-c-title': {
+            color: 'var(--pf-global--Color--light-100)',
+            'font-size': '15px',
+            'font-family': 'var(--pf-global--FontFamily--sans-serif)',
+            '& .oc-nav-header__icon': {
+                'padding-right': '7px',
+                'vertical-align': '-0.125em',
+            },
+            '& h2': {
+                'font-size': '$co-side-nav-section-font-size',
+                'font-family': 'var(--pf-global--FontFamily--sans-serif)',
+            },
+        },
+
+        '& svg': {
+            height: '1em',
+            width: '1em',
+            fill: 'currentColor',
+        },
+    
+        '&::before': {
+            border: 'none',
+        }
     }
 })
 
@@ -383,16 +428,33 @@ function NavExpandableList(props: NavExpandableProps) {
         <Nav onSelect={select}>
             <Dropdown
                 toggle={
-                    <DropdownToggle id="toggle-perspective" onToggle={() => switcherSetOpen(!switcherIsOpen)}>
-                        <span style={toggleStyles}>Advanced Cluster Management</span>
+                    <DropdownToggle 
+                        id="toggle-perspective"
+                        onToggle={() => switcherSetOpen(!switcherIsOpen)}
+                        toggleIndicator={CaretDownIcon}
+                        style={toggleStyles}
+                        className={classes.perspective}
+                    >
+                        <Title headingLevel="h2" size="md">
+                            <span className="oc-nav-header__icon">
+                                <svg viewBox="0 0 14 13.97"><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M12.63,6A1.5,1.5,0,1,0,11,4.51l-1.54.91a2.94,2.94,0,0,0-1.85-1L7.35,2.66a1.52,1.52,0,0,0,.49-.72,1.5,1.5,0,0,0-1-1.87A1.49,1.49,0,0,0,5,1.06a1.51,1.51,0,0,0,.88,1.83L6.12,4.6A2.9,2.9,0,0,0,4.5,6.29L2.88,6.07a1.52,1.52,0,0,0-.55-.68,1.51,1.51,0,0,0-2.08.43A1.49,1.49,0,0,0,2.67,7.56l1.68.23A3,3,0,0,0,5.41,9.6L4.8,11a1.5,1.5,0,1,0,1.14,2.63,1.49,1.49,0,0,0,.24-2l.61-1.39a3.44,3.44,0,0,0,.45,0,2.92,2.92,0,0,0,1.6-.48L10.21,11a1.45,1.45,0,0,0,.09.87,1.5,1.5,0,1,0,.91-2L9.85,8.66a3,3,0,0,0,.33-1.34,3.1,3.1,0,0,0,0-.54l1.64-1A1.47,1.47,0,0,0,12.63,6ZM5.48,7.32A1.77,1.77,0,1,1,7.24,9.08,1.76,1.76,0,0,1,5.48,7.32Z"/></g></g></svg>
+                            </span>
+                            Advanced Cluster Management
+                        </Title>
                     </DropdownToggle>
                 }
                 dropdownItems={[
                     <DropdownItem onClick={() => launchToOCP('')} key={'administrator'}>
-                        Administrator
+                        <Title headingLevel="h2" size="md">
+                            {/* <span className="oc-nav-header__icon">{icon}</span> */}
+                            Administrator
+                        </Title>
                     </DropdownItem>,
                     <DropdownItem onClick={() => launchToOCP('')} key={'devbutton'}>
-                        Developer
+                        <Title headingLevel="h2" size="md">
+                            {/* <span className="oc-nav-header__icon">{icon}</span> */}
+                            Developer
+                        </Title>
                     </DropdownItem>,
                 ]}
                 isOpen={switcherIsOpen}
@@ -428,19 +490,9 @@ function NavExpandableList(props: NavExpandableProps) {
 
 export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
     const [isOpen, setOpen] = useState<boolean>(true)
-    const [aboutDropIsOpen, aboutDropSetOpen] = useState<boolean>(false)
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
 
     const classes = useStyles()
-
-    function api<T>(url: string): Promise<T> {
-        return fetch(url).then((response) => {
-            if (!response.ok) {
-                throw new Error(response.statusText)
-            }
-            return response.json() as Promise<T>
-        })
-    }
 
     const headerTools = (
         <PageHeaderTools>
