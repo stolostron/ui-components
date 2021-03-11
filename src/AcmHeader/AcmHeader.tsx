@@ -329,7 +329,7 @@ function NavExpandableList(props: NavExpandableProps) {
             path: '/multicloud/welcome/',
             groupId: 'home',
             itemId: 'home_welcome',
-            name: 'Home',
+            name: 'Welcome',
         },
         overview: {
             path: '/multicloud/overview/',
@@ -345,7 +345,7 @@ function NavExpandableList(props: NavExpandableProps) {
         },
         applications: {
             path: '/multicloud/applications/',
-            groupId: 'manage',
+            groupId: 'applications',
             itemId: 'manage_applications',
             name: 'Manage applications',
         },
@@ -355,13 +355,12 @@ function NavExpandableList(props: NavExpandableProps) {
             itemId: 'grc_govern_risk',
             name: 'Govern risk',
         },
-        // Disabled for now as this is still handled under clusters
-        // credentials: {
-        //     path: '/multicloud/connections/',
-        //     groupId: 'credentials',
-        //     itemId: 'manage_credentials',
-        //     name: 'Manage credentials',
-        // },
+        credentials: {
+            path: '/multicloud/credentials/',
+            groupId: 'credentials',
+            itemId: 'manage_credentials',
+            name: 'Manage credentials',
+        },
         kui: {
             path: '/kui/',
             groupId: 'kui',
@@ -485,8 +484,7 @@ function NavExpandableList(props: NavExpandableProps) {
                 <SidebarNavItem data={navData.clusters} />
                 <SidebarNavItem data={navData.applications} />
                 <SidebarNavItem data={navData.grc} />
-                {/* Disabled for now as this is still handled under clusters */}
-                {/* <SidebarNavItem data={navData.credentials} /> */}
+                <SidebarNavItem data={navData.credentials} />
                 <SidebarNavItem data={navData.kui} />
             </NavList>
         </Nav>
