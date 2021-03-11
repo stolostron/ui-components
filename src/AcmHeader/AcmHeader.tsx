@@ -32,7 +32,7 @@ import { CogsIcon, CodeIcon, CaretDownIcon } from '@patternfly/react-icons'
 import { makeStyles } from '@material-ui/styles'
 import logo from '../assets/RHACM-Logo.svg'
 
-export type AcmHeaderPrototypeProps = {
+export type AcmHeaderProps = {
     href: string
     urlpath: string
     target: string
@@ -505,7 +505,7 @@ function NavExpandableList(props: NavExpandableProps) {
     )
 }
 
-export function AcmHeaderPrototype(props: AcmHeaderPrototypeProps) {
+export function AcmHeader(props: AcmHeaderProps) {
     const [isOpen, setOpen] = useState<boolean>(true)
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
 
