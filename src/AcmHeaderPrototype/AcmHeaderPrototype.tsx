@@ -124,15 +124,9 @@ function NavExpandableList(props: NavExpandableProps) {
         },
         clusters: {
             path: '/multicloud/clusters/',
-            groupId: 'automate',
-            itemId: 'automate_clusters',
-            name: 'Clusters',
-        },
-        baremetal: {
-            path: '/multicloud/bare-metal-assets/',
-            groupId: 'automate',
-            itemId: 'automate_baremetal',
-            name: 'Bare metal assets',
+            groupId: 'clusters',
+            itemId: 'cluster_management',
+            name: 'Cluster management',
         },
         applications: {
             path: '/multicloud/applications/',
@@ -146,12 +140,13 @@ function NavExpandableList(props: NavExpandableProps) {
             itemId: 'grc_govern_risk',
             name: 'Govern risk',
         },
-        credentials: {
-            path: '/multicloud/connections/',
-            groupId: 'credentials',
-            itemId: 'manage_credentials',
-            name: 'Manage credentials',
-        },
+        // Disabled for now as this is still handled under clusters
+        // credentials: {
+        //     path: '/multicloud/connections/',
+        //     groupId: 'credentials',
+        //     itemId: 'manage_credentials',
+        //     name: 'Manage credentials',
+        // },
         kui: {
             path: '/kui/',
             groupId: 'kui',
@@ -250,18 +245,11 @@ function NavExpandableList(props: NavExpandableProps) {
                     <SidebarNavItem data={navData.home} />
                     <SidebarNavItem data={navData.overview} />
                 </NavExpandable>
-                <NavExpandable
-                    title="Automate Infrastructure"
-                    groupId="automate"
-                    isActive={activeGroup === 'automate'}
-                    isExpanded={activeGroup === 'automate'}
-                >
-                    <SidebarNavItem data={navData.clusters} />
-                    <SidebarNavItem data={navData.baremetal} />
-                </NavExpandable>
+                <SidebarNavItem data={navData.clusters} />
                 <SidebarNavItem data={navData.applications} />
                 <SidebarNavItem data={navData.grc} />
-                <SidebarNavItem data={navData.credentials} />
+                {/* Disabled for now as this is still handled under clusters */}
+                {/* <SidebarNavItem data={navData.credentials} /> */}
                 <SidebarNavItem data={navData.kui} />
             </NavList>
         </Nav>
