@@ -141,7 +141,7 @@ describe('AcmTable', () => {
             <Table items={exampleData.slice(0, 8)} gridBreakPoint={TableGridBreakpoint.none} />
         )
         expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
-        expect(container.querySelector('.pf-c-table__sort-indicator')).toBeInTheDOM()
+        expect(container.querySelector('.pf-c-table__sort-indicator')).toBeInTheDocument()
     })
     test('can support table actions', () => {
         const { getByText } = render(<Table />)
