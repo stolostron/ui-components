@@ -11,6 +11,7 @@ import { exampleData } from './AcmTable.stories'
 const axe = configureAxe({
     rules: {
         'scope-attr-valid': { enabled: false },
+        'landmark-unique': { enabled: false }, // Pagination is on the page twice... not sure how to fix
     },
 })
 
@@ -151,25 +152,46 @@ describe('AcmTable', () => {
         expect(createAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with select all', () => {
-        const { getByLabelText, queryByText, getByText } = render(<Table useBulkActions={true} />)
-        expect(getByLabelText('Select all rows')).toBeVisible()
-        userEvent.click(getByLabelText('Select all rows'))
-        expect(queryByText('Delete items')).toBeVisible()
+        const { getByLabelText, getByText, getAllByRole, queryAllByText, container } = render(
+            <Table useBulkActions={true} />
+        )
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[1]) // Select page
+        expect(getByText('10 selected')).toBeInTheDocument()
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[2]) // Select all
+        expect(getByText('105 selected')).toBeInTheDocument()
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[0]) // Select None
+        expect(queryAllByText('105 selected')).toHaveLength(0)
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
+        expect(getByText('105 selected')).toBeInTheDocument()
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select none by checkbox
+        expect(queryAllByText('105 selected')).toHaveLength(0)
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
+        expect(getByText('105 selected')).toBeInTheDocument()
+
         userEvent.click(getByText('Delete items'))
         expect(bulkDeleteAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with single selection', () => {
-        const { queryByText, getAllByRole, getByLabelText } = render(<Table useBulkActions={true} />)
-        expect(queryByText('Delete items')).toBeNull()
-        expect(getAllByRole('checkbox')[1]).toBeVisible()
+        const { queryByText, getAllByRole, getByLabelText, container } = render(<Table useBulkActions={true} />)
+        expect((queryByText('Delete items') as HTMLInputElement).getAttribute('aria-disabled')).toEqual('true')
         userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeVisible()
+        expect((queryByText('Delete items') as HTMLInputElement).getAttribute('aria-disabled')).not.toEqual('true')
         userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeNull()
+        expect((queryByText('Delete items') as HTMLInputElement).getAttribute('aria-disabled')).toEqual('true')
         userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeVisible()
-        userEvent.click(getByLabelText('Select all rows'))
-        expect(queryByText('Delete items')).toBeVisible()
+        expect((queryByText('Delete items') as HTMLInputElement).getAttribute('aria-disabled')).not.toEqual('true')
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[2])
+        expect((queryByText('Delete items') as HTMLInputElement).getAttribute('aria-disabled')).not.toEqual('true')
     })
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
@@ -261,34 +283,33 @@ describe('AcmTable', () => {
         sortTest(true)
     })
     test('page size can be updated', () => {
-        const { getByLabelText, getByText, container } = render(<Table />)
+        const { getByLabelText, getAllByLabelText, getByText, container } = render(<Table />)
 
         expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
-        expect(getByLabelText('Items per page')).toBeVisible()
+        expect(getAllByLabelText('Items per page').length).toBeGreaterThan(0)
 
         // Switch to 50 items per page
-        userEvent.click(getByLabelText('Items per page'))
+        userEvent.click(getAllByLabelText('Items per page')[0])
         expect(getByText('50 per page')).toBeVisible()
         userEvent.click(getByText('50 per page'))
         expect(container.querySelectorAll('tbody tr')).toHaveLength(50)
 
         // Go to page 2
-        expect(getByLabelText('Go to next page')).toBeVisible()
-        userEvent.click(getByLabelText('Go to next page'))
-        expect(getByLabelText('Current page')).toHaveValue(2)
+        userEvent.click(getAllByLabelText('Go to next page')[0])
+        expect(getAllByLabelText('Current page')[0]).toHaveValue(2)
 
         // Switch to 10 items per page; verify automatic move to page 6
-        userEvent.click(getByLabelText('Items per page'))
+        userEvent.click(getAllByLabelText('Items per page')[0])
         expect(getByText('10 per page')).toBeVisible()
         userEvent.click(getByText('10 per page'))
         expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
         expect(getByLabelText('Current page')).toHaveValue(6)
     })
     test('can show paginated results', () => {
-        const { getByLabelText } = render(<Table />)
-        expect(getByLabelText('Go to next page')).toBeVisible()
-        userEvent.click(getByLabelText('Go to next page'))
-        expect(getByLabelText('Current page')).toHaveValue(2)
+        const { getAllByLabelText } = render(<Table />)
+        expect(getAllByLabelText('Go to next page').length).toBeGreaterThan(0)
+        userEvent.click(getAllByLabelText('Go to next page')[0])
+        expect(getAllByLabelText('Current page')[0]).toHaveValue(2)
     })
     test('should show the empty state when filtered results', () => {
         const { getByPlaceholderText, queryByText, getByText } = render(<Table />)

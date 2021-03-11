@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 /* eslint-disable react/display-name */
-import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { fitContent, truncate } from '@patternfly/react-table'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { useEffect, useState } from 'react'
@@ -33,7 +33,7 @@ export function Table() {
     }, [])
     return (
         <AcmPage>
-            <AcmPageCard>
+            <PageSection variant="light">
                 <AcmTable<IExampleData>
                     plural="addresses"
                     items={items}
@@ -42,7 +42,14 @@ export function Table() {
                     tableActions={[
                         {
                             id: 'create',
-                            title: 'Create address',
+                            title: 'Create',
+                            click: () => {
+                                alert('Not implemented')
+                            },
+                        },
+                        {
+                            id: 'import',
+                            title: 'Import',
                             click: () => {
                                 alert('Not implemented')
                             },
@@ -51,7 +58,7 @@ export function Table() {
                     rowActions={[
                         {
                             id: 'delete',
-                            title: 'Delete item',
+                            title: 'Delete',
                             click: (item: IExampleData) => {
                                 setItems(items ? items.filter((i) => i.uid !== item.uid) : [])
                             },
@@ -60,20 +67,20 @@ export function Table() {
                     bulkActions={[
                         {
                             id: 'delete',
-                            title: 'Delete items',
+                            title: 'Delete',
                             click: (it: IExampleData[]) => {
                                 setItems(items ? items.filter((i) => !it.find((item) => item.uid === i.uid)) : [])
                             },
                         },
                     ]}
-                    extraToolbarControls={
-                        <ToggleGroup>
-                            <ToggleGroupItem isSelected={true} text="View 1" />
-                            <ToggleGroupItem text="View 2" />
-                        </ToggleGroup>
-                    }
+                    // extraToolbarControls={
+                    //     <ToggleGroup>
+                    //         <ToggleGroupItem isSelected={true} text="View 1" />
+                    //         <ToggleGroupItem text="View 2" />
+                    //     </ToggleGroup>
+                    // }
                 />
-            </AcmPageCard>
+            </PageSection>
         </AcmPage>
     )
 }

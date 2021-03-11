@@ -1,7 +1,12 @@
 /* Copyright Contributors to the Open Cluster Management project */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { makeStyles } from '@material-ui/styles'
 import {
+    Dropdown,
+    DropdownItem,
+    DropdownToggle,
+    DropdownToggleCheckbox,
     EmptyState,
     EmptyStateIcon,
     Pagination,
@@ -12,6 +17,7 @@ import {
     Title,
     Toolbar,
     ToolbarContent,
+    ToolbarGroup,
     ToolbarItem,
 } from '@patternfly/react-core'
 import {
@@ -171,6 +177,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, keyFn, bulkActions } = props
     const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
+    const [selectionOpen, setSelectionOpen] = useState(false)
 
     const defaultSort = {
         index: sortIndexOffset,
@@ -410,6 +417,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             if (!filtered) return
             /* istanbul ignore next */
             if (!rows) return
+
+            // Ignoring the if here because the table no longer usees header select all
+            // but leaving in case we want to reenable it
+            /* istanbul ignore if */
             if (rowId === -1) {
                 let allSelected = true
                 for (const row of rows) {
@@ -459,74 +470,175 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     })
 
-    const showActions = items && items.length
-    const showSearch = hasSearch && showActions
-    const showToolbar = showSearch || showActions || props.extraToolbarControls
+    const hasItems = items && items.length > 0 && filtered
+    const hasTableActions = props.tableActions && props.tableActions.length > 0
+    const hasBulkActions = props.bulkActions && props.bulkActions.length > 0
+
+    /* istanbul ignore next */
+    const showSearch = hasSearch || hasTableActions
 
     return (
         <Fragment>
-            {showToolbar && (
-                <Toolbar>
+            {hasItems && showSearch && (
+                <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
                     <ToolbarContent>
-                        {hasSearch && items && items.length > 0 && filtered && (
+                        {hasSearch && (
+                            <ToolbarGroup style={{ flexGrow: 1 }} variant="filter-group">
+                                <ToolbarItem variant="search-filter" style={{ flexGrow: 1 }}>
+                                    <SearchInput
+                                        placeholder="Search"
+                                        value={search}
+                                        onChange={updateSearch}
+                                        onClear={() => updateSearch('')}
+                                        resultsCount={`${filtered!.length} / ${items!.length}`}
+                                        style={{ flexGrow: 1 }}
+                                    />
+                                </ToolbarItem>
+                            </ToolbarGroup>
+                        )}
+                        <ToolbarGroup variant="button-group">
+                            {props.tableActions.map((action) => (
+                                <ToolbarItem key={action.id}>
+                                    <AcmButton
+                                        onClick={action.click}
+                                        isDisabled={action.isDisabled}
+                                        tooltip={action.tooltip}
+                                    >
+                                        {action.title}
+                                    </AcmButton>
+                                </ToolbarItem>
+                            ))}
+                        </ToolbarGroup>
+                        {!hasBulkActions && (!props.autoHidePagination || filtered.length > perPage) && (
+                            <ToolbarGroup>
+                                <ToolbarItem>
+                                    <Pagination
+                                        itemCount={filtered.length}
+                                        perPage={perPage}
+                                        page={page}
+                                        variant={PaginationVariant.top}
+                                        onSetPage={(_event, page) => setPage(page)}
+                                        onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
+                                        isCompact
+                                        style={{ paddingRight: 0 }}
+                                        aria-label="Pagination top"
+                                    />
+                                </ToolbarItem>
+                            </ToolbarGroup>
+                        )}
+                    </ToolbarContent>
+                </Toolbar>
+            )}
+            {items && hasItems && hasBulkActions && (
+                <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0, paddingBottom: '12px' }}>
+                    <ToolbarContent>
+                        <ToolbarGroup variant="button-group">
                             <ToolbarItem>
-                                <SearchInput
-                                    style={{ minWidth: '350px' }}
-                                    placeholder="Search"
-                                    value={search}
-                                    onChange={(value) => {
-                                        updateSearch(value)
-                                    }}
-                                    onClear={() => {
-                                        updateSearch('')
-                                    }}
-                                    resultsCount={`${filtered.length} / ${items.length}`}
+                                <Dropdown
+                                    toggle={
+                                        <DropdownToggle
+                                            splitButtonItems={[
+                                                <DropdownToggleCheckbox
+                                                    id="example-checkbox-2"
+                                                    key="split-checkbox"
+                                                    aria-label="Select all"
+                                                    isChecked={Object.keys(selected).length > 0}
+                                                    onChange={() => {
+                                                        if (Object.keys(selected).length > 0) {
+                                                            setSelected({})
+                                                        } else {
+                                                            setSelected(
+                                                                items!.reduce((selection, item) => {
+                                                                    selection[keyFn(item)] = true
+                                                                    return selection
+                                                                }, {} as Record<string, boolean>)
+                                                            )
+                                                        }
+                                                    }}
+                                                >
+                                                    {Object.keys(selected).length > 0
+                                                        ? `${Object.keys(selected).length} selected`
+                                                        : ''}
+                                                </DropdownToggleCheckbox>,
+                                            ]}
+                                            onToggle={(isOpen) => setSelectionOpen(isOpen)}
+                                        />
+                                    }
+                                    isOpen={selectionOpen}
+                                    dropdownItems={[
+                                        <DropdownItem
+                                            key="none"
+                                            onClick={() => {
+                                                setSelected({})
+                                                setSelectionOpen(false)
+                                            }}
+                                        >
+                                            Select none (0 items)
+                                        </DropdownItem>,
+                                        <DropdownItem
+                                            key="page"
+                                            onClick={() => {
+                                                setSelected(
+                                                    paged.reduce((selection, item) => {
+                                                        selection[keyFn(item)] = true
+                                                        return selection
+                                                    }, {} as Record<string, boolean>)
+                                                )
+                                                setSelectionOpen(false)
+                                            }}
+                                        >{`Select page (${perPage} items)`}</DropdownItem>,
+                                        <DropdownItem
+                                            key="all"
+                                            onClick={() => {
+                                                setSelected(
+                                                    items!.reduce((selection, item) => {
+                                                        selection[keyFn(item)] = true
+                                                        return selection
+                                                    }, {} as Record<string, boolean>)
+                                                )
+                                                setSelectionOpen(false)
+                                            }}
+                                        >{`Select all (${items.length} items)`}</DropdownItem>,
+                                    ]}
                                 />
                             </ToolbarItem>
-                        )}
+                        </ToolbarGroup>
+                        <ToolbarGroup variant="button-group">
+                            {props.bulkActions.map((action) => (
+                                <ToolbarItem key={action.id}>
+                                    <AcmButton
+                                        onClick={() => action.click(items!.filter((item) => selected[keyFn(item)]))}
+                                        isDisabled={Object.keys(selected).length === 0 || action.isDisabled}
+                                        tooltip={Object.keys(selected).length === 0 ? undefined : action.tooltip}
+                                    >
+                                        {action.title}
+                                    </AcmButton>
+                                </ToolbarItem>
+                            ))}
+                        </ToolbarGroup>
                         <ToolbarItem alignment={{ default: 'alignRight' }} />
-                        {items && items.length ? (
-                            Object.keys(selected).length ? (
-                                <Fragment>
+                        {props.extraToolbarControls && <ToolbarGroup>{props.extraToolbarControls}</ToolbarGroup>}
+                        {
+                            // ignoring as the pagination above is used in tests
+                            /* istanbul ignore next */
+                            (!props.autoHidePagination || filtered.length > perPage) && (
+                                <ToolbarGroup>
                                     <ToolbarItem>
-                                        {`${Object.keys(selected).length}/${items.length} ${props.plural} selected`}
+                                        <Pagination
+                                            itemCount={filtered.length}
+                                            perPage={perPage}
+                                            page={page}
+                                            variant={PaginationVariant.top}
+                                            onSetPage={(_event, page) => setPage(page)}
+                                            onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
+                                            isCompact
+                                            style={{ paddingRight: 0 }}
+                                            aria-label="Pagination top"
+                                        />
                                     </ToolbarItem>
-                                    <ToolbarItem variant="separator" />
-                                    {props.bulkActions.map((action) => (
-                                        <ToolbarItem key={action.id}>
-                                            <AcmButton
-                                                onClick={() => {
-                                                    action.click(items.filter((item) => selected[keyFn(item)]))
-                                                }}
-                                                isDisabled={action.isDisabled}
-                                                tooltip={action.tooltip}
-                                            >
-                                                {action.title}
-                                            </AcmButton>
-                                        </ToolbarItem>
-                                    ))}
-                                </Fragment>
-                            ) : (
-                                <Fragment>
-                                    {props.tableActions.map((action) => (
-                                        <ToolbarItem key={action.id}>
-                                            <AcmButton
-                                                onClick={() => {
-                                                    action.click()
-                                                }}
-                                                isDisabled={action.isDisabled}
-                                                tooltip={action.tooltip}
-                                            >
-                                                {action.title}
-                                            </AcmButton>
-                                        </ToolbarItem>
-                                    ))}
-                                </Fragment>
+                                </ToolbarGroup>
                             )
-                        ) : (
-                            <Fragment />
-                        )}
-                        {props.extraToolbarControls}
+                        }
                     </ToolbarContent>
                 </Toolbar>
             )}
@@ -573,12 +685,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 rows={rows}
                                 rowWrapper={OuiaIdRowWrapper}
                                 actions={actions}
-                                canSelectAll={true}
+                                canSelectAll={false}
                                 aria-label="Simple Table"
                                 sortBy={adjustedSort}
-                                onSort={(_event, index, direction) => {
-                                    updateSort({ index, direction })
-                                }}
+                                onSort={(_event, index, direction) => updateSort({ index, direction })}
                                 onSelect={
                                     /* istanbul ignore next */
                                     rows.length && props.bulkActions?.length ? onSelect : undefined
@@ -591,33 +701,29 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             </Table>
                         </div>
                     </div>
-                    {filtered.length !== 0 && (!props.autoHidePagination || filtered.length > perPage) && (
-                        <Pagination
-                            itemCount={filtered.length}
-                            perPage={perPage}
-                            page={page}
-                            variant={PaginationVariant.bottom}
-                            onSetPage={(_event, page) => {
-                                setPage(page)
-                            }}
-                            onPerPageSelect={(_event, perPage) => {
-                                updatePerPage(perPage)
-                            }}
-                            perPageOptions={props.perPageOptions}
-                        />
-                    )}
+                    {
+                        // ignoring as the pagination at the top of the table is used in tests
+                        /* istanbul ignore next */
+                        filtered.length !== 0 && (!props.autoHidePagination || filtered.length > perPage) && (
+                            <Pagination
+                                itemCount={filtered.length}
+                                perPage={perPage}
+                                page={page}
+                                variant={PaginationVariant.bottom}
+                                onSetPage={(_event, page) => setPage(page)}
+                                onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
+                                perPageOptions={props.perPageOptions}
+                                style={{ paddingRight: 0, paddingBottom: 0 }}
+                            />
+                        )
+                    }
                     {!filtered.length && (
                         <AcmEmptyState
                             title="No results found"
                             message="No results match the filter criteria. Clear filters to show results."
                             showIcon={false}
                             action={
-                                <AcmButton
-                                    variant="link"
-                                    onClick={() => {
-                                        updateSearch('')
-                                    }}
-                                >
+                                <AcmButton variant="link" onClick={() => updateSearch('')}>
                                     Clear all filters
                                 </AcmButton>
                             }
