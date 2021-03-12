@@ -31,7 +31,7 @@ export default {
     },
 }
 
-export function Table(args: { [x: string]: any }) {
+export function Table(args: { [x: string]: unknown }) {
     const testItems = exampleData.slice(0, 105)
     const [items, setItems] = useState<IExampleData[]>()
     useEffect(() => {
@@ -52,7 +52,7 @@ export function Table(args: { [x: string]: any }) {
     )
 }
 
-export function TableEmpty(args: { [x: string]: any }) {
+export function TableEmpty(args: { [x: string]: unknown }) {
     const [items, setItems] = useState<IExampleData[]>()
     return (
         <AcmPage>
@@ -69,7 +69,7 @@ export function TableEmpty(args: { [x: string]: any }) {
     )
 }
 
-export function TableLoading(args: { [x: string]: any }) {
+export function TableLoading(args: { [x: string]: unknown }) {
     const [items, setItems] = useState<IExampleData[]>()
     return (
         <AcmPage>
@@ -87,7 +87,7 @@ export function TableLoading(args: { [x: string]: any }) {
 }
 
 export function commonProperties(
-    args: { [x: string]: any },
+    args: { [x: string]: unknown },
     setItems: Dispatch<SetStateAction<IExampleData[] | undefined>>,
     items: IExampleData[] | undefined
 ) {
