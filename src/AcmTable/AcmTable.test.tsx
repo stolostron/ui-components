@@ -31,10 +31,15 @@ describe('AcmTable', () => {
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
     const Table = (
-        props: { useBulkActions?: boolean; transforms?: boolean; gridBreakPoint?: TableGridBreakpoint } & Partial<
-            AcmTableProps<IExampleData>
-        >
+        props: {
+            useTableActions?: boolean
+            useRowActions?: boolean
+            useBulkActions?: boolean
+            transforms?: boolean
+            gridBreakPoint?: TableGridBreakpoint
+        } & Partial<AcmTableProps<IExampleData>>
     ) => {
+        const { useTableActions = true, useRowActions = true, useBulkActions = false } = props
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -80,25 +85,33 @@ describe('AcmTable', () => {
                     },
                 ]}
                 keyFn={(item: IExampleData) => item.uid.toString()}
-                tableActions={[
-                    {
-                        id: 'create',
-                        title: 'Create address',
-                        click: createAction,
-                    },
-                ]}
-                rowActions={[
-                    {
-                        id: 'delete',
-                        title: 'Delete item',
-                        click: (item: IExampleData) => {
-                            deleteAction()
-                            setItems(items.filter((i) => i.uid !== item.uid))
-                        },
-                    },
-                ]}
+                tableActions={
+                    useTableActions
+                        ? [
+                              {
+                                  id: 'create',
+                                  title: 'Create address',
+                                  click: createAction,
+                              },
+                          ]
+                        : undefined
+                }
+                rowActions={
+                    useRowActions
+                        ? [
+                              {
+                                  id: 'delete',
+                                  title: 'Delete item',
+                                  click: (item: IExampleData) => {
+                                      deleteAction()
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
+                          ]
+                        : undefined
+                }
                 bulkActions={
-                    props.useBulkActions
+                    useBulkActions
                         ? [
                               {
                                   id: 'delete',
@@ -109,7 +122,7 @@ describe('AcmTable', () => {
                                   },
                               },
                           ]
-                        : []
+                        : undefined
                 }
                 extraToolbarControls={
                     <ToggleGroup>
@@ -123,6 +136,10 @@ describe('AcmTable', () => {
     }
     test('renders', () => {
         const { container } = render(<Table />)
+        expect(container.querySelector('table')).toBeInTheDocument()
+    })
+    test('renders without actions', () => {
+        const { container } = render(<Table useTableActions={false} useRowActions={false} />)
         expect(container.querySelector('table')).toBeInTheDocument()
     })
     test('renders pagination with autoHidePagination when more that perPage items', () => {

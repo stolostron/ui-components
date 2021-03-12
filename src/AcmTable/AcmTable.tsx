@@ -157,9 +157,9 @@ export interface AcmTableProps<T> {
     items?: T[]
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
-    tableActions: IAcmTableAction[]
-    rowActions: IAcmRowAction<T>[]
-    bulkActions: IAcmTableBulkAction<T>[]
+    tableActions?: IAcmTableAction[]
+    rowActions?: IAcmRowAction<T>[]
+    bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
@@ -174,7 +174,7 @@ export interface AcmTableProps<T> {
     autoHidePagination?: boolean
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
-    const { items, columns, keyFn, bulkActions } = props
+    const { items, columns, keyFn, bulkActions = [], rowActions = [], tableActions = [] } = props
     const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [selectionOpen, setSelectionOpen] = useState(false)
@@ -457,7 +457,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [paged, filtered, rows, keyFn]
     )
 
-    const actions = props.rowActions.map((rowAction) => {
+    const actions = rowActions.map((rowAction) => {
         return {
             title: rowAction.title,
             onClick: (_event: React.MouseEvent, rowId: number) => {
@@ -470,8 +470,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     })
 
     const hasItems = items && items.length > 0 && filtered
-    const hasTableActions = props.tableActions && props.tableActions.length > 0
-    const hasBulkActions = props.bulkActions && props.bulkActions.length > 0
+    const hasTableActions = tableActions && tableActions.length > 0
+    const hasBulkActions = bulkActions && bulkActions.length > 0
 
     /* istanbul ignore next */
     const showSearch = hasSearch || hasTableActions
@@ -496,7 +496,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             </ToolbarGroup>
                         )}
                         <ToolbarGroup variant="button-group">
-                            {props.tableActions.map((action) => (
+                            {tableActions.map((action) => (
                                 <ToolbarItem key={action.id}>
                                     <AcmButton
                                         onClick={action.click}
@@ -603,7 +603,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             </ToolbarItem>
                         </ToolbarGroup>
                         <ToolbarGroup variant="button-group">
-                            {props.bulkActions.map((action) => (
+                            {bulkActions.map((action) => (
                                 <ToolbarItem key={action.id}>
                                     <AcmButton
                                         onClick={() => action.click(items!.filter((item) => selected[keyFn(item)]))}
@@ -690,7 +690,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 onSort={(_event, index, direction) => updateSort({ index, direction })}
                                 onSelect={
                                     /* istanbul ignore next */
-                                    rows.length && props.bulkActions?.length ? onSelect : undefined
+                                    rows.length && bulkActions?.length ? onSelect : undefined
                                 }
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
