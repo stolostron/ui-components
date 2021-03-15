@@ -1,6 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
+import { Grow } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import {
     Dropdown,
@@ -602,19 +603,25 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 />
                             </ToolbarItem>
                         </ToolbarGroup>
-                        <ToolbarGroup variant="button-group">
-                            {bulkActions.map((action) => (
-                                <ToolbarItem key={action.id}>
-                                    <AcmButton
-                                        onClick={() => action.click(items!.filter((item) => selected[keyFn(item)]))}
-                                        isDisabled={Object.keys(selected).length === 0 || action.isDisabled}
-                                        tooltip={Object.keys(selected).length === 0 ? undefined : action.tooltip}
-                                    >
-                                        {action.title}
-                                    </AcmButton>
-                                </ToolbarItem>
-                            ))}
-                        </ToolbarGroup>
+                        {Object.keys(selected).length !== 0 && (
+                            <ToolbarGroup variant="button-group">
+                                {bulkActions.map((action) => (
+                                    <ToolbarItem key={action.id}>
+                                        <Grow in={true}>
+                                            <AcmButton
+                                                onClick={() =>
+                                                    action.click(items!.filter((item) => selected[keyFn(item)]))
+                                                }
+                                                isDisabled={action.isDisabled}
+                                                tooltip={action.tooltip}
+                                            >
+                                                {action.title}
+                                            </AcmButton>
+                                        </Grow>
+                                    </ToolbarItem>
+                                ))}
+                            </ToolbarGroup>
+                        )}
                         <ToolbarItem alignment={{ default: 'alignRight' }} />
                         {props.extraToolbarControls && <ToolbarGroup>{props.extraToolbarControls}</ToolbarGroup>}
                         {
