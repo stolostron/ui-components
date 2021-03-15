@@ -1,6 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import React from 'react'
+import { MemoryRouter } from 'react-router'
 import { AcmHeader } from './AcmHeader'
 
 export default {
@@ -10,8 +11,10 @@ export default {
 
 export const Header = () => {
     return (
-        <AcmHeader urlpath="/multicloud/policies/all" href="https://patternfly.org" target="_blank">
-            <div>test content</div>
-        </AcmHeader>
+        <MemoryRouter>
+            <AcmHeader>
+                <div>test content</div>
+            </AcmHeader>
+        </MemoryRouter>
     )
 }
