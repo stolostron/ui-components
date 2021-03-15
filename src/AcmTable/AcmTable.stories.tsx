@@ -132,6 +132,16 @@ export function commonProperties(
                           )
                       },
                   },
+                  {
+                      id: 'action2',
+                      title: 'Action 2',
+                      click: () => null,
+                  },
+                  {
+                      id: 'action3',
+                      title: 'Action 3',
+                      click: () => null,
+                  },
               ]
             : undefined,
         extraToolbarControls: args['Include extraToolbarControls'] ? (
