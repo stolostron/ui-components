@@ -172,6 +172,7 @@ export const OCPIcon = () => (
         y="0px"
         viewBox="0 0 100 100"
         style={{ width: '1em', marginRight: '10px', color: '#BB202A' }}
+        role="presentation"
     >
         <g>
             <path
