@@ -14,6 +14,7 @@ import {
     BareMetalIcon,
     VMWareIcon,
     IBMCloudIcon,
+    OCPIcon,
 } from './Icons'
 
 export enum AcmIconVariant {
@@ -25,6 +26,7 @@ export enum AcmIconVariant {
     aws = 'aws',
     gcp = 'gcp',
     azure = 'azure',
+    ocp = 'ocp',
     ibm = 'ibm',
     baremetal = 'baremetal',
     vmware = 'vmware',
@@ -51,6 +53,8 @@ export function AcmIcon(props: { icon: AcmIconVariant }) {
             return <GCPIcon />
         case AcmIconVariant.azure:
             return <AzureIcon />
+        case AcmIconVariant.ocp:
+            return <OCPIcon />
         case AcmIconVariant.ibm:
             return <IBMCloudIcon />
         case AcmIconVariant.baremetal:
