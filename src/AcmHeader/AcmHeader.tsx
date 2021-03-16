@@ -1,6 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 /* istanbul ignore file */
+import { useMediaQuery } from '@material-ui/core'
 import { makeStyles } from '@material-ui/styles'
 import {
     AboutModal,
@@ -30,11 +31,12 @@ import {
 } from '@patternfly/react-core'
 import { CaretDownIcon, CodeIcon, CogsIcon } from '@patternfly/react-icons'
 import React, { CSSProperties, ReactNode, useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router'
+import { Link } from 'react-router-dom'
 import logo from '../assets/RHACM-Logo.svg'
 
 export type AcmHeaderProps = {
-    children: ReactNode
+    route: AcmRoute
+    children?: ReactNode
 }
 
 function api<T>(url: string, headers?: Record<string, unknown>): Promise<T> {
@@ -310,27 +312,23 @@ const useStyles = makeStyles({
     },
 })
 
-function NavExpandableList() {
+export enum AcmRoute {
+    Welcome = '/multicloud/welcome',
+    Overview = '/multicloud/overview',
+    ClusterManagement = '/multicloud/clusters',
+    ManageApplications = '/multicloud/applications',
+    ManageCredentials = '/multicloud/credentials',
+    GovernRisk = '/multicloud/policies',
+    VisualWebTerminal = '/kui',
+}
+
+function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
+    const { route } = props
     const classes = useStyles()
-    const location = useLocation()
-    const history = useHistory()
     const [switcherIsOpen, setSwitcherOpen] = useState(false)
     const iconStyles: CSSProperties = { paddingRight: '7px' }
-    const path = location.pathname
     return (
-        <Nav
-            onSelect={(selectedItem) => {
-                switch (selectedItem.to) {
-                    case '/multicloud/clusters':
-                    case '/multicloud/credentials':
-                        if (path.startsWith('/multicloud/clusters') || path.startsWith('/multicloud/credentials')) {
-                            return history.push(selectedItem.to)
-                        }
-                        break
-                }
-                window.open(selectedItem.to, '_self')
-            }}
-        >
+        <Nav onSelect={() => props.postClick?.()}>
             <div
                 className="oc-nav-header"
                 style={{ padding: 'var(--pf-global--spacer--sm) var(--pf-global--spacer--sm)' }}
@@ -383,29 +381,37 @@ function NavExpandableList() {
             <NavList className={classes.list}>
                 <NavExpandable
                     title="Home"
-                    isActive={path.startsWith('/multicloud/welcome') || path.startsWith('/multicloud/overview')}
-                    isExpanded={path.startsWith('/multicloud/welcome') || path.startsWith('/multicloud/overview')}
+                    isActive={route === AcmRoute.Welcome || route === AcmRoute.Overview}
+                    isExpanded={route === AcmRoute.Welcome || route === AcmRoute.Overview}
                 >
-                    <NavItem isActive={path.startsWith('/multicloud/welcome')} to="/multicloud/welcome">
+                    <NavItem isActive={route === AcmRoute.Welcome} to={AcmRoute.Welcome}>
                         Welcome
                     </NavItem>
-                    <NavItem isActive={path.startsWith('/multicloud/overview')} to="/multicloud/overview">
+                    <NavItem isActive={route === AcmRoute.Overview} to={AcmRoute.Overview}>
                         Overview
                     </NavItem>
                 </NavExpandable>
-                <NavItem isActive={path.startsWith('/multicloud/clusters')} to="/multicloud/clusters">
+                <NavItem
+                    isActive={route === AcmRoute.ClusterManagement}
+                    to={AcmRoute.ClusterManagement}
+                    component={route === AcmRoute.ManageCredentials ? Link : 'a'}
+                >
                     Cluster management
                 </NavItem>
-                <NavItem isActive={path.startsWith('/multicloud/applications')} to="/multicloud/applications">
+                <NavItem isActive={route === AcmRoute.ManageApplications} to={AcmRoute.ManageApplications}>
                     Manage applications
                 </NavItem>
-                <NavItem isActive={path.startsWith('/multicloud/policies')} to="/multicloud/policies">
+                <NavItem isActive={route === AcmRoute.GovernRisk} to={AcmRoute.GovernRisk}>
                     Govern risk
                 </NavItem>
-                <NavItem isActive={path.startsWith('/multicloud/credentials')} to="/multicloud/credentials">
+                <NavItem
+                    isActive={route === AcmRoute.ManageCredentials}
+                    to={AcmRoute.ManageCredentials}
+                    component={route === AcmRoute.ClusterManagement ? Link : 'a'}
+                >
                     Manage credentials
                 </NavItem>
-                <NavItem isActive={path.startsWith('/kui')} to="/kui">
+                <NavItem isActive={route === AcmRoute.VisualWebTerminal} to={AcmRoute.VisualWebTerminal}>
                     Visual Web Terminal
                 </NavItem>
             </NavList>
@@ -414,11 +420,20 @@ function NavExpandableList() {
 }
 
 export function AcmHeader(props: AcmHeaderProps) {
-    const [isOpen, setOpen] = useState<boolean>(true)
+    const mediaMatch = window.matchMedia('(min-width: 1200px)')
+    const isFullPage = useMediaQuery('(min-width: 1200px)')
+    const [isNavOpen, setNavOpen] = useState(localStorage.getItem('isNavOpen') !== 'false')
+    useEffect(() => {
+        if (!mediaMatch.matches) {
+            setNavOpen(false)
+        } else {
+            if (localStorage.getItem('isNavOpen') !== 'false') {
+                setNavOpen(true)
+            }
+        }
+    }, [isFullPage])
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
-
     const classes = useStyles()
-
     const headerTools = (
         <PageHeaderTools>
             <PageHeaderToolsGroup
@@ -445,7 +460,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                                 </g>
                             </svg>
                         }
-                    ></Button>
+                    />
                     <Button
                         aria-label="create-button"
                         onClick={() => launchToOCP('k8s/all-namespaces/import')}
@@ -471,7 +486,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                                 </g>
                             </svg>
                         }
-                    ></Button>
+                    />
                     <AboutDropdown aboutClick={() => setAboutModalOpen(!aboutModalOpen)} />
                     <AboutModal
                         isOpen={aboutModalOpen}
@@ -495,23 +510,36 @@ export function AcmHeader(props: AcmHeaderProps) {
         </PageHeaderTools>
     )
 
-    const Header = (
-        <PageHeader
-            logo={<Brand src={logo} alt="RHACM Logo" />}
-            logoProps={props}
-            headerTools={headerTools}
-            showNavToggle
-            isNavOpen={isOpen}
-            onNavToggle={() => setOpen(!isOpen)}
-        />
-    )
-
-    const SidebarNav = <NavExpandableList />
-
-    const Sidebar = <PageSidebar nav={SidebarNav} isNavOpen={isOpen} />
-
     return (
-        <Page header={Header} sidebar={Sidebar}>
+        <Page
+            header={
+                <PageHeader
+                    logo={<Brand src={logo} alt="RHACM Logo" />}
+                    logoProps={props}
+                    headerTools={headerTools}
+                    showNavToggle
+                    isNavOpen={isNavOpen}
+                    onNavToggle={() => {
+                        localStorage.setItem('isNavOpen', (!isNavOpen).toString())
+                        setNavOpen((isNavOpen) => !isNavOpen)
+                    }}
+                />
+            }
+            sidebar={
+                isFullPage ? (
+                    <PageSidebar
+                        nav={<NavExpandableList route={props.route} />}
+                        isNavOpen={isNavOpen}
+                        style={{ boxShadow: 'unset' }}
+                    />
+                ) : (
+                    <PageSidebar
+                        nav={<NavExpandableList route={props.route} postClick={() => setNavOpen(false)} />}
+                        isNavOpen={isNavOpen}
+                    />
+                )
+            }
+        >
             {props.children}
         </Page>
     )
