@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { MemoryRouter } from 'react-router'
-import { AcmHeader } from './AcmHeader'
+import { AcmHeader, AcmRoute } from './AcmHeader'
 
 export default {
     title: 'Header',
@@ -12,7 +12,7 @@ export default {
 export const Header = () => {
     return (
         <MemoryRouter>
-            <AcmHeader>
+            <AcmHeader route={AcmRoute.Welcome}>
                 <div>test content</div>
             </AcmHeader>
         </MemoryRouter>
