@@ -12,7 +12,7 @@ export default {
 export const Header = () => {
     return (
         <MemoryRouter>
-            <AcmHeader route={AcmRoute.Welcome}>
+            <AcmHeader route={AcmRoute.ClusterManagement}>
                 <div>test content</div>
             </AcmHeader>
         </MemoryRouter>
