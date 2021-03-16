@@ -453,7 +453,7 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
 }
 
 export function AcmHeader(props: AcmHeaderProps) {
-    const isFullWidthPage = useMediaQuery('(min-width: 1200px)')
+    const isFullWidthPage = useMediaQuery('(min-width: 1200px)', { noSsr: true })
     const [isNavOpen, setNavOpen] = useState(window?.localStorage?.getItem('isNavOpen') !== 'false')
     useEffect(() => {
         if (!isFullWidthPage) {
