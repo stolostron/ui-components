@@ -7,7 +7,7 @@ import { axe } from 'jest-axe'
 import nock from 'nock'
 import React from 'react'
 import { MemoryRouter } from 'react-router'
-import { AcmHeader } from './AcmHeader'
+import { AcmHeader, AcmRoute } from './AcmHeader'
 
 describe('AcmHeader', () => {
     beforeAll(() => {
@@ -18,7 +18,7 @@ describe('AcmHeader', () => {
     test('renders', async () => {
         const { container } = render(
             <MemoryRouter>
-                <AcmHeader>
+                <AcmHeader route={AcmRoute.Welcome}>
                     <div>test</div>
                 </AcmHeader>
             </MemoryRouter>
