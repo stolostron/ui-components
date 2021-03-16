@@ -29,10 +29,11 @@ import {
     TextListItem,
     Title,
 } from '@patternfly/react-core'
-import { CaretDownIcon, CodeIcon, CogsIcon } from '@patternfly/react-icons'
+import { CaretDownIcon, CodeIcon, CogsIcon, ExternalLinkAltIcon } from '@patternfly/react-icons'
 import React, { CSSProperties, ReactNode, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../assets/RHACM-Logo.svg'
+import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 
 export type AcmHeaderProps = {
     route: AcmRoute
@@ -58,6 +59,30 @@ function launchToOCP(urlSuffix: string) {
         .catch((error) => {
             // eslint-disable-next-line no-console
             console.error(error)
+        })
+}
+
+function checkOCPVersion(switcherExists: (arg0: boolean) => void) {
+    api<{ data: { consoleURL: string } }>(
+        '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
+    )
+        .then(({ data }) => {
+            api<{ versionData: { version: string } }>(`${data.consoleURL}/api/kubernetes/version`)
+                .then(({ versionData }) => {
+                    if (parseFloat(versionData.version.substr(1, 4)) > 1.2) {
+                        switcherExists(true)
+                    }
+                })
+                .catch((error) => {
+                    // eslint-disable-next-line no-console
+                    console.error(error)
+                    switcherExists(false)
+                })
+        })
+        .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.error(error)
+            switcherExists(false)
         })
 }
 
@@ -326,12 +351,19 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
     const { route } = props
     const classes = useStyles()
     const [switcherIsOpen, setSwitcherOpen] = useState(false)
+    const [switcherExists, switcherSetExists] = useState<boolean>(false)
     const iconStyles: CSSProperties = { paddingRight: '7px' }
+
+    useEffect(() => {
+        checkOCPVersion(switcherSetExists)
+    }, [])
+
     return (
         <Nav onSelect={() => props.postClick?.()}>
             <div
                 className="oc-nav-header"
                 style={{ padding: 'var(--pf-global--spacer--sm) var(--pf-global--spacer--sm)' }}
+                hidden={!switcherExists}
             >
                 <Dropdown
                     toggle={
@@ -377,7 +409,7 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
                     isOpen={switcherIsOpen}
                 />
             </div>
-            <NavItemSeparator />
+            <NavItemSeparator style={switcherExists ? {} : { display: 'none' }} />
             <NavList className={classes.list}>
                 <NavExpandable
                     title="Home"
@@ -433,7 +465,31 @@ export function AcmHeader(props: AcmHeaderProps) {
         }
     }, [isFullPage])
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
+    const [appSwitcherOpen, setAppSwitcherOpen] = useState<boolean>(false)
+    const [appSwitcherExists, setAppSwitcherExists] = useState<boolean>(true)
+
     const classes = useStyles()
+
+    function OCPButton() {
+        return (
+            <ApplicationLauncherItem component="button" onClick={() => launchToOCP('')}>
+                <div style={{ minWidth: 'fit-content' }}>
+                    <span style={{ verticalAlign: '-0.125em' }}>
+                        <AcmIcon icon={AcmIconVariant.ocp} />
+                    </span>
+                    <span style={{ marginRight: '10px' }}>Red Hat Openshift Container Platform</span>
+                    <span style={{ verticalAlign: '-0.125em' }}>
+                        <ExternalLinkAltIcon style={{ width: '1em' }}></ExternalLinkAltIcon>
+                    </span>
+                </div>
+            </ApplicationLauncherItem>
+        )
+    }
+
+    useEffect(() => {
+        checkOCPVersion(setAppSwitcherExists)
+    }, [])
+
     const headerTools = (
         <PageHeaderTools>
             <PageHeaderToolsGroup
@@ -443,6 +499,19 @@ export function AcmHeader(props: AcmHeaderProps) {
                 }}
             >
                 <PageHeaderToolsItem>
+                    <ApplicationLauncher
+                        hidden={appSwitcherExists}
+                        aria-label="app-menu"
+                        data-test="app-dropdown"
+                        className="co-app-launcher co-app-menu"
+                        onSelect={() => setAppSwitcherOpen(false)}
+                        onToggle={() => setAppSwitcherOpen(!appSwitcherOpen)}
+                        isOpen={appSwitcherOpen}
+                        items={[<OCPButton key="app_launch" />]}
+                        data-quickstart-id="qs-masthead-appmenu"
+                        position="right"
+                        style={{ verticalAlign: '0.125em' }}
+                    />
                     <Button
                         aria-label="search-button"
                         onClick={() => window.open('/search/', '_self')}
