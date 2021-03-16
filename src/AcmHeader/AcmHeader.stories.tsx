@@ -1,12 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { Button, Divider } from '@material-ui/core'
+import { Divider } from '@material-ui/core'
 import {
     Breadcrumb,
     BreadcrumbItem,
     Card,
     CardBody,
-    CardFooter,
     CardTitle,
     DescriptionList,
     DescriptionListDescription,
@@ -29,12 +28,12 @@ import {
     Text,
     TextContent,
 } from '@patternfly/react-core'
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import { MemoryRouter } from 'react-router'
-import { AcmHeader, AcmRoute } from './AcmHeader'
-import { AcmScrollable } from '../AcmScrollable/AcmScrollable'
 import { Link } from 'react-router-dom'
+import { AcmScrollable } from '../AcmScrollable/AcmScrollable'
 import { Table } from '../AcmTable/AcmTable.stories'
+import { AcmHeader, AcmRoute } from './AcmHeader'
 
 export default {
     title: 'Header',

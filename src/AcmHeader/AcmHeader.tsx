@@ -31,10 +31,10 @@ import {
     Title,
 } from '@patternfly/react-core'
 import { CaretDownIcon, CodeIcon, CogsIcon, ExternalLinkAltIcon } from '@patternfly/react-icons'
-import React, { CSSProperties, ReactNode, useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import logo from '../assets/RHACM-Logo.svg'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
+import logo from '../assets/RHACM-Logo.svg'
 
 export type AcmHeaderProps = {
     route: AcmRoute
