@@ -22,6 +22,7 @@ import {
     PageHeaderTools,
     PageHeaderToolsGroup,
     PageHeaderToolsItem,
+    PageProps,
     PageSidebar,
     Spinner,
     TextContent,
@@ -30,14 +31,14 @@ import {
     Title,
 } from '@patternfly/react-core'
 import { CaretDownIcon, CodeIcon, CogsIcon } from '@patternfly/react-icons'
-import React, { CSSProperties, ReactNode, useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../assets/RHACM-Logo.svg'
 
 export type AcmHeaderProps = {
     route: AcmRoute
-    children?: ReactNode
-}
+} & Omit<PageProps, 'sidebar'> &
+    Omit<PageProps, 'header'>
 
 function api<T>(url: string, headers?: Record<string, unknown>): Promise<T> {
     return fetch(url, headers).then((response) => {
@@ -512,6 +513,7 @@ export function AcmHeader(props: AcmHeaderProps) {
 
     return (
         <Page
+            {...(props as unknown)}
             header={
                 <PageHeader
                     logo={<Brand src={logo} alt="RHACM Logo" />}
@@ -539,8 +541,6 @@ export function AcmHeader(props: AcmHeaderProps) {
                     />
                 )
             }
-        >
-            {props.children}
-        </Page>
+        />
     )
 }
