@@ -473,16 +473,15 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const hasItems = items && items.length > 0 && filtered
     const hasTableActions = tableActions && tableActions.length > 0
     const hasBulkActions = bulkActions && bulkActions.length > 0
-
-    /* istanbul ignore next */
-    const showSearch = hasSearch || hasTableActions
+    const includeBulkToolbar = hasBulkActions || props.extraToolbarControls
+    const showToolbar = (hasItems && hasSearch) || hasTableActions || props.extraToolbarControls
 
     return (
         <Fragment>
-            {hasItems && showSearch && (
+            {showToolbar && (
                 <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
                     <ToolbarContent>
-                        {hasSearch && (
+                        {hasItems && hasSearch && (
                             <ToolbarGroup style={{ flexGrow: 1 }} variant="filter-group">
                                 <ToolbarItem variant="search-filter" style={{ flexGrow: 1 }}>
                                     <SearchInput
@@ -496,20 +495,25 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 </ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        <ToolbarGroup variant="button-group">
-                            {tableActions.map((action) => (
-                                <ToolbarItem key={action.id}>
-                                    <AcmButton
-                                        onClick={action.click}
-                                        isDisabled={action.isDisabled}
-                                        tooltip={action.tooltip}
-                                    >
-                                        {action.title}
-                                    </AcmButton>
-                                </ToolbarItem>
-                            ))}
-                        </ToolbarGroup>
-                        {!hasBulkActions && (!props.autoHidePagination || filtered.length > perPage) && (
+                        <ToolbarItem alignment={{ default: 'alignRight' }} />
+                        {items && // Do not show during loading, but show if empty
+                            hasTableActions && (
+                                <ToolbarGroup variant="button-group">
+                                    {tableActions.map((action) => (
+                                        <ToolbarItem key={action.id}>
+                                            <AcmButton
+                                                onClick={action.click}
+                                                isDisabled={action.isDisabled}
+                                                tooltip={action.tooltip}
+                                            >
+                                                {action.title}
+                                            </AcmButton>
+                                        </ToolbarItem>
+                                    ))}
+                                </ToolbarGroup>
+                            )}
+                        {props.extraToolbarControls && <ToolbarGroup>{props.extraToolbarControls}</ToolbarGroup>}
+                        {!includeBulkToolbar && (!props.autoHidePagination || filtered.length > perPage) && (
                             <ToolbarGroup>
                                 <ToolbarItem>
                                     <Pagination
@@ -529,101 +533,104 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     </ToolbarContent>
                 </Toolbar>
             )}
-            {items && hasItems && hasBulkActions && (
+            {items && hasItems && includeBulkToolbar && (
                 <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0, paddingBottom: '12px' }}>
                     <ToolbarContent>
-                        <ToolbarGroup variant="button-group">
-                            <ToolbarItem>
-                                <Dropdown
-                                    toggle={
-                                        <DropdownToggle
-                                            splitButtonItems={[
-                                                <DropdownToggleCheckbox
-                                                    id="example-checkbox-2"
-                                                    key="split-checkbox"
-                                                    aria-label="Select all"
-                                                    isChecked={Object.keys(selected).length > 0}
-                                                    onChange={() => {
-                                                        if (Object.keys(selected).length > 0) {
-                                                            setSelected({})
-                                                        } else {
-                                                            setSelected(
-                                                                items!.reduce((selection, item) => {
-                                                                    selection[keyFn(item)] = true
-                                                                    return selection
-                                                                }, {} as Record<string, boolean>)
-                                                            )
-                                                        }
+                        {hasBulkActions && (
+                            <Fragment>
+                                <ToolbarGroup variant="button-group">
+                                    <ToolbarItem>
+                                        <Dropdown
+                                            toggle={
+                                                <DropdownToggle
+                                                    splitButtonItems={[
+                                                        <DropdownToggleCheckbox
+                                                            id="example-checkbox-2"
+                                                            key="split-checkbox"
+                                                            aria-label="Select all"
+                                                            isChecked={Object.keys(selected).length > 0}
+                                                            onChange={() => {
+                                                                if (Object.keys(selected).length > 0) {
+                                                                    setSelected({})
+                                                                } else {
+                                                                    setSelected(
+                                                                        items!.reduce((selection, item) => {
+                                                                            selection[keyFn(item)] = true
+                                                                            return selection
+                                                                        }, {} as Record<string, boolean>)
+                                                                    )
+                                                                }
+                                                            }}
+                                                        >
+                                                            {Object.keys(selected).length > 0
+                                                                ? `${Object.keys(selected).length} selected`
+                                                                : ''}
+                                                        </DropdownToggleCheckbox>,
+                                                    ]}
+                                                    onToggle={(isOpen) => setSelectionOpen(isOpen)}
+                                                />
+                                            }
+                                            isOpen={selectionOpen}
+                                            dropdownItems={[
+                                                <DropdownItem
+                                                    key="none"
+                                                    onClick={() => {
+                                                        setSelected({})
+                                                        setSelectionOpen(false)
                                                     }}
                                                 >
-                                                    {Object.keys(selected).length > 0
-                                                        ? `${Object.keys(selected).length} selected`
-                                                        : ''}
-                                                </DropdownToggleCheckbox>,
+                                                    Select none (0 items)
+                                                </DropdownItem>,
+                                                <DropdownItem
+                                                    key="page"
+                                                    onClick={() => {
+                                                        setSelected(
+                                                            paged.reduce((selection, item) => {
+                                                                selection[keyFn(item)] = true
+                                                                return selection
+                                                            }, {} as Record<string, boolean>)
+                                                        )
+                                                        setSelectionOpen(false)
+                                                    }}
+                                                >{`Select page (${perPage} items)`}</DropdownItem>,
+                                                <DropdownItem
+                                                    key="all"
+                                                    onClick={() => {
+                                                        setSelected(
+                                                            items!.reduce((selection, item) => {
+                                                                selection[keyFn(item)] = true
+                                                                return selection
+                                                            }, {} as Record<string, boolean>)
+                                                        )
+                                                        setSelectionOpen(false)
+                                                    }}
+                                                >{`Select all (${items.length} items)`}</DropdownItem>,
                                             ]}
-                                            onToggle={(isOpen) => setSelectionOpen(isOpen)}
                                         />
-                                    }
-                                    isOpen={selectionOpen}
-                                    dropdownItems={[
-                                        <DropdownItem
-                                            key="none"
-                                            onClick={() => {
-                                                setSelected({})
-                                                setSelectionOpen(false)
-                                            }}
-                                        >
-                                            Select none (0 items)
-                                        </DropdownItem>,
-                                        <DropdownItem
-                                            key="page"
-                                            onClick={() => {
-                                                setSelected(
-                                                    paged.reduce((selection, item) => {
-                                                        selection[keyFn(item)] = true
-                                                        return selection
-                                                    }, {} as Record<string, boolean>)
-                                                )
-                                                setSelectionOpen(false)
-                                            }}
-                                        >{`Select page (${perPage} items)`}</DropdownItem>,
-                                        <DropdownItem
-                                            key="all"
-                                            onClick={() => {
-                                                setSelected(
-                                                    items!.reduce((selection, item) => {
-                                                        selection[keyFn(item)] = true
-                                                        return selection
-                                                    }, {} as Record<string, boolean>)
-                                                )
-                                                setSelectionOpen(false)
-                                            }}
-                                        >{`Select all (${items.length} items)`}</DropdownItem>,
-                                    ]}
-                                />
-                            </ToolbarItem>
-                        </ToolbarGroup>
-                        {Object.keys(selected).length !== 0 && (
-                            <ToolbarGroup variant="button-group">
-                                {bulkActions.map((action) => (
-                                    <ToolbarItem key={action.id}>
-                                        <Grow in={true}>
-                                            <AcmButton
-                                                onClick={() =>
-                                                    action.click(items!.filter((item) => selected[keyFn(item)]))
-                                                }
-                                                isDisabled={action.isDisabled}
-                                                tooltip={action.tooltip}
-                                            >
-                                                {action.title}
-                                            </AcmButton>
-                                        </Grow>
                                     </ToolbarItem>
-                                ))}
-                            </ToolbarGroup>
+                                </ToolbarGroup>
+                                {Object.keys(selected).length !== 0 && (
+                                    <ToolbarGroup variant="button-group">
+                                        {bulkActions.map((action) => (
+                                            <ToolbarItem key={action.id}>
+                                                <Grow in={true}>
+                                                    <AcmButton
+                                                        onClick={() =>
+                                                            action.click(items!.filter((item) => selected[keyFn(item)]))
+                                                        }
+                                                        isDisabled={action.isDisabled}
+                                                        tooltip={action.tooltip}
+                                                    >
+                                                        {action.title}
+                                                    </AcmButton>
+                                                </Grow>
+                                            </ToolbarItem>
+                                        ))}
+                                    </ToolbarGroup>
+                                )}
+                            </Fragment>
                         )}
                         <ToolbarItem alignment={{ default: 'alignRight' }} />
-                        {props.extraToolbarControls && <ToolbarGroup>{props.extraToolbarControls}</ToolbarGroup>}
                         {
                             // ignoring as the pagination above is used in tests
                             /* istanbul ignore next */
