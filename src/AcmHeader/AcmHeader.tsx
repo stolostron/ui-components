@@ -453,18 +453,17 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
 }
 
 export function AcmHeader(props: AcmHeaderProps) {
-    const mediaMatch = window.matchMedia('(min-width: 1200px)')
-    const isFullPage = useMediaQuery('(min-width: 1200px)')
+    const isFullWidthPage = useMediaQuery('(min-width: 1200px)')
     const [isNavOpen, setNavOpen] = useState(localStorage.getItem('isNavOpen') !== 'false')
     useEffect(() => {
-        if (!mediaMatch.matches) {
+        if (!isFullWidthPage) {
             setNavOpen(false)
         } else {
             if (localStorage.getItem('isNavOpen') !== 'false') {
                 setNavOpen(true)
             }
         }
-    }, [isFullPage])
+    }, [isFullWidthPage])
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
     const [appSwitcherOpen, setAppSwitcherOpen] = useState<boolean>(false)
     const [appSwitcherExists, setAppSwitcherExists] = useState<boolean>(true)
@@ -597,18 +596,11 @@ export function AcmHeader(props: AcmHeaderProps) {
                 />
             }
             sidebar={
-                isFullPage ? (
-                    <PageSidebar
-                        nav={<NavExpandableList route={props.route} />}
-                        isNavOpen={isNavOpen}
-                        style={{ boxShadow: 'unset' }}
-                    />
-                ) : (
-                    <PageSidebar
-                        nav={<NavExpandableList route={props.route} postClick={() => setNavOpen(false)} />}
-                        isNavOpen={isNavOpen}
-                    />
-                )
+                <PageSidebar
+                    nav={<NavExpandableList route={props.route} />}
+                    isNavOpen={isNavOpen}
+                    style={isFullWidthPage ? { boxShadow: 'unset' } : undefined}
+                />
             }
         />
     )
