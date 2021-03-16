@@ -454,12 +454,12 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
 
 export function AcmHeader(props: AcmHeaderProps) {
     const isFullWidthPage = useMediaQuery('(min-width: 1200px)')
-    const [isNavOpen, setNavOpen] = useState(localStorage.getItem('isNavOpen') !== 'false')
+    const [isNavOpen, setNavOpen] = useState(window?.localStorage?.getItem('isNavOpen') !== 'false')
     useEffect(() => {
         if (!isFullWidthPage) {
             setNavOpen(false)
         } else {
-            if (localStorage.getItem('isNavOpen') !== 'false') {
+            if (window?.localStorage?.getItem('isNavOpen') !== 'false') {
                 setNavOpen(true)
             }
         }
@@ -590,7 +590,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                     showNavToggle
                     isNavOpen={isNavOpen}
                     onNavToggle={() => {
-                        localStorage.setItem('isNavOpen', (!isNavOpen).toString())
+                        window?.localStorage?.setItem('isNavOpen', (!isNavOpen).toString())
                         setNavOpen((isNavOpen) => !isNavOpen)
                     }}
                 />
