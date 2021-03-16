@@ -171,13 +171,8 @@ export const OCPIcon = () => (
         x="0px"
         y="0px"
         viewBox="0 0 100 100"
-        style={{width: '1em', marginRight: '10px', color: '#BB202A'}}
+        style={{ width: '1em', marginRight: '10px', color: '#BB202A' }}
     >
-        <style type="text/css">
-            .st0{"fill:#BB202A;"}
-            .st1{"fill:#E12634;"}
-            .st2{"fill:#971B1F;"}
-        </style>
         <g>
             <path
                 className="st0"

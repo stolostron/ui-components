@@ -14,7 +14,7 @@ import {
     BareMetalIcon,
     VMWareIcon,
     IBMCloudIcon,
-    OCPIcon
+    OCPIcon,
 } from './Icons'
 
 export enum AcmIconVariant {

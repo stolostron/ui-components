@@ -67,9 +67,7 @@ function checkOCPVersion(switcherExists: (arg0: boolean) => void) {
         '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
     )
         .then(({ data }) => {
-            api<{ versionData: { version: string } }>(
-                `${data.consoleURL}/api/kubernetes/version`
-            )
+            api<{ versionData: { version: string } }>(`${data.consoleURL}/api/kubernetes/version`)
                 .then(({ versionData }) => {
                     if (parseFloat(versionData.version.substr(1, 4)) > 1.2) {
                         switcherExists(true)
@@ -411,7 +409,7 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
                     isOpen={switcherIsOpen}
                 />
             </div>
-            <NavItemSeparator style={switcherExists ? {} : {display: 'none'}} />
+            <NavItemSeparator style={switcherExists ? {} : { display: 'none' }} />
             <NavList className={classes.list}>
                 <NavExpandable
                     title="Home"
@@ -475,13 +473,13 @@ export function AcmHeader(props: AcmHeaderProps) {
     function OCPButton() {
         return (
             <ApplicationLauncherItem component="button" onClick={() => launchToOCP('')}>
-                <div style={{minWidth: 'fit-content'}}>
-                    <span style={{verticalAlign: '-0.125em'}}>
-                        <AcmIcon icon={AcmIconVariant.ocp}/>
+                <div style={{ minWidth: 'fit-content' }}>
+                    <span style={{ verticalAlign: '-0.125em' }}>
+                        <AcmIcon icon={AcmIconVariant.ocp} />
                     </span>
-                    <span style={{marginRight: '10px'}}>Red Hat Openshift Container Platform</span>
-                    <span style={{verticalAlign: '-0.125em'}}>
-                        <ExternalLinkAltIcon style={{width: '1em'}}></ExternalLinkAltIcon>
+                    <span style={{ marginRight: '10px' }}>Red Hat Openshift Container Platform</span>
+                    <span style={{ verticalAlign: '-0.125em' }}>
+                        <ExternalLinkAltIcon style={{ width: '1em' }}></ExternalLinkAltIcon>
                     </span>
                 </div>
             </ApplicationLauncherItem>
@@ -512,7 +510,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                         items={[<OCPButton key="app_launch" />]}
                         data-quickstart-id="qs-masthead-appmenu"
                         position="right"
-                        style={{verticalAlign: '0.125em'}}
+                        style={{ verticalAlign: '0.125em' }}
                     />
                     <Button
                         aria-label="search-button"
