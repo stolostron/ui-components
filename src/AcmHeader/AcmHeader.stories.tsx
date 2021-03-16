@@ -81,7 +81,7 @@ export const Header = () => {
                                             <DropdownToggle
                                                 onToggle={() => setActionDowndownOpen(!isActionDowndownOpen)}
                                             >
-                                                Dropdown
+                                                Actions
                                             </DropdownToggle>
                                         }
                                         dropdownItems={[
