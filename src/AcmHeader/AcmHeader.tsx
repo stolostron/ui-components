@@ -36,7 +36,7 @@ import logo from '../assets/RHACM-Logo.svg'
 
 export type AcmHeaderProps = {
     route: AcmRoute
-    children: ReactNode
+    children?: ReactNode
 }
 
 function api<T>(url: string, headers?: Record<string, unknown>): Promise<T> {
