@@ -391,12 +391,12 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
                         Overview
                     </NavItem>
                 </NavExpandable>
-                <NavItem
-                    isActive={route === AcmRoute.ClusterManagement}
-                    to={AcmRoute.ClusterManagement}
-                    component={route === AcmRoute.ManageCredentials ? Link : 'a'}
-                >
-                    Cluster management
+                <NavItem isActive={route === AcmRoute.ClusterManagement} to={AcmRoute.ClusterManagement}>
+                    {route === AcmRoute.ClusterManagement || route === AcmRoute.ManageCredentials ? (
+                        <Link to={AcmRoute.ClusterManagement}>Cluster management</Link>
+                    ) : (
+                        'Cluster management'
+                    )}
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.ManageApplications} to={AcmRoute.ManageApplications}>
                     Manage applications
@@ -404,12 +404,12 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
                 <NavItem isActive={route === AcmRoute.GovernRisk} to={AcmRoute.GovernRisk}>
                     Govern risk
                 </NavItem>
-                <NavItem
-                    isActive={route === AcmRoute.ManageCredentials}
-                    to={AcmRoute.ManageCredentials}
-                    component={route === AcmRoute.ClusterManagement ? Link : 'a'}
-                >
-                    Manage credentials
+                <NavItem isActive={route === AcmRoute.ManageCredentials} to={AcmRoute.ManageCredentials}>
+                    {route === AcmRoute.ClusterManagement || route === AcmRoute.ManageCredentials ? (
+                        <Link to={AcmRoute.ManageCredentials}>Manage credentials</Link>
+                    ) : (
+                        'Manage credentials'
+                    )}
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.VisualWebTerminal} to={AcmRoute.VisualWebTerminal}>
                     Visual Web Terminal
