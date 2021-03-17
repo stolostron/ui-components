@@ -35,11 +35,19 @@ describe('AcmTable', () => {
             useTableActions?: boolean
             useRowActions?: boolean
             useBulkActions?: boolean
+            useExtraToolbarControls?: boolean
+            useSearch?: boolean
             transforms?: boolean
             gridBreakPoint?: TableGridBreakpoint
         } & Partial<AcmTableProps<IExampleData>>
     ) => {
-        const { useTableActions = true, useRowActions = true, useBulkActions = false } = props
+        const {
+            useTableActions = true,
+            useRowActions = true,
+            useBulkActions = false,
+            useExtraToolbarControls = false,
+            useSearch = true,
+        } = props
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
@@ -51,7 +59,7 @@ describe('AcmTable', () => {
                         header: 'First Name',
                         sort: 'firstName',
                         cell: 'firstName',
-                        search: 'firstName',
+                        search: useSearch ? 'firstName' : undefined,
                     },
                     {
                         header: 'Last Name',
@@ -61,25 +69,25 @@ describe('AcmTable', () => {
                     {
                         header: 'EMail',
                         cell: 'email',
-                        search: 'email',
+                        search: useSearch ? 'email' : undefined,
                     },
                     {
                         header: 'Gender',
                         sort: 'gender',
                         cell: (item) => item.gender,
-                        search: 'gender',
+                        search: useSearch ? 'gender' : undefined,
                     },
                     {
                         header: 'IP Address',
                         sort: sortFunction,
                         cell: 'ip_address',
-                        search: (item) => item['ip_address'],
+                        search: useSearch ? (item) => item['ip_address'] : undefined,
                     },
                     {
                         header: 'UID',
                         sort: 'uid',
                         cell: 'uid',
-                        search: 'uid',
+                        search: useSearch ? 'uid' : undefined,
                         tooltip: 'Tooltip Example',
                         transforms: props.transforms ? [fitContent] : undefined,
                     },
@@ -125,10 +133,12 @@ describe('AcmTable', () => {
                         : undefined
                 }
                 extraToolbarControls={
-                    <ToggleGroup>
-                        <ToggleGroupItem isSelected={true} text="View 1" />
-                        <ToggleGroupItem text="View 2" />
-                    </ToggleGroup>
+                    useExtraToolbarControls ? (
+                        <ToggleGroup>
+                            <ToggleGroupItem isSelected={true} text="View 1" />
+                            <ToggleGroupItem text="View 2" />
+                        </ToggleGroup>
+                    ) : undefined
                 }
                 {...props}
             />
@@ -300,7 +310,9 @@ describe('AcmTable', () => {
         sortTest(true)
     })
     test('page size can be updated', () => {
-        const { getByLabelText, getAllByLabelText, getByText, container } = render(<Table />)
+        const { getByLabelText, getAllByLabelText, getByText, container } = render(
+            <Table useExtraToolbarControls={false} useSearch={false} useTableActions={false} />
+        )
 
         expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
         expect(getAllByLabelText('Items per page').length).toBeGreaterThan(0)
@@ -366,10 +378,12 @@ describe('AcmTable', () => {
     test('can provide default empty state', () => {
         const { queryByText } = render(<Table items={[]} />)
         expect(queryByText('No addresses found')).toBeVisible()
+        expect(queryByText('Create address')).toBeVisible()
     })
     test('can use custom empty state', () => {
         const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
         expect(queryByText('Look elsewhere!')).toBeVisible()
+        expect(queryByText('Create address')).toBeVisible()
     })
     test('can render as a controlled component', () => {
         const setPage = jest.fn()
@@ -401,8 +415,9 @@ describe('AcmTable', () => {
         expect(setSort).toHaveBeenCalledTimes(2)
     })
     test('shows loading', () => {
-        const { queryByText } = render(<Table items={undefined} />)
+        const { queryByText } = render(<Table items={undefined} useExtraToolbarControls={true} />)
         expect(queryByText('Loading')).toBeVisible()
+        expect(queryByText('View 1')).toBeVisible()
     })
     test('can have sort updated when all items filtered', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
