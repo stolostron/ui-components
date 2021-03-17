@@ -64,6 +64,7 @@ function launchToOCP(urlSuffix: string) {
 }
 
 function checkOCPVersion(switcherExists: (arg0: boolean) => void) {
+    if (process.env.NODE_ENV === 'test') return
     api<{ data: { consoleURL: string } }>(
         '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
     )
@@ -93,6 +94,7 @@ function UserDropdownToggle() {
     useEffect(() => {
         const dev = process.env.NODE_ENV !== 'production'
         const serverForTest = dev ? 'https://localhost:3000' : ''
+        if (process.env.NODE_ENV === 'test') return
         api<{ username: string }>(`${serverForTest}/multicloud/common/username/`)
             .then(({ username }) => {
                 setName(username)
