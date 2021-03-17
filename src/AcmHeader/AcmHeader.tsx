@@ -35,7 +35,6 @@ import React, { CSSProperties, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import logo from '../assets/RHACM-Logo.svg'
-import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 
 export type AcmHeaderProps = {
     route: AcmRoute
