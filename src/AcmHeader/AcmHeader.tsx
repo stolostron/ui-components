@@ -218,14 +218,14 @@ function UserDropdown() {
 
     function LogoutButton() {
         return (
-            <ApplicationLauncherItem component="button" onClick={() => logout()}>
+            <ApplicationLauncherItem component="button" id="logout" onClick={() => logout()}>
                 Logout
             </ApplicationLauncherItem>
         )
     }
     function ConfigureButton() {
         return (
-            <ApplicationLauncherItem component="button" onClick={() => configureClient()}>
+            <ApplicationLauncherItem component="button" id="configure" onClick={() => configureClient()}>
                 Configure client
             </ApplicationLauncherItem>
         )
@@ -239,7 +239,7 @@ function UserDropdown() {
             onSelect={() => userSetOpen(false)}
             onToggle={() => userSetOpen(!userIsOpen)}
             isOpen={userIsOpen}
-            items={[<LogoutButton key="user_logout" />, <ConfigureButton key="user_configure" />]}
+            items={[<ConfigureButton key="user_configure" />, <LogoutButton key="user_logout" />]}
             data-quickstart-id="qs-masthead-usermenu"
             position="right"
             toggleIcon={<UserDropdownToggle />}
