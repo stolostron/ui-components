@@ -22,6 +22,7 @@ import {
     PageHeaderTools,
     PageHeaderToolsGroup,
     PageHeaderToolsItem,
+    PageProps,
     PageSidebar,
     Spinner,
     TextContent,
@@ -30,15 +31,16 @@ import {
     Title,
 } from '@patternfly/react-core'
 import { CaretDownIcon, CodeIcon, CogsIcon, ExternalLinkAltIcon } from '@patternfly/react-icons'
-import React, { CSSProperties, ReactNode, useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import logo from '../assets/RHACM-Logo.svg'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 
 export type AcmHeaderProps = {
     route: AcmRoute
-    children?: ReactNode
-}
+} & Omit<PageProps, 'sidebar'> &
+    Omit<PageProps, 'header'>
 
 function api<T>(url: string, headers?: Record<string, unknown>): Promise<T> {
     return fetch(url, headers).then((response) => {
@@ -63,6 +65,7 @@ function launchToOCP(urlSuffix: string) {
 }
 
 function checkOCPVersion(switcherExists: (arg0: boolean) => void) {
+    if (process.env.NODE_ENV === 'test') return
     api<{ data: { consoleURL: string } }>(
         '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
     )
@@ -92,6 +95,7 @@ function UserDropdownToggle() {
     useEffect(() => {
         const dev = process.env.NODE_ENV !== 'production'
         const serverForTest = dev ? 'https://localhost:3000' : ''
+        if (process.env.NODE_ENV === 'test') return
         api<{ username: string }>(`${serverForTest}/multicloud/common/username/`)
             .then(({ username }) => {
                 setName(username)
@@ -423,12 +427,12 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
                         Overview
                     </NavItem>
                 </NavExpandable>
-                <NavItem
-                    isActive={route === AcmRoute.ClusterManagement}
-                    to={AcmRoute.ClusterManagement}
-                    component={route === AcmRoute.ManageCredentials ? Link : 'a'}
-                >
-                    Cluster management
+                <NavItem isActive={route === AcmRoute.ClusterManagement} to={AcmRoute.ClusterManagement}>
+                    {route === AcmRoute.ClusterManagement || route === AcmRoute.ManageCredentials ? (
+                        <Link to={AcmRoute.ClusterManagement}>Cluster management</Link>
+                    ) : (
+                        'Cluster management'
+                    )}
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.ManageApplications} to={AcmRoute.ManageApplications}>
                     Manage applications
@@ -436,12 +440,12 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
                 <NavItem isActive={route === AcmRoute.GovernRisk} to={AcmRoute.GovernRisk}>
                     Govern risk
                 </NavItem>
-                <NavItem
-                    isActive={route === AcmRoute.ManageCredentials}
-                    to={AcmRoute.ManageCredentials}
-                    component={route === AcmRoute.ClusterManagement ? Link : 'a'}
-                >
-                    Manage credentials
+                <NavItem isActive={route === AcmRoute.ManageCredentials} to={AcmRoute.ManageCredentials}>
+                    {route === AcmRoute.ClusterManagement || route === AcmRoute.ManageCredentials ? (
+                        <Link to={AcmRoute.ManageCredentials}>Manage credentials</Link>
+                    ) : (
+                        'Manage credentials'
+                    )}
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.VisualWebTerminal} to={AcmRoute.VisualWebTerminal}>
                     Visual Web Terminal
@@ -452,18 +456,17 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
 }
 
 export function AcmHeader(props: AcmHeaderProps) {
-    const mediaMatch = window.matchMedia('(min-width: 1200px)')
-    const isFullPage = useMediaQuery('(min-width: 1200px)')
-    const [isNavOpen, setNavOpen] = useState(localStorage.getItem('isNavOpen') !== 'false')
+    const isFullWidthPage = useMediaQuery('(min-width: 1200px)', { noSsr: true })
+    const [isNavOpen, setNavOpen] = useState(window?.localStorage?.getItem('isNavOpen') !== 'false')
     useEffect(() => {
-        if (!mediaMatch.matches) {
+        if (!isFullWidthPage) {
             setNavOpen(false)
         } else {
-            if (localStorage.getItem('isNavOpen') !== 'false') {
+            if (window?.localStorage?.getItem('isNavOpen') !== 'false') {
                 setNavOpen(true)
             }
         }
-    }, [isFullPage])
+    }, [isFullWidthPage])
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
     const [appSwitcherOpen, setAppSwitcherOpen] = useState<boolean>(false)
     const [appSwitcherExists, setAppSwitcherExists] = useState<boolean>(true)
@@ -581,6 +584,7 @@ export function AcmHeader(props: AcmHeaderProps) {
 
     return (
         <Page
+            {...(props as unknown)}
             header={
                 <PageHeader
                     logo={<Brand src={logo} alt="RHACM Logo" />}
@@ -589,27 +593,25 @@ export function AcmHeader(props: AcmHeaderProps) {
                     showNavToggle
                     isNavOpen={isNavOpen}
                     onNavToggle={() => {
-                        localStorage.setItem('isNavOpen', (!isNavOpen).toString())
+                        window?.localStorage?.setItem('isNavOpen', (!isNavOpen).toString())
                         setNavOpen((isNavOpen) => !isNavOpen)
                     }}
                 />
             }
             sidebar={
-                isFullPage ? (
-                    <PageSidebar
-                        nav={<NavExpandableList route={props.route} />}
-                        isNavOpen={isNavOpen}
-                        style={{ boxShadow: 'unset' }}
-                    />
-                ) : (
-                    <PageSidebar
-                        nav={<NavExpandableList route={props.route} postClick={() => setNavOpen(false)} />}
-                        isNavOpen={isNavOpen}
-                    />
-                )
+                <PageSidebar
+                    nav={
+                        <NavExpandableList
+                            route={props.route}
+                            postClick={() => {
+                                if (!isFullWidthPage) setNavOpen(false)
+                            }}
+                        />
+                    }
+                    isNavOpen={isNavOpen}
+                    style={isFullWidthPage ? { boxShadow: 'unset' } : undefined}
+                />
             }
-        >
-            {props.children}
-        </Page>
+        />
     )
 }

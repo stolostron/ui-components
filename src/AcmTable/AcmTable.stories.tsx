@@ -2,7 +2,7 @@
 
 /* eslint-disable react/display-name */
 import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { fitContent, truncate } from '@patternfly/react-table'
+import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import '@patternfly/react-core/dist/styles/base.css'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { AcmPage, AcmPageCard } from '../AcmPage/AcmPage'
@@ -46,6 +46,7 @@ export function Table(args: { [x: string]: unknown }) {
                     columns={columns}
                     keyFn={(item: IExampleData) => item.uid.toString()}
                     {...commonProperties(args, setItems, items)}
+                    gridBreakPoint={TableGridBreakpoint.none}
                 />
             </PageSection>
         </AcmPage>
