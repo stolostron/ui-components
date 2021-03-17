@@ -1,5 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
+import { useMediaQuery } from '@material-ui/core'
 import Collapse from '@material-ui/core/Collapse'
 import { Alert, AlertActionCloseButton } from '@patternfly/react-core'
 import React, {
@@ -143,25 +144,31 @@ export function AcmAlert(props: {
     )
 }
 
-export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean; alertMargin?: string }) {
+export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean; padding?: boolean }) {
+    const isFullWidthPage = useMediaQuery('(min-width: 1200px)', { noSsr: true })
     const alertContext = useContext(AcmAlertContext)
+
+    /* istanbul ignore next */
+    const paddingBottom = isFullWidthPage ? '24px' : '16px'
+
     return alertContext.alertInfos.length > 0 ? (
         <Fragment>
-            {alertContext.alertInfos.map((alertInfo) => {
+            {alertContext.alertInfos.map((alertInfo, index) => {
+                /* istanbul ignore next */
+                const paddingTop = index !== 0 && props.padding ? '16px' : undefined
                 return (
                     <AcmAlert
                         key={alertInfo.id}
                         alertInfo={alertInfo}
                         isInline={props.isInline}
                         noClose={!props.canClose}
-                        style={{
-                            margin: props.alertMargin,
-                        }}
+                        style={{ paddingTop }}
                     />
                 )
             })}
+            {props.padding && <div style={{ paddingBottom }} />}
         </Fragment>
     ) : (
-        <></>
+        <Fragment />
     )
 }
