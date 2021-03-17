@@ -65,7 +65,7 @@ export const Form = () => {
                         }}
                         isRequired
                     />
-                    <AcmFormSection title="TextArea" spacing={true}></AcmFormSection>
+                    <AcmFormSection title="TextArea" spacing></AcmFormSection>
                     <AcmTextArea
                         id="textArea"
                         label="Text Area"
@@ -75,7 +75,7 @@ export const Form = () => {
                         onChange={setDescription}
                         isRequired
                     />
-                    <AcmFormSection title="Select" spacing={true}></AcmFormSection>
+                    <AcmFormSection title="Select" spacing></AcmFormSection>
                     <AcmSelect
                         id="acm-select"
                         label="Select"
@@ -115,7 +115,7 @@ export const Form = () => {
                         </SelectOption>
                     </AcmMultiSelect>
 
-                    <AcmFormSection title="Labels" spacing={true}></AcmFormSection>
+                    <AcmFormSection title="Labels" spacing></AcmFormSection>
                     <AcmLabelsInput
                         id="labelsInput"
                         label="Labels Input"
