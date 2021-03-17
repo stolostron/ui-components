@@ -65,21 +65,15 @@ function launchToOCP(urlSuffix: string) {
 
 function checkOCPVersion(switcherExists: (arg0: boolean) => void) {
     if (process.env.NODE_ENV === 'test') return
-    api<{ data: { consoleURL: string } }>(
-        '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
+    api<{ data: { gitVersion: string } }>(
+        '/multicloud/version/'
     )
         .then(({ data }) => {
-            api<{ versionData: { version: string } }>(`${data.consoleURL}/api/kubernetes/version`)
-                .then(({ versionData }) => {
-                    if (parseFloat(versionData.version.substr(1, 4)) > 1.2) {
-                        switcherExists(true)
-                    }
-                })
-                .catch((error) => {
-                    // eslint-disable-next-line no-console
-                    console.error(error)
-                    switcherExists(false)
-                })
+            if (parseFloat(data.gitVersion.substr(1, 4)) >= 1.2) {
+                switcherExists(true)
+            } else {
+                switcherExists(false)
+            }
         })
         .catch((error) => {
             // eslint-disable-next-line no-console
