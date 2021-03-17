@@ -599,7 +599,14 @@ export function AcmHeader(props: AcmHeaderProps) {
             }
             sidebar={
                 <PageSidebar
-                    nav={<NavExpandableList route={props.route} />}
+                    nav={
+                        <NavExpandableList
+                            route={props.route}
+                            postClick={() => {
+                                if (!isFullWidthPage) setNavOpen(false)
+                            }}
+                        />
+                    }
                     isNavOpen={isNavOpen}
                     style={isFullWidthPage ? { boxShadow: 'unset' } : undefined}
                 />
