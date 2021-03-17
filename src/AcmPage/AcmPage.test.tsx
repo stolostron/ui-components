@@ -27,6 +27,7 @@ describe('AcmPageHeader', () => {
                     breadcrumb={[{ text: 'text', to: 'to' }]}
                     title="title"
                     titleTooltip="tooltip for title"
+                    description="description"
                     navigation="navigation"
                     controls="controls"
                     switches="switches"
@@ -37,6 +38,7 @@ describe('AcmPageHeader', () => {
         expect(getByText('text')).toBeInTheDocument()
         expect(getByText('title')).toBeInTheDocument()
         expect(getByText('title')).toBeInstanceOf(HTMLHeadingElement)
+        expect(getByText('description')).toBeInTheDocument()
         expect(getByText('navigation')).toBeInTheDocument()
         expect(getByText('controls')).toBeInTheDocument()
         expect(getByText('switches')).toBeInTheDocument()

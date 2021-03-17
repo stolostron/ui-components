@@ -3,19 +3,25 @@
 import {
     Breadcrumb,
     BreadcrumbItem,
+    Button,
     Card,
     CardBody,
+    Divider,
     Page,
     PageSection,
     PageSectionVariants,
-    Title,
     Popover,
-    Button,
+    Split,
+    SplitItem,
+    Stack,
+    StackItem,
+    TextContent,
+    Title,
 } from '@patternfly/react-core'
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
-import React, { ReactNode } from 'react'
+import React, { Fragment, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { AcmDrawerProvider, AcmDrawer } from '../AcmDrawer/AcmDrawer'
+import { AcmDrawer, AcmDrawerProvider } from '../AcmDrawer/AcmDrawer'
 
 export function AcmPage(props: { children: ReactNode; hasDrawer?: boolean }) {
     /* istanbul ignore if */
@@ -35,60 +41,85 @@ export function AcmPage(props: { children: ReactNode; hasDrawer?: boolean }) {
 export function AcmPageHeader(props: {
     title: string
     titleTooltip?: string | React.ReactNode
-    breadcrumb?: { text: string; to: string }[]
+    description?: string | React.ReactNode
+    breadcrumb?: { text: string; to?: string }[]
     navigation?: React.ReactNode
     controls?: React.ReactNode
     switches?: React.ReactNode
     actions?: React.ReactNode
 }) {
     return (
-        <PageSection variant={PageSectionVariants.light} padding={{ default: 'noPadding' }}>
-            <div style={{ display: 'flex', paddingTop: '16px', paddingRight: '24px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                    {props.breadcrumb && (
-                        <div style={{ paddingLeft: '24px' }}>
-                            <AcmBreadcrumb breadcrumb={props.breadcrumb} />
-                        </div>
-                    )}
-                    <div
-                        style={{
-                            paddingLeft: '24px',
-                            flexGrow: 1,
-                            paddingTop: '8px',
-                            paddingBottom: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Title headingLevel="h1">{props.title}</Title>
-                        {props.titleTooltip && (
-                            <Popover hasAutoWidth bodyContent={props.titleTooltip}>
-                                <Button variant="link" style={{ padding: 0, marginLeft: '8px' }}>
-                                    <OutlinedQuestionCircleIcon style={{ verticalAlign: 'middle' }} />
-                                </Button>
-                            </Popover>
-                        )}
-                        {props.switches && <div style={{ paddingLeft: '8px' }}>{props.switches}</div>}
-                    </div>
-                    {props.navigation ? (
-                        <div style={{ paddingLeft: '8px' }}>{props.navigation}</div>
-                    ) : (
-                        <div style={{ paddingBottom: '16px' }} />
-                    )}
-                </div>
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        paddingBottom: '16px',
-                        alignItems: 'flex-end',
-                    }}
-                >
-                    <div style={{ flexGrow: 1 }}>{props.controls}</div>
-                    {props.actions && <div style={{ paddingTop: '12px' }}>{props.actions}</div>}
-                </div>
-            </div>
-        </PageSection>
+        <Fragment>
+            <PageSection variant={PageSectionVariants.light}>
+                <Split hasGutter>
+                    <SplitItem isFilled>
+                        <Stack hasGutter>
+                            {props.breadcrumb && (
+                                <StackItem>
+                                    <AcmBreadcrumb breadcrumb={props.breadcrumb} />
+                                </StackItem>
+                            )}
+                            <StackItem>
+                                <TextContent>
+                                    <Title headingLevel="h1">
+                                        {props.title}
+                                        {props.titleTooltip && (
+                                            <Popover hasAutoWidth bodyContent={props.titleTooltip}>
+                                                <Button
+                                                    variant="link"
+                                                    style={{
+                                                        padding: 0,
+                                                        marginLeft: '8px',
+                                                        verticalAlign: 'top',
+                                                    }}
+                                                >
+                                                    <OutlinedQuestionCircleIcon />
+                                                </Button>
+                                            </Popover>
+                                        )}
+                                        {props.switches && (
+                                            <span style={{ paddingLeft: '48px' }}>{props.switches}</span>
+                                        )}
+                                    </Title>
+                                    {props.description && <p>{props.description}</p>}
+                                </TextContent>
+                            </StackItem>
+                        </Stack>
+                    </SplitItem>
+                    <SplitItem>
+                        <Stack hasGutter>
+                            {props.controls && (
+                                <StackItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    {props.controls}
+                                </StackItem>
+                            )}
+                            {props.actions && (
+                                <StackItem
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'flex-end',
+                                        justifyContent: 'flex-end',
+                                    }}
+                                    isFilled
+                                >
+                                    {props.actions}
+                                </StackItem>
+                            )}
+                        </Stack>
+                    </SplitItem>
+                </Split>
+            </PageSection>
+            <Divider component="div" />
+            {props.navigation && (
+                <Fragment>
+                    <PageSection variant={PageSectionVariants.light} type="nav" style={{ paddingTop: 0 }}>
+                        {props.navigation}
+                    </PageSection>
+                    <Divider component="div" />
+                </Fragment>
+            )}
+        </Fragment>
     )
 }
 
@@ -102,7 +133,7 @@ export function AcmPageCard(props: { children: ReactNode }) {
     )
 }
 
-export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to: string }[] | undefined }) {
+export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to?: string }[] | undefined }) {
     const { breadcrumb } = props
     if (breadcrumb?.length) {
         return (
@@ -114,7 +145,7 @@ export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to: string }
                                 {crumb.text}
                             </a>
                         ) : (
-                            <Link to={crumb.to} className="pf-c-breadcrumb__link">
+                            <Link to={crumb.to as string} className="pf-c-breadcrumb__link">
                                 {crumb.text}
                             </Link>
                         )}
