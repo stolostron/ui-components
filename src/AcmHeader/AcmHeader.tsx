@@ -343,10 +343,10 @@ const useStyles = makeStyles({
 export enum AcmRoute {
     Welcome = '/multicloud/welcome',
     Overview = '/multicloud/overview',
-    ClusterManagement = '/multicloud/clusters',
-    ManageApplications = '/multicloud/applications',
-    ManageCredentials = '/multicloud/credentials',
-    GovernRisk = '/multicloud/policies',
+    Clusters = '/multicloud/clusters',
+    Applications = '/multicloud/applications',
+    Credentials = '/multicloud/credentials',
+    RiskAndCompliance = '/multicloud/policies',
     VisualWebTerminal = '/kui',
 }
 
@@ -426,24 +426,24 @@ function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
                         Overview
                     </NavItem>
                 </NavExpandable>
-                <NavItem isActive={route === AcmRoute.ClusterManagement} to={AcmRoute.ClusterManagement}>
-                    {route === AcmRoute.ClusterManagement || route === AcmRoute.ManageCredentials ? (
-                        <Link to={AcmRoute.ClusterManagement}>Cluster management</Link>
+                <NavItem isActive={route === AcmRoute.Clusters} to={AcmRoute.Clusters}>
+                    {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
+                        <Link to={AcmRoute.Clusters}>Clusters</Link>
                     ) : (
-                        'Cluster management'
+                        'Clusters'
                     )}
                 </NavItem>
-                <NavItem isActive={route === AcmRoute.ManageApplications} to={AcmRoute.ManageApplications}>
-                    Manage applications
+                <NavItem isActive={route === AcmRoute.Applications} to={AcmRoute.Applications}>
+                    Applications
                 </NavItem>
-                <NavItem isActive={route === AcmRoute.GovernRisk} to={AcmRoute.GovernRisk}>
-                    Govern risk
+                <NavItem isActive={route === AcmRoute.RiskAndCompliance} to={AcmRoute.RiskAndCompliance}>
+                    Risk and Compliance
                 </NavItem>
-                <NavItem isActive={route === AcmRoute.ManageCredentials} to={AcmRoute.ManageCredentials}>
-                    {route === AcmRoute.ClusterManagement || route === AcmRoute.ManageCredentials ? (
-                        <Link to={AcmRoute.ManageCredentials}>Manage credentials</Link>
+                <NavItem isActive={route === AcmRoute.Credentials} to={AcmRoute.Credentials}>
+                    {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
+                        <Link to={AcmRoute.Credentials}>Credentials</Link>
                     ) : (
-                        'Manage credentials'
+                        'Credentials'
                     )}
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.VisualWebTerminal} to={AcmRoute.VisualWebTerminal}>
