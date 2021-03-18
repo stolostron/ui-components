@@ -378,12 +378,10 @@ describe('AcmTable', () => {
     test('can provide default empty state', () => {
         const { queryByText } = render(<Table items={[]} />)
         expect(queryByText('No addresses found')).toBeVisible()
-        expect(queryByText('Create address')).toBeVisible()
     })
     test('can use custom empty state', () => {
         const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
         expect(queryByText('Look elsewhere!')).toBeVisible()
-        expect(queryByText('Create address')).toBeVisible()
     })
     test('can render as a controlled component', () => {
         const setPage = jest.fn()
