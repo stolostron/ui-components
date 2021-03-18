@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { ActionGroup, PageHeader, PageSection, SelectOption } from '@patternfly/react-core'
+import { ActionGroup, PageSection, SelectOption } from '@patternfly/react-core'
 import { Meta } from '@storybook/react'
 import React, { useState } from 'react'
 import { AcmAlertGroup } from '../AcmAlert/AcmAlert'
