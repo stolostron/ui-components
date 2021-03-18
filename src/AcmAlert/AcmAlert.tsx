@@ -192,13 +192,15 @@ export function AcmAlertGroup(props: AcmAlertGroupProps) {
                 </Collapse>
             )}
             {alertContext.alertInfos.map((alertInfo, index) => {
+                /* istanbul ignore next */
+                const spacingClassName = props.isInline !== true && index !== 0 ? classes.alertSpacing : undefined
                 return (
                     <AcmAlert
                         key={alertInfo.id}
                         alertInfo={alertInfo}
                         isInline={props.isInline}
                         noClose={!props.canClose}
-                        className={index !== 0 ? classes.alertSpacing : undefined}
+                        className={spacingClassName}
                     />
                 )
             })}

@@ -73,7 +73,7 @@ export function AcmPageHeader(props: {
                                                     style={{
                                                         padding: 0,
                                                         marginLeft: '8px',
-                                                        verticalAlign: 'top',
+                                                        verticalAlign: 'middle',
                                                     }}
                                                 >
                                                     <OutlinedQuestionCircleIcon />
@@ -113,13 +113,12 @@ export function AcmPageHeader(props: {
                     </SplitItem>
                 </Split>
             </PageSection>
-            <Divider component="div" />
             {props.navigation && (
                 <Fragment>
+                    <Divider component="div" />
                     <PageSection variant={PageSectionVariants.light} type="nav" style={{ paddingTop: 0 }}>
                         {props.navigation}
                     </PageSection>
-                    <Divider component="div" />
                 </Fragment>
             )}
         </Fragment>
@@ -160,11 +159,20 @@ export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to?: string 
     return null
 }
 
-export function AcmPageContent(props: { children: ReactNode }) {
+export type AcmPageContentProps = {
+    /** Content ID is needed because react needs the key to detect content changes */
+    id: string
+
+    /** React children for this component */
+    children: ReactNode
+}
+
+export function AcmPageContent(props: AcmPageContentProps) {
     return (
-        <AcmErrorBoundary>
+        <AcmErrorBoundary key={props.id}>
             <AcmAlertProvider>
                 <AcmAlertGroup isInline canClose />
+                <Divider component="div" />
                 <AcmScrollable>{props.children}</AcmScrollable>
             </AcmAlertProvider>
         </AcmErrorBoundary>

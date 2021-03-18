@@ -1,111 +1,85 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React, { useContext } from 'react'
-import { AcmAlertGroup, AcmAlertProvider, AcmAlertContext } from './AcmAlert'
-import { AcmPageCard } from '../AcmPage/AcmPage'
+import { PageSection, Toolbar, ToolbarContent, ToolbarItem } from '@patternfly/react-core'
+import { Meta } from '@storybook/react'
+import React, { useCallback, useContext, useEffect, useMemo } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
+import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
+import { AcmAlertContext, AcmAlertGroup } from './AcmAlert'
 
-export default {
-    title: 'AcmAlertGroup',
+const meta: Meta = {
+    title: 'Alert Group',
     component: AcmAlertGroup,
-    argTypes: {
-        isInline: { defaultValue: true },
-        canClose: { defaultValue: true },
-    },
+    includeStories: ['AlertGroup'],
+}
+export default meta
+
+export function AlertGroup() {
+    return (
+        <AcmPage>
+            <AcmPage>
+                <AcmPageHeader title="AcmAlertGroup" />
+                <AcmPageContent id="alerts">
+                    <PageSection variant="light">
+                        <AlertGroupStory />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </AcmPage>
+    )
 }
 
-export const AlertGroup = (args) => {
-    const AddAlert = () => {
-        const alertContext = useContext(AcmAlertContext)
-        return (
-            <AcmButton
-                onClick={() => {
-                    alertContext.addAlert({ title: 'Alert', message: 'Message' })
-                }}
-            >
-                Add Alert
-            </AcmButton>
-        )
-    }
-    const AddInfo = () => {
-        const alertContext = useContext(AcmAlertContext)
-        return (
-            <AcmButton
-                onClick={() => {
-                    alertContext.addAlert({ title: 'Info Alert', message: 'Message', type: 'info' })
-                }}
-            >
-                Add Info
-            </AcmButton>
-        )
-    }
-    const AddSuccess = () => {
-        const alertContext = useContext(AcmAlertContext)
-        return (
-            <AcmButton
-                onClick={() => {
-                    alertContext.addAlert({ title: 'Success Alert', message: 'Message', type: 'success' })
-                }}
-            >
-                Add Success
-            </AcmButton>
-        )
-    }
-    const AddWarning = () => {
-        const alertContext = useContext(AcmAlertContext)
-        return (
-            <AcmButton
-                onClick={() => {
-                    alertContext.addAlert({ title: 'Warning Alert', message: 'Message', type: 'warning' })
-                }}
-            >
-                Add Warning
-            </AcmButton>
-        )
-    }
-    const AddError = () => {
-        const alertContext = useContext(AcmAlertContext)
-        return (
-            <AcmButton
-                onClick={() => {
-                    alertContext.addAlert({ title: 'Error Alert', message: 'Message', type: 'danger' })
-                }}
-            >
-                Add Error
-            </AcmButton>
-        )
-    }
-    const ClearAlerts = () => {
-        const alertContext = useContext(AcmAlertContext)
-        return (
-            <AcmButton
-                onClick={() => {
-                    alertContext.clearAlerts()
-                }}
-            >
-                Clear Alerts
-            </AcmButton>
-        )
-    }
-    const ClearInfoAlerts = () => {
-        const alertContext = useContext(AcmAlertContext)
-        return (
-            <AcmButton
-                onClick={() => {
-                    alertContext.clearAlerts((a) => a.type === 'info')
-                }}
-            >
-                Clear Info Alerts
-            </AcmButton>
-        )
-    }
+export function AlertGroupStory() {
+    const alertContext = useContext(AcmAlertContext)
+    const addAlert = useCallback(() => alertContext.addAlert({ title: 'Alert', message: 'Message' }), [])
+    const addInfo = useCallback(
+        () => alertContext.addAlert({ title: 'Info Alert', message: 'Message', type: 'info' }),
+        []
+    )
+    const addSuccess = useCallback(
+        () => alertContext.addAlert({ title: 'Success Alert', message: 'Message', type: 'success' }),
+        []
+    )
+    const addWarning = useCallback(
+        () => alertContext.addAlert({ title: 'Warning Alert', message: 'Message', type: 'warning' }),
+        []
+    )
+    const addError = useCallback(
+        () => alertContext.addAlert({ title: 'ErrorAlert', message: 'Message', type: 'danger' }),
+        []
+    )
+    useEffect(() => {
+        addAlert()
+        addInfo()
+        addSuccess()
+        addWarning()
+        addError()
+    }, [])
     return (
-        <AcmAlertProvider>
-            <AcmPageCard>
-                <AcmAlertGroup isInline={args.isInline} canClose={args.canClose} padBottom />
-                <AddAlert /> <AddInfo /> <AddSuccess /> <AddWarning /> <AddError /> <ClearAlerts /> <ClearInfoAlerts />
-            </AcmPageCard>
-        </AcmAlertProvider>
+        <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0, paddingBottom: 0 }}>
+            <ToolbarContent>
+                <ToolbarItem>
+                    <AcmButton onClick={addAlert}>Alert</AcmButton>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <AcmButton onClick={addInfo}>Info</AcmButton>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <AcmButton onClick={addSuccess}>Success</AcmButton>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <AcmButton onClick={addWarning}>Warning</AcmButton>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <AcmButton onClick={addError}>Error</AcmButton>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <AcmButton onClick={() => alertContext.clearAlerts()}>Clear</AcmButton>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <AcmButton onClick={() => alertContext.clearAlerts((a) => a.type === 'info')}>Clear Info</AcmButton>
+                </ToolbarItem>
+            </ToolbarContent>
+        </Toolbar>
     )
 }

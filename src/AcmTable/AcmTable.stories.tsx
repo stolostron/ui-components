@@ -3,13 +3,12 @@
 /* eslint-disable react/display-name */
 import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
-import '@patternfly/react-core/dist/styles/base.css'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { AcmPage, AcmPageCard } from '../AcmPage/AcmPage'
-import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
-import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
+import React, { useState } from 'react'
 import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
+import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { Provider } from '../AcmProvider'
+import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
+import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
 
 interface IExampleData {
     uid: number
@@ -22,7 +21,7 @@ interface IExampleData {
 export default {
     title: 'Table',
     component: AcmTable,
-    excludeStories: ['exampleData', 'commonProperties'],
+    excludeStories: ['TableStory', 'TableEmptyStory', 'TableLoadingStory', 'exampleData', 'commonProperties'],
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
@@ -31,65 +30,94 @@ export default {
     },
 }
 
-export function Table(args: { [x: string]: unknown }) {
-    const testItems = exampleData.slice(0, 105)
-    const [items, setItems] = useState<IExampleData[]>()
-    useEffect(() => {
-        setTimeout(() => setItems(testItems), 1000)
-    }, [])
+export function Table(args: Record<string, unknown>) {
     return (
-        <AcmPage>
-            <PageSection variant="light">
-                <AcmTable<IExampleData>
-                    plural="addresses"
-                    items={items}
-                    columns={columns}
-                    keyFn={(item: IExampleData) => item.uid.toString()}
-                    {...commonProperties(args, setItems, items)}
-                    gridBreakPoint={TableGridBreakpoint.none}
-                />
-            </PageSection>
-        </AcmPage>
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <TableStory {...args} />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
     )
 }
 
-export function TableEmpty(args: { [x: string]: unknown }) {
-    const [items, setItems] = useState<IExampleData[]>()
+export function TableStory(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
-        <AcmPage>
-            <AcmPageCard>
-                <AcmTable<IExampleData>
-                    plural="addresses"
-                    items={[]}
-                    columns={columns}
-                    keyFn={(item: IExampleData) => item.uid.toString()}
-                    {...commonProperties(args, setItems, items)}
-                />
-            </AcmPageCard>
-        </AcmPage>
+        <AcmTable<IExampleData>
+            plural="addresses"
+            items={items}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, (items) => setItems(items), items)}
+            gridBreakPoint={TableGridBreakpoint.none}
+        />
     )
 }
 
-export function TableLoading(args: { [x: string]: unknown }) {
+export function TableEmpty(args: Record<string, unknown>) {
+    return (
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable Empty" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <TableEmptyStory {...args} />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
+    )
+}
+
+export function TableEmptyStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>()
     return (
-        <AcmPage>
-            <AcmPageCard>
-                <AcmTable<IExampleData>
-                    plural="addresses"
-                    items={undefined}
-                    columns={columns}
-                    keyFn={(item: IExampleData) => item.uid.toString()}
-                    {...commonProperties(args, setItems, items)}
-                />
-            </AcmPageCard>
-        </AcmPage>
+        <AcmTable<IExampleData>
+            plural="addresses"
+            items={[]}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, setItems, items)}
+        />
+    )
+}
+
+export function TableLoading(args: Record<string, unknown>) {
+    return (
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable Loading" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <TableLoadingStory {...args} />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
+    )
+}
+
+export function TableLoadingStory(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>()
+    return (
+        <AcmTable<IExampleData>
+            plural="addresses"
+            items={undefined}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, setItems, items)}
+        />
     )
 }
 
 export function commonProperties(
-    args: { [x: string]: unknown },
-    setItems: Dispatch<SetStateAction<IExampleData[] | undefined>>,
+    args: Record<string, unknown>,
+    setItems: (items: IExampleData[]) => void,
     items: IExampleData[] | undefined
 ) {
     return {
