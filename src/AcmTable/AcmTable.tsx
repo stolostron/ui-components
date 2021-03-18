@@ -474,7 +474,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const hasTableActions = tableActions && tableActions.length > 0
     const hasBulkActions = bulkActions && bulkActions.length > 0
     const includeBulkToolbar = hasBulkActions || props.extraToolbarControls
-    const showToolbar = (hasItems && hasSearch) || hasTableActions || props.extraToolbarControls
+    const showToolbar = (hasItems && hasSearch) || props.extraToolbarControls
 
     return (
         <Fragment>
@@ -496,24 +496,23 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             </ToolbarGroup>
                         )}
                         <ToolbarItem alignment={{ default: 'alignRight' }} />
-                        {items && // Do not show during loading, but show if empty
-                            hasTableActions && (
-                                <ToolbarGroup variant="button-group">
-                                    {tableActions.map((action) => (
-                                        <ToolbarItem key={action.id}>
-                                            <AcmButton
-                                                onClick={action.click}
-                                                isDisabled={action.isDisabled}
-                                                tooltip={action.tooltip}
-                                            >
-                                                {action.title}
-                                            </AcmButton>
-                                        </ToolbarItem>
-                                    ))}
-                                </ToolbarGroup>
-                            )}
+                        {hasItems && hasTableActions && (
+                            <ToolbarGroup variant="button-group">
+                                {tableActions.map((action) => (
+                                    <ToolbarItem key={action.id}>
+                                        <AcmButton
+                                            onClick={action.click}
+                                            isDisabled={action.isDisabled}
+                                            tooltip={action.tooltip}
+                                        >
+                                            {action.title}
+                                        </AcmButton>
+                                    </ToolbarItem>
+                                ))}
+                            </ToolbarGroup>
+                        )}
                         {props.extraToolbarControls && <ToolbarGroup>{props.extraToolbarControls}</ToolbarGroup>}
-                        {!includeBulkToolbar && (!props.autoHidePagination || filtered.length > perPage) && (
+                        {!includeBulkToolbar && hasItems && (!props.autoHidePagination || filtered.length > perPage) && (
                             <ToolbarGroup>
                                 <ToolbarItem>
                                     <Pagination
