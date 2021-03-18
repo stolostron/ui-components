@@ -21,7 +21,10 @@ import {
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
 import React, { Fragment, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
 import { AcmDrawer, AcmDrawerProvider } from '../AcmDrawer/AcmDrawer'
+import { AcmErrorBoundary } from '../AcmErrorBoundary/AcmErrorBoundary'
+import { AcmScrollable } from '../AcmScrollable/AcmScrollable'
 
 export function AcmPage(props: { children: ReactNode; hasDrawer?: boolean }) {
     /* istanbul ignore if */
@@ -155,4 +158,15 @@ export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to?: string 
         )
     }
     return null
+}
+
+export function AcmPageContent(props: { children: ReactNode }) {
+    return (
+        <AcmErrorBoundary>
+            <AcmAlertProvider>
+                <AcmAlertGroup isInline canClose />
+                <AcmScrollable>{props.children}</AcmScrollable>
+            </AcmAlertProvider>
+        </AcmErrorBoundary>
+    )
 }
