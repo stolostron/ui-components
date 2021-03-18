@@ -140,7 +140,7 @@ describe('AcmPageContent', () => {
     test('AcmPage renders', () => {
         const { getByText } = render(
             <AcmPage>
-                <AcmPageContent>Content goes here</AcmPageContent>
+                <AcmPageContent id="page">Content goes here</AcmPageContent>
             </AcmPage>
         )
         expect(getByText('Content goes here')).toBeInTheDocument()

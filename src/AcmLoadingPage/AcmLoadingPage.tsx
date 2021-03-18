@@ -1,16 +1,15 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
+import { makeStyles } from '@material-ui/styles'
 import {
     EmptyState,
-    EmptyStateIcon,
     EmptyStateBody,
+    EmptyStateIcon,
     EmptyStateSecondaryActions,
-    Title,
     Spinner,
+    Title,
 } from '@patternfly/react-core'
-import { AcmPageCard } from '../AcmPage/AcmPage'
-import { makeStyles } from '@material-ui/styles'
+import React from 'react'
 
 const useStyles = makeStyles({
     max: {
@@ -26,18 +25,16 @@ export function AcmLoadingPage(props: {
 }) {
     const classes = useStyles()
     return (
-        <AcmPageCard>
-            <EmptyState>
-                <EmptyStateIcon variant="container" component={Spinner} />
-                <div className={classes.max}>
-                    <Title size="lg" headingLevel="h4">
-                        {props.title ?? 'Loading'}
-                    </Title>
-                    <EmptyStateBody>{props.message}</EmptyStateBody>
-                </div>
-                {props.primaryAction}
-                <EmptyStateSecondaryActions>{props.secondaryActions}</EmptyStateSecondaryActions>
-            </EmptyState>
-        </AcmPageCard>
+        <EmptyState>
+            <EmptyStateIcon variant="container" component={Spinner} />
+            <div className={classes.max}>
+                <Title size="lg" headingLevel="h4">
+                    {props.title ?? 'Loading'}
+                </Title>
+                <EmptyStateBody>{props.message}</EmptyStateBody>
+            </div>
+            {props.primaryAction}
+            <EmptyStateSecondaryActions>{props.secondaryActions}</EmptyStateSecondaryActions>
+        </EmptyState>
     )
 }

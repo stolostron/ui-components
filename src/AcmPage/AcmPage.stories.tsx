@@ -1,18 +1,19 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import '@patternfly/react-core/dist/styles/base.css'
-import { Dropdown, DropdownItem, DropdownToggle, Switch } from '@patternfly/react-core'
+import { Dropdown, DropdownItem, DropdownToggle, PageSection, Switch } from '@patternfly/react-core'
 import { Meta } from '@storybook/react'
 import React, { Fragment, useState } from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { AcmAutoRefreshSelect } from '../AcmAutoRefreshSelect/AcmAutoRefreshSelect'
 import { DescriptionList as DescriptionListStory } from '../AcmDescriptionList/AcmDescriptionList.stories'
-import { Form as FormStory } from '../AcmForm/AcmForm.stories'
+import { FormStory as FormStory } from '../AcmForm/AcmForm.stories'
 import { AcmRefreshTime } from '../AcmRefreshTime/AcmRefreshTime'
 import { AcmSecondaryNav, AcmSecondaryNavItem } from '../AcmSecondaryNav/AcmSecondaryNav'
-import { Table as TableStory } from '../AcmTable/AcmTable.stories'
+import { TableStory } from '../AcmTable/AcmTable.stories'
 import { AcmPage, AcmPageContent, AcmPageHeader } from './AcmPage'
 import { LoadingPage as LoadingPageStory } from '../AcmLoadingPage/AcmLoadingPage.stories'
+import { AlertGroupStory } from '../AcmAlert/AcmAlert.stories'
 
 const meta: Meta = {
     title: 'Page',
@@ -27,6 +28,7 @@ const meta: Meta = {
         showControls: { type: 'boolean' },
         showActions: { type: 'boolean' },
     },
+    excludeStories: ['PageStoryDefaults'],
 }
 export default meta
 
@@ -46,9 +48,7 @@ export const Page = (args: {
         <MemoryRouter>
             <AcmPage>
                 <AcmPageHeader
-                    breadcrumb={
-                        args.showBreadcrumb ? [{ text: 'Page 1' }, { text: 'Page 2' }, { text: 'Page 3' }] : undefined
-                    }
+                    breadcrumb={args.showBreadcrumb ? [{ text: 'AcmHeader' }, { text: 'AcmPage' }] : undefined}
                     title={args.title}
                     titleTooltip={
                         args.showTooltip && (
@@ -104,16 +104,16 @@ export const Page = (args: {
                                     Table
                                 </AcmSecondaryNavItem>
                                 <AcmSecondaryNavItem
-                                    isActive={secondaryTab === 'descriptionList'}
-                                    onClick={() => setSecondaryTab('descriptionList')}
-                                >
-                                    Description List
-                                </AcmSecondaryNavItem>
-                                <AcmSecondaryNavItem
                                     isActive={secondaryTab === 'form'}
                                     onClick={() => setSecondaryTab('form')}
                                 >
                                     Form
+                                </AcmSecondaryNavItem>
+                                <AcmSecondaryNavItem
+                                    isActive={secondaryTab === 'descriptionList'}
+                                    onClick={() => setSecondaryTab('descriptionList')}
+                                >
+                                    Details
                                 </AcmSecondaryNavItem>
                                 <AcmSecondaryNavItem
                                     isActive={secondaryTab === 'loading'}
@@ -121,23 +121,50 @@ export const Page = (args: {
                                 >
                                     Loading
                                 </AcmSecondaryNavItem>
+                                <AcmSecondaryNavItem
+                                    isActive={secondaryTab === 'alerts'}
+                                    onClick={() => setSecondaryTab('alerts')}
+                                >
+                                    Alerts
+                                </AcmSecondaryNavItem>
                             </AcmSecondaryNav>
                         )
                     }
                 />
-                <AcmPageContent>
-                    {secondaryTab === 'table' ? (
-                        <TableStory />
-                    ) : secondaryTab === 'descriptionList' ? (
-                        <DescriptionListStory />
-                    ) : secondaryTab === 'form' ? (
-                        <FormStory />
-                    ) : secondaryTab === 'loading' ? (
-                        <LoadingPageStory />
-                    ) : (
-                        <div />
-                    )}
-                </AcmPageContent>
+                {/* Each tab needs it's own AcmPageContent so it has its own ErrorBoundary and AlertGroup */}
+                {secondaryTab === 'table' ? (
+                    <AcmPageContent id="table">
+                        <PageSection variant="light" isFilled>
+                            <TableStory />
+                        </PageSection>
+                    </AcmPageContent>
+                ) : secondaryTab === 'form' ? (
+                    <AcmPageContent id="form">
+                        <PageSection variant="light" isFilled>
+                            <FormStory />
+                        </PageSection>
+                    </AcmPageContent>
+                ) : secondaryTab === 'descriptionList' ? (
+                    <AcmPageContent id="descriptionList">
+                        <PageSection>
+                            <DescriptionListStory />
+                        </PageSection>
+                    </AcmPageContent>
+                ) : secondaryTab === 'loading' ? (
+                    <AcmPageContent id="loading">
+                        <PageSection variant="light" isFilled>
+                            <LoadingPageStory />
+                        </PageSection>
+                    </AcmPageContent>
+                ) : secondaryTab === 'alerts' ? (
+                    <AcmPageContent id="alerts">
+                        <PageSection variant="light" isFilled>
+                            <AlertGroupStory />
+                        </PageSection>
+                    </AcmPageContent>
+                ) : (
+                    <div />
+                )}
             </AcmPage>
         </MemoryRouter>
     )
@@ -149,6 +176,8 @@ Page.args = {
     showBreadcrumb: true,
     showNavigation: true,
     showSwitch: false,
-    showControls: true,
+    showControls: false,
     showActions: true,
 }
+
+export const PageStoryDefaults = Page.args
