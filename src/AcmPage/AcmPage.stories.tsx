@@ -3,16 +3,20 @@
 import '@patternfly/react-core/dist/styles/base.css'
 import { Dropdown, DropdownItem, DropdownToggle, Switch } from '@patternfly/react-core'
 import { Meta } from '@storybook/react'
-import React, { useState, Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import { AcmSecondaryNav, AcmSecondaryNavItem } from '../AcmSecondaryNav/AcmSecondaryNav'
-import { AcmPage, AcmPageHeader } from './AcmPage'
 import { AcmAutoRefreshSelect } from '../AcmAutoRefreshSelect/AcmAutoRefreshSelect'
+import { DescriptionList as DescriptionListStory } from '../AcmDescriptionList/AcmDescriptionList.stories'
+import { Form as FormStory } from '../AcmForm/AcmForm.stories'
 import { AcmRefreshTime } from '../AcmRefreshTime/AcmRefreshTime'
+import { AcmSecondaryNav, AcmSecondaryNavItem } from '../AcmSecondaryNav/AcmSecondaryNav'
+import { Table as TableStory } from '../AcmTable/AcmTable.stories'
+import { AcmPage, AcmPageContent, AcmPageHeader } from './AcmPage'
+import { LoadingPage as LoadingPageStory } from '../AcmLoadingPage/AcmLoadingPage.stories'
 
 const meta: Meta = {
-    title: 'PageHeader',
-    component: AcmPageHeader,
+    title: 'Page',
+    component: AcmPage,
     argTypes: {
         showBreadcrumb: { type: 'boolean' },
         title: { type: 'string' },
@@ -26,7 +30,7 @@ const meta: Meta = {
 }
 export default meta
 
-export const PageHeader = (args: {
+export const Page = (args: {
     showBreadcrumb: boolean
     title: string
     showTooltip: boolean
@@ -37,6 +41,7 @@ export const PageHeader = (args: {
     showActions: boolean
 }) => {
     const [isActionDowndownOpen, setActionDowndownOpen] = useState(false)
+    const [secondaryTab, setSecondaryTab] = useState('table')
     return (
         <MemoryRouter>
             <AcmPage>
@@ -92,20 +97,55 @@ export const PageHeader = (args: {
                     navigation={
                         args.showNavigation && (
                             <AcmSecondaryNav>
-                                <AcmSecondaryNavItem isActive={true}>Secondary Nav 1</AcmSecondaryNavItem>
-                                <AcmSecondaryNavItem isActive={false}>Secondary Nav 2</AcmSecondaryNavItem>
+                                <AcmSecondaryNavItem
+                                    isActive={secondaryTab === 'table'}
+                                    onClick={() => setSecondaryTab('table')}
+                                >
+                                    Table
+                                </AcmSecondaryNavItem>
+                                <AcmSecondaryNavItem
+                                    isActive={secondaryTab === 'descriptionList'}
+                                    onClick={() => setSecondaryTab('descriptionList')}
+                                >
+                                    Description List
+                                </AcmSecondaryNavItem>
+                                <AcmSecondaryNavItem
+                                    isActive={secondaryTab === 'form'}
+                                    onClick={() => setSecondaryTab('form')}
+                                >
+                                    Form
+                                </AcmSecondaryNavItem>
+                                <AcmSecondaryNavItem
+                                    isActive={secondaryTab === 'loading'}
+                                    onClick={() => setSecondaryTab('loading')}
+                                >
+                                    Loading
+                                </AcmSecondaryNavItem>
                             </AcmSecondaryNav>
                         )
                     }
                 />
+                <AcmPageContent>
+                    {secondaryTab === 'table' ? (
+                        <TableStory />
+                    ) : secondaryTab === 'descriptionList' ? (
+                        <DescriptionListStory />
+                    ) : secondaryTab === 'form' ? (
+                        <FormStory />
+                    ) : secondaryTab === 'loading' ? (
+                        <LoadingPageStory />
+                    ) : (
+                        <div />
+                    )}
+                </AcmPageContent>
             </AcmPage>
         </MemoryRouter>
     )
 }
-PageHeader.args = {
-    title: 'Page title',
+Page.args = {
+    title: 'AcmPage',
     showTooltip: true,
-    description: 'Optional page description',
+    description: 'AcmPage is used with AcmPageHeader and AcmPageContent to consistently layout the page.',
     showBreadcrumb: true,
     showNavigation: true,
     showSwitch: false,
