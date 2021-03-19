@@ -18,11 +18,10 @@ export function ActionGroup() {
         <Card>
             <CardBody>
                 <AcmActionGroup>
-                    {false && <ConfigDropdown />}
+                    <ConfigDropdown />
                     <AcmLaunchLink links={[{ id: 'link', text: 'Grafana', href: '/grafana' }]} />
                     <ConfigDropdown />
                     <ActionDropdown />
-                    <TestNull />
                     <CreateDropdown />
                 </AcmActionGroup>
             </CardBody>
@@ -75,10 +74,6 @@ const ActionDropdown = () => {
             isPlain={true}
         />
     )
-}
-
-const TestNull = () => {
-    return null
 }
 
 const CreateDropdown = () => {
