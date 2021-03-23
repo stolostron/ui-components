@@ -114,12 +114,11 @@ export function AcmPageHeader(props: {
                 </Split>
             </PageSection>
             {props.navigation && (
-                <Fragment>
-                    <Divider component="div" />
+                <div style={{ borderTop: 'thin solid #00000022' }}>
                     <PageSection variant={PageSectionVariants.light} type="nav" style={{ paddingTop: 0 }}>
                         {props.navigation}
                     </PageSection>
-                </Fragment>
+                </div>
             )}
         </Fragment>
     )
@@ -172,8 +171,7 @@ export function AcmPageContent(props: AcmPageContentProps) {
         <AcmErrorBoundary key={props.id}>
             <AcmAlertProvider>
                 <AcmAlertGroup isInline canClose />
-                <Divider component="div" />
-                <AcmScrollable>{props.children}</AcmScrollable>
+                <AcmScrollable borderTop>{props.children}</AcmScrollable>
             </AcmAlertProvider>
         </AcmErrorBoundary>
     )
