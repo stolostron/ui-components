@@ -495,7 +495,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 </ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        <ToolbarItem alignment={{ default: 'alignRight' }} />
+                        {/* <ToolbarItem alignment={{ default: 'alignRight' }} /> */}
                         {hasItems && hasTableActions && (
                             <ToolbarGroup variant="button-group">
                                 {tableActions.map((action) => (
