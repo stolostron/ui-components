@@ -6,7 +6,6 @@ import {
     Button,
     Card,
     CardBody,
-    Divider,
     Page,
     PageSection,
     PageSectionVariants,
