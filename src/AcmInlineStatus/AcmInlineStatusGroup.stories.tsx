@@ -13,6 +13,8 @@ export default {
         warning: { type: 'number' },
         danger: { type: 'number' },
         progress: { type: 'number' },
+        sleep: { type: 'number' },
+        pending: { type: 'number' },
         unknown: { type: 'number' },
     },
 }
@@ -32,5 +34,7 @@ InlineStatusGroup.args = {
     warning: 2,
     danger: 1,
     progress: 4,
+    sleep: 1,
+    pending: 5,
     unknown: 0,
 }

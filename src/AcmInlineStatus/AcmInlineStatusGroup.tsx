@@ -6,8 +6,10 @@ import {
     CheckCircleIcon,
     ExclamationCircleIcon,
     ExclamationTriangleIcon,
+    MinusCircleIcon,
     UnknownIcon,
     InProgressIcon,
+    AsleepIcon,
 } from '@patternfly/react-icons'
 
 type AcmInlineStatusGroupProps = {
@@ -15,6 +17,8 @@ type AcmInlineStatusGroupProps = {
     warning?: number
     progress?: number
     danger?: number
+    sleep?: number
+    pending?: number
     unknown?: number
     showZeroes?: boolean
 }
@@ -46,10 +50,19 @@ export function AcmInlineStatusGroup(props: AcmInlineStatusGroupProps) {
                     {props.warning}
                 </Label>
             )}
-
             {show(props.danger) && (
                 <Label color="red" icon={<ExclamationCircleIcon />}>
                     {props.danger}
+                </Label>
+            )}
+            {show(props.sleep) && (
+                <Label color="purple" icon={<AsleepIcon />}>
+                    {props.sleep}
+                </Label>
+            )}
+            {show(props.pending) && (
+                <Label variant="outline" icon={<MinusCircleIcon color="var(--pf-global--disabled-color--100)" />}>
+                    {props.pending}
                 </Label>
             )}
             {show(props.unknown) && (
