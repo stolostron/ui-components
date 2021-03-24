@@ -13,7 +13,7 @@ React shared UI component library for open cluster management
 
 ## Prerequisites
 
-- [node.js](https://nodejs.org/) version 12.x
+- [node.js](https://nodejs.org/) version 14.x
 
 ## Installation
 
