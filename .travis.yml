@@ -1,7 +1,7 @@
 # Copyright Contributors to the Open Cluster Management project
 
 language: node_js
-node_js: '12'
+node_js: '14'
 install: npm ci --no-optional
 addons:
     sonarcloud:
