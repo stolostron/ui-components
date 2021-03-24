@@ -535,7 +535,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             {items && hasItems && includeBulkToolbar && (
                 <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0, paddingBottom: '12px' }}>
                     <ToolbarContent>
-                        {hasBulkActions && (
+                        {hasBulkActions || !!props.onSelect && (
                             <Fragment>
                                 <ToolbarGroup variant="button-group">
                                     <ToolbarItem>
@@ -703,7 +703,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 onSort={(_event, index, direction) => updateSort({ index, direction })}
                                 onSelect={
                                     /* istanbul ignore next */
-                                    rows.length && bulkActions?.length ? onSelect : undefined
+                                    rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
                                 }
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
