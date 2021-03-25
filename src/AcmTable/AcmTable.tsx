@@ -472,7 +472,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     const hasItems = items && items.length > 0 && filtered
     const hasTableActions = tableActions && tableActions.length > 0
-    const hasBulkActions = bulkActions && bulkActions.length > 0
+    const hasBulkActions = (bulkActions && bulkActions.length > 0) || !!props.onSelect
     const includeBulkToolbar = hasBulkActions || props.extraToolbarControls
     const showToolbar = (hasItems && hasSearch) || props.extraToolbarControls
 
@@ -535,7 +535,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             {items && hasItems && includeBulkToolbar && (
                 <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0, paddingBottom: '12px' }}>
                     <ToolbarContent>
-                        {hasBulkActions || !!props.onSelect && (
+                        {hasBulkActions && (
                             <Fragment>
                                 <ToolbarGroup variant="button-group">
                                     <ToolbarItem>
