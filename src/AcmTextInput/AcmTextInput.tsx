@@ -2,11 +2,11 @@
 
 import { FormGroup, Popover, TextInput, TextInputProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
-import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
 
 type AcmTextInputProps = TextInputProps & {
-    id: string
+    id?: string
     label: string
     validation?: (value: string) => string | undefined
     labelHelp?: string
@@ -18,6 +18,9 @@ export function AcmTextInput(props: AcmTextInputProps) {
     const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
     const [error, setError] = useState<string>()
     const { validation, labelHelp, labelHelpTitle, helperText, ...textInputProps } = props
+
+    /* istanbul ignore next */
+    const id = useMemo(() => props.id ?? props.label.toLowerCase().replace(/' '/g, '-'), [])
 
     useLayoutEffect(() => {
         let error: string | undefined = undefined
@@ -36,7 +39,7 @@ export function AcmTextInput(props: AcmTextInputProps) {
         if (formContext.validate) {
             setValidated(error ? 'error' : undefined)
         }
-        formContext.setError(props.id, error)
+        formContext.setError(id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
@@ -45,10 +48,10 @@ export function AcmTextInput(props: AcmTextInputProps) {
 
     return (
         <FormGroup
-            id={`${props.id}-label`}
+            id={`${id}-label`}
             label={props.label}
             isRequired={props.isRequired}
-            fieldId={props.id}
+            fieldId={id}
             hidden={props.hidden}
             helperTextInvalid={error}
             validated={validated}
@@ -56,13 +59,9 @@ export function AcmTextInput(props: AcmTextInputProps) {
             labelIcon={
                 /* istanbul ignore next */
                 props.labelHelp ? (
-                    <Popover
-                        id={`${props.id}-label-help-popover`}
-                        headerContent={labelHelpTitle}
-                        bodyContent={labelHelp}
-                    >
+                    <Popover id={`${id}-label-help-popover`} headerContent={labelHelpTitle} bodyContent={labelHelp}>
                         <button
-                            id={`${props.id}-label-help-button`}
+                            id={`${id}-label-help-button`}
                             aria-label="More info"
                             onClick={(e) => e.preventDefault()}
                             // aria-describedby="simple-form-name"

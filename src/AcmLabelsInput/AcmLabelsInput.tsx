@@ -1,11 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { FormGroup, Label, TextInput } from '@patternfly/react-core'
-import React, { Fragment, useState, useRef } from 'react'
+import React, { Fragment, useMemo, useRef, useState } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
 
 export function AcmLabelsInput(props: {
-    id: string
+    id?: string
     label: string
     value: Record<string, string> | undefined
     onChange: (labels: Record<string, string> | undefined) => void
@@ -17,6 +17,9 @@ export function AcmLabelsInput(props: {
     const [inputValue, setInputValue] = useState<string>()
     const formContext = useFormContext()
     const inputRef: React.MutableRefObject<HTMLInputElement | null> = useRef(null)
+
+    /* istanbul ignore next */
+    const id = useMemo(() => props.id ?? props.label.toLowerCase().replace(/' '/g, '-'), [])
 
     function addLabel(input: string) {
         /* istanbul ignore next */
@@ -50,7 +53,7 @@ export function AcmLabelsInput(props: {
 
     return (
         <Fragment>
-            <FormGroup id={`${props.id}-label`} label={props.label} fieldId={props.id} hidden={props.hidden}>
+            <FormGroup id={`${id}-label`} label={props.label} fieldId={id} hidden={props.hidden}>
                 <div
                     id="label-input-button"
                     className="pf-c-form-control"
@@ -95,7 +98,7 @@ export function AcmLabelsInput(props: {
                             borderLeft: 'none',
                             marginLeft: 0,
                         }}
-                        id={props.id}
+                        id={id}
                         placeholder={props.placeholder}
                         isDisabled={/* istanbul ignore next */ props.isDisabled || formContext.isReadOnly}
                         onChange={(value) => {

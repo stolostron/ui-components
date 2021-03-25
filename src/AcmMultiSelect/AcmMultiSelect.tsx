@@ -2,14 +2,14 @@
 
 import { FormGroup, Popover, Select, SelectOption, SelectProps, SelectVariant } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
-import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
 
 type AcmMultiSelectProps = Pick<
     SelectProps,
     Exclude<keyof SelectProps, 'onToggle' | 'onChange' | 'selections' | 'onSelect'>
 > & {
-    id: string
+    id?: string
     label: string
     value: string[] | undefined
     onChange: (value: string[] | undefined) => void
@@ -37,6 +37,8 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
         placeholder,
         ...selectProps
     } = props
+    /* istanbul ignore next */
+    const id = useMemo(() => props.id ?? props.label.toLowerCase().replace(/' '/g, '-'), [])
 
     const [placeholderText, setPlaceholderText] = useState<ReactNode | undefined>(props.placeholder)
 
@@ -60,7 +62,7 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
         if (formContext.validate) {
             setValidated(error ? 'error' : undefined)
         }
-        formContext.setError(props.id, error)
+        formContext.setError(id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
@@ -102,10 +104,10 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
 
     return (
         <FormGroup
-            id={`${props.id}-label`}
+            id={`${id}-label`}
             label={props.label}
             isRequired={isRequired}
-            fieldId={props.id}
+            fieldId={id}
             hidden={props.hidden}
             helperTextInvalid={error}
             validated={validated}
@@ -113,13 +115,9 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
             labelIcon={
                 /* istanbul ignore next */
                 props.labelHelp ? (
-                    <Popover
-                        id={`${props.id}-label-help-popover`}
-                        headerContent={labelHelpTitle}
-                        bodyContent={labelHelp}
-                    >
+                    <Popover id={`${id}-label-help-popover`} headerContent={labelHelpTitle} bodyContent={labelHelp}>
                         <button
-                            id={`${props.id}-label-help-button`}
+                            id={`${id}-label-help-button`}
                             aria-label="More info"
                             onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
@@ -134,7 +132,7 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
         >
             <Select
                 variant={SelectVariant.checkbox}
-                aria-labelledby={`${props.id}-label`}
+                aria-labelledby={`${id}-label`}
                 {...selectProps}
                 isOpen={open}
                 onToggle={() => {

@@ -2,11 +2,11 @@
 
 import { FormGroup, Popover, TextArea, TextAreaProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
-import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
+import React, { Fragment, ReactNode, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from '../AcmForm/AcmForm'
 
 type AcmTextAreaProps = TextAreaProps & {
-    id: string
+    id?: string
     label: string
     validation?: (value: string) => string | undefined
     labelHelp?: ReactNode
@@ -19,6 +19,9 @@ export function AcmTextArea(props: AcmTextAreaProps) {
     const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
     const [error, setError] = useState<string>()
     const { validation, labelHelp, labelHelpTitle, helperText, ...textAreaProps } = props
+
+    /* istanbul ignore next */
+    const id = useMemo(() => props.id ?? props.label.toLowerCase().replace(/' '/g, '-'), [])
 
     useLayoutEffect(() => {
         let error: string | undefined = undefined
@@ -37,7 +40,7 @@ export function AcmTextArea(props: AcmTextAreaProps) {
         if (formContext.validate) {
             setValidated(error ? 'error' : undefined)
         }
-        formContext.setError(props.id, error)
+        formContext.setError(id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
@@ -46,10 +49,10 @@ export function AcmTextArea(props: AcmTextAreaProps) {
 
     return (
         <FormGroup
-            id={`${props.id}-label`}
+            id={`${id}-label`}
             label={props.label}
             isRequired={props.isRequired}
-            fieldId={props.id}
+            fieldId={id}
             hidden={props.hidden}
             helperTextInvalid={error}
             validated={validated}
