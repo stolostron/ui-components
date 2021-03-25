@@ -472,7 +472,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     const hasItems = items && items.length > 0 && filtered
     const hasTableActions = tableActions && tableActions.length > 0
-    const hasBulkActions = bulkActions && bulkActions.length > 0
+    const hasBulkActions = (bulkActions && bulkActions.length > 0) || !!props.onSelect
     const includeBulkToolbar = hasBulkActions || props.extraToolbarControls
     const showToolbar = (hasItems && hasSearch) || props.extraToolbarControls
 
@@ -703,7 +703,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 onSort={(_event, index, direction) => updateSort({ index, direction })}
                                 onSelect={
                                     /* istanbul ignore next */
-                                    rows.length && bulkActions?.length ? onSelect : undefined
+                                    rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
                                 }
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
