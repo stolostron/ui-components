@@ -1,8 +1,9 @@
+#!/usr/bin/env bash
+
 # Copyright Contributors to the Open Cluster Management project
 
-#!/bin/bash
 set -x
-set -e
+set -e # Exit immediately if a command returns a non-zero status.
 
 if [ "$GITHUB_TOKEN" = "" ]; then
     echo "GITHUB_TOKEN required"
@@ -23,13 +24,6 @@ npm dedup
 npm audit fix
 
 if git diff --name-only | grep 'package.json\|package-lock.json'; then
-    npm run lint:fix
-    npm run check:fix
-    npm run build
-    npm run build:storybook
-    npm test
-    npm run lint
-    npm run check
     git config --global user.email "travis@travis-ci.org"
     git config --global user.name "Travis CI"
     git add -u :/

@@ -3,28 +3,23 @@
 language: node_js
 node_js: '14'
 install: npm ci --no-optional
-addons:
-    sonarcloud:
-        organization: 'open-cluster-management'
 jobs:
     include:
-        - stage: Pull Request
-          if: type = pull_request
-          script:
-              - npm test &&
-                npm run lint &&
-                npm run check &&
-                npm run build &&
-                npm run build:storybook
+        - stage: Build & Test
+          if: tag IS blank
+          script: npm run build && npm test
 
-        - stage: Build and Publish
-          if: type = push AND branch = main
-          script:
-              - npm test &&
-                npm run build &&
-                npm run build:storybook &&
-                scripts/publish.sh &&
-                sonar-scanner
+        - stage: Create Release
+          if: type = push AND tag IS blank
+          script: scripts/create-release.sh $TRAVIS_COMMIT_MESSAGE
+
+        - stage: Publish NPM Package
+          if: tag IS present
+          script: scripts/publish-package.sh
+
+        - stage: Publish Storybook
+          if: branch = main AND tag IS present
+          script: npm run build:storybook
           deploy:
               provider: pages
               skip_cleanup: true
@@ -37,4 +32,4 @@ jobs:
         - stage: Automated Dependency Upgrade
           if: type = cron AND branch = main
           install: echo skip install
-          script: scripts/update.sh
+          script: scripts/update-dependencies.sh
