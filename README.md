@@ -23,19 +23,13 @@ React shared UI component library for open cluster management.
    npm ci
    ```
 
-2. Run unit tests
+2. Run tests
 
    ```
    npm test
    ```
 
-3. Run style checks
-
-   ```
-   npm run lint
-   ```
-
-4. Start the storybook
+3. Start the storybook
 
    ```
    npm start
