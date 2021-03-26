@@ -13,19 +13,23 @@ addons:
 jobs:
     include:
         - stage: Build & Test
-          if: tag IS blank
+          if: type = pull_request
           script: npm run build && npm test
 
+        - stage: Build & Test
+          if: type = push AND branch = main AND tag IS blank AND fork = false
+          script: npm run build && npm test && sonar-scanner
+
         - stage: Create Release
-          if: branch = main AND type = push AND tag IS blank AND fork = false
+          if: type = push AND branch = main AND tag IS blank AND fork = false
           script: scripts/create-release.sh $TRAVIS_COMMIT_MESSAGE
 
         - stage: Publish NPM Package
-          if: tag IS present
+          if: type = push AND tag IS present
           script: scripts/publish-package.sh
 
         - stage: Publish Storybook
-          if: branch = main AND tag IS present
+          if: type = push AND branch = main AND tag IS present
           script: npm run build:storybook
           deploy:
               provider: pages
@@ -35,10 +39,6 @@ jobs:
               local_dir: storybook-static
               on:
                   branch: main
-
-        - stage: Sonar
-          if: branch = main AND tag IS present
-          script: npm test && sonar-scanner
 
         - stage: Automated Dependency Upgrade
           if: type = cron AND branch = main
