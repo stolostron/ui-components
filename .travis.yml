@@ -12,7 +12,7 @@ jobs:
           if: type = pull_request
           script: npm run build && npm test
 
-        - stage: Test - Build - Publish
+        - stage: Publish
           if: type = push AND ( branch = main OR branch = /v$.*.*/ ) AND fork = false
           script:
               - set -e # Exit immediately if a command returns a non-zero status.
@@ -31,7 +31,7 @@ jobs:
               on:
                   branch: main
 
-        - stage: Automated Dependency Upgrade
+        - stage: Dependency Upgrade
           if: type = cron AND branch = main
           install: echo skip install
           script: scripts/update-dependencies.sh
