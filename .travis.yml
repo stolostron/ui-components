@@ -17,7 +17,7 @@ jobs:
           script: npm run build && npm test
 
         - stage: Create Release
-          if: type = push AND tag IS blank AND fork = false
+          if: branch = main AND type = push AND tag IS blank AND fork = false
           script: scripts/create-release.sh $TRAVIS_COMMIT_MESSAGE
 
         - stage: Publish NPM Package
