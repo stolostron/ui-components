@@ -25,6 +25,8 @@ git config --global user.name "Travis CI"
 if [[ $1 == feat* ]] || [[ $1 == minor* ]]; then
     echo "Creating Minor Release"
     npm version minor
+    VERSION=`cat package.json | jq -r .version`
+    git push origin $VERSION
 
     V=(${VERSION//./ })
     echo " - Creating Minor Branch v${V[0]}.${V[1]}.x"
@@ -33,9 +35,8 @@ if [[ $1 == feat* ]] || [[ $1 == minor* ]]; then
 else
     echo "Creating Patch Release"
     npm version patch
+    VERSION=`cat package.json | jq -r .version`
+    git push origin $VERSION
 fi
-
-VERSION=`cat package.json | jq -r .version`
-git push origin $VERSION
 
 echo
