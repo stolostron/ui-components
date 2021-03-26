@@ -10,12 +10,12 @@
     ],
     "scripts": {
         "build": "tsc && cp -R src/assets lib/assets && copyfiles -u 1 src/**/*.css lib",
-        "build:storybook": "cross-env NODE_ENV=production build-storybook --quiet --no-dll",
+        "build:storybook": "cross-env NODE_ENV=production build-storybook --quiet",
         "lint": "eslint --ext ts,tsx,js,jsx ./src --max-warnings=0",
         "lint:fix": "eslint --ext ts,tsx,js,jsx ./src --fix",
         "check": "prettier --check src",
         "check:fix": "prettier --write src",
-        "start": "start-storybook -p 9000 --ci --no-dll",
+        "start": "start-storybook -p 9000 --ci",
         "test": "jest",
         "test:ci": "jest --ci"
     },
