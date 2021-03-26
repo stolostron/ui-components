@@ -9,6 +9,8 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+COMMIT_MESSAGE=$1
+
 if [ "$GITHUB_TOKEN" = "" ]; then
     echo "GITHUB_TOKEN required"
     exit 1
@@ -27,9 +29,12 @@ PACKAGE_NAME=`cat package.json | jq -r .name | cut -c 2-`
 git remote remove origin
 git remote add origin https://${GITHUB_TOKEN}@github.com/${PACKAGE_NAME}.git > /dev/null 2>&1
 
-if [[ $1 == feat* ]] || [[ $1 == minor* ]]; then
+if [[ $COMMIT_MESSAGE == feat* ]] || [[ $COMMIT_MESSAGE == minor* ]]; then
     echo "Creating Minor Release"
-    npm version minor
+    npm version minor --no-git-tag-version
+    git add -u :/
+    git commit -m "$COMMIT_MESSAGE [ci skip]"
+
     VERSION=`cat package.json | jq -r .version`
     git push origin $VERSION
 
@@ -39,7 +44,10 @@ if [[ $1 == feat* ]] || [[ $1 == minor* ]]; then
     git push origin v${V[0]}.${V[1]}.x
 else
     echo "Creating Patch Release"
-    npm version patch
+    npm version patch --no-git-tag-version
+    git add -u :/
+    git commit -m "$COMMIT_MESSAGE [ci skip]"
+
     VERSION=`cat package.json | jq -r .version`
     git push origin $VERSION
 fi

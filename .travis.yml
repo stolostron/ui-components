@@ -8,25 +8,20 @@ addons:
         organization: 'open-cluster-management'
 jobs:
     include:
-        - stage: Build & Test
+        - stage: Pull Request
           if: type = pull_request
           script: npm run build && npm test
 
-        - stage: Build & Test
-          if: type = push AND branch = main AND tag IS blank AND fork = false
-          script: npm run build && npm test && sonar-scanner
-
-        - stage: Create Release
-          if: type = push AND branch = main AND tag IS blank AND fork = false
-          script: scripts/create-release.sh $TRAVIS_COMMIT_MESSAGE
-
-        - stage: Publish NPM Package
-          if: type = push AND tag IS present
-          script: scripts/publish-package.sh
-
-        - stage: Publish Storybook
-          if: type = push AND branch = main AND tag IS present
-          script: npm run build:storybook
+        - stage: Test - Build - Publish
+          if: type = push AND ( branch = main OR branch = /v$.*.*/ ) AND fork = false
+          script:
+              - set -e # Exit immediately if a command returns a non-zero status.
+              - npm test
+              - sonar-scanner
+              - npm run build
+              - npm run build:storybook
+              - scripts/create-release.sh $TRAVIS_COMMIT_MESSAGE
+              - scripts/publish-package.sh
           deploy:
               provider: pages
               skip_cleanup: true
