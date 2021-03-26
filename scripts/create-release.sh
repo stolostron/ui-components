@@ -36,6 +36,7 @@ npm version $VERSION_TYPE --no-git-tag-version
 git add -u :/
 git commit -m "$COMMIT_MESSAGE [ci skip]"
 VERSION=`cat package.json | jq -r .version`
+git tag -a $VERSION -m "$COMMIT_MESSAGE [ci skip]"
 git push origin $VERSION
 
 echo
