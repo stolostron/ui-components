@@ -1,6 +1,5 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/patternfly/patternfly.css'
 import React, { Fragment } from 'react'
 import { AcmDescriptionList } from './AcmDescriptionList'
 import { AcmLabels } from '../AcmLabels/AcmLabels'
