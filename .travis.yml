@@ -3,6 +3,9 @@
 language: node_js
 node_js: '14'
 install: npm ci --no-optional
+addons:
+    sonarcloud:
+        organization: 'open-cluster-management'
 jobs:
     include:
         - stage: Build & Test
@@ -28,6 +31,10 @@ jobs:
               local_dir: storybook-static
               on:
                   branch: main
+
+        - stage: Sonar
+          if: branch = main AND tag IS present
+          script: npm test && sonar-scanner
 
         - stage: Automated Dependency Upgrade
           if: type = cron AND branch = main
