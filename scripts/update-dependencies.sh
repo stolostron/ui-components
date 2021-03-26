@@ -29,6 +29,11 @@ if git diff --name-only | grep 'package.json\|package-lock.json'; then
     git add -u :/
     git commit -m "fix(deps): upgrade dependencies"
     git push origin main
+
+    echo "Creating Patch Release"
+    npm version patch
+    VERSION=`cat package.json | jq -r .version`
+    git push origin $VERSION
 else
     echo No upgrades available
 fi
