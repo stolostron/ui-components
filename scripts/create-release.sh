@@ -22,6 +22,11 @@ echo ===========================================================================
 git config --global user.email "travis@travis-ci.org"
 git config --global user.name "Travis CI"
 
+PACKAGE_NAME=`cat package.json | jq -r .name | cut -c 2-`
+
+git remote remove origin
+git remote add origin https://${GITHUB_TOKEN}@github.com/${PACKAGE_NAME}.git > /dev/null 2>&1
+
 if [[ $1 == feat* ]] || [[ $1 == minor* ]]; then
     echo "Creating Minor Release"
     npm version minor
