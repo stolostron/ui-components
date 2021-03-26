@@ -495,9 +495,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 </ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        <ToolbarItem alignment={{ default: 'alignRight' }} />
                         {hasItems && hasTableActions && (
-                            <ToolbarGroup variant="button-group">
+                            <ToolbarGroup variant="button-group" alignment={{ default: 'alignRight' }}>
                                 {tableActions.map((action) => (
                                     <ToolbarItem key={action.id}>
                                         <AcmButton
@@ -629,12 +628,11 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 )}
                             </Fragment>
                         )}
-                        <ToolbarItem alignment={{ default: 'alignRight' }} />
                         {
                             // ignoring as the pagination above is used in tests
                             /* istanbul ignore next */
                             (!props.autoHidePagination || filtered.length > perPage) && (
-                                <ToolbarGroup>
+                                <ToolbarGroup alignment={{ default: 'alignRight' }}>
                                     <ToolbarItem>
                                         <Pagination
                                             itemCount={filtered.length}
