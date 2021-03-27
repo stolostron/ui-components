@@ -20,7 +20,7 @@ jobs:
               - sonar-scanner
               - npm run build
               - npm run build:storybook
-              - scripts/create-release.sh minor $TRAVIS_COMMIT_MESSAGE
+              - scripts/create-release.sh minor "$TRAVIS_COMMIT_MESSAGE"
               - scripts/publish-package.sh
           deploy:
               provider: pages
