@@ -30,13 +30,17 @@ PACKAGE_NAME=`cat package.json | jq -r .name | cut -c 2-`
 git remote remove origin
 git remote add origin https://${GITHUB_TOKEN}@github.com/${PACKAGE_NAME}.git > /dev/null 2>&1
 
-echo "Creating $VERSION_TYPE Release"
-npm version $VERSION_TYPE --no-git-tag-version
+# git checkout -- .
 
-git add -u :/
-git commit -m "$COMMIT_MESSAGE [ci skip]"
-VERSION=`cat package.json | jq -r .version`
-git tag -a $VERSION -m "$COMMIT_MESSAGE [ci skip]"
-git push origin $VERSION
+echo "Creating $VERSION_TYPE Release"
+npm version $VERSION_TYPE -m "$COMMIT_MESSAGE [ci skip]"
+
+# git add -u :/
+# git commit -m "$COMMIT_MESSAGE [ci skip]"
+# VERSION=`cat package.json | jq -r .version`
+# git tag -a $VERSION -m "$COMMIT_MESSAGE [ci skip]"
+
+git push origin HEAD:$TRAVIS_BRANCH
+git push --tags
 
 echo
