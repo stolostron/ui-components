@@ -4,7 +4,7 @@ import { EmptyState, EmptyStateBody, EmptyStatePrimary, EmptyStateVariant, Title
 import React, { ReactNode } from 'react'
 import emptyPagePng from '../assets/EmptyPageIcon.png'
 
-export function AcmEmptyState(props: { title: string; message?: string; action?: ReactNode; showIcon?: boolean }) {
+export function AcmEmptyState(props: { title: string; message?: string | ReactNode; action?: ReactNode; showIcon?: boolean }) {
     return (
         <EmptyState variant={EmptyStateVariant.large}>
             {props.showIcon !== false && <img src={emptyPagePng} style={{ width: '50%' }} alt="Empty state" />}
