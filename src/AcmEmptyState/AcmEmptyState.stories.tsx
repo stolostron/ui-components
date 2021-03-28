@@ -13,7 +13,11 @@ export default {
 export const EmptyState = () => (
     <AcmEmptyState
         title="No items found"
-        message={<React.Fragment><p>You don't have any items yet.</p> Click <strong>Create Item</strong> to create some.</React.Fragment>}
+        message={
+            <React.Fragment>
+                <p>You don't have any items yet.</p> Click <strong>Create Item</strong> to create some.
+            </React.Fragment>
+        }
         action={<Button variant="primary">Create Item</Button>}
     />
 )
