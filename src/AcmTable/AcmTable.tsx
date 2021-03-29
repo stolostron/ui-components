@@ -49,6 +49,7 @@ import React, {
     useLayoutEffect,
     useMemo,
     useState,
+    useEffect,
 } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
@@ -156,6 +157,7 @@ export function AcmTablePaginationContextProvider(props: { children: ReactNode; 
 export interface AcmTableProps<T> {
     plural: string
     items?: T[]
+    initialSelectedItems?: T[]
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
     tableActions?: IAcmTableAction[]
@@ -255,6 +257,19 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     })
 
     const classes = useStyles()
+
+    useEffect(() => {
+        /* istanbul ignore else */
+        if (props.initialSelectedItems?.length) {
+            const initialSelected: { [uid: string]: boolean } = {}
+
+            props.initialSelectedItems.forEach((item) => {
+                const key = keyFn(item)
+                initialSelected[key] = true
+            })
+            setSelected(initialSelected)
+        }
+    }, [props.initialSelectedItems])
 
     useLayoutEffect(() => {
         const newSelected: { [uid: string]: boolean } = {}

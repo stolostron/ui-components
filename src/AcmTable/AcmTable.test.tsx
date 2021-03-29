@@ -170,6 +170,17 @@ describe('AcmTable', () => {
         expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
         expect(container.querySelector('.pf-c-table__sort-indicator')).toBeInTheDocument()
     })
+    test('renders table with pre-selected items', () => {
+        const { getByText } = render(
+            <Table
+                items={exampleData.slice(0, 8)}
+                initialSelectedItems={exampleData.slice(0, 1)}
+                onSelect={() => null}
+                gridBreakPoint={TableGridBreakpoint.none}
+            />
+        )
+        expect(getByText('1 selected')).toBeInTheDocument()
+    })
     test('can support table actions', () => {
         const { getByText } = render(<Table />)
         expect(getByText('Create address')).toBeVisible()
