@@ -13,7 +13,10 @@ const meta: Meta = {
 }
 export default meta
 
-const REFRESH_VALUES = [1, 30, 60, 5 * 60, 30 * 60, 0]
+const INITIAL_REFRESH_TIME = 15
+const REFRESH_INTERVALS = [1, 30, 60, 5 * 60, 30 * 60, 0]
+const REFRESH_INTERVAL_COOKIE = 'acm-page-refresh-interval'
+
 export const AutoRefreshSelect = () => (
     <AcmPageCard>
         <AcmAutoRefreshSelect
@@ -21,7 +24,9 @@ export const AutoRefreshSelect = () => (
                 console.log('AcmAutoRefreshSelect refetch. (This log is from storybook)') // eslint-disable-line no-console
                 return null
             }}
-            refreshIntervals={REFRESH_VALUES}
+            refreshIntervals={REFRESH_INTERVALS}
+            refreshIntervalCookie={REFRESH_INTERVAL_COOKIE}
+            initRefreshTime={INITIAL_REFRESH_TIME}
         />
     </AcmPageCard>
 )
