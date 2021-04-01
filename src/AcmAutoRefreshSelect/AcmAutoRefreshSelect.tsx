@@ -68,7 +68,8 @@ const initializeLocalStorage = (props: AcmAutoRefreshSelectProps) => {
             return initialValue
         } else if (window && window.localStorage && window.localStorage.getItem(key)) {
             /* istanbul ignore next */
-            const value = window.localStorage.getItem(key) ?? `${(props.initRefreshTime || DEFAULTS.initRefreshTime) * 1000}`
+            const value =
+                window.localStorage.getItem(key) ?? `${(props.initRefreshTime || DEFAULTS.initRefreshTime) * 1000}`
             return parseInt(value, 10)
         }
         window.localStorage.setItem(key, `${(props.initRefreshTime || DEFAULTS.initRefreshTime) * 1000}`)
