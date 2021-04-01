@@ -5,14 +5,18 @@ import { SyncAltIcon } from '@patternfly/react-icons'
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 
-const DEFAULT_REFRESH_TIME = 60
-const REFRESH_VALUES = [30, 60, 5 * 60, 30 * 60, 0]
-const REFRESH_INTERVAL_COOKIE = 'acm-page-refresh-interval'
+const DEFAULTS = {
+    initRefreshTime: 60,
+    refreshIntervals: [30, 60, 5 * 60, 30 * 60, 0],
+    refreshIntervalCookie: 'acm-page-refresh-interval',
+}
 
 export type AcmAutoRefreshSelectProps = {
     refetch: () => void
     pollInterval?: number
     refreshIntervals?: Array<number>
+    refreshIntervalCookie?: string
+    initRefreshTime?: number
 }
 
 const useStyles = makeStyles({
@@ -50,29 +54,32 @@ const useStyles = makeStyles({
     },
 })
 
-export const savePollInterval = (pollInterval: number | string | null) => {
-    localStorage.setItem(REFRESH_INTERVAL_COOKIE, `${pollInterval}`)
+export const savePollInterval = (refreshIntervalCookie: string, pollInterval: number | string | null) => {
+    localStorage.setItem(refreshIntervalCookie, `${pollInterval}`)
 }
 
-const initializeLocalStorage = (initialValue: number | undefined) => {
-    const key = REFRESH_INTERVAL_COOKIE
+const initializeLocalStorage = (props: AcmAutoRefreshSelectProps) => {
+    const initialValue = props.pollInterval
+    const key = props.refreshIntervalCookie || DEFAULTS.refreshIntervalCookie
+
     return useState<number>((): number => {
         if (initialValue) {
             window.localStorage.setItem(key, `${initialValue}`)
             return initialValue
         } else if (window && window.localStorage && window.localStorage.getItem(key)) {
             /* istanbul ignore next */
-            const value = window.localStorage.getItem(key) ?? `${DEFAULT_REFRESH_TIME * 1000}`
+            const value =
+                window.localStorage.getItem(key) ?? `${(props.initRefreshTime || DEFAULTS.initRefreshTime) * 1000}`
             return parseInt(value, 10)
         }
-        window.localStorage.setItem(key, `${DEFAULT_REFRESH_TIME * 1000}`)
-        return DEFAULT_REFRESH_TIME * 1000
+        window.localStorage.setItem(key, `${(props.initRefreshTime || DEFAULTS.initRefreshTime) * 1000}`)
+        return (props.initRefreshTime || DEFAULTS.initRefreshTime) * 1000
     })
 }
 
 export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     const [isOpen, setOpen] = useState<boolean>(false)
-    const [selected, setStoredValue] = initializeLocalStorage(props.pollInterval)
+    const [selected, setStoredValue] = initializeLocalStorage(props)
     const [addedListener, setAddedListener] = useState<boolean>(false)
     const [docHidden, setDocHidden] = useState<boolean>(false)
     const onVisibilityChange = () => {
@@ -84,7 +91,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     }
     const setValue = (value: number) => {
         setStoredValue(value)
-        window.localStorage.setItem(REFRESH_INTERVAL_COOKIE, `${value}`)
+        window.localStorage.setItem(props.refreshIntervalCookie || DEFAULTS.refreshIntervalCookie, `${value}`)
     }
 
     const classes = useStyles()
@@ -92,7 +99,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
 
     useEffect(() => {
         refetch()
-        savePollInterval(selected)
+        savePollInterval(props.refreshIntervalCookie || DEFAULTS.refreshIntervalCookie, selected)
         if (!docHidden && selected !== 0) {
             const interval = setInterval(() => {
                 refetch()
@@ -113,7 +120,7 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         }
     }
 
-    const autoRefreshChoices = (props.refreshIntervals || REFRESH_VALUES).map((pi) => {
+    const autoRefreshChoices = (props.refreshIntervals || DEFAULTS.refreshIntervals).map((pi) => {
         let id
         if (pi >= 60) {
             id = `refresh-${pi / 60}m`
