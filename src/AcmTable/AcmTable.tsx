@@ -104,8 +104,9 @@ export interface IAcmTableBulkAction<T> {
     tooltip?: string | React.ReactNode
 }
 
-interface ISearchItem<T> {
+interface ITableItem<T> {
     item: T
+    group?: string
     [key: string]: unknown
 }
 
@@ -116,6 +117,14 @@ const useStyles = makeStyles({
     },
     outerDiv: {
         display: 'block',
+    },
+    table: {
+        '& tbody.pf-m-expanded > tr': {
+            borderBottom: 0,
+            '&:first-of-type, &:last-of-type': {
+                borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)',
+            },
+        },
     },
 })
 
@@ -161,6 +170,7 @@ export interface AcmTableProps<T> {
     initialSelectedItems?: T[]
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
+    groupFn?: (item: T) => string | null
     tableActions?: IAcmTableAction[]
     rowActions?: IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
@@ -179,19 +189,20 @@ export interface AcmTableProps<T> {
     autoHidePagination?: boolean
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
-    const { items, columns, keyFn, bulkActions = [], rowActions = [], tableActions = [] } = props
-    let sortIndexOffset = 0
-    if (bulkActions && bulkActions.length) sortIndexOffset++
-    if (props.addSubRows) sortIndexOffset++
-    const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
-    const [selectionOpen, setSelectionOpen] = useState(false)
-
-    const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
+    const { items, columns, addSubRows, keyFn, groupFn, bulkActions = [], rowActions = [], tableActions = [] } = props
+    const sortIndexOffset = (bulkActions && bulkActions.length ? 1 : 0) + (addSubRows ? 1 : 0)
 
     const defaultSort = {
         index: sortIndexOffset,
         direction: SortByDirection.asc,
     }
+
+    // State that is only stored in the component state
+    const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
+    const [selectionOpen, setSelectionOpen] = useState(false)
+    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(defaultSort)
+    const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
+    const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
 
     // State that can come from context or component state (perPage)
     const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
@@ -199,7 +210,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const perPage = contextPerPage || statePerPage
     const setPerPage = contextSetPerPage || stateSetPerPage
 
-    // State that can come from component props or from component state (page, search, sort)
+    // State that can be controlled from component props or uncontrolled from component state (page, search, sort)
     const [statePage, stateSetPage] = useState(1)
     const page = props.page || statePage
     const setPage = props.setPage || stateSetPage
@@ -209,11 +220,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [stateSort, stateSetSort] = useState<ISortBy | undefined>(defaultSort)
     const sort = props.sort || stateSort
     const setSort = props.setSort || stateSetSort
-
-    // Nice to have, but disposable state (preFilterSort)
-    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(defaultSort)
-
-    const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
 
     // Dynamic gridBreakPoint
     const [breakpoint, setBreakpoint] = useState<TableGridBreakpoint>(TableGridBreakpoint.none)
@@ -288,59 +294,63 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         setSelected(newSelected)
     }, [items])
 
-    const searchItems = useMemo<ISearchItem<T>[]>(() => {
+    const tableItems = useMemo<ITableItem<T>[]>(() => {
         /* istanbul ignore if */
         if (!items) return []
         return items.map((item) => {
-            const searchItem: ISearchItem<T> = { item: item }
+            const tableItem: ITableItem<T> = { item: item }
+            const group = (groupFn && groupFn(item)) || null
+            if (group) {
+                tableItem.group = group
+            }
             for (let i = 0; i < columns.length; i++) {
                 const column = columns[i]
                 if (column.search) {
                     if (typeof column.search === 'string') {
-                        searchItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
+                        tableItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
                     } else {
-                        searchItem[`column-${i}`] = column.search(item)
+                        tableItem[`column-${i}`] = column.search(item)
                     }
                 }
             }
-            return searchItem
+            return tableItem
         })
-    }, [items, columns])
+    }, [items, columns, groupFn])
 
-    const filtered = useMemo<T[]>(() => {
-        if (search && search !== '' && searchItems) {
-            const fuse = new Fuse(searchItems, {
+    const filtered = useMemo<ITableItem<T>[]>(() => {
+        if (search && search !== '') {
+            const fuse = new Fuse(tableItems, {
                 threshold: 0.3,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
                     .filter((value) => value !== undefined) as string[],
                 // TODO use FuseOptionKeyObject to allow for weights
             })
-            return fuse.search<ISearchItem<T>>(search).map((result) => result.item.item)
+            return fuse.search<ITableItem<T>>(search).map((result) => result.item)
         } else {
-            return items || []
+            return tableItems
         }
-    }, [search, items, searchItems, columns])
+    }, [search, items, tableItems, columns])
 
     // Compensate for off-by-one error in sort column when all items are filtered out
     const adjustedSort =
         sort && sort.index && sort.direction && filtered.length === 0
             ? {
-                  index: sort.index - sortIndexOffset,
+                  index: sort.index - 1,
                   direction: sort.direction,
               }
             : sort
 
-    const sorted = useMemo<T[]>(() => {
+    const sorted = useMemo<ITableItem<T>[]>(() => {
         if (sort && sort.index !== undefined) {
             const compare = columns[sort.index - sortIndexOffset].sort
-            const sorted: T[] = [...filtered]
+            const sorted: ITableItem<T>[] = [...filtered]
             /* istanbul ignore else */
             if (compare) {
                 if (typeof compare === 'string') {
-                    sorted.sort(compareItems(compare))
+                    sorted.sort(compareItems(`item.${compare}`))
                 } else {
-                    sorted.sort(compare)
+                    sorted.sort((a, b) => compare(a.item, b.item))
                 }
             }
             if (sort.direction === SortByDirection.desc) {
@@ -352,27 +362,91 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     }, [filtered, sort, columns])
 
-    const paged = useMemo<T[]>(() => {
-        let start = (page - 1) * perPage
-        let actualPage = page
-        if (start > sorted.length) {
-            actualPage = Math.floor(sorted.length / perPage) + 1
-            start = (actualPage - 1) * perPage
-            setPage(actualPage)
+    const grouped = useMemo<ITableItem<T>[]>(() => {
+        const grouped = []
+        let ungrouped = sorted
+        let i = 0,
+            j
+        for (; i < ungrouped.length; i++) {
+            grouped.push(ungrouped[i])
+            if (ungrouped[i].group) {
+                const group = ungrouped[i].group
+                const oldUngrouped = ungrouped
+                j = i + 1
+                ungrouped = oldUngrouped.slice(0, j)
+                for (; j < oldUngrouped.length; j++) {
+                    if (oldUngrouped[j].group === group) {
+                        grouped.push(oldUngrouped[j])
+                    } else {
+                        ungrouped.push(oldUngrouped[j])
+                    }
+                }
+            }
         }
-        return sorted.slice(start, start + perPage)
-    }, [sorted, page, perPage])
+        return grouped
+    }, [sorted])
 
-    const rows = useMemo<IRow[] | undefined>(() => {
+    const { paged, itemCount } = useMemo<{
+        paged: ITableItem<T>[]
+        itemCount: number
+    }>(() => {
+        const firstGroup = (page - 1) * perPage
+        let i = 0,
+            currentGroup,
+            currentGroupStart = 0,
+            groupCount = 0,
+            start = 0,
+            end
+
+        for (; i < grouped.length; i++) {
+            const group = grouped[i].group
+            if (!group || group !== currentGroup) {
+                if (groupCount - 1 === firstGroup) {
+                    start = currentGroupStart
+                } else if (!end && groupCount === firstGroup + perPage) {
+                    end = i
+                }
+                currentGroupStart = i
+                currentGroup = group
+                groupCount++
+            }
+        }
+
+        const totalPages = Math.floor(groupCount / perPage) + 1
+        if (totalPages < page) {
+            setPage(totalPages)
+        }
+        return {
+            paged: grouped.slice(start, end),
+            itemCount: groupCount,
+        }
+    }, [grouped, page, perPage])
+
+    const rows = useMemo<IRow[]>(() => {
+        const groupMap: { [key: string]: number } = {}
         const newRows: IRow[] = []
-        paged.forEach((item, i) => {
+        paged.forEach((tableItem, i) => {
+            const { item, group } = tableItem
             const key = keyFn(item)
-            const subRows: IRow[] | undefined = props.addSubRows?.(item, i)
-            const isOpen: boolean | undefined = expanded[key] ?? (subRows?.length ? false : undefined)
+            let isOpen: boolean | undefined = undefined
+            let parent: number | undefined = undefined
+            let subRows: IRow[] | undefined = undefined
+            if (group) {
+                if (groupMap[group] === undefined) {
+                    groupMap[group] = i
+                    isOpen = !!openGroups[group]
+                } else {
+                    parent = groupMap[group]
+                }
+            } else {
+                subRows = addSubRows?.(item, i)
+                isOpen = expanded[key] ?? (subRows?.length ? false : undefined)
+            }
             newRows.push({
                 isOpen,
+                parent,
                 selected: selected[key] === true,
-                props: { key },
+                props: { key, group },
                 cells: columns.map((column) => {
                     return typeof column.cell === 'string'
                         ? get(item as Record<string, unknown>, column.cell)
@@ -384,7 +458,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
         })
         return newRows
-    }, [selected, paged, keyFn, columns, expanded])
+    }, [selected, paged, keyFn, columns, expanded, openGroups])
+
+    const onCollapse = useCallback(
+        (rowIndex, isOpen) => {
+            setOpenGroups({ ...openGroups, [rows[rowIndex].props.group]: isOpen })
+        },
+        [rows, openGroups, setOpenGroups]
+    )
 
     const updateSearch = useCallback(
         (newSearch: string) => {
@@ -458,8 +539,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 const newSelected: { [uid: string]: boolean } = {}
                 /* istanbul ignore else */
                 if (!allSelected) {
-                    for (const item of filtered) {
-                        newSelected[keyFn(item)] = true
+                    for (const tableItem of filtered) {
+                        newSelected[keyFn(tableItem.item)] = true
                     }
                 }
                 setSelected(newSelected)
@@ -470,9 +551,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             } else {
                 const newSelected = { ...selected }
                 if (isSelected) {
-                    newSelected[keyFn(paged[rowId])] = true
+                    newSelected[keyFn(paged[rowId].item)] = true
                 } else {
-                    delete newSelected[keyFn(paged[rowId])]
+                    delete newSelected[keyFn(paged[rowId].item)]
                 }
                 setSelected(newSelected)
                 /* istanbul ignore next */
@@ -490,12 +571,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             onClick: (_event: React.MouseEvent, rowId: number) => {
                 /* istanbul ignore else */
                 if (paged) {
-                    rowAction.click(paged[rowId])
+                    rowAction.click(paged[rowId].item)
                 }
             },
         }
     })
-
+    const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
     const hasTableActions = tableActions && tableActions.length > 0
     const hasBulkActions = (bulkActions && bulkActions.length > 0) || !!props.onSelect
@@ -542,7 +623,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             <ToolbarGroup>
                                 <ToolbarItem>
                                     <Pagination
-                                        itemCount={filtered.length}
+                                        itemCount={itemCount}
                                         perPage={perPage}
                                         page={page}
                                         variant={PaginationVariant.top}
@@ -610,8 +691,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                                     key="page"
                                                     onClick={() => {
                                                         setSelected(
-                                                            paged.reduce((selection, item) => {
-                                                                selection[keyFn(item)] = true
+                                                            paged.reduce((selection, tableItem) => {
+                                                                selection[keyFn(tableItem.item)] = true
                                                                 return selection
                                                             }, {} as Record<string, boolean>)
                                                         )
@@ -663,7 +744,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 <ToolbarGroup>
                                     <ToolbarItem>
                                         <Pagination
-                                            itemCount={filtered.length}
+                                            itemCount={itemCount}
                                             perPage={perPage}
                                             page={page}
                                             variant={PaginationVariant.top}
@@ -701,6 +782,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     <div ref={outerDivRef} className={classes.outerDiv}>
                         <div ref={tableDivRef} className={classes.tableDiv}>
                             <Table
+                                className={classes.table}
                                 cells={columns.map((column) => {
                                     return {
                                         title: column.header,
@@ -721,6 +803,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     }
                                 })}
                                 rows={rows}
+                                onCollapse={(_event, rowKey, isOpen) => onCollapse(rowKey, isOpen)}
                                 rowWrapper={OuiaIdRowWrapper}
                                 actions={actions}
                                 canSelectAll={false}
@@ -752,7 +835,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         /* istanbul ignore next */
                         filtered.length !== 0 && (!props.autoHidePagination || filtered.length > perPage) && (
                             <Pagination
-                                itemCount={filtered.length}
+                                itemCount={itemCount}
                                 perPage={perPage}
                                 page={page}
                                 variant={PaginationVariant.bottom}
