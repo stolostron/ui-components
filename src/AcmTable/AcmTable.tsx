@@ -434,7 +434,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             if (group) {
                 if (groupMap[group] === undefined) {
                     groupMap[group] = i
-                    isOpen = !!openGroups[group]
+                    // Only group if the next item is also part of the group
+                    if (i + 1 < paged.length && paged[i + 1].group === group) {
+                        isOpen = !!openGroups[group]
+                    }
                 } else {
                     parent = groupMap[group]
                 }
