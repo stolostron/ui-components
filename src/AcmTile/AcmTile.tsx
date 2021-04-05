@@ -77,9 +77,7 @@ export function AcmTile(props: AcmTileProps) {
         )
     }
     return (
-        <Tile {...props} ref={null}>
-            {' '}
-        </Tile>
+        <Tile {...props} ref={null} />
     )
 }
 
