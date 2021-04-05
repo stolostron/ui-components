@@ -36,21 +36,6 @@ export const Tile = () => {
                 flex: '1 0 0',
             },
         },
-        testIcon: {
-            '& tile__icon': {
-                display: 'flex',
-                height: '50%',
-                width: '50%',
-                margin: '0 auto',
-                overflow: 'hidden',
-                icon: {
-                    height: '100%',
-                    margin: '0 5rem',
-                    cursor: 'pointer',
-                    flex: '1 0 0',
-                },
-            },
-        },
     })
 
     const classes = useStyles()
