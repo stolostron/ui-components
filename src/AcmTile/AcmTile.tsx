@@ -76,9 +76,7 @@ export function AcmTile(props: AcmTileProps) {
             </Tile>
         )
     }
-    return (
-        <Tile {...props} ref={null} />
-    )
+    return <Tile {...props} ref={null} />
 }
 
 const Tile: React.FunctionComponent<AcmTileProps> = ({
