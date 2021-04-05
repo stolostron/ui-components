@@ -18,7 +18,7 @@ export default {
         image: {
             control: {
                 type: 'select',
-                options: Object.keys(AcmEmptyStateImage),
+                options: Object.values(AcmEmptyStateImage),
             },
         },
         showIcon: {

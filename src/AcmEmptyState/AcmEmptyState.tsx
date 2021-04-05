@@ -19,7 +19,7 @@ export function AcmEmptyState(props: {
     return (
         <EmptyState variant={EmptyStateVariant.large}>
             {props.showIcon !== false && (
-                <img src={props.image ? props.image : emptyPagePng} style={{ width: '50%' }} alt="Empty state" />
+                <img src={props.image ?? emptyPagePng} style={{ width: '50%' }} alt="Empty state" />
             )}
             <Title headingLevel="h4" size="lg">
                 {props.title}
