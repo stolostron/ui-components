@@ -3,7 +3,7 @@
 import { Button } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
-import { AcmEmptyState } from './AcmEmptyState'
+import { AcmEmptyState, AcmEmptyStateImageOverrides } from './AcmEmptyState'
 
 export default {
     title: 'EmptyState',
@@ -15,5 +15,15 @@ export const EmptyState = () => (
         title="No items found"
         message="You don't have any items yet."
         action={<Button variant="primary">Create Item</Button>}
+    />
+)
+
+export const EmptyStateImageOverride = () => (
+    <AcmEmptyState
+        title="No items found"
+        message="You don't have any items yet."
+        action={<Button variant="primary">Create Item</Button>}
+        showIcon={true}
+        imageOverride={AcmEmptyStateImageOverrides.folder}
     />
 )
