@@ -1,14 +1,24 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
+import { useMediaQuery } from '@material-ui/core'
 import { Popover, Split, SplitItem, Title, TitleProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment } from 'react'
 
-export function AcmFormSection(
-    props: Omit<TitleProps, 'headingLevel'> & { title: string; tooltip?: string; spacing?: boolean }
-) {
+export type AcmFormSectionProps = Omit<TitleProps, 'headingLevel'> & {
+    title: string
+    tooltip?: string
+    spacing?: boolean
+}
+
+export function AcmFormSection(props: AcmFormSectionProps) {
+    const isFullWidthPage = useMediaQuery('(min-width: 1200px)', { noSsr: true })
+
+    /* istanbul ignore next */
+    const marginTop = props.spacing ? (isFullWidthPage ? '24px' : '16px') : undefined
+
     return (
-        <Split style={{ marginTop: props.spacing ? '16px' : undefined }}>
+        <Split style={{ marginTop }}>
             <SplitItem>
                 <Title {...props} headingLevel="h2" size="xl">
                     {props.title}

@@ -11,7 +11,7 @@ export enum AcmEmptyStateImageOverrides {
 
 export function AcmEmptyState(props: {
     title: string
-    message?: string
+    message?: string | ReactNode
     action?: ReactNode
     showIcon?: boolean
     imageOverride?: AcmEmptyStateImageOverrides

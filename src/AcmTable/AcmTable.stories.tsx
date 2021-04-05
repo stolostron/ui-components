@@ -1,15 +1,14 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 /* eslint-disable react/display-name */
-import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { fitContent, truncate } from '@patternfly/react-table'
-import '@patternfly/react-core/dist/styles/base.css'
-import React, { useEffect, useState } from 'react'
-import { AcmPage, AcmPageCard } from '../AcmPage/AcmPage'
-import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
-import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
+import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
+import React, { useState } from 'react'
 import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
+import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { Provider } from '../AcmProvider'
+import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
+import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
 
 interface IExampleData {
     uid: number
@@ -22,110 +21,165 @@ interface IExampleData {
 export default {
     title: 'Table',
     component: AcmTable,
-    excludeStories: ['exampleData'],
+    excludeStories: ['TableStory', 'TableEmptyStory', 'TableLoadingStory', 'exampleData', 'commonProperties'],
+    argTypes: {
+        'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
+        'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
+        'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
+        'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
+    },
 }
 
-export function Table() {
-    const testItems = exampleData.slice(0, 105)
+export function Table(args: Record<string, unknown>) {
+    return (
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <TableStory {...args} />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
+    )
+}
+
+export function TableStory(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
+    return (
+        <AcmTable<IExampleData>
+            plural="addresses"
+            items={items}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, (items) => setItems(items), items)}
+            gridBreakPoint={TableGridBreakpoint.none}
+        />
+    )
+}
+
+export function TableEmpty(args: Record<string, unknown>) {
+    return (
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable Empty" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <TableEmptyStory {...args} />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
+    )
+}
+
+export function TableEmptyStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>()
-    useEffect(() => {
-        setTimeout(() => setItems(testItems), 1000)
-    }, [])
     return (
-        <AcmPage>
-            <AcmPageCard>
-                <AcmTable<IExampleData>
-                    plural="addresses"
-                    items={items}
-                    columns={columns}
-                    keyFn={(item: IExampleData) => item.uid.toString()}
-                    tableActions={[
-                        {
-                            id: 'create',
-                            title: 'Create address',
-                            click: () => {
-                                alert('Not implemented')
-                            },
-                        },
-                    ]}
-                    rowActions={[
-                        {
-                            id: 'delete',
-                            title: 'Delete item',
-                            click: (item: IExampleData) => {
-                                setItems(items ? items.filter((i) => i.uid !== item.uid) : [])
-                            },
-                        },
-                    ]}
-                    bulkActions={[
-                        {
-                            id: 'delete',
-                            title: 'Delete items',
-                            click: (it: IExampleData[]) => {
-                                setItems(items ? items.filter((i) => !it.find((item) => item.uid === i.uid)) : [])
-                            },
-                        },
-                    ]}
-                    extraToolbarControls={
-                        <ToggleGroup>
-                            <ToggleGroupItem isSelected={true} text="View 1" />
-                            <ToggleGroupItem text="View 2" />
-                        </ToggleGroup>
-                    }
-                />
-            </AcmPageCard>
-        </AcmPage>
+        <AcmTable<IExampleData>
+            plural="addresses"
+            items={[]}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, setItems, items)}
+        />
     )
 }
 
-export function TableEmpty() {
+export function TableLoading(args: Record<string, unknown>) {
     return (
-        <AcmPage>
-            <AcmPageCard>
-                <AcmTable<IExampleData>
-                    plural="addresses"
-                    items={[]}
-                    columns={columns}
-                    keyFn={(item: IExampleData) => item.uid.toString()}
-                    tableActions={[
-                        {
-                            id: 'create',
-                            title: 'Create address',
-                            click: () => {
-                                alert('Not implemented')
-                            },
-                        },
-                    ]}
-                    rowActions={[]}
-                    bulkActions={[]}
-                    extraToolbarControls={
-                        <ToggleGroup>
-                            <ToggleGroupItem isSelected={true} text="View 1" />
-                            <ToggleGroupItem text="View 2" />
-                        </ToggleGroup>
-                    }
-                />
-            </AcmPageCard>
-        </AcmPage>
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable Loading" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <TableLoadingStory {...args} />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
     )
 }
 
-export function TableLoading() {
+export function TableLoadingStory(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>()
     return (
-        <AcmPage>
-            <AcmPageCard>
-                <AcmTable<IExampleData>
-                    plural="addresses"
-                    items={undefined}
-                    columns={columns}
-                    keyFn={(item: IExampleData) => item.uid.toString()}
-                    tableActions={[]}
-                    rowActions={[]}
-                    bulkActions={[]}
-                />
-            </AcmPageCard>
-        </AcmPage>
+        <AcmTable<IExampleData>
+            plural="addresses"
+            items={undefined}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, setItems, items)}
+        />
     )
+}
+
+export function commonProperties(
+    args: Record<string, unknown>,
+    setItems: (items: IExampleData[]) => void,
+    items: IExampleData[] | undefined
+) {
+    return {
+        tableActions: args['Include tableActions']
+            ? [
+                  {
+                      id: 'create',
+                      title: 'Create',
+                      click: () => {
+                          alert('Not implemented')
+                      },
+                  },
+                  {
+                      id: 'import',
+                      title: 'Import',
+                      click: () => {
+                          alert('Not implemented')
+                      },
+                  },
+              ]
+            : undefined,
+        rowActions: args['Include rowActions']
+            ? [
+                  {
+                      id: 'delete',
+                      title: 'Delete',
+                      click: (item: IExampleData) => {
+                          setItems(items ? items.filter((i: { uid: number }) => i.uid !== item.uid) : [])
+                      },
+                  },
+              ]
+            : undefined,
+        bulkActions: args['Include bulkActions']
+            ? [
+                  {
+                      id: 'delete',
+                      title: 'Delete',
+                      click: (it: IExampleData[]) => {
+                          setItems(
+                              items ? items.filter((i: { uid: number }) => !it.find((item) => item.uid === i.uid)) : []
+                          )
+                      },
+                  },
+                  {
+                      id: 'action2',
+                      title: 'Action 2',
+                      click: () => null,
+                  },
+                  {
+                      id: 'action3',
+                      title: 'Action 3',
+                      click: () => null,
+                  },
+              ]
+            : undefined,
+        extraToolbarControls: args['Include extraToolbarControls'] ? (
+            <ToggleGroup>
+                <ToggleGroupItem isSelected={true} text="View 1" />
+                <ToggleGroupItem text="View 2" />
+            </ToggleGroup>
+        ) : undefined,
+    }
 }
 
 const columns: IAcmTableColumn<IExampleData>[] = [

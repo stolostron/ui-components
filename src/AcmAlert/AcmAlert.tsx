@@ -1,5 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
+import { makeStyles, useMediaQuery } from '@material-ui/core'
 import Collapse from '@material-ui/core/Collapse'
 import { Alert, AlertActionCloseButton } from '@patternfly/react-core'
 import React, {
@@ -106,6 +107,7 @@ export function AcmAlert(props: {
     noClose?: boolean
     variant?: 'success' | 'danger' | 'warning' | 'info' | 'default'
     style?: CSSProperties
+    className?: string
 }) {
     const alertContext = useContext(AcmAlertContext)
     const { alertInfo } = props
@@ -125,10 +127,10 @@ export function AcmAlert(props: {
                     setTimeout(() => {
                         alertContext.removeAlert(alertInfo)
                         alertContext.removeVisibleAlert(alertInfo)
-                    }, 200)
+                    }, 150)
                 }
             }}
-            timeout={200}
+            timeout={150}
         >
             <Alert
                 isInline={props.isInline}
@@ -136,6 +138,7 @@ export function AcmAlert(props: {
                 actionClose={!props.noClose && <AlertActionCloseButton onClose={() => setOpen(false)} />}
                 variant={alertInfo?.type || props.variant}
                 style={props.style}
+                className={props.className}
             >
                 {alertInfo?.message || props.message || props.subtitle}
             </Alert>
@@ -143,25 +146,75 @@ export function AcmAlert(props: {
     )
 }
 
-export function AcmAlertGroup(props: { isInline?: boolean; canClose?: boolean; alertMargin?: string }) {
+export type AcmAlertGroupProps = {
+    /** Show alerts in the group as inLine alerts */
+    isInline?: boolean
+
+    /** Allow alerts in the group to be closed with a close button */
+    canClose?: boolean
+
+    /** Add standard PatternFly padding to the top of alert group */
+    padTop?: boolean
+
+    /** Add standard PatternFly padding to the bottom of alert group */
+    padBottom?: boolean
+}
+
+const useStyles = makeStyles({
+    alertSpacing: { marginTop: '16px' },
+    padTop: { paddingTop: '16px' },
+    padTopLg: { paddingTop: '24px' },
+    padBottom: { paddingBottom: '16px' },
+    padBottomLg: { paddingBottom: '24px' },
+})
+
+export function AcmAlertGroup(props: AcmAlertGroupProps) {
+    const classes = useStyles()
+    const useLargePadding = useMediaQuery('(min-width: 1200px)', { noSsr: true })
     const alertContext = useContext(AcmAlertContext)
-    return alertContext.alertInfos.length > 0 ? (
+
+    const [hasAlerts, setHasAlerts] = useState(false)
+    useEffect(() => setHasAlerts(alertContext.alertInfos.length > 0), [alertContext.alertInfos])
+
+    if (!hasAlerts) return <Fragment />
+
+    return (
         <Fragment>
-            {alertContext.alertInfos.map((alertInfo) => {
+            {props.padTop && (
+                /* istanbul ignore next */
+                <Collapse in={hasAlerts}>
+                    <div
+                        className={
+                            /* istanbul ignore next */
+                            useLargePadding ? classes.padTopLg : classes.padTop
+                        }
+                    />
+                </Collapse>
+            )}
+            {alertContext.alertInfos.map((alertInfo, index) => {
+                /* istanbul ignore next */
+                const spacingClassName = props.isInline !== true && index !== 0 ? classes.alertSpacing : undefined
                 return (
                     <AcmAlert
                         key={alertInfo.id}
                         alertInfo={alertInfo}
                         isInline={props.isInline}
                         noClose={!props.canClose}
-                        style={{
-                            margin: props.alertMargin,
-                        }}
+                        className={spacingClassName}
                     />
                 )
             })}
+            {props.padBottom && (
+                /* istanbul ignore next */
+                <Collapse in={hasAlerts}>
+                    <div
+                        className={
+                            /* istanbul ignore next */
+                            useLargePadding ? classes.padBottomLg : classes.padBottom
+                        }
+                    />
+                </Collapse>
+            )}
         </Fragment>
-    ) : (
-        <></>
     )
 }

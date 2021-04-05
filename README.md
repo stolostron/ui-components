@@ -2,7 +2,7 @@
 
 # Open Cluster Management UI Components
 
-React shared UI component library for open cluster management
+React shared UI component library for open cluster management.
 
 [![Build Status](https://travis-ci.com/open-cluster-management/ui-components.svg?branch=main)](https://travis-ci.com/open-cluster-management/ui-components)
 [![npm version](https://badge.fury.io/js/%40open-cluster-management%2Fui-components.svg)](https://badge.fury.io/js/%40open-cluster-management%2Fui-components)
@@ -13,7 +13,7 @@ React shared UI component library for open cluster management
 
 ## Prerequisites
 
-- [node.js](https://nodejs.org/) version 12.x
+- [node.js](https://nodejs.org/) version 14.x
 
 ## Installation
 
@@ -23,19 +23,13 @@ React shared UI component library for open cluster management
    npm ci
    ```
 
-2. Run unit tests
+2. Run tests
 
    ```
    npm test
    ```
 
-3. Run style checks
-
-   ```
-   npm run lint
-   ```
-
-4. Start the storybook
+3. Start the storybook
 
    ```
    npm start

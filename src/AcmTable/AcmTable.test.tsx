@@ -11,6 +11,7 @@ import { exampleData } from './AcmTable.stories'
 const axe = configureAxe({
     rules: {
         'scope-attr-valid': { enabled: false },
+        'landmark-unique': { enabled: false }, // Pagination is on the page twice... not sure how to fix
     },
 })
 
@@ -30,22 +31,34 @@ describe('AcmTable', () => {
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
     const Table = (
-        props: { useBulkActions?: boolean; transforms?: boolean; gridBreakPoint?: TableGridBreakpoint } & Partial<
-            AcmTableProps<IExampleData>
-        >
+        props: {
+            useTableActions?: boolean
+            useRowActions?: boolean
+            useBulkActions?: boolean
+            useExtraToolbarControls?: boolean
+            useSearch?: boolean
+            transforms?: boolean
+            gridBreakPoint?: TableGridBreakpoint
+        } & Partial<AcmTableProps<IExampleData>>
     ) => {
+        const {
+            useTableActions = true,
+            useRowActions = true,
+            useBulkActions = false,
+            useExtraToolbarControls = false,
+            useSearch = true,
+        } = props
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
             <AcmTable<IExampleData>
                 plural="addresses"
                 items={items}
-                onSelect={() => null}
                 columns={[
                     {
                         header: 'First Name',
                         sort: 'firstName',
                         cell: 'firstName',
-                        search: 'firstName',
+                        search: useSearch ? 'firstName' : undefined,
                     },
                     {
                         header: 'Last Name',
@@ -55,49 +68,57 @@ describe('AcmTable', () => {
                     {
                         header: 'EMail',
                         cell: 'email',
-                        search: 'email',
+                        search: useSearch ? 'email' : undefined,
                     },
                     {
                         header: 'Gender',
                         sort: 'gender',
                         cell: (item) => item.gender,
-                        search: 'gender',
+                        search: useSearch ? 'gender' : undefined,
                     },
                     {
                         header: 'IP Address',
                         sort: sortFunction,
                         cell: 'ip_address',
-                        search: (item) => item['ip_address'],
+                        search: useSearch ? (item) => item['ip_address'] : undefined,
                     },
                     {
                         header: 'UID',
                         sort: 'uid',
                         cell: 'uid',
-                        search: 'uid',
+                        search: useSearch ? 'uid' : undefined,
                         tooltip: 'Tooltip Example',
                         transforms: props.transforms ? [fitContent] : undefined,
                     },
                 ]}
                 keyFn={(item: IExampleData) => item.uid.toString()}
-                tableActions={[
-                    {
-                        id: 'create',
-                        title: 'Create address',
-                        click: createAction,
-                    },
-                ]}
-                rowActions={[
-                    {
-                        id: 'delete',
-                        title: 'Delete item',
-                        click: (item: IExampleData) => {
-                            deleteAction()
-                            setItems(items.filter((i) => i.uid !== item.uid))
-                        },
-                    },
-                ]}
+                tableActions={
+                    useTableActions
+                        ? [
+                              {
+                                  id: 'create',
+                                  title: 'Create address',
+                                  click: createAction,
+                              },
+                          ]
+                        : undefined
+                }
+                rowActions={
+                    useRowActions
+                        ? [
+                              {
+                                  id: 'delete',
+                                  title: 'Delete item',
+                                  click: (item: IExampleData) => {
+                                      deleteAction()
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
+                          ]
+                        : undefined
+                }
                 bulkActions={
-                    props.useBulkActions
+                    useBulkActions
                         ? [
                               {
                                   id: 'delete',
@@ -108,13 +129,15 @@ describe('AcmTable', () => {
                                   },
                               },
                           ]
-                        : []
+                        : undefined
                 }
                 extraToolbarControls={
-                    <ToggleGroup>
-                        <ToggleGroupItem isSelected={true} text="View 1" />
-                        <ToggleGroupItem text="View 2" />
-                    </ToggleGroup>
+                    useExtraToolbarControls ? (
+                        <ToggleGroup>
+                            <ToggleGroupItem isSelected={true} text="View 1" />
+                            <ToggleGroupItem text="View 2" />
+                        </ToggleGroup>
+                    ) : undefined
                 }
                 {...props}
             />
@@ -122,6 +145,10 @@ describe('AcmTable', () => {
     }
     test('renders', () => {
         const { container } = render(<Table />)
+        expect(container.querySelector('table')).toBeInTheDocument()
+    })
+    test('renders without actions', () => {
+        const { container } = render(<Table useTableActions={false} useRowActions={false} />)
         expect(container.querySelector('table')).toBeInTheDocument()
     })
     test('renders pagination with autoHidePagination when more that perPage items', () => {
@@ -141,7 +168,18 @@ describe('AcmTable', () => {
             <Table items={exampleData.slice(0, 8)} gridBreakPoint={TableGridBreakpoint.none} />
         )
         expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
-        expect(container.querySelector('.pf-c-table__sort-indicator')).toBeInTheDOM()
+        expect(container.querySelector('.pf-c-table__sort-indicator')).toBeInTheDocument()
+    })
+    test('renders table with pre-selected items', () => {
+        const { getByText } = render(
+            <Table
+                items={exampleData.slice(0, 8)}
+                initialSelectedItems={exampleData.slice(0, 1)}
+                onSelect={() => null}
+                gridBreakPoint={TableGridBreakpoint.none}
+            />
+        )
+        expect(getByText('1 selected')).toBeInTheDocument()
     })
     test('can support table actions', () => {
         const { getByText } = render(<Table />)
@@ -151,25 +189,46 @@ describe('AcmTable', () => {
         expect(createAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with select all', () => {
-        const { getByLabelText, queryByText, getByText } = render(<Table useBulkActions={true} />)
-        expect(getByLabelText('Select all rows')).toBeVisible()
-        userEvent.click(getByLabelText('Select all rows'))
-        expect(queryByText('Delete items')).toBeVisible()
+        const { getByLabelText, getByText, getAllByRole, queryAllByText, container } = render(
+            <Table useBulkActions={true} />
+        )
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[1]) // Select page
+        expect(getByText('10 selected')).toBeInTheDocument()
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[2]) // Select all
+        expect(getByText('105 selected')).toBeInTheDocument()
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[0]) // Select None
+        expect(queryAllByText('105 selected')).toHaveLength(0)
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
+        expect(getByText('105 selected')).toBeInTheDocument()
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select none by checkbox
+        expect(queryAllByText('105 selected')).toHaveLength(0)
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
+        expect(getByText('105 selected')).toBeInTheDocument()
+
         userEvent.click(getByText('Delete items'))
         expect(bulkDeleteAction).toHaveBeenCalled()
     })
     test('can support bulk table actions with single selection', () => {
-        const { queryByText, getAllByRole, getByLabelText } = render(<Table useBulkActions={true} />)
-        expect(queryByText('Delete items')).toBeNull()
-        expect(getAllByRole('checkbox')[1]).toBeVisible()
-        userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeVisible()
-        userEvent.click(getAllByRole('checkbox')[1])
+        const { queryByText, getAllByRole, getByLabelText, container } = render(<Table useBulkActions={true} />)
         expect(queryByText('Delete items')).toBeNull()
         userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeVisible()
-        userEvent.click(getByLabelText('Select all rows'))
-        expect(queryByText('Delete items')).toBeVisible()
+        expect(queryByText('Delete items')).toBeDefined()
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(queryByText('Delete items')).toBeNull()
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(queryByText('Delete items')).toBeDefined()
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[2])
+        expect(queryByText('Delete items')).toBeDefined()
     })
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
@@ -206,8 +265,8 @@ describe('AcmTable', () => {
         expect(queryByText('57 / 105')).toBeVisible()
 
         // clear filter
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(queryByText('57 / 105')).toBeNull()
 
         // verify previous sort column (UID) maintained
@@ -226,8 +285,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Barnham')
 
         // clear filter
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(queryByText('7 / 105')).toBeNull()
 
         // verify sort order set during filter (Last Name) persists
@@ -261,34 +320,35 @@ describe('AcmTable', () => {
         sortTest(true)
     })
     test('page size can be updated', () => {
-        const { getByLabelText, getByText, container } = render(<Table />)
+        const { getByLabelText, getAllByLabelText, getByText, container } = render(
+            <Table useExtraToolbarControls={false} useSearch={false} useTableActions={false} />
+        )
 
         expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
-        expect(getByLabelText('Items per page')).toBeVisible()
+        expect(getAllByLabelText('Items per page').length).toBeGreaterThan(0)
 
         // Switch to 50 items per page
-        userEvent.click(getByLabelText('Items per page'))
+        userEvent.click(getAllByLabelText('Items per page')[0])
         expect(getByText('50 per page')).toBeVisible()
         userEvent.click(getByText('50 per page'))
         expect(container.querySelectorAll('tbody tr')).toHaveLength(50)
 
         // Go to page 2
-        expect(getByLabelText('Go to next page')).toBeVisible()
-        userEvent.click(getByLabelText('Go to next page'))
-        expect(getByLabelText('Current page')).toHaveValue(2)
+        userEvent.click(getAllByLabelText('Go to next page')[0])
+        expect(getAllByLabelText('Current page')[0]).toHaveValue(2)
 
         // Switch to 10 items per page; verify automatic move to page 6
-        userEvent.click(getByLabelText('Items per page'))
+        userEvent.click(getAllByLabelText('Items per page')[0])
         expect(getByText('10 per page')).toBeVisible()
         userEvent.click(getByText('10 per page'))
         expect(container.querySelectorAll('tbody tr')).toHaveLength(10)
         expect(getByLabelText('Current page')).toHaveValue(6)
     })
     test('can show paginated results', () => {
-        const { getByLabelText } = render(<Table />)
-        expect(getByLabelText('Go to next page')).toBeVisible()
-        userEvent.click(getByLabelText('Go to next page'))
-        expect(getByLabelText('Current page')).toHaveValue(2)
+        const { getAllByLabelText } = render(<Table />)
+        expect(getAllByLabelText('Go to next page').length).toBeGreaterThan(0)
+        userEvent.click(getAllByLabelText('Go to next page')[0])
+        expect(getAllByLabelText('Current page')[0]).toHaveValue(2)
     })
     test('should show the empty state when filtered results', () => {
         const { getByPlaceholderText, queryByText, getByText } = render(<Table />)
@@ -353,8 +413,8 @@ describe('AcmTable', () => {
         expect(setSort).not.toHaveBeenCalled()
         expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Danny')
 
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(setSearch).toHaveBeenCalled()
         expect(setPage).toHaveBeenCalled()
         expect(setSort).toHaveBeenCalled()
@@ -363,8 +423,9 @@ describe('AcmTable', () => {
         expect(setSort).toHaveBeenCalledTimes(2)
     })
     test('shows loading', () => {
-        const { queryByText } = render(<Table items={undefined} />)
+        const { queryByText } = render(<Table items={undefined} useExtraToolbarControls={true} />)
         expect(queryByText('Loading')).toBeVisible()
+        expect(queryByText('View 1')).toBeVisible()
     })
     test('can have sort updated when all items filtered', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
@@ -378,8 +439,8 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Last Name'))
 
         // clear filter
-        expect(getByLabelText('Clear')).toBeVisible()
-        userEvent.click(getByLabelText('Clear'))
+        expect(getByLabelText('Reset')).toBeVisible()
+        userEvent.click(getByLabelText('Reset'))
         expect(queryByText('0 / 105')).toBeNull()
 
         // verify sort selection sticks

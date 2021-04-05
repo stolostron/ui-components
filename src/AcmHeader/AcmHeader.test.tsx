@@ -1,23 +1,27 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 /* istanbul ignore file */
-import React from 'react'
 import { render } from '@testing-library/react'
-import { axe } from 'jest-axe'
-import { AcmHeaderPrototype } from './AcmHeaderPrototype'
 import 'isomorphic-fetch'
+import { axe } from 'jest-axe'
 import nock from 'nock'
+import React from 'react'
+import { MemoryRouter } from 'react-router'
+import { AcmHeader, AcmRoute } from './AcmHeader'
 
-describe('AcmHeaderPrototype', () => {
+describe('AcmHeader', () => {
     beforeAll(() => {
         const APIServer = nock('https://localhost:3000')
         APIServer.persist().get('/multicloud/common/username').reply(200, { username: 'kubeadmin' })
     })
+
     test('renders', async () => {
         const { container } = render(
-            <AcmHeaderPrototype urlpath="/multicloud/policies/all" href="https://patternfly.org" target="_blank">
-                <div>test</div>
-            </AcmHeaderPrototype>
+            <MemoryRouter>
+                <AcmHeader route={AcmRoute.Welcome}>
+                    <div>test</div>
+                </AcmHeader>
+            </MemoryRouter>
         )
         expect(await axe(container)).toHaveNoViolations()
     })

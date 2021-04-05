@@ -80,7 +80,7 @@ function StatusIcon(props: { type: StatusType }) {
         case StatusType.pending:
             return <MinusCircleIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
         case StatusType.sleep:
-            return <AsleepIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
+            return <AsleepIcon className={classes.iconMargin} color="var(--pf-global--palette--purple-500)" />
         case 'unknown':
         default:
             return <UnknownIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />

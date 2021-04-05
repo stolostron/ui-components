@@ -1,7 +1,7 @@
 # Copyright Contributors to the Open Cluster Management project
 
 language: node_js
-node_js: '12'
+node_js: '14'
 install: npm ci --no-optional
 addons:
     sonarcloud:
@@ -10,21 +10,18 @@ jobs:
     include:
         - stage: Pull Request
           if: type = pull_request
-          script:
-              - npm test &&
-                npm run lint &&
-                npm run check &&
-                npm run build &&
-                npm run build:storybook
+          script: npm run build && npm test
 
-        - stage: Build and Publish
-          if: type = push AND branch = main
+        - stage: Publish
+          if: type = push AND branch = main AND fork = false
           script:
-              - npm test &&
-                npm run build &&
-                npm run build:storybook &&
-                scripts/publish.sh &&
-                sonar-scanner
+              - set -e # Exit immediately if a command returns a non-zero status.
+              - npm test
+              - sonar-scanner
+              - npm run build
+              - npm run build:storybook
+              - scripts/create-release.sh minor "$TRAVIS_COMMIT_MESSAGE"
+              - scripts/publish-package.sh
           deploy:
               provider: pages
               skip_cleanup: true
@@ -34,7 +31,16 @@ jobs:
               on:
                   branch: main
 
-        - stage: Automated Dependency Upgrade
+        - stage: Patch
+          if: type = push AND branch = /v$.*.*/ AND fork = false
+          script:
+              - set -e # Exit immediately if a command returns a non-zero status.
+              - npm test
+              - npm run build
+              - scripts/create-release.sh patch $TRAVIS_COMMIT_MESSAGE
+              - scripts/publish-package.sh
+
+        - stage: Dependency Upgrade
           if: type = cron AND branch = main
           install: echo skip install
-          script: scripts/update.sh
+          script: scripts/update-dependencies.sh
