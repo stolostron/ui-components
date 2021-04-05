@@ -4,6 +4,8 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { AcmTile } from './AcmTile'
+import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
+import AnsibleIcon from '@patternfly/react-icons/dist/js/icons/ansibeTower-icon'
 
 describe('AcmTile', () => {
     const LoadingTile = () => {
@@ -26,6 +28,22 @@ describe('AcmTile', () => {
         return <AcmTile isSelected={false} relatedResourceData={{ count: 9999, kind: 'pod' }} title={''} />
     }
 
+    const DisabledTile = () => {
+        return <AcmTile title="Infrastructure Provider" isStacked={true} isDisabled={true} />
+    }
+    const IconTile = () => {
+        return (
+            <AcmTile
+                title="Ansible Tower"
+                isStacked={true}
+                AcmIcon={<AcmIcon icon={AcmIconVariant.cloud}></AcmIcon>}
+                icon={<AnsibleIcon />}
+                isDisabled={true}
+                isDisplayLarge={true}
+            />
+        )
+    }
+
     test('renders loading tile component', () => {
         const { queryByText } = render(<LoadingTile />)
         expect(queryByText('testing')).not.toBeInTheDocument()
@@ -43,6 +61,15 @@ describe('AcmTile', () => {
     test('renders default tile component', () => {
         const { getByText } = render(<DefaultTile />)
         expect(getByText('Tile title')).toBeInTheDocument()
+    })
+    test('renders disabled tile component', () => {
+        const { getByText } = render(<DisabledTile />)
+        expect(getByText('Infrastructure Provider')).toBeInTheDocument()
+    })
+    test('renders tile component with icons', () => {
+        const { getByText, getByRole } = render(<IconTile />)
+        expect(getByText('Ansible Tower')).toBeInTheDocument()
+        expect(getByRole('presentation')).toBeInTheDocument()
     })
     test('has zero accessibility defects - unselected', async () => {
         const { container } = render(<DefaultTile />)

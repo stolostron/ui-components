@@ -1,9 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import { Skeleton, Tile, TileProps } from '@patternfly/react-core'
+import React, { ReactNode } from 'react'
+import { Skeleton, TileProps } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import '@patternfly/react-core/dist/styles/base.css'
+import styles from '@patternfly/react-styles/css/components/Tile/tile'
+import { css } from '@patternfly/react-styles'
 
 type AcmTileProps = TileProps & {
     loading?: boolean
@@ -11,6 +13,7 @@ type AcmTileProps = TileProps & {
         count: number
         kind: string
     }
+    AcmIcon?: ReactNode
 }
 
 const useStyles = makeStyles({
@@ -73,5 +76,42 @@ export function AcmTile(props: AcmTileProps) {
             </Tile>
         )
     }
-    return <Tile {...props} ref={null} />
+    return (
+        <Tile {...props} ref={null}>
+            {' '}
+        </Tile>
+    )
 }
+
+const Tile: React.FunctionComponent<AcmTileProps> = ({
+    AcmIcon,
+    children,
+    title,
+    icon,
+    isStacked,
+    isSelected,
+    isDisabled,
+    isDisplayLarge,
+    className,
+    ...props
+}: AcmTileProps) => (
+    <div
+        className={css(
+            styles.tile,
+            isSelected && styles.modifiers.selected,
+            isDisabled && styles.modifiers.disabled,
+            isDisplayLarge && styles.modifiers.displayLg,
+            className
+        )}
+        tabIndex={0}
+        {...props}
+    >
+        <div className={css(styles.tileHeader, isStacked && styles.modifiers.stacked)}>
+            {AcmIcon}
+            {icon && <div className={css(styles.tileIcon)}>{icon}</div>}
+            <div className={css(styles.tileTitle)}>{title}</div>
+        </div>
+        {children && <div className={css(styles.tileBody)}>{children}</div>}
+    </div>
+)
+Tile.displayName = 'Tile'
