@@ -3,31 +3,52 @@
 import { Button } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
-import { AcmEmptyState, AcmEmptyStateImageOverrides } from './AcmEmptyState'
+import { AcmEmptyState, AcmEmptyStateImage } from './AcmEmptyState'
 
 export default {
     title: 'EmptyState',
     component: AcmEmptyState,
+    argTypes: {
+        title: {
+            control: { type: 'text', default: 'No items found' },
+        },
+        message: {
+            control: { type: 'text', default: 'You do not have any items.' },
+        },
+        image: {
+            control: {
+                type: 'select',
+                options: Object.keys(AcmEmptyStateImage),
+            },
+        },
+        showIcon: {
+            control: { type: 'boolean', default: true },
+        },
+        showAction: {
+            control: { type: 'boolean', default: true },
+        },
+        action: {
+            table: {
+                disable: true,
+            },
+        },
+    },
 }
 
-export const EmptyState = () => (
+export const EmptyState = (args) => (
     <AcmEmptyState
-        title="No items found"
-        message={
-            <React.Fragment>
-                <p>You do not have any items.</p>Click <strong>Create Item</strong> to create some.
-            </React.Fragment>
-        }
-        action={<Button variant="primary">Create Item</Button>}
+        title={args.title}
+        message={args.message}
+        action={args.showAction && <Button variant="primary">Create Item</Button>}
+        showIcon={args.showIcon}
+        image={args.image}
     />
 )
 
-export const EmptyStateImageOverride = () => (
-    <AcmEmptyState
-        title="No items found"
-        message="You don't have any items yet."
-        action={<Button variant="primary">Create Item</Button>}
-        showIcon={true}
-        imageOverride={AcmEmptyStateImageOverrides.folder}
-    />
-)
+EmptyState.args = {
+    title: 'No items found',
+    message: 'You do not have any items.',
+    showIcon: true,
+    showAction: true,
+    image: undefined,
+}

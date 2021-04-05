@@ -5,7 +5,7 @@ import React, { ReactNode } from 'react'
 import emptyPagePng from '../assets/EmptyPageIcon.png'
 import Folder from '../assets/Folder.png'
 
-export enum AcmEmptyStateImageOverrides {
+export enum AcmEmptyStateImage {
     folder = Folder,
 }
 
@@ -14,16 +14,12 @@ export function AcmEmptyState(props: {
     message?: string | ReactNode
     action?: ReactNode
     showIcon?: boolean
-    imageOverride?: AcmEmptyStateImageOverrides
+    image?: AcmEmptyStateImage
 }) {
     return (
         <EmptyState variant={EmptyStateVariant.large}>
             {props.showIcon !== false && (
-                <img
-                    src={props.imageOverride ? props.imageOverride : emptyPagePng}
-                    style={{ width: '50%' }}
-                    alt="Empty state"
-                />
+                <img src={props.image ? props.image : emptyPagePng} style={{ width: '50%' }} alt="Empty state" />
             )}
             <Title headingLevel="h4" size="lg">
                 {props.title}

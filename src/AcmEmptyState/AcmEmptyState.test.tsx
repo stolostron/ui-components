@@ -3,7 +3,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { AcmEmptyState, AcmEmptyStateImageOverrides } from './AcmEmptyState'
+import { AcmEmptyState, AcmEmptyStateImage } from './AcmEmptyState'
 
 describe('AcmEmptyState', () => {
     test('renders with action', () => {
@@ -27,7 +27,7 @@ describe('AcmEmptyState', () => {
                 title="Empty state title"
                 message="Empty state message"
                 showIcon={true}
-                imageOverride={AcmEmptyStateImageOverrides.folder}
+                image={AcmEmptyStateImage.folder}
             />
         )
         expect(getByText('Empty state title')).toBeInTheDocument()
