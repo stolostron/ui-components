@@ -190,7 +190,8 @@ export interface AcmTableProps<T> {
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, addSubRows, keyFn, groupFn, bulkActions = [], rowActions = [], tableActions = [] } = props
-    const sortIndexOffset = (bulkActions && bulkActions.length ? 1 : 0) + (addSubRows ? 1 : 0)
+    const adjustedSortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
+    const sortIndexOffset = adjustedSortIndexOffset + (groupFn || addSubRows ? 1 : 0)
 
     const defaultSort = {
         index: sortIndexOffset,
@@ -336,7 +337,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const adjustedSort =
         sort && sort.index && sort.direction && filtered.length === 0
             ? {
-                  index: sort.index - 1,
+                  index: sort.index - adjustedSortIndexOffset,
                   direction: sort.direction,
               }
             : sort
@@ -463,12 +464,20 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         return newRows
     }, [selected, paged, keyFn, columns, expanded, openGroups])
 
-    const onCollapse = useCallback(
-        (rowIndex, isOpen) => {
-            setOpenGroups({ ...openGroups, [rows[rowIndex].props.group]: isOpen })
-        },
-        [rows, openGroups, setOpenGroups]
-    )
+    const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
+        if (groupFn) {
+            return (_event, rowIndex, isOpen) => {
+                const rowKey = rows[rowIndex].props.group.toString()
+                setOpenGroups({ ...openGroups, [rowKey]: isOpen })
+            }
+        } else if (addSubRows) {
+            return (_event, rowIndex, isOpen) => {
+                const rowKey = rows[rowIndex].props.key.toString()
+                setExpanded({ ...expanded, [rowKey]: isOpen })
+            }
+        }
+        return undefined
+    }, [rows, openGroups, setOpenGroups, expanded, setExpanded, groupFn, addSubRows])
 
     const updateSearch = useCallback(
         (newSearch: string) => {
@@ -495,7 +504,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             if (filtered.length === 0) {
                 /* istanbul ignore next */
                 setSort({
-                    index: (newSort && newSort.index ? newSort.index : 0) + sortIndexOffset,
+                    index: (newSort && newSort.index ? newSort.index : 0) + adjustedSortIndexOffset,
                     direction: newSort && newSort.direction,
                 })
             } else {
@@ -806,7 +815,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     }
                                 })}
                                 rows={rows}
-                                onCollapse={(_event, rowKey, isOpen) => onCollapse(rowKey, isOpen)}
                                 rowWrapper={OuiaIdRowWrapper}
                                 actions={actions}
                                 canSelectAll={false}
@@ -817,14 +825,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     /* istanbul ignore next */
                                     rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
                                 }
-                                onCollapse={
-                                    props.addSubRows
-                                        ? (_event, rowIndex, isOpen) => {
-                                              const rowKey = rows[rowIndex].props.key.toString()
-                                              setExpanded({ ...expanded, [rowKey]: isOpen })
-                                          }
-                                        : undefined
-                                }
+                                onCollapse={onCollapse}
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
                             >
