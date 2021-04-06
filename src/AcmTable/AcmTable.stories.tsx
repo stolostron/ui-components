@@ -21,7 +21,7 @@ interface IExampleData {
 export default {
     title: 'Table',
     component: AcmTable,
-    excludeStories: ['exampleData', 'exampleSubData'],
+    excludeStories: ['TableStory', 'exampleData', 'exampleSubData'],
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
@@ -45,7 +45,7 @@ export function Table(args: Record<string, unknown>) {
     )
 }
 
-function TableStory(args: Record<string, unknown>) {
+export function TableStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
         <AcmTable<IExampleData>
