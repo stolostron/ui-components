@@ -59,6 +59,51 @@ export function TableStory(args: Record<string, unknown>) {
     )
 }
 
+export function TableStoryWithExpand(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
+    return (
+        <AcmTable<IExampleData, IExampleSubData>
+            plural="addresses"
+            items={items}
+            subItems={exampleSubData}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid?.toString()}
+            groupFn={(item: IExampleData, subItems: IExampleSubData[]) => {
+                return subItems.filter((subItem) => subItem.uid?.toString() === item.uid?.toString())
+            }}
+            subItemCellTransform={(subItems: IExampleSubData[]) => (
+                <AcmTable<IExampleSubData>
+                    plural="stuffs"
+                    showToolbar={false}
+                    autoHidePagination
+                    keyFn={(item: IExampleSubData) => item.suid}
+                    columns={[
+                        {
+                            header: 'First Name',
+                            sort: 'firstName',
+                            cell: 'firstName',
+                            search: 'firstName',
+                        },
+                        {
+                            header: 'Last Name',
+                            sort: 'lastName',
+                            cell: 'lastName',
+                            search: 'lastName',
+                        },
+                        {
+                            header: 'Color',
+                            cell: 'color',
+                        },
+                    ]}
+                    items={subItems}
+                />
+            )}
+            {...commonProperties(args, (items) => setItems(items), items)}
+            gridBreakPoint={TableGridBreakpoint.none}
+        />
+    )
+}
+
 export function TableEmpty(args: Record<string, unknown>) {
     return (
         <div style={{ height: '100vh' }}>
@@ -264,6 +309,31 @@ const columns: IAcmTableColumn<IExampleData>[] = [
                     return <AcmInlineStatus type={StatusType.progress} status="Progressing" />
             }
         },
+    },
+]
+
+export type IExampleSubData = {
+    uid: number
+    suid: string
+    firstName: string
+    lastName: string
+    color: string
+}
+
+export const exampleSubData: IExampleSubData[] = [
+    {
+        uid: 103,
+        suid: '1',
+        firstName: 'James',
+        lastName: 'Talton',
+        color: 'red',
+    },
+    {
+        uid: 103,
+        suid: '2',
+        firstName: 'Han',
+        lastName: 'Zhang',
+        color: 'blue',
     },
 ]
 
