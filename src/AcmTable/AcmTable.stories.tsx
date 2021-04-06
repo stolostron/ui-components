@@ -21,7 +21,14 @@ interface IExampleData {
 export default {
     title: 'Table',
     component: AcmTable,
-    excludeStories: ['TableStory', 'TableEmptyStory', 'TableLoadingStory', 'exampleData', 'commonProperties'],
+    excludeStories: [
+        'TableStory',
+        'TableEmptyStory',
+        'TableLoadingStory',
+        'exampleData',
+        'exampleSubData',
+        'commonProperties',
+    ],
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },

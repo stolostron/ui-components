@@ -182,7 +182,7 @@ export interface AcmTableProps<T, ST = void> {
 }
 export function AcmTable<T, ST = void>(props: AcmTableProps<T, ST>) {
     const { items, columns, keyFn, bulkActions = [], rowActions = [], tableActions = [] } = props
-    const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
+    const sortIndexOffset = bulkActions && bulkActions.length ? (props.subItems?.length ? 2 : 1) : 0
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [selectionOpen, setSelectionOpen] = useState(false)
 
@@ -379,11 +379,9 @@ export function AcmTable<T, ST = void>(props: AcmTableProps<T, ST>) {
                 selected: selected[key] === true,
                 props: { key },
                 cells: columns.map((column) => {
-                    return typeof column.cell === 'string' ? (
-                        get(item as Record<string, unknown>, column.cell)
-                    ) : (
-                        <Fragment key={key}>{column.cell(item)}</Fragment>
-                    )
+                    return typeof column.cell === 'string'
+                        ? get(item as Record<string, unknown>, column.cell)
+                        : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
                 }),
             })
             if (isOpen !== undefined && props.groupFn) {
@@ -517,7 +515,7 @@ export function AcmTable<T, ST = void>(props: AcmTableProps<T, ST>) {
     const hasBulkActions = (bulkActions && bulkActions.length > 0) || !!props.onSelect
     const includeBulkToolbar = hasBulkActions || props.extraToolbarControls
     const showToolbar = props.showToolbar !== false ? (hasItems && hasSearch) || props.extraToolbarControls : false
-console.log('ROWS!!!!!!!!', rows)
+
     return (
         <Fragment>
             {showToolbar && (
@@ -747,11 +745,14 @@ console.log('ROWS!!!!!!!!', rows)
                                     /* istanbul ignore next */
                                     rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
                                 }
-                                onCollapse={(_event, rowIndex, isOpen) => {
-                                    const rowKey = rows[rowIndex]?.props?.key?.toString()
-                                    console.log('rowKey', rowKey)
-                                    setExpanded({ ...expanded, [rowKey]: isOpen })
-                                }}
+                                onCollapse={
+                                    props.subItems?.length
+                                        ? (_event, rowIndex, isOpen) => {
+                                              const rowKey = rows[rowIndex]?.props?.key?.toString()
+                                              setExpanded({ ...expanded, [rowKey]: isOpen })
+                                          }
+                                        : undefined
+                                }
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
                             >
