@@ -69,42 +69,52 @@ export function TableStory(args: Record<string, unknown>) {
 export function TableStoryWithExpand(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
-        <AcmTable<IExampleData, IExampleSubData>
+        <AcmTable<IExampleData>
             plural="addresses"
             items={items}
-            subItems={exampleSubData}
             columns={columns}
             keyFn={(item: IExampleData) => item.uid?.toString()}
-            groupFn={(item: IExampleData, subItems: IExampleSubData[]) => {
-                return subItems.filter((subItem) => subItem.uid?.toString() === item.uid?.toString())
+            addSubRows={(item: IExampleData) => {
+                const mappedItems = exampleSubData.filter((subData) => subData.uid?.toString() === item.uid?.toString())
+                if (mappedItems.length === 0) {
+                    return undefined
+                }
+                return [
+                    {
+                        cells: [
+                            {
+                                title: (
+                                    <AcmTable<IExampleSubData>
+                                        plural="stuffs"
+                                        showToolbar={false}
+                                        autoHidePagination
+                                        keyFn={(item: IExampleSubData) => item.suid}
+                                        columns={[
+                                            {
+                                                header: 'First Name',
+                                                sort: 'firstName',
+                                                cell: 'firstName',
+                                                search: 'firstName',
+                                            },
+                                            {
+                                                header: 'Last Name',
+                                                sort: 'lastName',
+                                                cell: 'lastName',
+                                                search: 'lastName',
+                                            },
+                                            {
+                                                header: 'Color',
+                                                cell: 'color',
+                                            },
+                                        ]}
+                                        items={mappedItems}
+                                    />
+                                ),
+                            },
+                        ],
+                    },
+                ]
             }}
-            subItemCellTransform={(subItems: IExampleSubData[]) => (
-                <AcmTable<IExampleSubData>
-                    plural="stuffs"
-                    showToolbar={false}
-                    autoHidePagination
-                    keyFn={(item: IExampleSubData) => item.suid}
-                    columns={[
-                        {
-                            header: 'First Name',
-                            sort: 'firstName',
-                            cell: 'firstName',
-                            search: 'firstName',
-                        },
-                        {
-                            header: 'Last Name',
-                            sort: 'lastName',
-                            cell: 'lastName',
-                            search: 'lastName',
-                        },
-                        {
-                            header: 'Color',
-                            cell: 'color',
-                        },
-                    ]}
-                    items={subItems}
-                />
-            )}
             {...commonProperties(args, (items) => setItems(items), items)}
             gridBreakPoint={TableGridBreakpoint.none}
         />

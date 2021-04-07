@@ -154,15 +154,13 @@ export function AcmTablePaginationContextProvider(props: { children: ReactNode; 
     return <AcmTablePaginationContext.Provider value={paginationContext}>{children}</AcmTablePaginationContext.Provider>
 }
 
-export interface AcmTableProps<T, ST = void> {
+export interface AcmTableProps<T> {
     plural: string
     items?: T[]
-    subItems?: ST[]
+    addSubRows?: (item: T, itemIndex: number) => IRow[] | undefined
     initialSelectedItems?: T[]
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
-    groupFn?: (item: T, subItems: ST[]) => ST[]
-    subItemCellTransform?: (subItems: ST[]) => void
     tableActions?: IAcmTableAction[]
     rowActions?: IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
@@ -180,9 +178,12 @@ export interface AcmTableProps<T, ST = void> {
     perPageOptions?: PerPageOptions[]
     autoHidePagination?: boolean
 }
-export function AcmTable<T, ST = void>(props: AcmTableProps<T, ST>) {
+export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, keyFn, bulkActions = [], rowActions = [], tableActions = [] } = props
-    const sortIndexOffset = bulkActions && bulkActions.length ? (props.subItems?.length ? 2 : 1) : 0
+    // const sortIndexOffset = bulkActions && bulkActions.length ? (props.addSubRows ? 2 : 1) : 0
+    let sortIndexOffset = 0
+    if (bulkActions && bulkActions.length) sortIndexOffset++
+    if (props.addSubRows) sortIndexOffset++
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [selectionOpen, setSelectionOpen] = useState(false)
 
@@ -367,13 +368,8 @@ export function AcmTable<T, ST = void>(props: AcmTableProps<T, ST>) {
         const newRows: IRow[] = []
         paged.forEach((item, i) => {
             const key = keyFn(item)
-            let isOpen: boolean | undefined = undefined
-            if (props.subItems?.length && props.groupFn) {
-                const group = props.groupFn(item, props.subItems ?? [])
-                if (group.length) {
-                    isOpen = expanded[key] ?? false
-                }
-            }
+            const subRows: IRow[] | undefined = props.addSubRows?.(item, i)
+            const isOpen: boolean | undefined = expanded[key] ?? (subRows?.length ? false : undefined)
             newRows.push({
                 isOpen,
                 selected: selected[key] === true,
@@ -384,17 +380,8 @@ export function AcmTable<T, ST = void>(props: AcmTableProps<T, ST>) {
                         : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
                 }),
             })
-            if (isOpen !== undefined && props.groupFn) {
-                const group = props.groupFn(item, props.subItems || [])
-                newRows.push({
-                    parent: i,
-                    // fullWidth: true,
-                    cells: [
-                        {
-                            title: props.subItemCellTransform?.(group),
-                        },
-                    ],
-                })
+            if (subRows) {
+                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i }))
             }
         })
         return newRows
@@ -746,9 +733,9 @@ export function AcmTable<T, ST = void>(props: AcmTableProps<T, ST>) {
                                     rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
                                 }
                                 onCollapse={
-                                    props.subItems?.length
+                                    props.addSubRows
                                         ? (_event, rowIndex, isOpen) => {
-                                              const rowKey = rows[rowIndex]?.props?.key?.toString()
+                                              const rowKey = rows[rowIndex].props.key.toString()
                                               setExpanded({ ...expanded, [rowKey]: isOpen })
                                           }
                                         : undefined
