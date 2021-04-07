@@ -129,6 +129,21 @@ const useStyles = makeStyles({
     },
 })
 
+function countGroups(items: ITableItem<unknown>[]): number {
+    const { ungrouped, groups } = items.reduce(
+        (acc, item) => {
+            if (item.group) {
+                acc.groups.add(item.group)
+            } else {
+                acc.ungrouped++
+            }
+            return acc
+        },
+        { ungrouped: 0, groups: new Set() }
+    )
+    return ungrouped + groups.size
+}
+
 function OuiaIdRowWrapper(props: RowWrapperProps) {
     return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
 }
@@ -296,10 +311,13 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         setSelected(newSelected)
     }, [items])
 
-    const tableItems = useMemo<ITableItem<T>[]>(() => {
+    const { tableItems, totalCount } = useMemo<{
+        tableItems: ITableItem<T>[]
+        totalCount: number
+    }>(() => {
         /* istanbul ignore if */
-        if (!items) return []
-        return items.map((item) => {
+        if (!items) return { tableItems: [], totalCount: 0 }
+        const tableItems = items.map((item) => {
             const key = keyFn(item)
             const group = (groupFn && groupFn(item)) || undefined
             const tableItem: ITableItem<T> = { item, key, group }
@@ -315,9 +333,13 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
             return tableItem
         })
+        return { tableItems, totalCount: countGroups(tableItems) }
     }, [items, columns, keyFn, groupFn])
 
-    const filtered = useMemo<ITableItem<T>[]>(() => {
+    const { filtered, filteredCount } = useMemo<{
+        filtered: ITableItem<T>[]
+        filteredCount: number
+    }>(() => {
         if (search && search !== '') {
             const fuse = new Fuse(tableItems, {
                 threshold: 0.3,
@@ -326,11 +348,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     .filter((value) => value !== undefined) as string[],
                 // TODO use FuseOptionKeyObject to allow for weights
             })
-            return fuse.search<ITableItem<T>>(search).map((result) => result.item)
+            const filtered = fuse.search<ITableItem<T>>(search).map((result) => result.item)
+            return { filtered, filteredCount: countGroups(filtered) }
         } else {
-            return tableItems
+            return { filtered: tableItems, filteredCount: totalCount }
         }
-    }, [search, items, tableItems, columns])
+    }, [search, items, tableItems, totalCount, columns])
 
     // Compensate for off-by-one error in sort column when all items are filtered out
     const adjustedSort =
@@ -589,6 +612,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             },
         }
     })
+
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
     const hasTableActions = tableActions && tableActions.length > 0
@@ -609,7 +633,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                         value={search}
                                         onChange={updateSearch}
                                         onClear={() => updateSearch('')}
-                                        resultsCount={`${filtered!.length} / ${items!.length}`}
+                                        resultsCount={`${filteredCount} / ${totalCount}`}
                                         style={{ flexGrow: 1 }}
                                     />
                                 </ToolbarItem>
