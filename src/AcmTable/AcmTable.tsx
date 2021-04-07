@@ -180,7 +180,6 @@ export interface AcmTableProps<T> {
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, keyFn, bulkActions = [], rowActions = [], tableActions = [] } = props
-    // const sortIndexOffset = bulkActions && bulkActions.length ? (props.addSubRows ? 2 : 1) : 0
     let sortIndexOffset = 0
     if (bulkActions && bulkActions.length) sortIndexOffset++
     if (props.addSubRows) sortIndexOffset++
