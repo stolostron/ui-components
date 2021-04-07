@@ -389,6 +389,27 @@ export const exampleSubData: IExampleSubData[] = [
         lastName: 'Solo',
         color: 'blue',
     },
+    {
+        uid: 25,
+        suid: '1',
+        firstName: 'Sally',
+        lastName: 'Aspen',
+        color: 'black',
+    },
+    {
+        uid: 25,
+        suid: '2',
+        firstName: 'Kelly',
+        lastName: 'Williams',
+        color: 'yellow',
+    },
+    {
+        uid: 25,
+        suid: '3',
+        firstName: 'Kurt',
+        lastName: 'Daley',
+        color: 'pink',
+    },
 ]
 
 export const exampleData: IExampleData[] = [

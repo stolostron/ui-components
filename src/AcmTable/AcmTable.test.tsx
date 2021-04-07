@@ -452,8 +452,8 @@ describe('AcmTable', () => {
                 plural="addresses"
                 showToolbar={false}
                 items={exampleData.slice(0, 10)}
-                addSubRows={(item: IExampleData, itemIndex) => {
-                    if (itemIndex === 0) {
+                addSubRows={(item: IExampleData) => {
+                    if (item.uid === 1) {
                         return [
                             {
                                 cells: [

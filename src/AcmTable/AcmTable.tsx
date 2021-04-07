@@ -108,6 +108,7 @@ interface ITableItem<T> {
     item: T
     key: string
     group?: string
+    subRows?: IRow[]
     [key: string]: unknown
 }
 
@@ -182,7 +183,7 @@ export function AcmTablePaginationContextProvider(props: { children: ReactNode; 
 export interface AcmTableProps<T> {
     plural: string
     items?: T[]
-    addSubRows?: (item: T, itemIndex: number) => IRow[] | undefined
+    addSubRows?: (item: T) => IRow[] | undefined
     initialSelectedItems?: T[]
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
@@ -320,7 +321,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         const tableItems = items.map((item) => {
             const key = keyFn(item)
             const group = (groupFn && groupFn(item)) || undefined
-            const tableItem: ITableItem<T> = { item, key, group }
+            const subRows = addSubRows?.(item)
+            const tableItem: ITableItem<T> = { item, subRows, key, group }
             for (let i = 0; i < columns.length; i++) {
                 const column = columns[i]
                 if (column.search) {
@@ -334,7 +336,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             return tableItem
         })
         return { tableItems, totalCount: countGroups(tableItems) }
-    }, [items, columns, keyFn, groupFn])
+    }, [items, columns, addSubRows, keyFn, groupFn])
 
     const { filtered, filteredCount } = useMemo<{
         filtered: ITableItem<T>[]
@@ -385,89 +387,61 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     }, [filtered, sort, columns])
 
-    const grouped = useMemo<ITableItem<T>[]>(() => {
-        const grouped = []
-        let ungrouped = sorted
-        let i = 0,
-            j
-        for (; i < ungrouped.length; i++) {
-            grouped.push(ungrouped[i])
-            if (ungrouped[i].group) {
-                const group = ungrouped[i].group
-                const oldUngrouped = ungrouped
-                j = i + 1
-                ungrouped = oldUngrouped.slice(0, j)
-                for (; j < oldUngrouped.length; j++) {
-                    if (oldUngrouped[j].group === group) {
-                        grouped.push(oldUngrouped[j])
-                    } else {
-                        ungrouped.push(oldUngrouped[j])
-                    }
-                }
-            }
-        }
-        return grouped
-    }, [sorted])
-
-    const { paged, itemCount } = useMemo<{
-        paged: ITableItem<T>[]
+    const { grouped, itemCount } = useMemo<{
+        grouped: ITableItem<T>[]
         itemCount: number
     }>(() => {
-        const firstGroup = (page - 1) * perPage
-        let i = 0,
-            currentGroup,
-            currentGroupStart = 0,
-            groupCount = 0,
-            start = 0,
-            end
-
-        for (; i < grouped.length; i++) {
-            const group = grouped[i].group
-            if (!group || group !== currentGroup) {
-                if (groupCount - 1 === firstGroup) {
-                    start = currentGroupStart
-                } else if (!end && groupCount === firstGroup + perPage) {
-                    end = i
+        const grouped: ITableItem<T>[] = []
+        const groupSubRows: { [key: string]: IRow[] } = {}
+        sorted.forEach((tableItem) => {
+            const { key, group, item } = tableItem
+            if (group) {
+                tableItem.subRows = []
+                if (!groupSubRows[group]) {
+                    groupSubRows[group] = tableItem.subRows
+                    grouped.push(tableItem)
+                } else {
+                    groupSubRows[group].push({
+                        cells: columns.map((column) => {
+                            return typeof column.cell === 'string'
+                                ? get(item as Record<string, unknown>, column.cell)
+                                : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
+                        }),
+                    })
                 }
-                currentGroupStart = i
-                currentGroup = group
-                groupCount++
+            } else {
+                grouped.push(tableItem)
             }
-        }
+        })
+        return { grouped, itemCount: grouped.length }
+    }, [sorted, columns])
 
-        const totalPages = Math.floor(groupCount / perPage) + 1
-        if (totalPages < page) {
-            setPage(totalPages)
+    const paged = useMemo<ITableItem<T>[]>(() => {
+        let start = (page - 1) * perPage
+        let actualPage = page
+        if (start > grouped.length) {
+            actualPage = Math.floor(grouped.length / perPage) + 1
+            start = (actualPage - 1) * perPage
+            setPage(actualPage)
         }
-        return {
-            paged: grouped.slice(start, end),
-            itemCount: groupCount,
-        }
+        return grouped.slice(start, start + perPage)
     }, [grouped, page, perPage])
 
     const rows = useMemo<IRow[]>(() => {
-        const groupMap: { [key: string]: number } = {}
         const newRows: IRow[] = []
+        let addedSubRows = 0
         paged.forEach((tableItem, i) => {
-            const { item, key, group } = tableItem
+            const { item, key, group, subRows } = tableItem
             let isOpen: boolean | undefined = undefined
-            let parent: number | undefined = undefined
-            let subRows: IRow[] | undefined = undefined
             if (group) {
-                if (groupMap[group] === undefined) {
-                    groupMap[group] = i
-                    // Only group if the next item is also part of the group
-                    if (i + 1 < paged.length && paged[i + 1].group === group) {
-                        isOpen = !!openGroups[group]
-                    }
-                } else {
-                    parent = groupMap[group]
+                // Only group if the next item is also part of the group
+                if (subRows?.length) {
+                    isOpen = !!openGroups[group]
                 }
             } else {
-                subRows = addSubRows?.(item, i)
                 isOpen = expanded[key] ?? (subRows?.length ? false : undefined)
             }
-            const newRow: IRow = {
+            newRows.push({
                 isOpen,
                 selected: selected[key] === true,
                 props: { key, group },
@@ -476,13 +450,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         ? get(item as Record<string, unknown>, column.cell)
                         : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
                 }),
-            }
-            if (parent !== undefined) {
-                newRow.parent = parent
-            }
-            newRows.push(newRow)
+            })
             if (subRows) {
-                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i }))
+                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i + addedSubRows }))
+                addedSubRows += subRows.length
             }
         })
         return newRows
