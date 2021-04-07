@@ -59,7 +59,7 @@ export function TableStory(args: Record<string, unknown>) {
     )
 }
 
-export function TableWithExpand(args: Record<string, unknown>) {
+export function TableExpandable(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
         <div style={{ height: '100vh' }}>

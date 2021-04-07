@@ -106,6 +106,7 @@ export interface IAcmTableBulkAction<T> {
 
 interface ITableItem<T> {
     item: T
+    key: string
     group?: string
     [key: string]: unknown
 }
@@ -299,11 +300,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         /* istanbul ignore if */
         if (!items) return []
         return items.map((item) => {
-            const tableItem: ITableItem<T> = { item: item }
-            const group = (groupFn && groupFn(item)) || null
-            if (group) {
-                tableItem.group = group
-            }
+            const key = keyFn(item)
+            const group = (groupFn && groupFn(item)) || undefined
+            const tableItem: ITableItem<T> = { item, key, group }
             for (let i = 0; i < columns.length; i++) {
                 const column = columns[i]
                 if (column.search) {
@@ -316,7 +315,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
             return tableItem
         })
-    }, [items, columns, groupFn])
+    }, [items, columns, keyFn, groupFn])
 
     const filtered = useMemo<ITableItem<T>[]>(() => {
         if (search && search !== '') {
@@ -427,8 +426,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         const groupMap: { [key: string]: number } = {}
         const newRows: IRow[] = []
         paged.forEach((tableItem, i) => {
-            const { item, group } = tableItem
-            const key = keyFn(item)
+            const { item, key, group } = tableItem
             let isOpen: boolean | undefined = undefined
             let parent: number | undefined = undefined
             let subRows: IRow[] | undefined = undefined
@@ -446,9 +444,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 subRows = addSubRows?.(item, i)
                 isOpen = expanded[key] ?? (subRows?.length ? false : undefined)
             }
-            newRows.push({
+            const newRow: IRow = {
                 isOpen,
-                parent,
                 selected: selected[key] === true,
                 props: { key, group },
                 cells: columns.map((column) => {
@@ -456,13 +453,17 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         ? get(item as Record<string, unknown>, column.cell)
                         : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
                 }),
-            })
+            }
+            if (parent !== undefined) {
+                newRow.parent = parent
+            }
+            newRows.push(newRow)
             if (subRows) {
                 subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i }))
             }
         })
         return newRows
-    }, [selected, paged, keyFn, columns, expanded, openGroups])
+    }, [selected, paged, columns, expanded, openGroups])
 
     const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
         if (groupFn) {
@@ -552,7 +553,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 /* istanbul ignore else */
                 if (!allSelected) {
                     for (const tableItem of filtered) {
-                        newSelected[keyFn(tableItem.item)] = true
+                        newSelected[tableItem.key] = true
                     }
                 }
                 setSelected(newSelected)
@@ -563,9 +564,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             } else {
                 const newSelected = { ...selected }
                 if (isSelected) {
-                    newSelected[keyFn(paged[rowId].item)] = true
+                    newSelected[paged[rowId].key] = true
                 } else {
-                    delete newSelected[keyFn(paged[rowId].item)]
+                    delete newSelected[paged[rowId].key]
                 }
                 setSelected(newSelected)
                 /* istanbul ignore next */
@@ -704,7 +705,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                                     onClick={() => {
                                                         setSelected(
                                                             paged.reduce((selection, tableItem) => {
-                                                                selection[keyFn(tableItem.item)] = true
+                                                                selection[tableItem.key] = true
                                                                 return selection
                                                             }, {} as Record<string, boolean>)
                                                         )
