@@ -446,4 +446,62 @@ describe('AcmTable', () => {
         // verify sort selection sticks
         expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
+    test('renders a table with expandable rows', () => {
+        const { getByTestId } = render(
+            <AcmTable<IExampleData>
+                plural="addresses"
+                showToolbar={false}
+                items={exampleData.slice(0, 10)}
+                addSubRows={(item: IExampleData, itemIndex) => {
+                    if (itemIndex === 0) {
+                        return [
+                            {
+                                cells: [
+                                    {
+                                        title: <div id="expanded">{item.uid}</div>,
+                                    },
+                                ],
+                            },
+                        ]
+                    } else {
+                        return undefined
+                    }
+                }}
+                columns={[
+                    {
+                        header: 'First Name',
+                        sort: 'firstName',
+                        cell: 'firstName',
+                    },
+                    {
+                        header: 'Last Name',
+                        sort: 'last_name',
+                        cell: 'last_name',
+                    },
+                    {
+                        header: 'EMail',
+                        cell: 'email',
+                    },
+                    {
+                        header: 'Gender',
+                        sort: 'gender',
+                        cell: (item) => item.gender,
+                    },
+                    {
+                        header: 'IP Address',
+                        sort: sortFunction,
+                        cell: 'ip_address',
+                    },
+                    {
+                        header: 'UID',
+                        sort: 'uid',
+                        cell: 'uid',
+                    },
+                ]}
+                keyFn={(item: IExampleData) => item.uid.toString()}
+            />
+        )
+        userEvent.click(getByTestId('expandable-toggle0'))
+        expect(getByTestId('expanded')).toBeInTheDocument()
+    })
 })

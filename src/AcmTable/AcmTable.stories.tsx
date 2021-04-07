@@ -21,7 +21,14 @@ interface IExampleData {
 export default {
     title: 'Table',
     component: AcmTable,
-    excludeStories: ['TableStory', 'TableEmptyStory', 'TableLoadingStory', 'exampleData', 'commonProperties'],
+    excludeStories: [
+        'TableStory',
+        'TableEmptyStory',
+        'TableLoadingStory',
+        'exampleData',
+        'exampleSubData',
+        'commonProperties',
+    ],
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
@@ -56,6 +63,71 @@ export function TableStory(args: Record<string, unknown>) {
             {...commonProperties(args, (items) => setItems(items), items)}
             gridBreakPoint={TableGridBreakpoint.none}
         />
+    )
+}
+
+export function TableWithExpand(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
+    return (
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable with expandable row" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <AcmTable<IExampleData>
+                            plural="addresses"
+                            items={items}
+                            columns={columns}
+                            keyFn={(item: IExampleData) => item.uid?.toString()}
+                            addSubRows={(item: IExampleData) => {
+                                const mappedItems = exampleSubData.filter(
+                                    (subData) => subData.uid?.toString() === item.uid?.toString()
+                                )
+                                if (mappedItems.length === 0) {
+                                    return undefined
+                                }
+                                return [
+                                    {
+                                        cells: [
+                                            {
+                                                title: (
+                                                    <AcmTable<IExampleSubData>
+                                                        plural="stuffs"
+                                                        showToolbar={false}
+                                                        autoHidePagination
+                                                        keyFn={(item: IExampleSubData) => item.suid}
+                                                        columns={[
+                                                            {
+                                                                header: 'First Name',
+                                                                sort: 'firstName',
+                                                                cell: 'firstName',
+                                                            },
+                                                            {
+                                                                header: 'Last Name',
+                                                                sort: 'lastName',
+                                                                cell: 'lastName',
+                                                            },
+                                                            {
+                                                                header: 'Color',
+                                                                cell: 'color',
+                                                            },
+                                                        ]}
+                                                        items={mappedItems}
+                                                        gridBreakPoint={TableGridBreakpoint.none}
+                                                    />
+                                                ),
+                                            },
+                                        ],
+                                    },
+                                ]
+                            }}
+                            {...commonProperties(args, (items) => setItems(items), items)}
+                            gridBreakPoint={TableGridBreakpoint.none}
+                        />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
     )
 }
 
@@ -264,6 +336,31 @@ const columns: IAcmTableColumn<IExampleData>[] = [
                     return <AcmInlineStatus type={StatusType.progress} status="Progressing" />
             }
         },
+    },
+]
+
+export type IExampleSubData = {
+    uid: number
+    suid: string
+    firstName: string
+    lastName: string
+    color: string
+}
+
+export const exampleSubData: IExampleSubData[] = [
+    {
+        uid: 103,
+        suid: '1',
+        firstName: 'James',
+        lastName: 'Fisher',
+        color: 'red',
+    },
+    {
+        uid: 103,
+        suid: '2',
+        firstName: 'Han',
+        lastName: 'Solo',
+        color: 'blue',
     },
 ]
 

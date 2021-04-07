@@ -157,6 +157,7 @@ export function AcmTablePaginationContextProvider(props: { children: ReactNode; 
 export interface AcmTableProps<T> {
     plural: string
     items?: T[]
+    addSubRows?: (item: T, itemIndex: number) => IRow[] | undefined
     initialSelectedItems?: T[]
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
@@ -172,15 +173,20 @@ export interface AcmTableProps<T> {
     setSearch?: (search: string) => void
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
+    showToolbar?: boolean
     gridBreakPoint?: TableGridBreakpoint
     perPageOptions?: PerPageOptions[]
     autoHidePagination?: boolean
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const { items, columns, keyFn, bulkActions = [], rowActions = [], tableActions = [] } = props
-    const sortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
+    let sortIndexOffset = 0
+    if (bulkActions && bulkActions.length) sortIndexOffset++
+    if (props.addSubRows) sortIndexOffset++
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [selectionOpen, setSelectionOpen] = useState(false)
+
+    const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
 
     const defaultSort = {
         index: sortIndexOffset,
@@ -358,22 +364,27 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }, [sorted, page, perPage])
 
     const rows = useMemo<IRow[] | undefined>(() => {
-        const newRows = paged.map((item) => {
+        const newRows: IRow[] = []
+        paged.forEach((item, i) => {
             const key = keyFn(item)
-            return {
+            const subRows: IRow[] | undefined = props.addSubRows?.(item, i)
+            const isOpen: boolean | undefined = expanded[key] ?? (subRows?.length ? false : undefined)
+            newRows.push({
+                isOpen,
                 selected: selected[key] === true,
                 props: { key },
                 cells: columns.map((column) => {
-                    return typeof column.cell === 'string' ? (
-                        get(item as Record<string, unknown>, column.cell)
-                    ) : (
-                        <Fragment key={key}>{column.cell(item)}</Fragment>
-                    )
+                    return typeof column.cell === 'string'
+                        ? get(item as Record<string, unknown>, column.cell)
+                        : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
                 }),
+            })
+            if (subRows) {
+                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i }))
             }
         })
         return newRows
-    }, [selected, paged, keyFn, columns])
+    }, [selected, paged, keyFn, columns, expanded])
 
     const updateSearch = useCallback(
         (newSearch: string) => {
@@ -489,7 +500,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const hasTableActions = tableActions && tableActions.length > 0
     const hasBulkActions = (bulkActions && bulkActions.length > 0) || !!props.onSelect
     const includeBulkToolbar = hasBulkActions || props.extraToolbarControls
-    const showToolbar = (hasItems && hasSearch) || props.extraToolbarControls
+    const showToolbar = props.showToolbar !== false ? (hasItems && hasSearch) || props.extraToolbarControls : false
 
     return (
         <Fragment>
@@ -719,6 +730,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 onSelect={
                                     /* istanbul ignore next */
                                     rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
+                                }
+                                onCollapse={
+                                    props.addSubRows
+                                        ? (_event, rowIndex, isOpen) => {
+                                              const rowKey = rows[rowIndex].props.key.toString()
+                                              setExpanded({ ...expanded, [rowKey]: isOpen })
+                                          }
+                                        : undefined
                                 }
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
