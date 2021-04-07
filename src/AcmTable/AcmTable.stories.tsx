@@ -69,55 +69,65 @@ export function TableStory(args: Record<string, unknown>) {
 export function TableStoryWithExpand(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
-        <AcmTable<IExampleData>
-            plural="addresses"
-            items={items}
-            columns={columns}
-            keyFn={(item: IExampleData) => item.uid?.toString()}
-            addSubRows={(item: IExampleData) => {
-                const mappedItems = exampleSubData.filter((subData) => subData.uid?.toString() === item.uid?.toString())
-                if (mappedItems.length === 0) {
-                    return undefined
-                }
-                return [
-                    {
-                        cells: [
-                            {
-                                title: (
-                                    <AcmTable<IExampleSubData>
-                                        plural="stuffs"
-                                        showToolbar={false}
-                                        autoHidePagination
-                                        keyFn={(item: IExampleSubData) => item.suid}
-                                        columns={[
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable with expandable row" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <AcmTable<IExampleData>
+                            plural="addresses"
+                            items={items}
+                            columns={columns}
+                            keyFn={(item: IExampleData) => item.uid?.toString()}
+                            addSubRows={(item: IExampleData) => {
+                                const mappedItems = exampleSubData.filter(
+                                    (subData) => subData.uid?.toString() === item.uid?.toString()
+                                )
+                                if (mappedItems.length === 0) {
+                                    return undefined
+                                }
+                                return [
+                                    {
+                                        cells: [
                                             {
-                                                header: 'First Name',
-                                                sort: 'firstName',
-                                                cell: 'firstName',
-                                                search: 'firstName',
+                                                title: (
+                                                    <AcmTable<IExampleSubData>
+                                                        plural="stuffs"
+                                                        showToolbar={false}
+                                                        autoHidePagination
+                                                        keyFn={(item: IExampleSubData) => item.suid}
+                                                        columns={[
+                                                            {
+                                                                header: 'First Name',
+                                                                sort: 'firstName',
+                                                                cell: 'firstName',
+                                                            },
+                                                            {
+                                                                header: 'Last Name',
+                                                                sort: 'lastName',
+                                                                cell: 'lastName',
+                                                            },
+                                                            {
+                                                                header: 'Color',
+                                                                cell: 'color',
+                                                            },
+                                                        ]}
+                                                        items={mappedItems}
+                                                        gridBreakPoint={TableGridBreakpoint.none}
+                                                    />
+                                                ),
                                             },
-                                            {
-                                                header: 'Last Name',
-                                                sort: 'lastName',
-                                                cell: 'lastName',
-                                                search: 'lastName',
-                                            },
-                                            {
-                                                header: 'Color',
-                                                cell: 'color',
-                                            },
-                                        ]}
-                                        items={mappedItems}
-                                    />
-                                ),
-                            },
-                        ],
-                    },
-                ]
-            }}
-            {...commonProperties(args, (items) => setItems(items), items)}
-            gridBreakPoint={TableGridBreakpoint.none}
-        />
+                                        ],
+                                    },
+                                ]
+                            }}
+                            {...commonProperties(args, (items) => setItems(items), items)}
+                            gridBreakPoint={TableGridBreakpoint.none}
+                        />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
     )
 }
 
@@ -342,14 +352,14 @@ export const exampleSubData: IExampleSubData[] = [
         uid: 103,
         suid: '1',
         firstName: 'James',
-        lastName: 'Talton',
+        lastName: 'Fisher',
         color: 'red',
     },
     {
         uid: 103,
         suid: '2',
         firstName: 'Han',
-        lastName: 'Zhang',
+        lastName: 'Solo',
         color: 'blue',
     },
 ]
