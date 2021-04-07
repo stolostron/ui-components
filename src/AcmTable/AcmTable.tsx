@@ -435,7 +435,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             let isOpen: boolean | undefined = undefined
             if (group) {
                 // Only group if the next item is also part of the group
-                if (subRows?.length) {
+                if (subRows!.length) {
                     isOpen = !!openGroups[group]
                 }
             } else {
