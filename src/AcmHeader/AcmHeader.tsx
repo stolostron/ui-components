@@ -342,16 +342,12 @@ export enum AcmRoute {
     VisualWebTerminal = '/kui',
 }
 
-function NavExpandableList(props: { route: AcmRoute; postClick?: () => void }) {
-    const { route } = props
+function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; postClick?: () => void }) {
+    const { route, showSwitcher } = props
     const classes = useStyles()
     const [switcherIsOpen, setSwitcherOpen] = useState(false)
-    const [switcherExists, switcherSetExists] = useState<boolean>(false)
+    const switcherExists = showSwitcher
     const iconStyles: CSSProperties = { paddingRight: '7px' }
-
-    useEffect(() => {
-        checkOCPVersion(switcherSetExists)
-    }, [])
 
     return (
         <Nav onSelect={() => props.postClick?.()}>
@@ -594,6 +590,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                     nav={
                         <NavExpandableList
                             route={props.route}
+                            showSwitcher={appSwitcherExists}
                             postClick={() => {
                                 if (!isFullWidthPage) setNavOpen(false)
                             }}
