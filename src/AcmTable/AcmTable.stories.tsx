@@ -21,14 +21,7 @@ interface IExampleData {
 export default {
     title: 'Table',
     component: AcmTable,
-    excludeStories: [
-        'TableStory',
-        'TableEmptyStory',
-        'TableLoadingStory',
-        'exampleData',
-        'exampleSubData',
-        'commonProperties',
-    ],
+    excludeStories: ['TableStory', 'exampleData', 'exampleSubData'],
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
@@ -66,7 +59,7 @@ export function TableStory(args: Record<string, unknown>) {
     )
 }
 
-export function TableWithExpand(args: Record<string, unknown>) {
+export function TableExpandable(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
         <div style={{ height: '100vh' }}>
@@ -130,6 +123,38 @@ export function TableWithExpand(args: Record<string, unknown>) {
         </div>
     )
 }
+export function TableGrouped(args: Record<string, unknown>) {
+    return (
+        <div style={{ height: '100vh' }}>
+            <AcmPage>
+                <AcmPageHeader title="AcmTable" />
+                <AcmPageContent id="table">
+                    <PageSection variant="light" isFilled>
+                        <TableGroupedStory {...args} />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmPage>
+        </div>
+    )
+}
+
+function TableGroupedStory(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
+    return (
+        <AcmTable<IExampleData>
+            plural="addresses"
+            items={items}
+            columns={columns}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            groupFn={(item: IExampleData) => {
+                const provider = getProviderForItem(item)
+                return provider !== Provider.other ? provider : null
+            }}
+            {...commonProperties(args, (items) => setItems(items), items)}
+            gridBreakPoint={TableGridBreakpoint.none}
+        />
+    )
+}
 
 export function TableEmpty(args: Record<string, unknown>) {
     return (
@@ -146,7 +171,7 @@ export function TableEmpty(args: Record<string, unknown>) {
     )
 }
 
-export function TableEmptyStory(args: Record<string, unknown>) {
+function TableEmptyStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>()
     return (
         <AcmTable<IExampleData>
@@ -174,7 +199,7 @@ export function TableLoading(args: Record<string, unknown>) {
     )
 }
 
-export function TableLoadingStory(args: Record<string, unknown>) {
+function TableLoadingStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>()
     return (
         <AcmTable<IExampleData>
@@ -187,7 +212,7 @@ export function TableLoadingStory(args: Record<string, unknown>) {
     )
 }
 
-export function commonProperties(
+function commonProperties(
     args: Record<string, unknown>,
     setItems: (items: IExampleData[]) => void,
     items: IExampleData[] | undefined
@@ -254,6 +279,28 @@ export function commonProperties(
     }
 }
 
+function getProviderForItem(item: IExampleData) {
+    const chr = item.last_name.charCodeAt(0)
+    switch (chr % 8) {
+        case 0:
+            return Provider.aws
+        case 1:
+            return Provider.azure
+        case 2:
+            return Provider.baremetal
+        case 3:
+            return Provider.gcp
+        case 4:
+            return Provider.ibm
+        case 5:
+            return Provider.other
+        case 6:
+            return Provider.openstack
+        default:
+            return Provider.vmware
+    }
+}
+
 const columns: IAcmTableColumn<IExampleData>[] = [
     {
         header: 'First Name',
@@ -297,27 +344,7 @@ const columns: IAcmTableColumn<IExampleData>[] = [
     },
     {
         header: 'Provider',
-        cell: (item) => {
-            const chr = item.last_name.charCodeAt(0)
-            switch (chr % 8) {
-                case 0:
-                    return <AcmInlineProvider provider={Provider.aws} />
-                case 1:
-                    return <AcmInlineProvider provider={Provider.azure} />
-                case 2:
-                    return <AcmInlineProvider provider={Provider.baremetal} />
-                case 3:
-                    return <AcmInlineProvider provider={Provider.gcp} />
-                case 4:
-                    return <AcmInlineProvider provider={Provider.ibm} />
-                case 5:
-                    return <AcmInlineProvider provider={Provider.other} />
-                case 6:
-                    return <AcmInlineProvider provider={Provider.openstack} />
-                default:
-                    return <AcmInlineProvider provider={Provider.vmware} />
-            }
-        },
+        cell: (item) => <AcmInlineProvider provider={getProviderForItem(item)} />,
     },
     {
         header: 'Status',
@@ -361,6 +388,27 @@ export const exampleSubData: IExampleSubData[] = [
         firstName: 'Han',
         lastName: 'Solo',
         color: 'blue',
+    },
+    {
+        uid: 25,
+        suid: '1',
+        firstName: 'Sally',
+        lastName: 'Aspen',
+        color: 'black',
+    },
+    {
+        uid: 25,
+        suid: '2',
+        firstName: 'Kelly',
+        lastName: 'Williams',
+        color: 'yellow',
+    },
+    {
+        uid: 25,
+        suid: '3',
+        firstName: 'Kurt',
+        lastName: 'Daley',
+        color: 'pink',
     },
 ]
 

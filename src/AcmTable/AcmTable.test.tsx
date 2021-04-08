@@ -38,6 +38,7 @@ describe('AcmTable', () => {
             useExtraToolbarControls?: boolean
             useSearch?: boolean
             transforms?: boolean
+            groupFn?: (item: IExampleData) => string | null
             gridBreakPoint?: TableGridBreakpoint
         } & Partial<AcmTableProps<IExampleData>>
     ) => {
@@ -452,8 +453,8 @@ describe('AcmTable', () => {
                 plural="addresses"
                 showToolbar={false}
                 items={exampleData.slice(0, 10)}
-                addSubRows={(item: IExampleData, itemIndex) => {
-                    if (itemIndex === 0) {
+                addSubRows={(item: IExampleData) => {
+                    if (item.uid === 1) {
                         return [
                             {
                                 cells: [
@@ -503,5 +504,12 @@ describe('AcmTable', () => {
         )
         userEvent.click(getByTestId('expandable-toggle0'))
         expect(getByTestId('expanded')).toBeInTheDocument()
+    })
+    test('renders with grouping', () => {
+        const { getByTestId } = render(
+            // Group some items by name and some by gender to test single and multiple-item groups
+            <Table groupFn={(item) => (item.uid < 50 ? item.firstName : item.gender)} />
+        )
+        userEvent.click(getByTestId('expandable-toggle0'))
     })
 })
