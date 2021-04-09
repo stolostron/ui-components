@@ -86,10 +86,12 @@ export function FormStory() {
                 label="Number input with validation (must be positive)"
                 id="validation"
                 value={number}
-                onChange={(e: React.FormEvent<HTMLInputElement>) => setNumber(Number(e.target.value!))}
+                onChange={(e: React.FormEvent<HTMLInputElement>) =>
+                    setNumber(Number((e.target as HTMLInputElement).value))
+                }
                 onMinus={() => setNumber(number - 1)}
                 onPlus={() => setNumber(number + 1)}
-                isRequired
+                required
                 validation={(value) => {
                     if (value < 0) {
                         return 'Value must be a positive number'
