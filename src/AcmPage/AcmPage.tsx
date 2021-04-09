@@ -15,7 +15,7 @@ import {
     Stack,
     StackItem,
     TextContent,
-    Title
+    Title,
 } from '@patternfly/react-core'
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
 import React, { ReactNode } from 'react'
@@ -161,6 +161,15 @@ export function AcmPageCard(props: { children: ReactNode }) {
             <Card>
                 <CardBody>{props.children}</CardBody>
             </Card>
+        </PageSection>
+    )
+}
+
+export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to?: string }[] | undefined }) {
+    const { breadcrumb } = props
+    if (breadcrumb?.length) {
+        return (
+            <Breadcrumb>
                 {breadcrumb.map((crumb, i) => (
                     <BreadcrumbItem key={crumb.to}>
                         {breadcrumb.length > 1 && i === breadcrumb.length - 1 ? (
