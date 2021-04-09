@@ -108,6 +108,7 @@ interface ITableItem<T> {
     item: T
     key: string
     group?: string
+    subItems?: T[]
     subRows?: IRow[]
     [key: string]: unknown
 }
@@ -188,6 +189,7 @@ export interface AcmTableProps<T> {
     columns: IAcmTableColumn<T>[]
     keyFn: (item: T) => string
     groupFn?: (item: T) => string | null
+    groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
     rowActions?: IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
@@ -206,7 +208,17 @@ export interface AcmTableProps<T> {
     autoHidePagination?: boolean
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
-    const { items, columns, addSubRows, keyFn, groupFn, bulkActions = [], rowActions = [], tableActions = [] } = props
+    const {
+        items,
+        columns,
+        addSubRows,
+        keyFn,
+        groupFn,
+        groupSummaryFn,
+        bulkActions = [],
+        rowActions = [],
+        tableActions = [],
+    } = props
     const adjustedSortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
     const sortIndexOffset = adjustedSortIndexOffset + (groupFn || addSubRows ? 1 : 0)
 
@@ -393,22 +405,16 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }>(() => {
         if (groupFn) {
             const grouped: ITableItem<T>[] = []
-            const groupSubRows: { [key: string]: IRow[] } = {}
+            const groupSubItems: { [key: string]: T[] } = {}
             sorted.forEach((tableItem) => {
-                const { key, group, item } = tableItem
+                const { group, item } = tableItem
                 if (group) {
-                    tableItem.subRows = []
-                    if (!groupSubRows[group]) {
-                        groupSubRows[group] = tableItem.subRows
+                    tableItem.subItems = []
+                    if (!groupSubItems[group]) {
+                        groupSubItems[group] = tableItem.subItems
                         grouped.push(tableItem)
                     } else {
-                        groupSubRows[group].push({
-                            cells: columns.map((column) => {
-                                return typeof column.cell === 'string'
-                                    ? get(item as Record<string, unknown>, column.cell)
-                                    : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
-                            }),
-                        })
+                        groupSubItems[group].push(item)
                     }
                 } else {
                     grouped.push(tableItem)
@@ -433,35 +439,60 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     const rows = useMemo<IRow[]>(() => {
         const newRows: IRow[] = []
+        const itemToCells = (item: T, key: string) =>
+            columns.map((column) => {
+                return typeof column.cell === 'string'
+                    ? get(item as Record<string, unknown>, column.cell)
+                    : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
+            })
         let addedSubRows = 0
         paged.forEach((tableItem, i) => {
-            const { item, key, group, subRows } = tableItem
+            const { item, key, group, subItems, subRows } = tableItem
             let isOpen: boolean | undefined = undefined
             if (group) {
-                // Only group if the next item is also part of the group
-                if (subRows!.length) {
+                // Only expandable if the next item is also part of the group
+                if (subItems!.length) {
                     isOpen = !!openGroups[group]
                 }
             } else {
                 isOpen = expanded[key] ?? (subRows?.length ? false : undefined)
             }
-            newRows.push({
-                isOpen,
-                selected: selected[key] === true,
-                props: { key, group },
-                cells: columns.map((column) => {
-                    return typeof column.cell === 'string'
-                        ? get(item as Record<string, unknown>, column.cell)
-                        : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
-                }),
-            })
-            if (subRows) {
+            // if there will be a group summary, include first item with the sub items
+            const allSubItems =
+                (group && groupSummaryFn && subItems && subItems!.length && [item].concat(subItems)) || subItems
+            if (group && groupSummaryFn && allSubItems) {
+                const groupSummary = groupSummaryFn(allSubItems.length ? allSubItems : [item])
+                newRows.push({
+                    ...groupSummary,
+                    isOpen,
+                    selected: selected[key] === true,
+                    props: { key, group },
+                })
+            } else {
+                newRows.push({
+                    isOpen,
+                    selected: selected[key] === true,
+                    props: { key, group },
+                    cells: itemToCells(item, key),
+                })
+            }
+            if (allSubItems) {
+                allSubItems.forEach((item) => {
+                    const key = keyFn(item)
+                    newRows.push({
+                        parent: i + addedSubRows,
+                        props: { key },
+                        cells: itemToCells(item, key),
+                    })
+                })
+                addedSubRows += allSubItems.length
+            } else if (subRows) {
                 subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i + addedSubRows }))
                 addedSubRows += subRows.length
             }
         })
         return newRows
-    }, [selected, paged, columns, expanded, openGroups])
+    }, [selected, paged, columns, expanded, openGroups, keyFn])
 
     const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
         if (groupFn) {
