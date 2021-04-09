@@ -16,6 +16,7 @@ describe('AcmInlineStatusGroup', () => {
                 sleep={6}
                 pending={5}
                 unknown={0}
+                detached={7}
                 showZeroes
             />
         )
@@ -26,6 +27,7 @@ describe('AcmInlineStatusGroup', () => {
         expect(getByText(4)).toBeInTheDocument()
         expect(getByText(5)).toBeInTheDocument()
         expect(getByText(6)).toBeInTheDocument()
+        expect(getByText(7)).toBeInTheDocument()
         expect(getByText(0)).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
     })
