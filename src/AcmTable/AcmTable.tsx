@@ -335,7 +335,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
             return tableItem
         })
-        return { tableItems, totalCount: countGroups(tableItems) }
+        return { tableItems, totalCount: groupFn ? countGroups(tableItems) : tableItems.length }
     }, [items, columns, addSubRows, keyFn, groupFn])
 
     const { filtered, filteredCount } = useMemo<{
@@ -351,11 +351,11 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 // TODO use FuseOptionKeyObject to allow for weights
             })
             const filtered = fuse.search<ITableItem<T>>(search).map((result) => result.item)
-            return { filtered, filteredCount: countGroups(filtered) }
+            return { filtered, filteredCount: groupFn ? countGroups(filtered) : filtered.length }
         } else {
             return { filtered: tableItems, filteredCount: totalCount }
         }
-    }, [search, items, tableItems, totalCount, columns])
+    }, [search, items, tableItems, totalCount, columns, groupFn])
 
     // Compensate for off-by-one error in sort column when all items are filtered out
     const adjustedSort =
@@ -391,30 +391,34 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         grouped: ITableItem<T>[]
         itemCount: number
     }>(() => {
-        const grouped: ITableItem<T>[] = []
-        const groupSubRows: { [key: string]: IRow[] } = {}
-        sorted.forEach((tableItem) => {
-            const { key, group, item } = tableItem
-            if (group) {
-                tableItem.subRows = []
-                if (!groupSubRows[group]) {
-                    groupSubRows[group] = tableItem.subRows
-                    grouped.push(tableItem)
+        if (groupFn) {
+            const grouped: ITableItem<T>[] = []
+            const groupSubRows: { [key: string]: IRow[] } = {}
+            sorted.forEach((tableItem) => {
+                const { key, group, item } = tableItem
+                if (group) {
+                    tableItem.subRows = []
+                    if (!groupSubRows[group]) {
+                        groupSubRows[group] = tableItem.subRows
+                        grouped.push(tableItem)
+                    } else {
+                        groupSubRows[group].push({
+                            cells: columns.map((column) => {
+                                return typeof column.cell === 'string'
+                                    ? get(item as Record<string, unknown>, column.cell)
+                                    : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
+                            }),
+                        })
+                    }
                 } else {
-                    groupSubRows[group].push({
-                        cells: columns.map((column) => {
-                            return typeof column.cell === 'string'
-                                ? get(item as Record<string, unknown>, column.cell)
-                                : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
-                        }),
-                    })
+                    grouped.push(tableItem)
                 }
-            } else {
-                grouped.push(tableItem)
-            }
-        })
-        return { grouped, itemCount: grouped.length }
-    }, [sorted, columns])
+            })
+            return { grouped, itemCount: grouped.length }
+        } else {
+            return { grouped: sorted, itemCount: sorted.length }
+        }
+    }, [sorted, columns, groupFn])
 
     const paged = useMemo<ITableItem<T>[]>(() => {
         let start = (page - 1) * perPage

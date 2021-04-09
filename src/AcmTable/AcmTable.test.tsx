@@ -506,10 +506,14 @@ describe('AcmTable', () => {
         expect(getByTestId('expanded')).toBeInTheDocument()
     })
     test('renders with grouping', () => {
-        const { getByTestId } = render(
-            // Group some items by name and some by gender to test single and multiple-item groups
-            <Table groupFn={(item) => (item.uid < 50 ? item.firstName : item.gender)} />
+        const { getByPlaceholderText, getByTestId } = render(
+            // Group some items by name, some by gender, and some not at all to test single-item groups,
+            // multiple-item groups, and ungrouped items
+            <Table groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)} />
         )
         userEvent.click(getByTestId('expandable-toggle0'))
+        // search for 'Male'
+        expect(getByPlaceholderText('Search')).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText('Search'), 'Male')
     })
 })
