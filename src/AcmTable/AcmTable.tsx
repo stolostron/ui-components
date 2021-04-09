@@ -621,7 +621,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
-    const showToolbar = props.showToolbar !== false ? hasItems || props.extraToolbarControls : false
+    const showToolbar = props.showToolbar !== false ? hasItems : false
 
     return (
         <Fragment>
