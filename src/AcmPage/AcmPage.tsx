@@ -1,9 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
+import { Card } from '@material-ui/core'
 import {
     Breadcrumb,
     BreadcrumbItem,
     Button,
+    CardBody,
     Page,
     PageSection,
     PageSectionVariants,
@@ -144,6 +146,16 @@ export function AcmPageHeader(props: {
                     </PageSection>
                 </SplitItem>
             </Split>
+        </PageSection>
+    )
+}
+
+export function AcmPageCard(props: { children: ReactNode }) {
+    return (
+        <PageSection>
+            <Card>
+                <CardBody>{props.children}</CardBody>
+            </Card>
         </PageSection>
     )
 }
