@@ -175,7 +175,7 @@ Page.args = {
     description: 'AcmPage is used with AcmPageHeader and AcmPageContent to consistently layout the page.',
     showBreadcrumb: true,
     showNavigation: true,
-    showSwitch: false,
+    showSwitch: true,
     showControls: false,
     showActions: true,
 }
