@@ -666,7 +666,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 ))}
                             </ToolbarGroup>
                         )}
-                        {bulkActions.length > 0 && (
+                        {Object.keys(selected).length > 0 && bulkActions.length > 0 && (
                             <ToolbarGroup variant="button-group">
                                 <ToolbarItem>
                                     <Dropdown
@@ -697,7 +697,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 </ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {selected && Object.keys(selected).length > 0 && (
+                        {Object.keys(selected).length > 0 && (
                             <ToolbarGroup variant="button-group">
                                 <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
                             </ToolbarGroup>
