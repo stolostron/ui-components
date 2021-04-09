@@ -629,7 +629,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             {showToolbar && (
                 <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
                     <ToolbarContent>
-                        {hasSearch && (
+                        {hasItems && hasSearch && (
                             <ToolbarGroup variant="filter-group">
                                 <ToolbarItem variant="search-filter">
                                     <SearchInput
@@ -643,7 +643,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 </ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {(tableActions.length > 0 || bulkActions.length > 0) && (
+                        {hasItems && (tableActions.length > 0 || bulkActions.length > 0) && (
                             <ToolbarGroup variant="button-group">
                                 <ToolbarItem>
                                     <Dropdown
@@ -704,7 +704,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {(!props.autoHidePagination || filtered.length > perPage) && (
+                        {hasItems && (!props.autoHidePagination || filtered.length > perPage) && (
                             <ToolbarItem alignment={{ default: 'alignRight' }}>
                                 <Pagination
                                     itemCount={itemCount}
