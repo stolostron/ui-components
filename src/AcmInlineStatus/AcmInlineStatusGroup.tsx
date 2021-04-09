@@ -11,6 +11,7 @@ import {
     InProgressIcon,
     AsleepIcon,
 } from '@patternfly/react-icons'
+import { BrokenLinkIcon } from '../AcmIcons/Icons'
 
 type AcmInlineStatusGroupProps = {
     healthy?: number
@@ -19,6 +20,7 @@ type AcmInlineStatusGroupProps = {
     danger?: number
     sleep?: number
     pending?: number
+    detached?: number
     unknown?: number
     showZeroes?: boolean
 }
@@ -58,6 +60,11 @@ export function AcmInlineStatusGroup(props: AcmInlineStatusGroupProps) {
             {show(props.sleep) && (
                 <Label color="purple" icon={<AsleepIcon />}>
                     {props.sleep}
+                </Label>
+            )}
+            {show(props.detached) && (
+                <Label color="grey" icon={<BrokenLinkIcon style={{ width: '18px', verticalAlign: 'sub' }} />}>
+                    {props.detached}
                 </Label>
             )}
             {show(props.pending) && (

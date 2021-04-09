@@ -16,16 +16,18 @@ describe('AcmInlineStatusGroup', () => {
                 sleep={6}
                 pending={5}
                 unknown={0}
+                detached={7}
                 showZeroes
             />
         )
-        expect(getAllByRole('listitem').length).toEqual(7)
+        expect(getAllByRole('listitem').length).toEqual(8)
         expect(getByText(1)).toBeInTheDocument()
         expect(getByText(2)).toBeInTheDocument()
         expect(getByText(3)).toBeInTheDocument()
         expect(getByText(4)).toBeInTheDocument()
         expect(getByText(5)).toBeInTheDocument()
         expect(getByText(6)).toBeInTheDocument()
+        expect(getByText(7)).toBeInTheDocument()
         expect(getByText(0)).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
     })
