@@ -35,8 +35,9 @@ export const AcmVisibilityOffIcon = () => (
     </svg>
 )
 
-export const BrokenLinkIcon = () => (
+export const BrokenLinkIcon = (props: { style?: Record<string, string> }) => (
     <svg
+        style={props.style}
         focusable="false"
         preserveAspectRatio="xMidYMid meet"
         viewBox="0 0 32 32"
