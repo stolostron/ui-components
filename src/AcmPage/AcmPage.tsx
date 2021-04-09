@@ -58,7 +58,12 @@ export function AcmPageHeader(props: {
                         <StackItem>
                             <PageSection
                                 variant={PageSectionVariants.light}
-                                style={{ paddingBottom: props.navigation ? 'inherit' : undefined }}
+                                style={{
+                                    paddingBottom: props.navigation ? 'inherit' : undefined,
+                                    paddingTop: props.breadcrumb
+                                        ? 'var(--pf-c-page__main-breadcrumb--PaddingTop)'
+                                        : undefined,
+                                }}
                             >
                                 <Stack hasGutter>
                                     {props.breadcrumb && (
