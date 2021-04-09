@@ -113,11 +113,9 @@ export function AcmPageHeader(props: {
                 </Split>
             </PageSection>
             {props.navigation && (
-                <div style={{ borderTop: 'thin solid #00000022' }}>
-                    <PageSection variant={PageSectionVariants.light} type="nav" style={{ paddingTop: 0 }}>
-                        {props.navigation}
-                    </PageSection>
-                </div>
+                <PageSection variant={PageSectionVariants.light} type="nav" style={{ paddingTop: 0 }}>
+                    {props.navigation}
+                </PageSection>
             )}
         </Fragment>
     )
