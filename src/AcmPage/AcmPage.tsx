@@ -4,8 +4,6 @@ import {
     Breadcrumb,
     BreadcrumbItem,
     Button,
-    Card,
-    CardBody,
     Page,
     PageSection,
     PageSectionVariants,
@@ -18,7 +16,7 @@ import {
     Title,
 } from '@patternfly/react-core'
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
-import React, { Fragment, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
 import { AcmDrawer, AcmDrawerProvider } from '../AcmDrawer/AcmDrawer'
