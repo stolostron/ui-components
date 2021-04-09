@@ -461,6 +461,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             const allSubItems =
                 (group && groupSummaryFn && subItems && subItems!.length && [item].concat(subItems)) || subItems
             if (group && groupSummaryFn && allSubItems) {
+                // if there are no sub items, pass in single item
                 const groupSummary = groupSummaryFn(allSubItems.length ? allSubItems : [item])
                 newRows.push({
                     ...groupSummary,
