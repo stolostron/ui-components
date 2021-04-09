@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/styles'
 import {
     Dropdown,
     DropdownItem,
-    DropdownSeparator,
     DropdownToggle,
     EmptyState,
     EmptyStateIcon,
@@ -626,10 +625,19 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     return (
         <Fragment>
+            {props.extraToolbarControls && (
+                <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
+                    <ToolbarContent>
+                        <ToolbarGroup alignment={{ default: 'alignRight' }}>
+                            <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
+                        </ToolbarGroup>
+                    </ToolbarContent>
+                </Toolbar>
+            )}
             {showToolbar && (
                 <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
                     <ToolbarContent>
-                        {hasItems && hasSearch && (
+                        {hasSearch && (
                             <ToolbarGroup variant="filter-group">
                                 <ToolbarItem variant="search-filter">
                                     <SearchInput
@@ -643,7 +651,22 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 </ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {hasItems && (tableActions.length > 0 || bulkActions.length > 0) && (
+                        {tableActions.length > 0 && (
+                            <ToolbarGroup variant="button-group">
+                                {tableActions.map((action) => (
+                                    <ToolbarItem key={action.id}>
+                                        <AcmButton
+                                            onClick={action.click}
+                                            isDisabled={action.isDisabled}
+                                            tooltip={action.tooltip}
+                                        >
+                                            {action.title}
+                                        </AcmButton>
+                                    </ToolbarItem>
+                                ))}
+                            </ToolbarGroup>
+                        )}
+                        {bulkActions.length > 0 && (
                             <ToolbarGroup variant="button-group">
                                 <ToolbarItem>
                                     <Dropdown
@@ -653,58 +676,33 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                                 id="toggle-id"
                                                 onToggle={() => setActionsOpen(!actionsOpen)}
                                                 toggleIndicator={CaretDownIcon}
-                                                isPrimary
                                             >
                                                 Actions
                                             </DropdownToggle>
                                         }
                                         isOpen={actionsOpen}
-                                        dropdownItems={[
-                                            ...(tableActions.length > 0
-                                                ? tableActions.map((action) => (
-                                                      <DropdownItem
-                                                          key={action.id}
-                                                          onClick={action.click}
-                                                          isDisabled={action.isDisabled}
-                                                          tooltip={action.tooltip}
-                                                      >
-                                                          {action.title}
-                                                      </DropdownItem>
-                                                  ))
-                                                : []),
-                                            ...(tableActions.length > 0 && bulkActions.length > 0
-                                                ? [<DropdownSeparator key="separator" />]
-                                                : []),
-                                            ...(bulkActions.length > 0
-                                                ? bulkActions.map((action) => (
-                                                      <DropdownItem
-                                                          key={action.id}
-                                                          onClick={() =>
-                                                              action.click(
-                                                                  items!.filter((item) => selected[keyFn(item)])
-                                                              )
-                                                          }
-                                                          isDisabled={
-                                                              action.isDisabled || Object.keys(selected).length === 0
-                                                          }
-                                                          tooltip={action.tooltip}
-                                                      >
-                                                          {action.title}
-                                                      </DropdownItem>
-                                                  ))
-                                                : []),
-                                        ]}
+                                        dropdownItems={bulkActions.map((action) => (
+                                            <DropdownItem
+                                                key={action.id}
+                                                onClick={() =>
+                                                    action.click(items!.filter((item) => selected[keyFn(item)]))
+                                                }
+                                                isDisabled={action.isDisabled || Object.keys(selected).length === 0}
+                                                tooltip={action.tooltip}
+                                            >
+                                                {action.title}
+                                            </DropdownItem>
+                                        ))}
                                     />
                                 </ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {props.extraToolbarControls && <ToolbarGroup>{props.extraToolbarControls}</ToolbarGroup>}
                         {selected && Object.keys(selected).length > 0 && (
                             <ToolbarGroup variant="button-group">
                                 <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {hasItems && (!props.autoHidePagination || filtered.length > perPage) && (
+                        {(!props.autoHidePagination || filtered.length > perPage) && (
                             <ToolbarItem alignment={{ default: 'alignRight' }}>
                                 <Pagination
                                     itemCount={itemCount}

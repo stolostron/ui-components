@@ -185,7 +185,8 @@ describe('AcmTable', () => {
     })
     test('can support table actions', () => {
         const { getByText } = render(<Table />)
-        getByText('Actions').click()
+        expect(getByText('Create address')).toBeVisible()
+        expect(getByText('Create address')).toBeInstanceOf(HTMLButtonElement)
         userEvent.click(getByText('Create address'))
         expect(createAction).toHaveBeenCalled()
     })
