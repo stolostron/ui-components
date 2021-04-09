@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { fitContent, SortByDirection, TableGridBreakpoint } from '@patternfly/react-table'
+import { fitContent, IRow, SortByDirection, TableGridBreakpoint } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { configureAxe } from 'jest-axe'
@@ -39,6 +39,7 @@ describe('AcmTable', () => {
             useSearch?: boolean
             transforms?: boolean
             groupFn?: (item: IExampleData) => string | null
+            groupSummaryFn?: (items: IExampleData[]) => IRow
             gridBreakPoint?: TableGridBreakpoint
         } & Partial<AcmTableProps<IExampleData>>
     ) => {
@@ -506,9 +507,26 @@ describe('AcmTable', () => {
         expect(getByTestId('expanded')).toBeInTheDocument()
     })
     test('renders with grouping', () => {
+        const { getByPlaceholderText, getByTestId } = render(
+            // Group some items by name, some by gender, and some not at all to test single-item groups,
+            // multiple-item groups, and ungrouped items
+            <Table groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)} />
+        )
+        userEvent.click(getByTestId('expandable-toggle0'))
+        // search for 'Male'
+        expect(getByPlaceholderText('Search')).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText('Search'), 'Male')
+    })
+    test('renders with grouping and summary', () => {
         const { getByTestId } = render(
-            // Group some items by name and some by gender to test single and multiple-item groups
-            <Table groupFn={(item) => (item.uid < 50 ? item.firstName : item.gender)} />
+            // Group some items by name, some by gender, and some not at all to test single-item groups,
+            // multiple-item groups, and ungrouped items
+            <Table
+                groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)}
+                groupSummaryFn={(items) => {
+                    return { cells: [{ title: `${items.length} items`, props: { colspan: 8 } }] }
+                }}
+            />
         )
         userEvent.click(getByTestId('expandable-toggle0'))
     })

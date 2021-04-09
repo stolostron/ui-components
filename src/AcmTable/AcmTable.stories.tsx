@@ -27,6 +27,7 @@ export default {
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
+        'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
     },
 }
 
@@ -150,6 +151,40 @@ function TableGroupedStory(args: Record<string, unknown>) {
                 const provider = getProviderForItem(item)
                 return provider !== Provider.other ? provider : null
             }}
+            groupSummaryFn={
+                args['Use groupSummaryFn']
+                    ? (items: IExampleData[]) => {
+                          if (items.length > 1) {
+                              return {
+                                  cells: [
+                                      {
+                                          title: `${items.length} addresses`,
+                                          props: {
+                                              colSpan: 6,
+                                          },
+                                      },
+                                      { title: <AcmInlineProvider provider={getProviderForItem(items[0])} /> },
+                                      { title: '' },
+                                  ],
+                              }
+                          } else {
+                              const { firstName, last_name, email, gender, ip_address, uid } = items[0]
+                              return {
+                                  cells: [
+                                      firstName,
+                                      last_name,
+                                      email,
+                                      gender,
+                                      ip_address,
+                                      uid,
+                                      { title: <AcmInlineProvider provider={getProviderForItem(items[0])} /> },
+                                      { title: getAcmInlineStatusForItem(items[0]) },
+                                  ],
+                              }
+                          }
+                      }
+                    : undefined
+            }
             {...commonProperties(args, (items) => setItems(items), items)}
             gridBreakPoint={TableGridBreakpoint.none}
         />
@@ -301,6 +336,22 @@ function getProviderForItem(item: IExampleData) {
     }
 }
 
+function getAcmInlineStatusForItem(item: IExampleData) {
+    const chr = item.last_name.charCodeAt(0)
+    switch (chr % 5) {
+        case 0:
+            return <AcmInlineStatus type={StatusType.healthy} status="Healthy" />
+        case 1:
+            return <AcmInlineStatus type={StatusType.unknown} status="Unknown" />
+        case 2:
+            return <AcmInlineStatus type={StatusType.warning} status="Warning" />
+        case 3:
+            return <AcmInlineStatus type={StatusType.danger} status="Danger" />
+        default:
+            return <AcmInlineStatus type={StatusType.progress} status="Progressing" />
+    }
+}
+
 const columns: IAcmTableColumn<IExampleData>[] = [
     {
         header: 'First Name',
@@ -348,21 +399,7 @@ const columns: IAcmTableColumn<IExampleData>[] = [
     },
     {
         header: 'Status',
-        cell: (item) => {
-            const chr = item.last_name.charCodeAt(0)
-            switch (chr % 5) {
-                case 0:
-                    return <AcmInlineStatus type={StatusType.healthy} status="Healthy" />
-                case 1:
-                    return <AcmInlineStatus type={StatusType.unknown} status="Unknown" />
-                case 2:
-                    return <AcmInlineStatus type={StatusType.warning} status="Warning" />
-                case 3:
-                    return <AcmInlineStatus type={StatusType.danger} status="Danger" />
-                default:
-                    return <AcmInlineStatus type={StatusType.progress} status="Progressing" />
-            }
-        },
+        cell: getAcmInlineStatusForItem,
     },
 ]
 
