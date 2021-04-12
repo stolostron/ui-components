@@ -55,7 +55,7 @@ export function AcmPageHeader(props: {
             <Split>
                 <SplitItem isFilled>
                     <Stack hasGutter>
-                        <StackItem>
+                        <StackItem isFilled>
                             <PageSection
                                 variant={PageSectionVariants.light}
                                 style={{
@@ -71,7 +71,7 @@ export function AcmPageHeader(props: {
                                             <AcmBreadcrumb breadcrumb={props.breadcrumb} />
                                         </StackItem>
                                     )}
-                                    <StackItem>
+                                    <StackItem isFilled>
                                         <Split hasGutter>
                                             <SplitItem>
                                                 <TextContent>
