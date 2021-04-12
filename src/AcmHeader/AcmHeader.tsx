@@ -508,7 +508,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                     />
                     <Button
                         aria-label="search-button"
-                        onClick={() => window.open('/search/', '_self')}
+                        onClick={() => window.open('/search', '_self')}
                         variant="link"
                         icon={
                             <svg width="18px" height="19px" viewBox="0 0 18 19" version="1.1">
