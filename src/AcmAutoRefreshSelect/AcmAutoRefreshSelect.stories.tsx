@@ -13,7 +13,7 @@ const meta: Meta = {
 }
 export default meta
 
-const INITIAL_REFRESH_TIME = 15
+const INITIAL_POLL_INTERVAL = 30
 const REFRESH_INTERVALS = [1, 30, 60, 5 * 60, 30 * 60, 0]
 const REFRESH_INTERVAL_COOKIE = 'acm-page-refresh-interval'
 
@@ -26,7 +26,7 @@ export const AutoRefreshSelect = () => (
             }}
             refreshIntervals={REFRESH_INTERVALS}
             refreshIntervalCookie={REFRESH_INTERVAL_COOKIE}
-            initRefreshTime={INITIAL_REFRESH_TIME}
+            initPollInterval={INITIAL_POLL_INTERVAL}
         />
     </AcmPageCard>
 )
