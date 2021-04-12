@@ -190,47 +190,20 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Create address'))
         expect(createAction).toHaveBeenCalled()
     })
-    test('can support bulk table actions with select all', () => {
-        const { getByLabelText, getByText, getAllByRole, queryAllByText, container } = render(
-            <Table useBulkActions={true} />
+
+    test('can support bulk table actions with single selection', () => {
+        const { getByText, getAllByRole, queryAllByText } = render(
+            <Table useBulkActions={true} useTableActions={false} />
         )
-
-        userEvent.click(getByLabelText('Select'))
-        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[1]) // Select page
-        expect(getByText('10 selected')).toBeInTheDocument()
-
-        userEvent.click(getByLabelText('Select'))
-        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[2]) // Select all
-        expect(getByText('105 selected')).toBeInTheDocument()
-
-        userEvent.click(getByLabelText('Select'))
-        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[0]) // Select None
-        expect(queryAllByText('105 selected')).toHaveLength(0)
-
-        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
-        expect(getByText('105 selected')).toBeInTheDocument()
-
-        userEvent.click(getAllByRole('checkbox')[0]) // Select none by checkbox
-        expect(queryAllByText('105 selected')).toHaveLength(0)
-
-        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
-        expect(getByText('105 selected')).toBeInTheDocument()
-
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(getByText('1 selected')).toBeInTheDocument()
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(queryAllByText('1 selected')).toHaveLength(0)
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(getByText('1 selected')).toBeInTheDocument()
+        getByText('Actions').click()
         userEvent.click(getByText('Delete items'))
         expect(bulkDeleteAction).toHaveBeenCalled()
-    })
-    test('can support bulk table actions with single selection', () => {
-        const { queryByText, getAllByRole, getByLabelText, container } = render(<Table useBulkActions={true} />)
-        expect(queryByText('Delete items')).toBeNull()
-        userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeDefined()
-        userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeNull()
-        userEvent.click(getAllByRole('checkbox')[1])
-        expect(queryByText('Delete items')).toBeDefined()
-        userEvent.click(getByLabelText('Select'))
-        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[2])
-        expect(queryByText('Delete items')).toBeDefined()
     })
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
