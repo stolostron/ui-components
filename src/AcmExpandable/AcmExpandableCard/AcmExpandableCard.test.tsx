@@ -8,13 +8,15 @@ import { AcmExpandableCard } from './AcmExpandableCard'
 
 describe('AcmExpandableCard', () => {
     test('renders', async () => {
-        const { container, getByText, getByRole } = render(<AcmExpandableCard title="Status">Body</AcmExpandableCard>)
+        const { container, getByText, getByRole, queryByText } = render(
+            <AcmExpandableCard title="Status">Body</AcmExpandableCard>
+        )
         expect(await axe(container)).toHaveNoViolations()
         expect(getByText('Status')).toBeInTheDocument()
         expect(getByText('Body')).toBeInTheDocument()
         userEvent.click(getByRole('button'))
-        await waitFor(() => expect('pf-c-card.pf-m-expanded').toBeNull)
+        await waitFor(() => expect(queryByText('Body')).toBeNull())
         userEvent.click(getByRole('button'))
-        await waitFor(() => expect('pf-c-card.pf-m-expanded').toBeTruthy)
+        await waitFor(() => expect(getByText('Body')).toBeInTheDocument())
     })
 })

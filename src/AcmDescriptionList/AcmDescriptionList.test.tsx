@@ -24,7 +24,7 @@ describe('AcmDescriptionList', () => {
         expect(queryByText('Name')).toBeInTheDocument()
         expect(queryByText('Namespace')).toBeInTheDocument()
         userEvent.click(getByRole('button'))
-        expect('pf-c-card.pf-m-expanded').toBeNull
+        expect(queryByText('Name')).toBeNull()
     })
     test('has zero accessibility defects', async () => {
         const { container } = render(<DescriptionList leftItems={leftItems} rightItems={rightItems} />)
