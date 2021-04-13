@@ -4,7 +4,7 @@ import { Button, ButtonProps, Form, FormProps } from '@patternfly/react-core'
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { AcmAlertContext } from '../AcmAlert/AcmAlert'
 
-export const FormContext = createContext<{
+export const ValidationContext = createContext<{
     readonly validate: boolean
     setValidate: (validate: boolean) => void
     readonly errors: { [id: string]: string | undefined }
@@ -20,7 +20,12 @@ export const FormContext = createContext<{
     setReadOnly: noop,
 })
 
-export function AcmFormProvider(props: { children: ReactNode }) {
+/**
+ * @deprecated Deprecated - use ValidationContext instead
+ */
+export const FormContext = ValidationContext
+
+export function AcmValidationProvider(props: { children: ReactNode }) {
     const [validate, setValidate] = useState(false)
     const [errors, setErrors] = useState<{ [id: string]: string | undefined }>({})
     const [isReadOnly, setReadOnly] = useState<boolean>(false)
@@ -38,30 +43,35 @@ export function AcmFormProvider(props: { children: ReactNode }) {
     // }, [validate])
 
     return (
-        <FormContext.Provider
+        <ValidationContext.Provider
             value={{ validate, setValidate, errors, setError, isReadOnly: isReadOnly, setReadOnly: setReadOnly }}
         >
             {props.children}
-        </FormContext.Provider>
+        </ValidationContext.Provider>
     )
 }
 
-export function useFormContext() {
-    return useContext(FormContext)
+/**
+ * @deprecated Deprecated - use ValidationContext instead
+ */
+export const AcmFormProvider = AcmValidationProvider
+
+export function useValidationContext() {
+    return useContext(ValidationContext)
 }
 
 export function AcmForm(props: FormProps) {
     return (
-        <AcmFormProvider>
+        <AcmValidationProvider>
             <Form {...props} onSubmit={/* istanbul ignore next */ (e) => e.preventDefault()} />
-        </AcmFormProvider>
+        </AcmValidationProvider>
     )
 }
 
 type AcmSubmitProps = ButtonProps & { label?: string; processingLabel?: string }
 
 export function AcmSubmit(props: AcmSubmitProps) {
-    const context = useContext(FormContext)
+    const context = useContext(ValidationContext)
     const alertContext = useContext(AcmAlertContext)
     const [isDisabled, setDisabled] = useState(false)
     const [isLoading, setIsLoading] = React.useState(false)
