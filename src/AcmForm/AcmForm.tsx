@@ -25,7 +25,7 @@ export const ValidationContext = createContext<{
  */
 export const FormContext = ValidationContext
 
-export function AcmFormProvider(props: { children: ReactNode }) {
+export function AcmValidationProvider(props: { children: ReactNode }) {
     const [validate, setValidate] = useState(false)
     const [errors, setErrors] = useState<{ [id: string]: string | undefined }>({})
     const [isReadOnly, setReadOnly] = useState<boolean>(false)
@@ -51,15 +51,20 @@ export function AcmFormProvider(props: { children: ReactNode }) {
     )
 }
 
+/**
+ * @deprecated Deprecated - use ValidationContext instead
+ */
+export const AcmFormProvider = AcmValidationProvider
+
 export function useValidationContext() {
     return useContext(ValidationContext)
 }
 
 export function AcmForm(props: FormProps) {
     return (
-        <AcmFormProvider>
+        <AcmValidationProvider>
             <Form {...props} onSubmit={/* istanbul ignore next */ (e) => e.preventDefault()} />
-        </AcmFormProvider>
+        </AcmValidationProvider>
     )
 }
 
