@@ -46,7 +46,7 @@ describe('AcmAutoRefreshSelect ', () => {
         expect(window.localStorage.setItem).toHaveBeenCalledWith('acm-page-refresh-interval', '60000')
     })
 
-    test('should use poll interrval from localStorage', async () => {
+    test('should use poll interval from localStorage', async () => {
         Object.defineProperty(window, 'localStorage', {
             value: {
                 getItem: jest.fn(() => '60000'),
@@ -67,6 +67,52 @@ describe('AcmAutoRefreshSelect ', () => {
         expect(screen.getByText('Refresh every 1s')).toBeInTheDocument()
         await new Promise((resolve) => setTimeout(resolve, 1000))
         expect(refetch).toHaveBeenCalledTimes(2)
+    })
+
+    test('uses custom refreshIntervalCookie if passed as prop', async () => {
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: jest.fn(() => 'test-cookie'),
+                setItem: jest.fn(),
+            },
+        })
+        render(<AcmAutoRefreshSelect refetch={refetch} refreshIntervalCookie={'test-cookie'} />)
+
+        expect(window.localStorage.getItem).toReturnWith('test-cookie')
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+
+    test('uses custom initPollInterval if value passed as prop', async () => {
+        const INITIAL_POLL_INTERVAL = 30
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: jest.fn(() => INITIAL_POLL_INTERVAL * 1000),
+                setItem: jest.fn(() => INITIAL_POLL_INTERVAL * 1000),
+            },
+        })
+        render(<AcmAutoRefreshSelect refetch={refetch} initPollInterval={INITIAL_POLL_INTERVAL} />)
+
+        expect(screen.getByText('Refresh every 30s')).toBeInTheDocument()
+        expect(window.localStorage.getItem).toReturnWith(30000)
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+    })
+
+    test('selected poll interval is saved to local storage', async () => {
+        Object.defineProperty(window, 'localStorage', {
+            value: {
+                getItem: jest.fn(),
+                setItem: jest.fn(() => 'test-cookie'),
+            },
+        })
+        const { getByTestId } = render(
+            <AcmAutoRefreshSelect refetch={refetch} refreshIntervalCookie={'test-cookie'} initPollInterval={30} />
+        )
+        userEvent.click(getByTestId('refresh-toggle'))
+        await waitFor(() => expect(getByTestId('refresh-30s')).toBeInTheDocument())
+        userEvent.click(getByTestId('refresh-30s'))
+        expect(refetch).toHaveBeenCalled()
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+        expect(window.localStorage.setItem).toHaveBeenCalledWith('test-cookie', '30000')
     })
 
     test('refetch is not fired when the browser is hidden', async () => {
