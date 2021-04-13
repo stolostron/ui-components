@@ -3,7 +3,7 @@
 import { FormGroup, Popover, TextInput, TextInputProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
-import { useFormContext } from '../AcmForm/AcmForm'
+import { useValidationContext } from '../AcmForm/AcmForm'
 
 type AcmTextInputProps = TextInputProps & {
     id: string
@@ -14,9 +14,9 @@ type AcmTextInputProps = TextInputProps & {
     helperText?: ReactNode
 }
 export function AcmTextInput(props: AcmTextInputProps) {
-    const formContext = useFormContext()
-    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
-    const [error, setError] = useState<string>()
+    const ValidationContext = useValidationContext()
+    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning'>('default')
+    const [error, setError] = useState<string>('')
     const { validation, labelHelp, labelHelpTitle, helperText, ...textInputProps } = props
 
     useLayoutEffect(() => {
@@ -32,16 +32,16 @@ export function AcmTextInput(props: AcmTextInputProps) {
                 error = validation(props.value as string)
             }
         }
-        setError(error)
-        if (formContext.validate) {
-            setValidated(error ? 'error' : undefined)
+        setError(error ?? '')
+        if (ValidationContext.validate) {
+            setValidated(error ? 'error' : 'default')
         }
-        formContext.setError(props.id, error)
+        ValidationContext.setError(props.id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
-        setValidated(error ? 'error' : undefined)
-    }, [formContext.validate])
+        setValidated(error ? 'error' : 'default')
+    }, [ValidationContext.validate])
 
     return (
         <FormGroup
@@ -79,7 +79,7 @@ export function AcmTextInput(props: AcmTextInputProps) {
             <TextInput
                 {...textInputProps}
                 validated={validated}
-                isDisabled={props.isDisabled || formContext.isReadOnly}
+                isDisabled={props.isDisabled || ValidationContext.isReadOnly}
             />
         </FormGroup>
     )

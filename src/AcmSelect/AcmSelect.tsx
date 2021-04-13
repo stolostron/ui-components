@@ -3,7 +3,7 @@
 import { FormGroup, Popover, Select, SelectProps, SelectVariant } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
-import { useFormContext } from '../AcmForm/AcmForm'
+import { useValidationContext } from '../AcmForm/AcmForm'
 
 type AcmSelectProps = Pick<
     SelectProps,
@@ -23,9 +23,9 @@ type AcmSelectProps = Pick<
 
 export function AcmSelect(props: AcmSelectProps) {
     const [open, setOpen] = useState(false)
-    const formContext = useFormContext()
-    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
-    const [error, setError] = useState<string>()
+    const ValidationContext = useValidationContext()
+    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning'>('default')
+    const [error, setError] = useState<string>('')
     const {
         validation,
         labelHelp,
@@ -53,17 +53,17 @@ export function AcmSelect(props: AcmSelectProps) {
                 error = validation(props.value)
             }
         }
-        setError(error)
+        setError(error ?? '')
         /* istanbul ignore next */
-        if (formContext.validate) {
-            setValidated(error ? 'error' : undefined)
+        if (ValidationContext.validate) {
+            setValidated(error ? 'error' : 'default')
         }
-        formContext.setError(props.id, error)
+        ValidationContext.setError(props.id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
-        setValidated(error ? 'error' : undefined)
-    }, [formContext.validate])
+        setValidated(error ? 'error' : 'default')
+    }, [ValidationContext.validate])
 
     return (
         <FormGroup
@@ -124,7 +124,7 @@ export function AcmSelect(props: AcmSelectProps) {
                         <span style={{ color: '#666' }}>{placeholder}</span>
                     )
                 }
-                isDisabled={props.isDisabled || formContext.isReadOnly}
+                isDisabled={props.isDisabled || ValidationContext.isReadOnly}
             />
             {validated === 'error' ? (
                 <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px' }}></div>

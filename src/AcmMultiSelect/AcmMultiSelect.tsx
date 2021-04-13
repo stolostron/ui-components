@@ -3,7 +3,7 @@
 import { FormGroup, Popover, Select, SelectOption, SelectProps, SelectVariant } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
-import { useFormContext } from '../AcmForm/AcmForm'
+import { useValidationContext } from '../AcmForm/AcmForm'
 
 type AcmMultiSelectProps = Pick<
     SelectProps,
@@ -23,9 +23,9 @@ type AcmMultiSelectProps = Pick<
 
 export function AcmMultiSelect(props: AcmMultiSelectProps) {
     const [open, setOpen] = useState(false)
-    const formContext = useFormContext()
-    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
-    const [error, setError] = useState<string>()
+    const ValidationContext = useValidationContext()
+    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning'>('default')
+    const [error, setError] = useState<string>('')
     const {
         validation,
         labelHelp,
@@ -56,16 +56,16 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
                 error = validation(props.value)
             }
         }
-        setError(error)
-        if (formContext.validate) {
-            setValidated(error ? 'error' : undefined)
+        setError(error ?? '')
+        if (ValidationContext.validate) {
+            setValidated(error ? 'error' : 'default')
         }
-        formContext.setError(props.id, error)
+        ValidationContext.setError(props.id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
-        setValidated(error ? 'error' : undefined)
-    }, [formContext.validate])
+        setValidated(error ? 'error' : 'default')
+    }, [ValidationContext.validate])
 
     useLayoutEffect(() => {
         if (value === undefined || value.length === 0) {
@@ -160,7 +160,7 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
                         : undefined
                 }
                 placeholderText={placeholderText}
-                isDisabled={props.isDisabled || formContext.isReadOnly}
+                isDisabled={props.isDisabled || ValidationContext.isReadOnly}
             />
             {validated === 'error' ? (
                 <div style={{ borderTop: '1.75px solid red', paddingBottom: '6px' }}></div>

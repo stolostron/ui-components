@@ -3,7 +3,7 @@
 import { FormGroup, Popover, TextArea, TextAreaProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
-import { useFormContext } from '../AcmForm/AcmForm'
+import { useValidationContext } from '../AcmForm/AcmForm'
 
 type AcmTextAreaProps = TextAreaProps & {
     id: string
@@ -15,9 +15,9 @@ type AcmTextAreaProps = TextAreaProps & {
 }
 
 export function AcmTextArea(props: AcmTextAreaProps) {
-    const formContext = useFormContext()
-    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
-    const [error, setError] = useState<string>()
+    const ValidationContext = useValidationContext()
+    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning'>('default')
+    const [error, setError] = useState<string>('')
     const { validation, labelHelp, labelHelpTitle, helperText, ...textAreaProps } = props
 
     useLayoutEffect(() => {
@@ -33,16 +33,16 @@ export function AcmTextArea(props: AcmTextAreaProps) {
                 error = validation(props.value as string)
             }
         }
-        setError(error)
-        if (formContext.validate) {
-            setValidated(error ? 'error' : undefined)
+        setError(error ?? '')
+        if (ValidationContext.validate) {
+            setValidated(error ? 'error' : 'default')
         }
-        formContext.setError(props.id, error)
+        ValidationContext.setError(props.id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
-        setValidated(error ? 'error' : undefined)
-    }, [formContext.validate])
+        setValidated(error ? 'error' : 'default')
+    }, [ValidationContext.validate])
 
     return (
         <FormGroup
@@ -79,7 +79,7 @@ export function AcmTextArea(props: AcmTextAreaProps) {
                 resizeOrientation={
                     /* istanbul ignore next */ props.resizeOrientation ? props.resizeOrientation : 'vertical'
                 }
-                disabled={formContext.isReadOnly}
+                disabled={ValidationContext.isReadOnly}
             />
         </FormGroup>
     )

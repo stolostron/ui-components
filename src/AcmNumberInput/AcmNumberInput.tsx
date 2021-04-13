@@ -3,7 +3,7 @@
 import { FormGroup, Popover, NumberInput, NumberInputProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
-import { useFormContext } from '../AcmForm/AcmForm'
+import { useValidationContext } from '../AcmForm/AcmForm'
 
 type AcmNumberInputProps = NumberInputProps & {
     id: string
@@ -15,9 +15,9 @@ type AcmNumberInputProps = NumberInputProps & {
 }
 
 export function AcmNumberInput(props: AcmNumberInputProps) {
-    const formContext = useFormContext()
-    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning' | undefined>()
-    const [error, setError] = useState<string>()
+    const ValidationContext = useValidationContext()
+    const [validated, setValidated] = useState<'default' | 'success' | 'error' | 'warning'>('default')
+    const [error, setError] = useState<string>('')
     const { validation, labelHelp, labelHelpTitle, helperText, ...numberInputProps } = props
 
     useLayoutEffect(() => {
@@ -34,17 +34,17 @@ export function AcmNumberInput(props: AcmNumberInputProps) {
                 error = validation(props.value as number)
             }
         }
-        setError(error)
-        if (formContext.validate) {
+        setError(error ?? '')
+        if (ValidationContext.validate) {
             /* istanbul ignore next-line */
-            setValidated(error ? 'error' : undefined)
+            setValidated(error ? 'error' : 'default')
         }
-        formContext.setError(props.id, error)
+        ValidationContext.setError(props.id, error)
     }, [props.value, props.hidden])
 
     useLayoutEffect(() => {
-        setValidated(error ? 'error' : undefined)
-    }, [formContext.validate])
+        setValidated(error ? 'error' : 'default')
+    }, [ValidationContext.validate])
 
     return (
         <FormGroup
@@ -84,7 +84,7 @@ export function AcmNumberInput(props: AcmNumberInputProps) {
                 inputName={props.id}
                 inputAriaLabel={props.label}
                 // validated={validated} not supported now
-                isDisabled={props.isDisabled || formContext.isReadOnly}
+                isDisabled={props.isDisabled || ValidationContext.isReadOnly}
             />
         </FormGroup>
     )
