@@ -422,7 +422,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
     test('renders a table with expandable rows', () => {
-        const { getByTestId } = render(
+        const expandedDeleteAction = jest.fn()
+        const { getAllByLabelText, getByRole, getByTestId, getByText } = render(
             <AcmTable<IExampleData>
                 plural="addresses"
                 showToolbar={false}
@@ -474,13 +475,29 @@ describe('AcmTable', () => {
                     },
                 ]}
                 keyFn={(item: IExampleData) => item.uid.toString()}
+                rowActions={[
+                    {
+                        id: 'delete',
+                        title: 'Delete item',
+                        click: () => {
+                            expandedDeleteAction()
+                        },
+                    },
+                ]}
             />
         )
         userEvent.click(getByTestId('expandable-toggle0'))
         expect(getByTestId('expanded')).toBeInTheDocument()
+
+        // Run delete action for code coverage (no delete support on expanded content)
+        userEvent.click(getAllByLabelText('Actions')[1])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Delete item')).toBeVisible()
+        userEvent.click(getByText('Delete item'))
+        expect(expandedDeleteAction).not.toHaveBeenCalled()
     })
     test('renders with grouping', () => {
-        const { getByPlaceholderText, getByTestId } = render(
+        const { getAllByLabelText, getByPlaceholderText, getByRole, getByTestId, getByText } = render(
             // Group some items by name, some by gender, and some not at all to test single-item groups,
             // multiple-item groups, and ungrouped items
             <Table groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)} />
@@ -489,6 +506,12 @@ describe('AcmTable', () => {
         // search for 'Male'
         expect(getByPlaceholderText('Search')).toBeInTheDocument()
         userEvent.type(getByPlaceholderText('Search'), 'Male')
+
+        // Run delete action for code coverage
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Delete item')).toBeVisible()
+        userEvent.click(getByText('Delete item'))
     })
     test('renders with grouping and summary', () => {
         const { getByTestId } = render(

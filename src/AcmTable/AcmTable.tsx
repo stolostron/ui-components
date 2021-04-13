@@ -22,6 +22,7 @@ import {
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
     IRow,
+    IRowData,
     ISortBy,
     ITransform,
     nowrap,
@@ -610,9 +611,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const actions = rowActions.map((rowAction) => {
         return {
             title: rowAction.title,
-            onClick: (_event: React.MouseEvent, rowId: number) => {
-                /* istanbul ignore else */
-                if (paged) {
+            onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                if (groupFn || addSubRows) {
+                    const tableItem =
+                        rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
+                    if (tableItem) {
+                        rowAction.click(tableItem.item)
+                    }
+                } else {
                     rowAction.click(paged[rowId].item)
                 }
             },
