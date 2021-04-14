@@ -35,7 +35,7 @@ export function AcmExpandableCard(props: {
     id?: string
 }) {
     const acmCardID = window.location.href + props.id
-    localStorage.getItem(acmCardID) ? localStorage.getItem(acmCardID) : localStorage.setItem(acmCardID, 'show')
+    localStorage.getItem(acmCardID) ?? localStorage.setItem(acmCardID, 'show')
 
     const [open, setOpen] = useState<boolean>(localStorage.getItem(acmCardID) === 'show')
     const classes = useStyles()
