@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     },
     body: {
         padding: '32px 24px',
-        '& div': {
+        '& > .pf-c-card__body': {
             padding: '0px',
         },
     },
