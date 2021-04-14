@@ -11,16 +11,20 @@ const useStyles = makeStyles({
         '& > .pf-c-card__body': {
             padding: '0 !important',
         },
+        '& > .pf-c-card__expandable-content': {
+            padding: '0px',
+        },
     },
     card: {
         height: '159px',
         padding: '32px 0 24px 24px',
-        borderTop: '1px solid rgba(0,0,0,0.1)',
         borderLeft: '1px solid rgba(0,0,0,0.1)',
         marginTop: '-1px',
     },
+    cardFirst: {
+        borderLeft: '0',
+    },
     countContainer: {
-        marginBottom: '8px',
         fontSize: '36px',
     },
     count: {
@@ -88,7 +92,7 @@ export const AcmCountCardSection = (props: AcmCountCardSection) => {
                             {props.loading ? (
                                 <LoadingCard {...card} loadingAriaLabel={props.loadingAriaLabel} />
                             ) : (
-                                <div id={card.id} className={classes.card}>
+                                <div id={card.id} className={`${classes.card} ${i === 0 ? classes.cardFirst : ''}`}>
                                     <div className={classes.countContainer}>
                                         {card.countClick && card.count > 0 ? (
                                             <a
