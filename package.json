@@ -1,6 +1,6 @@
 {
     "name": "@open-cluster-management/ui-components",
-    "version": "0.55.0",
+    "version": "0.56.0",
     "description": "UI component library for open cluster management",
     "license": "Apache-2.0",
     "main": "lib/index.js",
