@@ -1,10 +1,10 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { Card } from '@material-ui/core'
 import {
     Breadcrumb,
     BreadcrumbItem,
     Button,
+    Card,
     CardBody,
     Page,
     PageSection,
