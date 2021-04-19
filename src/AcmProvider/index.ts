@@ -7,6 +7,7 @@ export * from './AcmInlineProvider/AcmInlineProvider'
 
 export enum Provider {
     redhatcloud = 'redhatcloud',
+    ansible = 'ansible',
     openstack = 'openstack',
     aws = 'aws',
     gcp = 'gcp',
@@ -19,6 +20,7 @@ export enum Provider {
 
 export const ProviderShortTextMap = {
     [Provider.redhatcloud]: 'OCM',
+    [Provider.ansible]: 'ANS',
     [Provider.openstack]: 'OpenStack',
     [Provider.aws]: 'Amazon',
     [Provider.gcp]: 'Google',
@@ -31,6 +33,7 @@ export const ProviderShortTextMap = {
 
 export const ProviderLongTextMap = {
     [Provider.redhatcloud]: 'Red Hat OpenShift Cluster Manager',
+    [Provider.ansible]: 'Red Hat Ansible Automation Platform',
     [Provider.openstack]: 'Red Hat OpenStack',
     [Provider.aws]: 'Amazon Web Services',
     [Provider.gcp]: 'Google Cloud Platform',
@@ -43,6 +46,7 @@ export const ProviderLongTextMap = {
 
 export const ProviderIconMap = {
     [Provider.redhatcloud]: AcmIconVariant.redhat,
+    [Provider.ansible]: AcmIconVariant.redhat,
     [Provider.openstack]: AcmIconVariant.redhat,
     [Provider.aws]: AcmIconVariant.aws,
     [Provider.gcp]: AcmIconVariant.gcp,
