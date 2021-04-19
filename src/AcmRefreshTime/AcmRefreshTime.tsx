@@ -16,7 +16,6 @@ const useStyles = makeStyles({
         justifyContent: 'flex-end',
         alignItems: 'center',
         color: 'var(--pf-global--Color--200)',
-        fontFamily: 'RedHatText',
         fontSize: '10px',
         lineHeight: '20px',
 
