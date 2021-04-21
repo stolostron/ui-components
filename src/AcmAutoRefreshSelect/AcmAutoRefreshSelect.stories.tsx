@@ -1,10 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React from 'react'
 import { Meta } from '@storybook/react'
-import { AcmAutoRefreshSelect } from './AcmAutoRefreshSelect'
+import React from 'react'
 import { AcmPageCard } from '../AcmPage/AcmPage'
+import { AcmAutoRefreshSelect } from './AcmAutoRefreshSelect'
 
 const meta: Meta = {
     title: 'AutoRefreshSelect',

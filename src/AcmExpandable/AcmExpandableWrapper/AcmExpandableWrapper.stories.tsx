@@ -1,11 +1,10 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React from 'react'
 import { Meta } from '@storybook/react'
-import { AcmExpandableWrapper } from './AcmExpandableWrapper'
-import { AcmTile } from '../../AcmTile/AcmTile'
+import React from 'react'
 import { AcmCountCard } from '../../AcmCountCard/AcmCountCard'
+import { AcmTile } from '../../AcmTile/AcmTile'
+import { AcmExpandableWrapper } from './AcmExpandableWrapper'
 const meta: Meta = {
     title: 'Expandable',
     component: AcmExpandableWrapper,

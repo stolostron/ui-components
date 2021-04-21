@@ -1,10 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React from 'react'
 import { Meta } from '@storybook/react'
-import { AcmRefreshTime } from './AcmRefreshTime'
+import React from 'react'
 import { AcmPageCard } from '../AcmPage/AcmPage'
+import { AcmRefreshTime } from './AcmRefreshTime'
 
 const meta: Meta = {
     title: 'RefreshTime',
