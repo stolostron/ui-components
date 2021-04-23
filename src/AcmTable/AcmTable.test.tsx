@@ -32,6 +32,7 @@ describe('AcmTable', () => {
     const testItems = exampleData.slice(0, 105)
     const Table = (
         props: {
+            noBorders?: boolean
             useTableActions?: boolean
             useRowActions?: boolean
             useBulkActions?: boolean

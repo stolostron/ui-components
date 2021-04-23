@@ -254,7 +254,7 @@ function commonProperties(
     items: IExampleData[] | undefined
 ) {
     return {
-        noBorders: args['Remove borders'],
+        noBorders: !!args['Remove borders'],
         tableActions: args['Include tableActions']
             ? [
                   {
