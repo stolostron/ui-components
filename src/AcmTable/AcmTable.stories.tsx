@@ -28,6 +28,7 @@ export default {
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
+        'Remove borders': { control: { type: 'boolean' }, defaultValue: false },
     },
 }
 
@@ -253,6 +254,7 @@ function commonProperties(
     items: IExampleData[] | undefined
 ) {
     return {
+        noBorders: args['Remove borders'],
         tableActions: args['Include tableActions']
             ? [
                   {

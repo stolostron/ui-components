@@ -206,6 +206,7 @@ export interface AcmTableProps<T> {
     gridBreakPoint?: TableGridBreakpoint
     perPageOptions?: PerPageOptions[]
     autoHidePagination?: boolean
+    noBorders?: boolean
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const {
@@ -777,6 +778,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
                                 }
                                 onCollapse={onCollapse}
+                                borders={!props.noBorders}
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
                             >
