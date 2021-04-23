@@ -32,6 +32,7 @@ describe('AcmTable', () => {
     const testItems = exampleData.slice(0, 105)
     const Table = (
         props: {
+            noBorders?: boolean
             useTableActions?: boolean
             useRowActions?: boolean
             useBulkActions?: boolean
@@ -518,6 +519,7 @@ describe('AcmTable', () => {
             // Group some items by name, some by gender, and some not at all to test single-item groups,
             // multiple-item groups, and ungrouped items
             <Table
+                noBorders
                 groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)}
                 groupSummaryFn={(items) => {
                     return { cells: [{ title: `${items.length} items`, props: { colspan: 8 } }] }
