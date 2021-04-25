@@ -18,29 +18,34 @@ import {
     Title,
 } from '@patternfly/react-core'
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
-import React, { ReactNode } from 'react'
+import React, { Fragment, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
 import { AcmDrawer, AcmDrawerProvider } from '../AcmDrawer/AcmDrawer'
 import { AcmErrorBoundary } from '../AcmErrorBoundary/AcmErrorBoundary'
-import { AcmScrollable } from '../AcmScrollable/AcmScrollable'
 
-export function AcmPage(props: { children: ReactNode; hasDrawer?: boolean }) {
+export function AcmPage(props: { header: ReactNode; children: ReactNode; hasDrawer?: boolean }) {
     /* istanbul ignore if */
     if (props.hasDrawer) {
         return (
             <AcmDrawerProvider>
                 <AcmDrawer>
-                    <Page>{props.children}</Page>
+                    <Page additionalGroupedContent={<Fragment>{props.header}</Fragment>} groupProps={{ sticky: 'top' }}>
+                        {props.children}
+                    </Page>
                 </AcmDrawer>
             </AcmDrawerProvider>
         )
     } else {
-        return <Page>{props.children}</Page>
+        return (
+            <Page additionalGroupedContent={<Fragment>{props.header}</Fragment>} groupProps={{ sticky: 'top' }}>
+                {props.children}
+            </Page>
+        )
     }
 }
 
-export function AcmPageHeader(props: {
+export interface AcmPageHeaderProps {
     title: string
     titleTooltip?: string | React.ReactNode
     description?: string | React.ReactNode
@@ -49,7 +54,9 @@ export function AcmPageHeader(props: {
     controls?: React.ReactNode
     switches?: React.ReactNode
     actions?: React.ReactNode
-}) {
+}
+
+export function AcmPageHeader(props: AcmPageHeaderProps) {
     return (
         <PageSection variant={PageSectionVariants.light} padding={{ default: 'noPadding' }}>
             <Split>
@@ -119,7 +126,11 @@ export function AcmPageHeader(props: {
                         </StackItem>
                         {props.navigation && (
                             <StackItem>
-                                <PageSection variant={PageSectionVariants.light} type="nav" style={{ paddingTop: 0 }}>
+                                <PageSection
+                                    variant={PageSectionVariants.light}
+                                    type="nav"
+                                    style={{ paddingTop: 0, paddingBottom: 0 }}
+                                >
                                     {props.navigation}
                                 </PageSection>
                             </StackItem>
@@ -202,7 +213,7 @@ export function AcmPageContent(props: AcmPageContentProps) {
         <AcmErrorBoundary key={props.id}>
             <AcmAlertProvider>
                 <AcmAlertGroup isInline canClose />
-                <AcmScrollable borderTop>{props.children}</AcmScrollable>
+                {props.children}
             </AcmAlertProvider>
         </AcmErrorBoundary>
     )

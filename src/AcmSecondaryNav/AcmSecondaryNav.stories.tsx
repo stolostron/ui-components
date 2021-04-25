@@ -15,8 +15,7 @@ export default meta
 export function SecondaryNav() {
     const [active, setActive] = useState('first')
     return (
-        <AcmPage>
-            <AcmPageHeader title="SecondaryNav"></AcmPageHeader>
+        <AcmPage header={<AcmPageHeader title="SecondaryNav"></AcmPageHeader>}>
             <AcmPageCard>
                 <AcmSecondaryNav>
                     <AcmSecondaryNavItem isActive={active === 'first'} onClick={() => setActive('first')}>
