@@ -111,7 +111,7 @@ export function AcmPageHeader(props: {
                                             {/* <SplitItem>{props.description && <p>{props.description}</p>}</SplitItem> */}
                                         </Split>
                                         {props.description && (
-                                            <div style={{ paddingTop: '4px' }}>{props.description}</div>
+                                            <div style={{ paddingTop: '8px' }}>{props.description}</div>
                                         )}
                                     </StackItem>
                                 </Stack>
