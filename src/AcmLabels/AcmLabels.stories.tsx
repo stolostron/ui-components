@@ -1,9 +1,8 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
-import { AcmLabels } from './AcmLabels'
 import { AcmPageCard } from '../AcmPage/AcmPage'
+import { AcmLabels } from './AcmLabels'
 
 export default {
     title: 'Labels',

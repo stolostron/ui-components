@@ -1,8 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React from 'react'
 import { Meta } from '@storybook/react'
+import React from 'react'
 import { AcmLogWindow } from './AcmLogWindow'
 
 const meta: Meta = {

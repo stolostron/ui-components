@@ -12,3 +12,13 @@ export const parameters = {
         ],
     },
 }
+
+import '@patternfly/react-core/dist/styles/base.css'
+
+export const decorators = [
+    (Story) => (
+        <div style={{ height: '100vh' }}>
+            <Story />
+        </div>
+    ),
+]

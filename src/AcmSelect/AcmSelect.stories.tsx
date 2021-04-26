@@ -1,7 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { SelectOption, SelectVariant } from '@patternfly/react-core'
-import '@patternfly/react-core/dist/styles/base.css'
 import React, { useState } from 'react'
 import { AcmForm } from '../AcmForm/AcmForm'
 import { AcmSelect } from './AcmSelect'
