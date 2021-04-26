@@ -334,12 +334,14 @@ const useStyles = makeStyles({
 
 export enum AcmRoute {
     Welcome = '/multicloud/welcome',
-    Overview = '/multicloud/overview',
     Clusters = '/multicloud/clusters',
     Applications = '/multicloud/applications',
     Credentials = '/multicloud/credentials',
     RiskAndCompliance = '/multicloud/policies',
     VisualWebTerminal = '/kui',
+    Overview = '/overview',
+    Search = '/search',
+    Resources = '/resources',
 }
 
 function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; postClick?: () => void }) {
