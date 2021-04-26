@@ -34,8 +34,7 @@ export default {
 
 export function Table(args: Record<string, unknown>) {
     return (
-        <AcmPage>
-            <AcmPageHeader title="AcmTable" />
+        <AcmPage header={<AcmPageHeader title="AcmTable" />}>
             <AcmPageContent id="table">
                 <PageSection variant="light" isFilled>
                     <TableStory {...args} />
@@ -62,8 +61,7 @@ export function TableStory(args: Record<string, unknown>) {
 export function TableExpandable(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
-        <AcmPage>
-            <AcmPageHeader title="AcmTable with expandable row" />
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
             <AcmPageContent id="table">
                 <PageSection variant="light" isFilled>
                     <AcmTable<IExampleData>
@@ -123,7 +121,7 @@ export function TableExpandable(args: Record<string, unknown>) {
 }
 export function TableGrouped(args: Record<string, unknown>) {
     return (
-        <AcmPage>
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
             <AcmPageHeader title="AcmTable" />
             <AcmPageContent id="table">
                 <PageSection variant="light" isFilled>
@@ -188,7 +186,7 @@ function TableGroupedStory(args: Record<string, unknown>) {
 
 export function TableEmpty(args: Record<string, unknown>) {
     return (
-        <AcmPage>
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
             <AcmPageHeader title="AcmTable Empty" />
             <AcmPageContent id="table">
                 <PageSection variant="light" isFilled>
@@ -214,7 +212,7 @@ function TableEmptyStory(args: Record<string, unknown>) {
 
 export function TableLoading(args: Record<string, unknown>) {
     return (
-        <AcmPage>
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
             <AcmPageHeader title="AcmTable Loading" />
             <AcmPageContent id="table">
                 <PageSection variant="light" isFilled>

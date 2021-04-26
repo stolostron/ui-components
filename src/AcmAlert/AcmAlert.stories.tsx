@@ -16,15 +16,12 @@ export default meta
 
 export function AlertGroup() {
     return (
-        <AcmPage>
-            <AcmPage>
-                <AcmPageHeader title="AcmAlertGroup" />
-                <AcmPageContent id="alerts">
-                    <PageSection variant="light">
-                        <AlertGroupStory />
-                    </PageSection>
-                </AcmPageContent>
-            </AcmPage>
+        <AcmPage header={<AcmPageHeader title="AcmAlertGroup" />}>
+            <AcmPageContent id="alerts">
+                <PageSection variant="light">
+                    <AlertGroupStory />
+                </PageSection>
+            </AcmPageContent>
         </AcmPage>
     )
 }
