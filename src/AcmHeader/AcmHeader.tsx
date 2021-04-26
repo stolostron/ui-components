@@ -425,7 +425,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                     Applications
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.RiskAndCompliance} to={AcmRoute.RiskAndCompliance}>
-                    Risk and Compliance
+                    Risk and compliance
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.Credentials} to={AcmRoute.Credentials}>
                     {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
