@@ -23,7 +23,6 @@ import { TableStory } from '../AcmTable/AcmTable.stories'
 import { AcmPage, AcmPageContent, AcmPageHeader } from './AcmPage'
 import { LoadingPage as LoadingPageStory } from '../AcmLoadingPage/AcmLoadingPage.stories'
 import { AlertGroupStory } from '../AcmAlert/AcmAlert.stories'
-import { CardContent } from '@material-ui/core'
 
 const meta: Meta = {
     title: 'Page',
