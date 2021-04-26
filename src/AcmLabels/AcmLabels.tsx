@@ -4,7 +4,6 @@
 import { makeStyles } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles'
 import { Label, LabelGroup } from '@patternfly/react-core'
-import '@patternfly/react-core/dist/styles/base.css'
 import React, { Fragment, useMemo } from 'react'
 
 const useStyles = makeStyles({

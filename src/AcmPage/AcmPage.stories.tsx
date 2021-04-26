@@ -1,28 +1,28 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
 import {
-    Dropdown,
+    Bullseye,
     Card,
+    CardBody,
+    Dropdown,
     DropdownItem,
     DropdownToggle,
     PageSection,
     Switch,
-    CardBody,
-    Bullseye,
 } from '@patternfly/react-core'
+import '@patternfly/react-core/dist/styles/base.css'
 import { Meta } from '@storybook/react'
 import React, { Fragment, useState } from 'react'
 import { MemoryRouter } from 'react-router-dom'
+import { AlertGroupStory } from '../AcmAlert/AcmAlert.stories'
 import { AcmAutoRefreshSelect } from '../AcmAutoRefreshSelect/AcmAutoRefreshSelect'
 import { DescriptionList as DescriptionListStory } from '../AcmDescriptionList/AcmDescriptionList.stories'
 import { FormStory as FormStory } from '../AcmForm/AcmForm.stories'
+import { LoadingPage as LoadingPageStory } from '../AcmLoadingPage/AcmLoadingPage.stories'
 import { AcmRefreshTime } from '../AcmRefreshTime/AcmRefreshTime'
 import { AcmSecondaryNav, AcmSecondaryNavItem } from '../AcmSecondaryNav/AcmSecondaryNav'
 import { TableStory } from '../AcmTable/AcmTable.stories'
 import { AcmPage, AcmPageContent, AcmPageHeader } from './AcmPage'
-import { LoadingPage as LoadingPageStory } from '../AcmLoadingPage/AcmLoadingPage.stories'
-import { AlertGroupStory } from '../AcmAlert/AcmAlert.stories'
 
 const meta: Meta = {
     title: 'Page',

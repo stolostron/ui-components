@@ -28,20 +28,19 @@ export default {
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
+        'Remove borders': { control: { type: 'boolean' }, defaultValue: false },
     },
 }
 
 export function Table(args: Record<string, unknown>) {
     return (
-        <div style={{ height: '100vh' }}>
-            <AcmPage header={<AcmPageHeader title="AcmTable" />}>
-                <AcmPageContent id="table">
-                    <PageSection variant="light" isFilled>
-                        <TableStory {...args} />
-                    </PageSection>
-                </AcmPageContent>
-            </AcmPage>
-        </div>
+        <AcmPage header={<AcmPageHeader title="AcmTable" />}>
+            <AcmPageContent id="table">
+                <PageSection variant="light" isFilled>
+                    <TableStory {...args} />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
     )
 }
 
@@ -62,78 +61,74 @@ export function TableStory(args: Record<string, unknown>) {
 export function TableExpandable(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
-        <div style={{ height: '100vh' }}>
-            <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-                <AcmPageContent id="table">
-                    <PageSection variant="light" isFilled>
-                        <AcmTable<IExampleData>
-                            plural="addresses"
-                            items={items}
-                            columns={columns}
-                            keyFn={(item: IExampleData) => item.uid?.toString()}
-                            addSubRows={(item: IExampleData) => {
-                                const mappedItems = exampleSubData.filter(
-                                    (subData) => subData.uid?.toString() === item.uid?.toString()
-                                )
-                                if (mappedItems.length === 0) {
-                                    return undefined
-                                }
-                                return [
-                                    {
-                                        cells: [
-                                            {
-                                                title: (
-                                                    <AcmTable<IExampleSubData>
-                                                        plural="stuffs"
-                                                        showToolbar={false}
-                                                        autoHidePagination
-                                                        keyFn={(item: IExampleSubData) => item.suid}
-                                                        columns={[
-                                                            {
-                                                                header: 'First Name',
-                                                                sort: 'firstName',
-                                                                cell: 'firstName',
-                                                            },
-                                                            {
-                                                                header: 'Last Name',
-                                                                sort: 'lastName',
-                                                                cell: 'lastName',
-                                                            },
-                                                            {
-                                                                header: 'Color',
-                                                                cell: 'color',
-                                                            },
-                                                        ]}
-                                                        items={mappedItems}
-                                                        gridBreakPoint={TableGridBreakpoint.none}
-                                                    />
-                                                ),
-                                            },
-                                        ],
-                                    },
-                                ]
-                            }}
-                            {...commonProperties(args, (items) => setItems(items), items)}
-                            gridBreakPoint={TableGridBreakpoint.none}
-                        />
-                    </PageSection>
-                </AcmPageContent>
-            </AcmPage>
-        </div>
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
+            <AcmPageContent id="table">
+                <PageSection variant="light" isFilled>
+                    <AcmTable<IExampleData>
+                        plural="addresses"
+                        items={items}
+                        columns={columns}
+                        keyFn={(item: IExampleData) => item.uid?.toString()}
+                        addSubRows={(item: IExampleData) => {
+                            const mappedItems = exampleSubData.filter(
+                                (subData) => subData.uid?.toString() === item.uid?.toString()
+                            )
+                            if (mappedItems.length === 0) {
+                                return undefined
+                            }
+                            return [
+                                {
+                                    cells: [
+                                        {
+                                            title: (
+                                                <AcmTable<IExampleSubData>
+                                                    plural="stuffs"
+                                                    showToolbar={false}
+                                                    autoHidePagination
+                                                    keyFn={(item: IExampleSubData) => item.suid}
+                                                    columns={[
+                                                        {
+                                                            header: 'First Name',
+                                                            sort: 'firstName',
+                                                            cell: 'firstName',
+                                                        },
+                                                        {
+                                                            header: 'Last Name',
+                                                            sort: 'lastName',
+                                                            cell: 'lastName',
+                                                        },
+                                                        {
+                                                            header: 'Color',
+                                                            cell: 'color',
+                                                        },
+                                                    ]}
+                                                    items={mappedItems}
+                                                    gridBreakPoint={TableGridBreakpoint.none}
+                                                />
+                                            ),
+                                        },
+                                    ],
+                                },
+                            ]
+                        }}
+                        {...commonProperties(args, (items) => setItems(items), items)}
+                        gridBreakPoint={TableGridBreakpoint.none}
+                    />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
     )
 }
 export function TableGrouped(args: Record<string, unknown>) {
     return (
-        <div style={{ height: '100vh' }}>
-            <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-                <AcmPageHeader title="AcmTable" />
-                <AcmPageContent id="table">
-                    <PageSection variant="light" isFilled>
-                        <TableGroupedStory {...args} />
-                    </PageSection>
-                </AcmPageContent>
-            </AcmPage>
-        </div>
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
+            <AcmPageHeader title="AcmTable" />
+            <AcmPageContent id="table">
+                <PageSection variant="light" isFilled>
+                    <TableGroupedStory {...args} />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
     )
 }
 
@@ -191,16 +186,14 @@ function TableGroupedStory(args: Record<string, unknown>) {
 
 export function TableEmpty(args: Record<string, unknown>) {
     return (
-        <div style={{ height: '100vh' }}>
-            <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-                <AcmPageHeader title="AcmTable Empty" />
-                <AcmPageContent id="table">
-                    <PageSection variant="light" isFilled>
-                        <TableEmptyStory {...args} />
-                    </PageSection>
-                </AcmPageContent>
-            </AcmPage>
-        </div>
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
+            <AcmPageHeader title="AcmTable Empty" />
+            <AcmPageContent id="table">
+                <PageSection variant="light" isFilled>
+                    <TableEmptyStory {...args} />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
     )
 }
 
@@ -219,16 +212,14 @@ function TableEmptyStory(args: Record<string, unknown>) {
 
 export function TableLoading(args: Record<string, unknown>) {
     return (
-        <div style={{ height: '100vh' }}>
-            <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-                <AcmPageHeader title="AcmTable Loading" />
-                <AcmPageContent id="table">
-                    <PageSection variant="light" isFilled>
-                        <TableLoadingStory {...args} />
-                    </PageSection>
-                </AcmPageContent>
-            </AcmPage>
-        </div>
+        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
+            <AcmPageHeader title="AcmTable Loading" />
+            <AcmPageContent id="table">
+                <PageSection variant="light" isFilled>
+                    <TableLoadingStory {...args} />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
     )
 }
 
@@ -251,6 +242,7 @@ function commonProperties(
     items: IExampleData[] | undefined
 ) {
     return {
+        noBorders: !!args['Remove borders'],
         tableActions: args['Include tableActions']
             ? [
                   {

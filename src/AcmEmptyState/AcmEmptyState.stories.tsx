@@ -1,7 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { Button } from '@patternfly/react-core'
-import '@patternfly/react-core/dist/styles/base.css'
 import React from 'react'
 import { AcmEmptyState, AcmEmptyStateImage } from './AcmEmptyState'
 

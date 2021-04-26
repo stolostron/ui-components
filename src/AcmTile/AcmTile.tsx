@@ -1,9 +1,8 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import { Skeleton, Tile, TileProps } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
-import '@patternfly/react-core/dist/styles/base.css'
+import { Skeleton, Tile, TileProps } from '@patternfly/react-core'
+import React from 'react'
 
 type AcmTileProps = TileProps & {
     loading?: boolean
