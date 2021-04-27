@@ -29,7 +29,7 @@ export default {
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
         'Remove borders': { control: { type: 'boolean' }, defaultValue: false },
-        'Pagination at bottom': { control: { type: 'boolean' }, defaultValue: false }
+        'Pagination at bottom': { control: { type: 'boolean' }, defaultValue: false },
     },
 }
 
