@@ -30,6 +30,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
+    const placeholderString = 'Search'
     const Table = (
         props: {
             noBorders?: boolean
@@ -37,6 +38,7 @@ describe('AcmTable', () => {
             useRowActions?: boolean
             useBulkActions?: boolean
             useExtraToolbarControls?: boolean
+            searchPlaceholder?: string
             useSearch?: boolean
             transforms?: boolean
             groupFn?: (item: IExampleData) => string | null
@@ -224,11 +226,19 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Delete item'))
         expect(deleteAction).toHaveBeenCalled()
     })
+    test('can customize search placeholder', () => {
+        const customPlaceholder = 'Other placeholder'
+        const { container } = render(<Table searchPlaceholder={customPlaceholder} />)
+        expect(container.querySelector('div.pf-c-toolbar input.pf-c-search-input__text-input')).toHaveAttribute(
+            'placeholder',
+            customPlaceholder
+        )
+    })
     test('can be searched', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
 
         // verify manually deleting search, resets table with first column sorting
-        userEvent.type(getByPlaceholderText('Search'), 'B{backspace}')
+        userEvent.type(getByPlaceholderText(placeholderString), 'B{backspace}')
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
 
         // sort by non-default column (UID)
@@ -236,8 +246,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
 
         // search for 'Female'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'Female')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'Female')
         expect(queryByText('57 / 105')).toBeVisible()
 
         // clear filter
@@ -249,8 +259,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
 
         // search for '.org'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), '.org')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), '.org')
         expect(queryByText('7 / 105')).toBeVisible()
 
         // verify last sort order ignored
@@ -329,8 +339,8 @@ describe('AcmTable', () => {
     test('should show the empty state when filtered results', () => {
         const { getByPlaceholderText, queryByText, getByText } = render(<Table />)
         expect(queryByText('No results found')).toBeNull()
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'NOSEARCHRESULTS')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'NOSEARCHRESULTS')
         expect(queryByText('No results found')).toBeVisible()
         getByText('Clear all filters').click()
         expect(queryByText('No results found')).toBeNull()
@@ -407,8 +417,8 @@ describe('AcmTable', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
 
         // search for 'ABSOLUTELYZEROMATCHES'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'ABSOLUTELYZEROMATCHES')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'ABSOLUTELYZEROMATCHES')
         expect(queryByText('0 / 105')).toBeVisible()
 
         // change sort during filter (Last Name)
@@ -505,8 +515,8 @@ describe('AcmTable', () => {
         )
         userEvent.click(getByTestId('expandable-toggle0'))
         // search for 'Male'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'Male')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'Male')
 
         // Run delete action for code coverage
         userEvent.click(getAllByLabelText('Actions')[0])

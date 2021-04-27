@@ -200,6 +200,7 @@ export interface AcmTableProps<T> {
     setPage?: (page: number) => void
     search?: string
     setSearch?: (search: string) => void
+    searchPlaceholder?: string
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
     showToolbar?: boolean
@@ -248,6 +249,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [stateSearch, stateSetSearch] = useState('')
     const search = props.search || stateSearch
     const setSearch = props.setSearch || stateSetSearch
+    const searchPlaceholder = props.searchPlaceholder || 'Search'
     const [stateSort, stateSetSort] = useState<ISortBy | undefined>(defaultSort)
     const sort = props.sort || stateSort
     const setSort = props.setSort || stateSetSort
@@ -648,7 +650,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             <ToolbarGroup variant="filter-group">
                                 <ToolbarItem variant="search-filter">
                                     <SearchInput
-                                        placeholder="Search"
+                                        placeholder={searchPlaceholder}
                                         value={search}
                                         onChange={updateSearch}
                                         onClear={() => updateSearch('')}
