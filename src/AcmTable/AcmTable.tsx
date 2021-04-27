@@ -197,6 +197,7 @@ export interface AcmTableProps<T> {
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
     page?: number
+    paginationAtBottom?: boolean
     setPage?: (page: number) => void
     search?: string
     setSearch?: (search: string) => void
@@ -562,6 +563,21 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [page, perPage, setPage, setPerPage]
     )
 
+    const pagination = (
+        <ToolbarItem alignment={{ default: 'alignRight' }}>
+            <Pagination
+                itemCount={itemCount}
+                perPage={perPage}
+                page={page}
+                variant={PaginationVariant.top}
+                onSetPage={(_event, page) => setPage(page)}
+                onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
+                style={{ paddingRight: 0 }}
+                aria-label="Pagination top"
+            />
+        </ToolbarItem>
+    )
+
     const onSelect = useCallback(
         (_event: FormEvent, isSelected: boolean, rowId: number) => {
             /* istanbul ignore next */
@@ -711,20 +727,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {(!props.autoHidePagination || filtered.length > perPage) && (
-                            <ToolbarItem alignment={{ default: 'alignRight' }}>
-                                <Pagination
-                                    itemCount={itemCount}
-                                    perPage={perPage}
-                                    page={page}
-                                    variant={PaginationVariant.top}
-                                    onSetPage={(_event, page) => setPage(page)}
-                                    onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
-                                    style={{ paddingRight: 0 }}
-                                    aria-label="Pagination top"
-                                />
-                            </ToolbarItem>
-                        )}
+                        {(!props.autoHidePagination || filtered.length > perPage) &&
+                            !props.paginationAtBottom &&
+                            pagination}
                     </ToolbarContent>
                 </Toolbar>
             )}
@@ -801,6 +806,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             }
                         />
                     )}
+                    {(!props.autoHidePagination || filtered.length > perPage) && props.paginationAtBottom && pagination}
                 </Fragment>
             )}
         </Fragment>
