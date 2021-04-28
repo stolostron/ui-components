@@ -6,11 +6,6 @@ import { makeStyles } from '@material-ui/styles'
 
 const useStyles = makeStyles({
     header: { 'border-bottom': '1px solid rgba(0,0,0,0.1)', cursor: 'pointer' },
-    headerExpanded: {
-        '& button': {
-            transform: 'rotate(90deg)',
-        },
-    },
     body: {
         padding: '32px 24px',
         '& > .pf-c-card__body': {
@@ -42,7 +37,7 @@ export function AcmExpandableCard(props: {
     return (
         <Card id={props.id} className={props.className} isExpanded={open}>
             <CardHeader
-                className={`${classes.header} ${open ? classes.headerExpanded : ''}`}
+                className={classes.header}
                 onExpand={() => onToggle(acmCardID, open, setOpen)}
                 onClick={() => onToggle(acmCardID, open, setOpen)}
                 toggleButtonProps={{
