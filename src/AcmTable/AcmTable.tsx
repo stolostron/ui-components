@@ -194,6 +194,7 @@ export interface AcmTableProps<T> {
     rowActions?: IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
+    extraToolbarEmbed?: boolean
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
     page?: number
@@ -645,19 +646,21 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     })
 
+    const extraToolbar = (
+        <ToolbarGroup alignment={{ default: 'alignRight' }}>
+            <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
+        </ToolbarGroup>
+    )
+
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
     const showToolbar = props.showToolbar !== false ? hasItems : false
 
     return (
         <Fragment>
-            {props.extraToolbarControls && (
+            {props.extraToolbarControls && !props.extraToolbarEmbed && (
                 <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
-                    <ToolbarContent>
-                        <ToolbarGroup alignment={{ default: 'alignRight' }}>
-                            <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
-                        </ToolbarGroup>
-                    </ToolbarContent>
+                    <ToolbarContent>{extraToolbar}</ToolbarContent>
                 </Toolbar>
             )}
             {showToolbar && (
@@ -731,6 +734,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         {(!props.autoHidePagination || filtered.length > perPage) &&
                             !props.paginationAtBottom &&
                             pagination}
+                        {props.extraToolbarControls && props.extraToolbarEmbed && extraToolbar}
                     </ToolbarContent>
                 </Toolbar>
             )}

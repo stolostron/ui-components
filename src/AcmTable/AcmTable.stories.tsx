@@ -27,6 +27,7 @@ export default {
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
+        'Embed extraToolBarControls': { control: { type: 'boolean' }, defaultValue: false },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
         'Remove borders': { control: { type: 'boolean' }, defaultValue: false },
         'Pagination at bottom': { control: { type: 'boolean' }, defaultValue: false },
@@ -297,6 +298,7 @@ function commonProperties(
                   },
               ]
             : undefined,
+        extraToolbarEmbed: !!args['Embed extraToolBarControls'],
         extraToolbarControls: args['Include extraToolbarControls'] ? (
             <ToggleGroup>
                 <ToggleGroupItem isSelected={true} text="View 1" />
