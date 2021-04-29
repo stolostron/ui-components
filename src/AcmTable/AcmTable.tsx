@@ -563,17 +563,18 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [page, perPage, setPage, setPerPage]
     )
 
+    const pageVar = props.paginationAtBottom ? 'bottom' : 'top'
     const pagination = (
         <ToolbarItem alignment={{ default: 'alignRight' }}>
             <Pagination
                 itemCount={itemCount}
                 perPage={perPage}
                 page={page}
-                variant={PaginationVariant.top}
+                variant={PaginationVariant[pageVar]}
                 onSetPage={(_event, page) => setPage(page)}
                 onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
                 style={{ paddingRight: 0 }}
-                aria-label="Pagination top"
+                aria-label={`Pagination ${pageVar}`}
             />
         </ToolbarItem>
     )
