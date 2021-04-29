@@ -21,6 +21,7 @@ import {
 } from '@patternfly/react-core'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
+    IActionsResolver,
     IRow,
     IRowData,
     ISortBy,
@@ -192,6 +193,7 @@ export interface AcmTableProps<T> {
     groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
     rowActions?: IAcmRowAction<T>[]
+    rowActionResolver?: IActionsResolver
     bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     extraToolbarEmbed?: boolean
@@ -221,6 +223,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         groupSummaryFn,
         bulkActions = [],
         rowActions = [],
+        rowActionResolver,
         tableActions = [],
     } = props
     const adjustedSortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
@@ -781,6 +784,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 })}
                                 rows={rows}
                                 rowWrapper={OuiaIdRowWrapper}
+                                actionResolver={rowActionResolver}
                                 actions={actions}
                                 aria-label="Simple Table"
                                 sortBy={adjustedSort}
