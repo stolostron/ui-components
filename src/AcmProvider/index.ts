@@ -35,7 +35,7 @@ export const ProviderShortTextMap = {
 export const ProviderLongTextMap = {
     [Provider.redhatcloud]: 'Red Hat OpenShift Cluster Manager',
     [Provider.ansible]: 'Red Hat Ansible Automation Platform',
-    [Provider.openstack]: 'Red Hat OpenStack',
+    [Provider.openstack]: 'Red Hat OpenStack Platform',
     [Provider.aws]: 'Amazon Web Services',
     [Provider.gcp]: 'Google Cloud Platform',
     [Provider.azure]: 'Microsoft Azure',
