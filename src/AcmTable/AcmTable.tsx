@@ -360,6 +360,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }>(() => {
         if (search && search !== '') {
             const fuse = new Fuse(tableItems, {
+                ignoreLocation: true,
                 threshold: 0.3,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
