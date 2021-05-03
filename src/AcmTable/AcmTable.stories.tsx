@@ -30,7 +30,6 @@ export default {
         'Embed extraToolBarControls': { control: { type: 'boolean' }, defaultValue: false },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
         'Remove borders': { control: { type: 'boolean' }, defaultValue: false },
-        'Pagination at bottom': { control: { type: 'boolean' }, defaultValue: false },
     },
 }
 
@@ -244,7 +243,6 @@ function commonProperties(
     items: IExampleData[] | undefined
 ) {
     return {
-        paginationAtBottom: !!args['Pagination at bottom'],
         noBorders: !!args['Remove borders'],
         tableActions: args['Include tableActions']
             ? [
