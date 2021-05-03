@@ -395,17 +395,17 @@ describe('AcmTable', () => {
             <Table
                 page={15}
                 setPage={setPage}
-                search="Male"
+                search="Female"
                 setSearch={setSearch}
-                sort={{ index: 4, direction: SortByDirection.desc }} // sort by IP Address
+                sort={{ index: 0, direction: SortByDirection.desc }} // sort by Name
                 setSort={setSort}
             />
         )
-        expect(setPage).toHaveBeenCalled() // Only 11 pages; should automatically go back
-        expect(getByLabelText('Current page')).toHaveValue(11)
+        expect(setPage).toHaveBeenCalled() // Only 6 pages; should automatically go back
+        expect(getByLabelText('Current page')).toHaveValue(6)
         expect(setSearch).not.toHaveBeenCalled()
         expect(setSort).not.toHaveBeenCalled()
-        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Danny')
+        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Alyce')
 
         expect(getByLabelText('Reset')).toBeVisible()
         userEvent.click(getByLabelText('Reset'))
