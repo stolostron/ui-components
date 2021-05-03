@@ -552,9 +552,6 @@ export function AcmHeader(props: AcmHeaderProps) {
                     <AboutModal
                         isOpen={aboutModalOpen}
                         onClose={() => setAboutModalOpen(!aboutModalOpen)}
-                        trademark={
-                            'Copyright © 2020 IBM Corporation. All rights reserved. \nCopyright © 2020 Red Hat, Inc. All rights reserved.'
-                        }
                         brandImageSrc={logo}
                         brandImageAlt="ACM logo"
                         className={classes.about}
