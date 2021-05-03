@@ -121,6 +121,7 @@ const useStyles = makeStyles({
     },
     outerDiv: {
         display: 'block',
+        'overflow-x': 'scroll',
     },
     table: {
         '& tbody.pf-m-expanded > tr': {
