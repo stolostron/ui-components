@@ -22,7 +22,6 @@ export type ProgressTrackerStep = {
 const useStyles = makeStyles({
     /* istanbul ignore next */
     container: {
-        display: 'flex',
         marginTop: '24px',
     },
     text: {
@@ -44,9 +43,9 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                 <Text component={TextVariants.small}>{props.message}</Text>
             </TextContent>
             <div className={classes.container}>
-                <JumpLinks isVertical={viewWidth < 700}>
-                    {props.steps.map((step) => (
-                        <JumpLinksItem isActive={step.active}>
+                <JumpLinks isVertical={viewWidth < 700} isCentered>
+                    {props.steps.map((step, index) => (
+                        <JumpLinksItem isActive={step.active} key={index}>
                             <TextContent>
                                 <Text className={classes.text}>
                                     <AcmInlineStatus
