@@ -9,12 +9,12 @@ import { AcmButton } from '../AcmButton/AcmButton'
 
 describe('AcmPage', () => {
     test('AcmPage renders', () => {
-        const { getByText } = render(<AcmPage>ACM page</AcmPage>)
+        const { getByText } = render(<AcmPage header={<div />}>ACM page</AcmPage>)
         expect(getByText('ACM page')).toBeInTheDocument()
         expect(getByText('ACM page')).toBeInstanceOf(HTMLElement)
     })
     test('AcmPage has zero accessibility defects', async () => {
-        const { container } = render(<AcmPage>ACM page</AcmPage>)
+        const { container } = render(<AcmPage header={<div />}>ACM page</AcmPage>)
         expect(await axe(container)).toHaveNoViolations()
     })
 })
@@ -139,7 +139,7 @@ describe('AcmBreadcrumb', () => {
 describe('AcmPageContent', () => {
     test('AcmPage renders', () => {
         const { getByText } = render(
-            <AcmPage>
+            <AcmPage header={<AcmPageHeader title="Title" />}>
                 <AcmPageContent id="page">Content goes here</AcmPageContent>
             </AcmPage>
         )

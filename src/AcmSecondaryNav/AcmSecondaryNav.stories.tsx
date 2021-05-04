@@ -1,10 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React, { useState } from 'react'
 import { Meta } from '@storybook/react'
-import { AcmSecondaryNav, AcmSecondaryNavItem } from './AcmSecondaryNav'
+import React, { useState } from 'react'
 import { AcmPage, AcmPageCard, AcmPageHeader } from '../AcmPage/AcmPage'
+import { AcmSecondaryNav, AcmSecondaryNavItem } from './AcmSecondaryNav'
 
 const meta: Meta = {
     title: 'SecondaryNav',
@@ -15,8 +14,7 @@ export default meta
 export function SecondaryNav() {
     const [active, setActive] = useState('first')
     return (
-        <AcmPage>
-            <AcmPageHeader title="SecondaryNav"></AcmPageHeader>
+        <AcmPage header={<AcmPageHeader title="SecondaryNav"></AcmPageHeader>}>
             <AcmPageCard>
                 <AcmSecondaryNav>
                     <AcmSecondaryNavItem isActive={active === 'first'} onClick={() => setActive('first')}>

@@ -5,16 +5,17 @@ import { AcmIconVariant } from '../AcmIcons/AcmIcons'
 export * from './AcmProviderCard/AcmProviderCard'
 export * from './AcmInlineProvider/AcmInlineProvider'
 
+// These connect change as they are used in existing resources ass identifiers
 export enum Provider {
-    redhatcloud = 'redhatcloud',
-    ansible = 'ansible',
-    openstack = 'openstack',
+    redhatcloud = 'rhocm',
+    ansible = 'ans',
+    openstack = 'ost',
     aws = 'aws',
     gcp = 'gcp',
-    azure = 'azure',
-    vmware = 'vmware',
+    azure = 'azr',
+    vmware = 'vmw',
     ibm = 'ibm',
-    baremetal = 'baremetal',
+    baremetal = 'bmc',
     other = 'other',
 }
 
@@ -34,7 +35,7 @@ export const ProviderShortTextMap = {
 export const ProviderLongTextMap = {
     [Provider.redhatcloud]: 'Red Hat OpenShift Cluster Manager',
     [Provider.ansible]: 'Red Hat Ansible Automation Platform',
-    [Provider.openstack]: 'Red Hat OpenStack',
+    [Provider.openstack]: 'Red Hat OpenStack Platform',
     [Provider.aws]: 'Amazon Web Services',
     [Provider.gcp]: 'Google Cloud Platform',
     [Provider.azure]: 'Microsoft Azure',

@@ -334,12 +334,14 @@ const useStyles = makeStyles({
 
 export enum AcmRoute {
     Welcome = '/multicloud/welcome',
-    Overview = '/multicloud/overview',
     Clusters = '/multicloud/clusters',
     Applications = '/multicloud/applications',
     Credentials = '/multicloud/credentials',
     RiskAndCompliance = '/multicloud/policies',
     VisualWebTerminal = '/kui',
+    Overview = '/overview',
+    Search = '/search',
+    Resources = '/resources',
 }
 
 function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; postClick?: () => void }) {
@@ -425,7 +427,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                     Applications
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.RiskAndCompliance} to={AcmRoute.RiskAndCompliance}>
-                    Risk and Compliance
+                    Risk and compliance
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.Credentials} to={AcmRoute.Credentials}>
                     {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
@@ -550,9 +552,6 @@ export function AcmHeader(props: AcmHeaderProps) {
                     <AboutModal
                         isOpen={aboutModalOpen}
                         onClose={() => setAboutModalOpen(!aboutModalOpen)}
-                        trademark={
-                            'Copyright © 2020 IBM Corporation. All rights reserved. \nCopyright © 2020 Red Hat, Inc. All rights reserved.'
-                        }
                         brandImageSrc={logo}
                         brandImageAlt="ACM logo"
                         className={classes.about}

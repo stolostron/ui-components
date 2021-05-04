@@ -1,10 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React from 'react'
-import { Meta } from '@storybook/react'
-import { AcmCountCard } from './AcmCountCard'
 import { makeStyles } from '@material-ui/styles'
+import { Meta } from '@storybook/react'
+import React from 'react'
+import { AcmCountCard } from './AcmCountCard'
 
 const meta: Meta = {
     title: 'Count Card',

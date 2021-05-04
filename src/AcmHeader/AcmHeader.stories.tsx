@@ -12,12 +12,10 @@ export default {
 
 export const Demo = () => {
     return (
-        <div style={{ height: '100vh' }}>
-            <MemoryRouter>
-                <AcmHeader route={AcmRoute.Welcome}>
-                    <PageStory {...PageStoryDefaults} />
-                </AcmHeader>
-            </MemoryRouter>
-        </div>
+        <MemoryRouter>
+            <AcmHeader route={AcmRoute.Welcome}>
+                <PageStory {...PageStoryDefaults} />
+            </AcmHeader>
+        </MemoryRouter>
     )
 }

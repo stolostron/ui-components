@@ -30,12 +30,15 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
+    const placeholderString = 'Search'
     const Table = (
         props: {
+            noBorders?: boolean
             useTableActions?: boolean
             useRowActions?: boolean
             useBulkActions?: boolean
             useExtraToolbarControls?: boolean
+            searchPlaceholder?: string
             useSearch?: boolean
             transforms?: boolean
             groupFn?: (item: IExampleData) => string | null
@@ -153,9 +156,17 @@ describe('AcmTable', () => {
         const { container } = render(<Table useTableActions={false} useRowActions={false} />)
         expect(container.querySelector('table')).toBeInTheDocument()
     })
+    test('renders pagination at the bottom when paginationAtBottom is set', () => {
+        const { container } = render(<Table items={exampleData} paginationAtBottom />)
+        expect(container.querySelector('div.pf-c-toolbar div.pf-c-pagination')).toBeNull()
+        expect(
+            container.querySelector('div.pf-c-toolbar ~ div.pf-c-toolbar__item > div.pf-c-pagination')
+        ).toBeInTheDocument()
+    })
     test('renders pagination with autoHidePagination when more that perPage items', () => {
         const { container } = render(<Table items={exampleData} autoHidePagination />)
-        expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
+        expect(container.querySelector('div.pf-c-toolbar div.pf-c-pagination')).toBeInTheDocument()
+        expect(container.querySelector('div.pf-c-toolbar ~ div.pf-c-toolbar__item > div.pf-c-pagination')).toBeNull()
     })
     test('hides pagination with autoHidePagination when less than perPage items', () => {
         const { container } = render(<Table items={exampleData.slice(0, 8)} autoHidePagination />)
@@ -223,11 +234,19 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Delete item'))
         expect(deleteAction).toHaveBeenCalled()
     })
+    test('can customize search placeholder', () => {
+        const customPlaceholder = 'Other placeholder'
+        const { container } = render(<Table searchPlaceholder={customPlaceholder} />)
+        expect(container.querySelector('div.pf-c-toolbar input.pf-c-search-input__text-input')).toHaveAttribute(
+            'placeholder',
+            customPlaceholder
+        )
+    })
     test('can be searched', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
 
         // verify manually deleting search, resets table with first column sorting
-        userEvent.type(getByPlaceholderText('Search'), 'B{backspace}')
+        userEvent.type(getByPlaceholderText(placeholderString), 'B{backspace}')
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
 
         // sort by non-default column (UID)
@@ -235,8 +254,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
 
         // search for 'Female'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'Female')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'Female')
         expect(queryByText('57 / 105')).toBeVisible()
 
         // clear filter
@@ -248,9 +267,9 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
 
         // search for '.org'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), '.org')
-        expect(queryByText('7 / 105')).toBeVisible()
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), '.org')
+        expect(queryByText('8 / 105')).toBeVisible()
 
         // verify last sort order ignored
         expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('8')
@@ -328,8 +347,8 @@ describe('AcmTable', () => {
     test('should show the empty state when filtered results', () => {
         const { getByPlaceholderText, queryByText, getByText } = render(<Table />)
         expect(queryByText('No results found')).toBeNull()
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'NOSEARCHRESULTS')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'NOSEARCHRESULTS')
         expect(queryByText('No results found')).toBeVisible()
         getByText('Clear all filters').click()
         expect(queryByText('No results found')).toBeNull()
@@ -376,17 +395,17 @@ describe('AcmTable', () => {
             <Table
                 page={15}
                 setPage={setPage}
-                search="Male"
+                search="Female"
                 setSearch={setSearch}
-                sort={{ index: 4, direction: SortByDirection.desc }} // sort by IP Address
+                sort={{ index: 0, direction: SortByDirection.desc }} // sort by Name
                 setSort={setSort}
             />
         )
-        expect(setPage).toHaveBeenCalled() // Only 11 pages; should automatically go back
-        expect(getByLabelText('Current page')).toHaveValue(11)
+        expect(setPage).toHaveBeenCalled() // Only 6 pages; should automatically go back
+        expect(getByLabelText('Current page')).toHaveValue(6)
         expect(setSearch).not.toHaveBeenCalled()
         expect(setSort).not.toHaveBeenCalled()
-        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Danny')
+        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Alyce')
 
         expect(getByLabelText('Reset')).toBeVisible()
         userEvent.click(getByLabelText('Reset'))
@@ -406,8 +425,8 @@ describe('AcmTable', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
 
         // search for 'ABSOLUTELYZEROMATCHES'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'ABSOLUTELYZEROMATCHES')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'ABSOLUTELYZEROMATCHES')
         expect(queryByText('0 / 105')).toBeVisible()
 
         // change sort during filter (Last Name)
@@ -504,8 +523,8 @@ describe('AcmTable', () => {
         )
         userEvent.click(getByTestId('expandable-toggle0'))
         // search for 'Male'
-        expect(getByPlaceholderText('Search')).toBeInTheDocument()
-        userEvent.type(getByPlaceholderText('Search'), 'Male')
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'Male')
 
         // Run delete action for code coverage
         userEvent.click(getAllByLabelText('Actions')[0])
@@ -518,6 +537,7 @@ describe('AcmTable', () => {
             // Group some items by name, some by gender, and some not at all to test single-item groups,
             // multiple-item groups, and ungrouped items
             <Table
+                noBorders
                 groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)}
                 groupSummaryFn={(items) => {
                     return { cells: [{ title: `${items.length} items`, props: { colspan: 8 } }] }

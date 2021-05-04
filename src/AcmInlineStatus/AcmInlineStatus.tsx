@@ -1,18 +1,18 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import { Spinner, Popover, PopoverProps, Button } from '@patternfly/react-core'
+import { makeStyles } from '@material-ui/core'
+import { Button, Popover, PopoverProps, Spinner } from '@patternfly/react-core'
 import {
+    AsleepIcon,
     CheckCircleIcon,
     ExclamationCircleIcon,
     ExclamationTriangleIcon,
     MinusCircleIcon,
     UnknownIcon,
-    AsleepIcon,
     ResourcesEmptyIcon,
 } from '@patternfly/react-icons'
+import React from 'react'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
-import { makeStyles } from '@material-ui/core'
 
 const useStyles = makeStyles({
     container: {

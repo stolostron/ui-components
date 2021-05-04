@@ -197,15 +197,18 @@ export interface AcmTableProps<T> {
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
     page?: number
+    paginationAtBottom?: boolean
     setPage?: (page: number) => void
     search?: string
     setSearch?: (search: string) => void
+    searchPlaceholder?: string
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
     showToolbar?: boolean
     gridBreakPoint?: TableGridBreakpoint
     perPageOptions?: PerPageOptions[]
     autoHidePagination?: boolean
+    noBorders?: boolean
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const {
@@ -247,6 +250,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [stateSearch, stateSetSearch] = useState('')
     const search = props.search || stateSearch
     const setSearch = props.setSearch || stateSetSearch
+    const searchPlaceholder = props.searchPlaceholder || 'Search'
     const [stateSort, stateSetSort] = useState<ISortBy | undefined>(defaultSort)
     const sort = props.sort || stateSort
     const setSort = props.setSort || stateSetSort
@@ -356,6 +360,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }>(() => {
         if (search && search !== '') {
             const fuse = new Fuse(tableItems, {
+                ignoreLocation: true,
                 threshold: 0.3,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
@@ -559,6 +564,21 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [page, perPage, setPage, setPerPage]
     )
 
+    const pagination = (
+        <ToolbarItem alignment={{ default: 'alignRight' }}>
+            <Pagination
+                itemCount={itemCount}
+                perPage={perPage}
+                page={page}
+                variant={PaginationVariant.top}
+                onSetPage={(_event, page) => setPage(page)}
+                onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
+                style={{ paddingRight: 0 }}
+                aria-label="Pagination top"
+            />
+        </ToolbarItem>
+    )
+
     const onSelect = useCallback(
         (_event: FormEvent, isSelected: boolean, rowId: number) => {
             /* istanbul ignore next */
@@ -647,7 +667,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             <ToolbarGroup variant="filter-group">
                                 <ToolbarItem variant="search-filter">
                                     <SearchInput
-                                        placeholder="Search"
+                                        placeholder={searchPlaceholder}
                                         value={search}
                                         onChange={updateSearch}
                                         onClear={() => updateSearch('')}
@@ -708,20 +728,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {(!props.autoHidePagination || filtered.length > perPage) && (
-                            <ToolbarItem alignment={{ default: 'alignRight' }}>
-                                <Pagination
-                                    itemCount={itemCount}
-                                    perPage={perPage}
-                                    page={page}
-                                    variant={PaginationVariant.top}
-                                    onSetPage={(_event, page) => setPage(page)}
-                                    onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
-                                    style={{ paddingRight: 0 }}
-                                    aria-label="Pagination top"
-                                />
-                            </ToolbarItem>
-                        )}
+                        {(!props.autoHidePagination || filtered.length > perPage) &&
+                            !props.paginationAtBottom &&
+                            pagination}
                     </ToolbarContent>
                 </Toolbar>
             )}
@@ -777,6 +786,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
                                 }
                                 onCollapse={onCollapse}
+                                borders={!props.noBorders}
                                 variant={TableVariant.compact}
                                 gridBreakPoint={props.gridBreakPoint ?? breakpoint}
                             >
@@ -797,6 +807,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             }
                         />
                     )}
+                    {(!props.autoHidePagination || filtered.length > perPage) && props.paginationAtBottom && pagination}
                 </Fragment>
             )}
         </Fragment>

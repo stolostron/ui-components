@@ -1,10 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/styles'
-import '@patternfly/react-core/dist/styles/base.css'
-import { AcmSelect } from '../AcmSelect/AcmSelect'
 import { SelectOption } from '@patternfly/react-core'
+import React, { useState } from 'react'
+import { AcmSelect } from '../AcmSelect/AcmSelect'
 
 type AcmLogWindowProps = {
     id: string

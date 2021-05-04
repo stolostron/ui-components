@@ -1,11 +1,10 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React from 'react'
-import { Meta } from '@storybook/react'
 import { PageSection } from '@patternfly/react-core'
-import { AcmIcon, AcmIconVariant } from './AcmIcons'
+import { Meta } from '@storybook/react'
+import React from 'react'
 import { AcmDescriptionList } from '../AcmDescriptionList/AcmDescriptionList'
+import { AcmIcon, AcmIconVariant } from './AcmIcons'
 
 const meta: Meta = {
     title: 'Icons',

@@ -1,12 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import '@patternfly/react-core/dist/styles/base.css'
-import React, { useState } from 'react'
-import { Meta } from '@storybook/react'
 import { ButtonVariant, ModalVariant } from '@patternfly/react-core'
+import { Meta } from '@storybook/react'
+import React, { useState } from 'react'
+import { AcmButton } from '../'
 import { AcmPageCard } from '../AcmPage/AcmPage'
 import { AcmModal } from './AcmModal'
-import { AcmButton } from '../'
 
 const meta: Meta = {
     title: 'Modal',

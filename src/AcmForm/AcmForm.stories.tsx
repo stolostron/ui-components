@@ -23,8 +23,7 @@ export default meta
 
 export function Form() {
     return (
-        <AcmPage>
-            <AcmPageHeader title="AcmForm" />
+        <AcmPage header={<AcmPageHeader title="AcmForm" />}>
             <AcmPageContent id="form">
                 <PageSection variant="light">
                     <FormStory />
