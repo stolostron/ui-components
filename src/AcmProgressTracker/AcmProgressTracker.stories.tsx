@@ -1,9 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import { AcmProgressTracker } from './AcmProgressTracker'
-import { StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import { Card, CardBody } from '@patternfly/react-core'
+import React from 'react'
+import { StatusType } from '../AcmInlineStatus/AcmInlineStatus'
+import { AcmProgressTracker } from './AcmProgressTracker'
 
 export default {
     title: 'ProgressTracker',
@@ -42,7 +42,7 @@ export const ProgressTracker = () => {
     return (
         <Card>
             <CardBody>
-                <AcmProgressTracker title="Creating cluster" message="0 out of 4 steps completed" steps={steps} />
+                <AcmProgressTracker title="Creating cluster" message="1 out of 4 steps completed" steps={steps} />
             </CardBody>
         </Card>
     )

@@ -1,10 +1,10 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import { Text, TextContent, TextVariants, PopoverProps } from '@patternfly/react-core'
-import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import { makeStyles } from '@material-ui/core'
+import { JumpLinks, JumpLinksItem, PopoverProps, Text, TextContent, TextVariants } from '@patternfly/react-core'
+import React from 'react'
 import { useViewport } from '../AcmCharts/AcmChartGroup'
+import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 
 export type AcmProgressTrackerProps = {
     title: string | React.ReactNode
@@ -20,35 +20,13 @@ export type ProgressTrackerStep = {
 }
 
 const useStyles = makeStyles({
+    /* istanbul ignore next */
     container: {
         display: 'flex',
-        flexDirection: (viewWidth) => viewWidth > 414 ? 'row' : 'column', 
         marginTop: '24px',
     },
-    active: {
-        borderTop: (viewWidth) => viewWidth > 414 ? '3px solid var(--pf-global--active-color--100)' : '',
-        borderLeft: (viewWidth) => viewWidth < 414 ? '3px solid var(--pf-global--active-color--100)' : '',
-        height: (viewWidth) => viewWidth > 414 ? '56px' : '84px',
-        flex: (viewWidth) => viewWidth > 414 ? 1 : '',
+    text: {
         display: 'flex',
-        alignItems: 'center',
-        '& div': {
-            marginLeft: '3px',
-        },
-    },
-    inactive: {
-        borderTop: (viewWidth) => viewWidth > 414 ? '1px solid var(--pf-global--BorderColor--100)' : '',
-        borderLeft: (viewWidth) => viewWidth < 414 ? '1px solid var(--pf-global--BorderColor--100)' : '',
-        height: (viewWidth) => viewWidth > 414 ? '56px' : '84px',
-        flex: (viewWidth) => viewWidth > 414 ? 1 : '',
-        display: 'flex',
-        alignItems: 'center',
-        '& svg, span': {
-            color: 'var(--pf-global--disabled-color--100)',
-        },
-        '& div': {
-            marginLeft: '3px',
-        },
     },
 })
 
@@ -58,18 +36,29 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
     return (
         <div>
             <TextContent>
-                <Text component={TextVariants.h3} style={{ fontWeight: 300 }}>{props.title}</Text>
+                <Text component={TextVariants.h3} style={{ fontWeight: 300 }}>
+                    {props.title}
+                </Text>
             </TextContent>
             <TextContent style={{ marginTop: '6px' }}>
                 <Text component={TextVariants.small}>{props.message}</Text>
             </TextContent>
-
             <div className={classes.container}>
-                {props.steps.map((step, index) => (
-                    <div key={index} className={step.active ? classes.active : classes.inactive}>
-                        <AcmInlineStatus type={step.statusType} status={step.statusText} popover={step.popover} />
-                    </div>
-                ))}
+                <JumpLinks isVertical={viewWidth < 700}>
+                    {props.steps.map((step) => (
+                        <JumpLinksItem isActive={step.active}>
+                            <TextContent>
+                                <Text className={classes.text}>
+                                    <AcmInlineStatus
+                                        type={step.statusType}
+                                        status={step.statusText}
+                                        popover={step.popover}
+                                    />
+                                </Text>
+                            </TextContent>
+                        </JumpLinksItem>
+                    ))}
+                </JumpLinks>
             </div>
         </div>
     )
