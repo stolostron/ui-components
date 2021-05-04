@@ -38,8 +38,7 @@
         "moment": "^2.29.1",
         "nock": "^13.0.11",
         "react-router-dom": "^5.2.0",
-        "react-tag-autocomplete": "^6.1.0",
-        "ts-loader": "^9.0.0"
+        "react-tag-autocomplete": "^6.1.0"
     },
     "devDependencies": {
         "@babel/core": "^7.14.0",
