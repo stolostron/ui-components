@@ -2,7 +2,7 @@
 
 /* eslint-disable react/display-name */
 import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
+import { fitContent, IRowData, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
 import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
@@ -25,6 +25,7 @@ export default {
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
+        'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: false },
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
         'Embed extraToolBarControls': { control: { type: 'boolean' }, defaultValue: false },
@@ -272,6 +273,17 @@ function commonProperties(
                       },
                   },
               ]
+            : undefined,
+        rowActionResolver: args['Include rowActionResolver']
+            ? (rowData: IRowData) => {
+                  const actions = []
+                  if (rowData['last-name'].title.indexOf('a') >= 0) {
+                      actions.push({
+                          title: "Last name has 'a'",
+                      })
+                  }
+                  return actions
+              }
             : undefined,
         bulkActions: args['Include bulkActions']
             ? [

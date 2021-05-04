@@ -156,6 +156,17 @@ describe('AcmTable', () => {
     test('renders without actions', () => {
         const { container } = render(<Table useTableActions={false} useRowActions={false} />)
         expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeNull()
+    })
+    test('renders actions given an actionResolver', () => {
+        const tableActionResolver = () => {
+            return [{ isSeparator: true }]
+        }
+        const { container } = render(
+            <Table useTableActions={false} useRowActions={false} rowActionResolver={tableActionResolver} />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeInTheDocument()
     })
     test('renders pagination with autoHidePagination when more that perPage items', () => {
         const { container } = render(<Table items={exampleData} autoHidePagination />)
