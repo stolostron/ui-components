@@ -269,7 +269,7 @@ describe('AcmTable', () => {
         // search for '.org'
         expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
         userEvent.type(getByPlaceholderText(placeholderString), '.org')
-        expect(queryByText('7 / 105')).toBeVisible()
+        expect(queryByText('8 / 105')).toBeVisible()
 
         // verify last sort order ignored
         expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('8')
