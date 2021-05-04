@@ -581,20 +581,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     const onSelect = useCallback(
         (_event: FormEvent, isSelected: boolean, rowId: number) => {
-            /* istanbul ignore next */
-            if (!paged) return
-            /* istanbul ignore next */
-            if (!filtered) return
-            /* istanbul ignore next */
-            if (!rows) return
-
-            // Ignoring the if here because the table no longer usees header select all
-            // but leaving in case we want to reenable it
-            /* istanbul ignore if */
             if (rowId === -1) {
                 let allSelected = true
                 for (const row of rows) {
-                    if (!row.selected) {
+                    if (!row.selected && row.parent === undefined) {
                         allSelected = false
                         break
                     }
@@ -614,9 +604,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             } else {
                 const newSelected = { ...selected }
                 if (isSelected) {
-                    newSelected[paged[rowId].key] = true
+                    newSelected[rows[rowId].props.key] = true
                 } else {
-                    delete newSelected[paged[rowId].key]
+                    delete newSelected[rows[rowId].props.key]
                 }
                 setSelected(newSelected)
                 /* istanbul ignore next */
@@ -625,7 +615,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 }
             }
         },
-        [paged, filtered, rows, keyFn]
+        [filtered, rows, keyFn]
     )
 
     const actions = rowActions.map((rowAction) => {
