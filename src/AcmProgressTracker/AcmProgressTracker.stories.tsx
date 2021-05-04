@@ -42,7 +42,7 @@ export const ProgressTracker = () => {
     return (
         <Card>
             <CardBody>
-                <AcmProgressTracker title="Creating cluster" message="1 out of 4 steps completed" steps={steps} />
+                <AcmProgressTracker steps={steps} />
             </CardBody>
         </Card>
     )

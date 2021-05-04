@@ -37,7 +37,7 @@ describe('AcmProgressTracker', () => {
             },
         ]
 
-        return <AcmProgressTracker title="Creating cluster" message="1 out of 4 steps completed" steps={steps} />
+        return <AcmProgressTracker steps={steps} isCentered={true} />
     }
 
     test('renders', async () => {
@@ -46,8 +46,6 @@ describe('AcmProgressTracker', () => {
         expect(getByText('Cluster install')).toBeInTheDocument()
         expect(getByText('Klusterlet install')).toBeInTheDocument()
         expect(getByText('Post-creation jobs')).toBeInTheDocument()
-        expect(getByText('1 out of 4 steps completed')).toBeInTheDocument()
-        expect(getByText('Creating cluster')).toBeInTheDocument()
     })
     test('has zero accessibility defects', async () => {
         // don't test loading because it's covered in AcmLoadingPage
