@@ -2,10 +2,9 @@
 
 import { Page, PageSection } from '@patternfly/react-core'
 import { Meta } from '@storybook/react'
-import React, { Fragment } from 'react'
+import React from 'react'
 import { AcmDescriptionList } from '../AcmDescriptionList/AcmDescriptionList'
 import { AcmIcon, AcmIconVariant } from './AcmIcons'
-import ExternalLinkIcon from '@patternfly/react-icons/dist/js/icons/external-link-alt-icon'
 
 const meta: Meta = {
     title: 'Icons',
