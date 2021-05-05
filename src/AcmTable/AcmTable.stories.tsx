@@ -36,11 +36,9 @@ export default {
 export function Table(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable" />}>
-            <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
-                    <TableStory {...args} />
-                </PageSection>
-            </AcmPageContent>
+            <PageSection>
+                <TableStory {...args} />
+            </PageSection>
         </AcmPage>
     )
 }
@@ -64,7 +62,7 @@ export function TableExpandable(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <AcmTable<IExampleData>
                         plural="addresses"
                         items={items}
@@ -123,9 +121,8 @@ export function TableExpandable(args: Record<string, unknown>) {
 export function TableGrouped(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-            <AcmPageHeader title="AcmTable" />
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <TableGroupedStory {...args} />
                 </PageSection>
             </AcmPageContent>
@@ -187,10 +184,9 @@ function TableGroupedStory(args: Record<string, unknown>) {
 
 export function TableEmpty(args: Record<string, unknown>) {
     return (
-        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-            <AcmPageHeader title="AcmTable Empty" />
+        <AcmPage header={<AcmPageHeader title="AcmTable Empty" />}>
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <TableEmptyStory {...args} />
                 </PageSection>
             </AcmPageContent>
@@ -213,10 +209,9 @@ function TableEmptyStory(args: Record<string, unknown>) {
 
 export function TableLoading(args: Record<string, unknown>) {
     return (
-        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-            <AcmPageHeader title="AcmTable Loading" />
+        <AcmPage header={<AcmPageHeader title="AcmTable Loading" />}>
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <TableLoadingStory {...args} />
                 </PageSection>
             </AcmPageContent>
@@ -243,7 +238,6 @@ function commonProperties(
     items: IExampleData[] | undefined
 ) {
     return {
-        paginationAtBottom: !!args['Pagination at bottom'],
         noBorders: !!args['Remove borders'],
         tableActions: args['Include tableActions']
             ? [
