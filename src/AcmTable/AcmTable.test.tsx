@@ -157,13 +157,6 @@ describe('AcmTable', () => {
         const { container } = render(<Table useTableActions={false} useRowActions={false} />)
         expect(container.querySelector('table')).toBeInTheDocument()
     })
-    test('renders pagination at the bottom when paginationAtBottom is set', () => {
-        const { container } = render(<Table items={exampleData} paginationAtBottom />)
-        expect(container.querySelector('div.pf-c-toolbar div.pf-c-pagination')).toBeNull()
-        expect(
-            container.querySelector('div.pf-c-toolbar ~ div.pf-c-toolbar__item > div.pf-c-pagination')
-        ).toBeInTheDocument()
-    })
     test('renders pagination with autoHidePagination when more that perPage items', () => {
         const { container } = render(<Table items={exampleData} autoHidePagination />)
         expect(container.querySelector('div.pf-c-toolbar div.pf-c-pagination')).toBeInTheDocument()
