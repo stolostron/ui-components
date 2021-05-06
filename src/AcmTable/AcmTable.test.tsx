@@ -30,6 +30,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
+    const defaultSortedItems = exampleData.slice(0, 105).sort((a, b) => a.firstName.localeCompare(b.firstName))
     const placeholderString = 'Search'
     const Table = (
         props: {
@@ -116,7 +117,7 @@ describe('AcmTable', () => {
                                   id: 'delete',
                                   title: 'Delete item',
                                   click: (item: IExampleData) => {
-                                      deleteAction()
+                                      deleteAction(item)
                                       setItems(items.filter((i) => i.uid !== item.uid))
                                   },
                               },
@@ -131,7 +132,7 @@ describe('AcmTable', () => {
                                   title: 'Delete items',
                                   click: (items: IExampleData[]) => {
                                       setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
-                                      bulkDeleteAction()
+                                      bulkDeleteAction(items)
                                   },
                               },
                           ]
@@ -218,8 +219,32 @@ describe('AcmTable', () => {
         expect(getByText('1 selected')).toBeInTheDocument()
         getByText('Actions').click()
         userEvent.click(getByText('Delete items'))
-        expect(bulkDeleteAction).toHaveBeenCalled()
+        expect(bulkDeleteAction).toHaveBeenCalledWith(defaultSortedItems.slice(0, 1))
     })
+
+    test('can support bulk table actions with multiple selection', () => {
+        const { getByText, getAllByRole, queryAllByText } = render(
+            <Table useBulkActions={true} useTableActions={false} />
+        )
+        userEvent.click(getAllByRole('checkbox')[0])
+        expect(getByText('105 selected')).toBeInTheDocument()
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(getByText('104 selected')).toBeInTheDocument()
+        userEvent.click(getAllByRole('checkbox')[0])
+        expect(getByText('105 selected')).toBeInTheDocument()
+        userEvent.click(getAllByRole('checkbox')[0])
+        expect(queryAllByText('selected')).toHaveLength(0)
+        userEvent.click(getAllByRole('checkbox')[1])
+        userEvent.click(getAllByRole('checkbox')[2])
+        expect(getByText('2 selected')).toBeInTheDocument()
+        getByText('Actions').click()
+        userEvent.click(getByText('Delete items'))
+        // First arg to bulkDeleteAction is an array with the items in any order
+        expect(bulkDeleteAction.mock.calls[0][0]).toHaveLength(2)
+        expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[0])
+        expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[1])
+    })
+
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
         expect(getAllByLabelText('Actions')).toHaveLength(10)
@@ -273,7 +298,7 @@ describe('AcmTable', () => {
         // search for '.org'
         expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
         userEvent.type(getByPlaceholderText(placeholderString), '.org')
-        expect(queryByText('7 / 105')).toBeVisible()
+        expect(queryByText('8 / 105')).toBeVisible()
 
         // verify last sort order ignored
         expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('8')
@@ -399,17 +424,17 @@ describe('AcmTable', () => {
             <Table
                 page={15}
                 setPage={setPage}
-                search="Male"
+                search="Female"
                 setSearch={setSearch}
-                sort={{ index: 4, direction: SortByDirection.desc }} // sort by IP Address
+                sort={{ index: 0, direction: SortByDirection.desc }} // sort by Name
                 setSort={setSort}
             />
         )
-        expect(setPage).toHaveBeenCalled() // Only 11 pages; should automatically go back
-        expect(getByLabelText('Current page')).toHaveValue(11)
+        expect(setPage).toHaveBeenCalled() // Only 6 pages; should automatically go back
+        expect(getByLabelText('Current page')).toHaveValue(6)
         expect(setSearch).not.toHaveBeenCalled()
         expect(setSort).not.toHaveBeenCalled()
-        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Danny')
+        expect(container.querySelector('tbody tr:last-of-type [data-label="First Name"]')).toHaveTextContent('Alyce')
 
         expect(getByLabelText('Reset')).toBeVisible()
         userEvent.click(getByLabelText('Reset'))
