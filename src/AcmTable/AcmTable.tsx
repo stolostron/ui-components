@@ -731,7 +731,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 </PageSection>
             ) : items.length === 0 ? (
                 props.emptyState ? (
-                    props.emptyState
+                    <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                        {props.emptyState}
+                    </PageSection>
                 ) : (
                     <PageSection variant="light" padding={{ default: 'noPadding' }}>
                         <AcmEmptyState
