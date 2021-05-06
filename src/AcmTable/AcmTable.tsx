@@ -8,6 +8,7 @@ import {
     DropdownToggle,
     EmptyState,
     EmptyStateIcon,
+    PageSection,
     Pagination,
     PaginationVariant,
     PerPageOptions,
@@ -197,7 +198,6 @@ export interface AcmTableProps<T> {
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
     page?: number
-    paginationAtBottom?: boolean
     setPage?: (page: number) => void
     search?: string
     setSearch?: (search: string) => void
@@ -564,37 +564,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [page, perPage, setPage, setPerPage]
     )
 
-    const pagination = (
-        <ToolbarItem alignment={{ default: 'alignRight' }}>
-            <Pagination
-                itemCount={itemCount}
-                perPage={perPage}
-                page={page}
-                variant={PaginationVariant.top}
-                onSetPage={(_event, page) => setPage(page)}
-                onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
-                style={{ paddingRight: 0 }}
-                aria-label="Pagination top"
-            />
-        </ToolbarItem>
-    )
-
     const onSelect = useCallback(
         (_event: FormEvent, isSelected: boolean, rowId: number) => {
-            /* istanbul ignore next */
-            if (!paged) return
-            /* istanbul ignore next */
-            if (!filtered) return
-            /* istanbul ignore next */
-            if (!rows) return
-
-            // Ignoring the if here because the table no longer usees header select all
-            // but leaving in case we want to reenable it
-            /* istanbul ignore if */
             if (rowId === -1) {
                 let allSelected = true
                 for (const row of rows) {
-                    if (!row.selected) {
+                    if (!row.selected && row.parent === undefined) {
                         allSelected = false
                         break
                     }
@@ -614,9 +589,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             } else {
                 const newSelected = { ...selected }
                 if (isSelected) {
-                    newSelected[paged[rowId].key] = true
+                    newSelected[rows[rowId].props.key] = true
                 } else {
-                    delete newSelected[paged[rowId].key]
+                    delete newSelected[rows[rowId].props.key]
                 }
                 setSelected(newSelected)
                 /* istanbul ignore next */
@@ -625,7 +600,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 }
             }
         },
-        [paged, filtered, rows, keyFn]
+        [filtered, rows, keyFn]
     )
 
     const actions = rowActions.map((rowAction) => {
@@ -652,7 +627,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     return (
         <Fragment>
             {props.extraToolbarControls && (
-                <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
+                <Toolbar style={{ paddingBottom: 0 }}>
                     <ToolbarContent>
                         <ToolbarGroup alignment={{ default: 'alignRight' }}>
                             <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
@@ -661,7 +636,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 </Toolbar>
             )}
             {showToolbar && (
-                <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
+                <Toolbar>
                     <ToolbarContent>
                         {hasSearch && (
                             <ToolbarGroup variant="filter-group">
@@ -728,27 +703,44 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {(!props.autoHidePagination || filtered.length > perPage) &&
-                            !props.paginationAtBottom &&
-                            pagination}
+                        {(!props.autoHidePagination || filtered.length > perPage) && (
+                            <ToolbarItem variant="pagination">
+                                <Pagination
+                                    itemCount={itemCount}
+                                    perPage={perPage}
+                                    page={page}
+                                    variant={PaginationVariant.top}
+                                    onSetPage={(_event, page) => setPage(page)}
+                                    onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
+                                    aria-label="Pagination top"
+                                    isCompact
+                                />
+                            </ToolbarItem>
+                        )}
                     </ToolbarContent>
                 </Toolbar>
             )}
             {!items || !rows || !filtered || !paged ? (
-                <EmptyState>
-                    <EmptyStateIcon variant="container" component={Spinner} />
-                    <Title size="lg" headingLevel="h4">
-                        Loading
-                    </Title>
-                </EmptyState>
+                <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                    <EmptyState>
+                        <EmptyStateIcon variant="container" component={Spinner} />
+                        <Title size="lg" headingLevel="h4">
+                            Loading
+                        </Title>
+                    </EmptyState>
+                </PageSection>
             ) : items.length === 0 ? (
                 props.emptyState ? (
-                    props.emptyState
+                    <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                        {props.emptyState}
+                    </PageSection>
                 ) : (
-                    <AcmEmptyState
-                        title={`No ${props.plural} found`}
-                        message={`You do not have any ${props.plural} yet.`}
-                    />
+                    <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                        <AcmEmptyState
+                            title={`No ${props.plural} found`}
+                            message={`You do not have any ${props.plural} yet.`}
+                        />
+                    </PageSection>
                 )
             ) : (
                 <Fragment>
@@ -796,18 +788,30 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         </div>
                     </div>
                     {!filtered.length && (
-                        <AcmEmptyState
-                            title="No results found"
-                            message="No results match the filter criteria. Clear filters to show results."
-                            showIcon={false}
-                            action={
-                                <AcmButton variant="link" onClick={() => updateSearch('')}>
-                                    Clear all filters
-                                </AcmButton>
-                            }
+                        <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                            <AcmEmptyState
+                                title="No results found"
+                                message="No results match the filter criteria. Clear filters to show results."
+                                showIcon={false}
+                                action={
+                                    <AcmButton variant="link" onClick={() => updateSearch('')}>
+                                        Clear all filters
+                                    </AcmButton>
+                                }
+                            />
+                        </PageSection>
+                    )}
+                    {(!props.autoHidePagination || filtered.length > perPage) && (
+                        <Pagination
+                            itemCount={itemCount}
+                            perPage={perPage}
+                            page={page}
+                            variant={PaginationVariant.bottom}
+                            onSetPage={/* istanbul ignore next */ (_event, page) => setPage(page)}
+                            onPerPageSelect={/* istanbul ignore next */ (_event, perPage) => updatePerPage(perPage)}
+                            aria-label="Pagination bottom"
                         />
                     )}
-                    {(!props.autoHidePagination || filtered.length > perPage) && props.paginationAtBottom && pagination}
                 </Fragment>
             )}
         </Fragment>

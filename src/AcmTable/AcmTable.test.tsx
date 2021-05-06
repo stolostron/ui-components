@@ -30,6 +30,7 @@ describe('AcmTable', () => {
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
+    const defaultSortedItems = exampleData.slice(0, 105).sort((a, b) => a.firstName.localeCompare(b.firstName))
     const placeholderString = 'Search'
     const Table = (
         props: {
@@ -115,7 +116,7 @@ describe('AcmTable', () => {
                                   id: 'delete',
                                   title: 'Delete item',
                                   click: (item: IExampleData) => {
-                                      deleteAction()
+                                      deleteAction(item)
                                       setItems(items.filter((i) => i.uid !== item.uid))
                                   },
                               },
@@ -130,7 +131,7 @@ describe('AcmTable', () => {
                                   title: 'Delete items',
                                   click: (items: IExampleData[]) => {
                                       setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
-                                      bulkDeleteAction()
+                                      bulkDeleteAction(items)
                                   },
                               },
                           ]
@@ -155,13 +156,6 @@ describe('AcmTable', () => {
     test('renders without actions', () => {
         const { container } = render(<Table useTableActions={false} useRowActions={false} />)
         expect(container.querySelector('table')).toBeInTheDocument()
-    })
-    test('renders pagination at the bottom when paginationAtBottom is set', () => {
-        const { container } = render(<Table items={exampleData} paginationAtBottom />)
-        expect(container.querySelector('div.pf-c-toolbar div.pf-c-pagination')).toBeNull()
-        expect(
-            container.querySelector('div.pf-c-toolbar ~ div.pf-c-toolbar__item > div.pf-c-pagination')
-        ).toBeInTheDocument()
     })
     test('renders pagination with autoHidePagination when more that perPage items', () => {
         const { container } = render(<Table items={exampleData} autoHidePagination />)
@@ -214,8 +208,32 @@ describe('AcmTable', () => {
         expect(getByText('1 selected')).toBeInTheDocument()
         getByText('Actions').click()
         userEvent.click(getByText('Delete items'))
-        expect(bulkDeleteAction).toHaveBeenCalled()
+        expect(bulkDeleteAction).toHaveBeenCalledWith(defaultSortedItems.slice(0, 1))
     })
+
+    test('can support bulk table actions with multiple selection', () => {
+        const { getByText, getAllByRole, queryAllByText } = render(
+            <Table useBulkActions={true} useTableActions={false} />
+        )
+        userEvent.click(getAllByRole('checkbox')[0])
+        expect(getByText('105 selected')).toBeInTheDocument()
+        userEvent.click(getAllByRole('checkbox')[1])
+        expect(getByText('104 selected')).toBeInTheDocument()
+        userEvent.click(getAllByRole('checkbox')[0])
+        expect(getByText('105 selected')).toBeInTheDocument()
+        userEvent.click(getAllByRole('checkbox')[0])
+        expect(queryAllByText('selected')).toHaveLength(0)
+        userEvent.click(getAllByRole('checkbox')[1])
+        userEvent.click(getAllByRole('checkbox')[2])
+        expect(getByText('2 selected')).toBeInTheDocument()
+        getByText('Actions').click()
+        userEvent.click(getByText('Delete items'))
+        // First arg to bulkDeleteAction is an array with the items in any order
+        expect(bulkDeleteAction.mock.calls[0][0]).toHaveLength(2)
+        expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[0])
+        expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[1])
+    })
+
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
         expect(getAllByLabelText('Actions')).toHaveLength(10)
