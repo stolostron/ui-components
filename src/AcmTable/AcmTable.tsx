@@ -22,6 +22,7 @@ import {
 } from '@patternfly/react-core'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
+    IAction,
     IActionsResolver,
     IRow,
     IRowData,
@@ -93,6 +94,7 @@ export interface IAcmTableAction {
 /* istanbul ignore next */
 export interface IAcmRowAction<T> {
     id: string
+    addSeparator?: boolean
     title: string | React.ReactNode
     click: (item: T) => void
 }
@@ -608,8 +610,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [filtered, rows, keyFn]
     )
 
-    const actions = rowActions.map((rowAction) => {
-        return {
+    const actions: IAction[] = []
+    rowActions.forEach((rowAction) => {
+        actions.push({
             title: rowAction.title,
             onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
                 if (groupFn || addSubRows) {
@@ -622,6 +625,11 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     rowAction.click(paged[rowId].item)
                 }
             },
+        })
+        if (rowAction.addSeparator) {
+            actions.push({
+                isSeparator: true,
+            })
         }
     })
 
