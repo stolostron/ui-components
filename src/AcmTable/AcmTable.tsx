@@ -288,15 +288,15 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
         },
         // Check breakpoints as soon as ref callbacks are set, in case initial viewport is too small for table
-        // Need to check on every update to breakpoint as well for the same case, to that display
-        // doesn't thrash between table/grid on intial expansion of viewport
+        // Need to check on every update to breakpoint as well for the same case, so that display
+        // doesn't thrash between table/grid on initial expansion of viewport
         [breakpoint, outerDiv, tableDiv]
     )
 
     /* istanbul ignore next */
-    useResizeObserver(outerDiv, (entry) => {
-        if (!props.gridBreakPoint && entry.contentRect && tableDiv) {
-            const width = Math.floor(entry.contentRect.width)
+    useResizeObserver(outerDiv, () => {
+        if (!props.gridBreakPoint && outerDiv && tableDiv) {
+            const width = outerDiv.clientWidth
             const tableWidth = tableDiv.clientWidth
             updateBreakpoint(width, tableWidth)
         }
