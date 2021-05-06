@@ -15,11 +15,20 @@ describe('AcmDescriptionList', () => {
         { key: 'Namespace', value: 'cluster-namespace' },
         { key: 'Console URL', value: undefined },
     ]
+    const allItems = [...leftItems, ...rightItems]
     const DescriptionList = (props: { leftItems: ListItems[]; rightItems?: ListItems[] }) => (
         <AcmDescriptionList title="Details" leftItems={props.leftItems} rightItems={props.rightItems} />
     )
     test('renders', () => {
         const { queryByText, getByRole } = render(<DescriptionList leftItems={leftItems} rightItems={rightItems} />)
+        expect(queryByText('Details')).toBeInTheDocument()
+        expect(queryByText('Name')).toBeInTheDocument()
+        expect(queryByText('Namespace')).toBeInTheDocument()
+        userEvent.click(getByRole('button'))
+        expect(queryByText('Name')).toBeNull()
+    })
+    test('renders if only given left items', () => {
+        const { queryByText, getByRole } = render(<DescriptionList leftItems={allItems} />)
         expect(queryByText('Details')).toBeInTheDocument()
         expect(queryByText('Name')).toBeInTheDocument()
         expect(queryByText('Namespace')).toBeInTheDocument()

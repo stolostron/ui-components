@@ -35,7 +35,7 @@ export function AcmDescriptionList(props: {
     const classes = useStyles()
     return (
         <AcmExpandableCard title={props.title}>
-            <Grid sm={12} md={6}>
+            <Grid sm={12} md={props.rightItems ? 6 : 12}>
                 <GridItem className={classes.leftCol}>
                     <List items={props.leftItems} />
                 </GridItem>
