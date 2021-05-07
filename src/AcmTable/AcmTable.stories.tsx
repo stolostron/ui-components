@@ -2,7 +2,7 @@
 
 /* eslint-disable react/display-name */
 import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
-import { fitContent, IRowData, TableGridBreakpoint, truncate } from '@patternfly/react-table'
+import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
 import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
@@ -270,14 +270,28 @@ function commonProperties(
               ]
             : undefined,
         rowActionResolver: args['Include rowActionResolver']
-            ? (rowData: IRowData) => {
-                  const actions = []
-                  if (rowData['last-name'].title.indexOf('a') >= 0) {
-                      actions.push({
-                          title: "Last name has 'a'",
-                      })
+            ? (item: IExampleData) => {
+                  if (item.last_name.indexOf('a') > -1) {
+                      return [
+                          {
+                              id: 'topAction',
+                              title: 'Top action!',
+                              click: () => {
+                                  alert('Not implemented')
+                              },
+                          },
+                          {
+                              id: 'testAction',
+                              title: `${item.firstName} ${item.last_name} is the coolest!`,
+                              addSeparator: true,
+                              click: () => {
+                                  alert('Not implemented')
+                              },
+                          },
+                      ]
+                  } else {
+                      return []
                   }
-                  return actions
               }
             : undefined,
         bulkActions: args['Include bulkActions']

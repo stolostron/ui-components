@@ -160,8 +160,19 @@ describe('AcmTable', () => {
         expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeNull()
     })
     test('renders actions given an actionResolver', () => {
-        const tableActionResolver = () => {
-            return [{ isSeparator: true }]
+        const tableActionResolver = (item: IExampleData) => {
+            if (item.last_name.indexOf('a') > -1) {
+                return [
+                    {
+                        id: 'testAction',
+                        title: `${item.firstName} ${item.last_name} is the coolest!`,
+                        addSeparator: true,
+                        click: createAction,
+                    },
+                ]
+            } else {
+                return []
+            }
         }
         const { container } = render(
             <Table useTableActions={false} useRowActions={false} rowActionResolver={tableActionResolver} />

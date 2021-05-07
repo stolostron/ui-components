@@ -95,6 +95,7 @@ export interface IAcmTableAction {
 export interface IAcmRowAction<T> {
     id: string
     addSeparator?: boolean
+    isDisabled?: boolean
     title: string | React.ReactNode
     click: (item: T) => void
 }
@@ -124,7 +125,6 @@ const useStyles = makeStyles({
     },
     outerDiv: {
         display: 'block',
-        'overflow-x': 'scroll',
     },
     table: {
         '& tbody.pf-m-expanded > tr': {
@@ -197,7 +197,7 @@ export interface AcmTableProps<T> {
     groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
     rowActions?: IAcmRowAction<T>[]
-    rowActionResolver?: IActionsResolver
+    rowActionResolver?: (item: T) => IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     extraToolbarEmbed?: boolean
@@ -610,28 +610,46 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [filtered, rows, keyFn]
     )
 
-    const actions: IAction[] = []
-    rowActions.forEach((rowAction) => {
-        actions.push({
-            title: rowAction.title,
-            onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
-                if (groupFn || addSubRows) {
-                    const tableItem =
-                        rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
-                    if (tableItem) {
-                        rowAction.click(tableItem.item)
-                    }
-                } else {
-                    rowAction.click(paged[rowId].item)
-                }
-            },
-        })
-        if (rowAction.addSeparator) {
+    // Function to parse provided actions from AcmTable IAcmRowAction --> Patternfly Table IAction
+    const parseRowAction = (rowActions: IAcmRowAction<T>[]) => {
+        const actions: IAction[] = []
+        rowActions.forEach((action) => {
+            // Add separator if specified
+            if (action.addSeparator) {
+                actions.push({
+                    isSeparator: true,
+                })
+            }
+            // Add row action
             actions.push({
-                isSeparator: true,
+                title: action.title,
+                onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                    if (groupFn || addSubRows) {
+                        const tableItem =
+                            rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
+                        if (tableItem) {
+                            action.click(tableItem.item)
+                        }
+                    } else {
+                        action.click(paged[rowId].item)
+                    }
+                },
             })
+        })
+        return actions
+    }
+
+    // Parse static actions
+    const actions = parseRowAction(rowActions)
+
+    // Wrap provided action resolver
+    let actionsResolver: IActionsResolver | undefined
+    if (rowActionResolver) {
+        actionsResolver = (rowData: IRowData) => {
+            const tableItem = rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
+            return parseRowAction(rowActionResolver(tableItem.item))
         }
-    })
+    }
 
     const extraToolbar = (
         <ToolbarGroup alignment={{ default: 'alignRight' }}>
@@ -785,7 +803,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 })}
                                 rows={rows}
                                 rowWrapper={OuiaIdRowWrapper}
-                                actionResolver={rowActionResolver}
+                                actionResolver={actionsResolver}
                                 actions={actions}
                                 aria-label="Simple Table"
                                 sortBy={adjustedSort}
