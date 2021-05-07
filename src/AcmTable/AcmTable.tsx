@@ -649,9 +649,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const actions = parseRowAction(rowActions)
 
     // Wrap provided action resolver
-    let actionsResolver: IActionsResolver | undefined
+    let actionResolver: IActionsResolver | undefined
     if (rowActionResolver) {
-        actionsResolver = (rowData: IRowData) => {
+        actionResolver = (rowData: IRowData) => {
             const tableItem = rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
             return parseRowAction(rowActionResolver(tableItem.item))
         }
@@ -807,7 +807,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 })}
                                 rows={rows}
                                 rowWrapper={OuiaIdRowWrapper}
-                                actionResolver={actionsResolver}
+                                actionResolver={actionResolver}
                                 actions={actions}
                                 aria-label="Simple Table"
                                 sortBy={adjustedSort}
