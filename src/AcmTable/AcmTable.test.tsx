@@ -179,6 +179,79 @@ describe('AcmTable', () => {
         expect(container.querySelector('table')).toBeInTheDocument()
         expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeInTheDocument()
     })
+    test('renders actions given an actionResolver with an expandable table', () => {
+        const tableActionResolver = (item: IExampleData) => {
+            if (item.last_name.indexOf('a') > -1) {
+                return [
+                    {
+                        id: 'testAction',
+                        title: `${item.firstName} ${item.last_name} is the coolest!`,
+                        addSeparator: true,
+                        click: createAction,
+                    },
+                ]
+            } else {
+                return []
+            }
+        }
+        const { container } = render(
+            <AcmTable<IExampleData>
+                plural="addresses"
+                showToolbar={false}
+                items={exampleData.slice(0, 10)}
+                addSubRows={(item: IExampleData) => {
+                    if (item.uid === 1) {
+                        return [
+                            {
+                                cells: [
+                                    {
+                                        title: <div id="expanded">{item.uid}</div>,
+                                    },
+                                ],
+                            },
+                        ]
+                    } else {
+                        return undefined
+                    }
+                }}
+                columns={[
+                    {
+                        header: 'First Name',
+                        sort: 'firstName',
+                        cell: 'firstName',
+                    },
+                    {
+                        header: 'Last Name',
+                        sort: 'last_name',
+                        cell: 'last_name',
+                    },
+                    {
+                        header: 'EMail',
+                        cell: 'email',
+                    },
+                    {
+                        header: 'Gender',
+                        sort: 'gender',
+                        cell: (item) => item.gender,
+                    },
+                    {
+                        header: 'IP Address',
+                        sort: sortFunction,
+                        cell: 'ip_address',
+                    },
+                    {
+                        header: 'UID',
+                        sort: 'uid',
+                        cell: 'uid',
+                    },
+                ]}
+                keyFn={(item: IExampleData) => item.uid.toString()}
+                rowActionResolver={tableActionResolver}
+            />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeInTheDocument()
+    })
     test('renders pagination with autoHidePagination when more that perPage items', () => {
         const { container } = render(<Table items={exampleData} autoHidePagination />)
         expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
