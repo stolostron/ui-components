@@ -267,13 +267,13 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const updateBreakpoint = (width: number, tableWidth: number) => {
         const viewportWidth = window.innerWidth
         if (tableWidth > width) {
-            // table needs to switch to grid; make the change and record viewport size when this happened
+            // table needs to switch to cards; make the change and record viewport size when this happened
             const newBreakpoint =
                 BREAKPOINT_SIZES.find((b) => viewportWidth <= b.size)?.name || TableGridBreakpoint.none
             setBreakpoint(newBreakpoint)
             setExactBreakpoint(width)
         } else if (exactBreakpoint && width > exactBreakpoint) {
-            // outerDiv is now bigger than when we last switched to grid; try bigger breakpoint, which will
+            // outerDiv is now bigger than when we last switched to cards; try bigger breakpoint, which will
             // be reverted in the layout effect if the table view is still too wide
             const newBreakpoint =
                 [...BREAKPOINT_SIZES].reverse().find((b) => viewportWidth > b.size)?.name || TableGridBreakpoint.grid
@@ -289,7 +289,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         },
         // Check breakpoints as soon as ref callbacks are set, in case initial viewport is too small for table
         // Need to check on every update to breakpoint as well for the same case, so that display
-        // doesn't thrash between table/grid on initial expansion of viewport
+        // doesn't thrash between table/cards on initial expansion of viewport
         [breakpoint, outerDiv, tableDiv]
     )
 
