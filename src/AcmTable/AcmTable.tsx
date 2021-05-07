@@ -87,6 +87,7 @@ export interface IAcmTableAction {
     click: () => void
     isDisabled?: boolean | undefined
     tooltip?: string | React.ReactNode
+    variant?: string
 }
 
 /* istanbul ignore next */
@@ -660,6 +661,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                             onClick={action.click}
                                             isDisabled={action.isDisabled}
                                             tooltip={action.tooltip}
+                                            variant={action.variant || 'primary'}
                                         >
                                             {action.title}
                                         </AcmButton>

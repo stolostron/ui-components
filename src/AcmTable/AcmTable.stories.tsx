@@ -253,6 +253,7 @@ function commonProperties(
                       click: () => {
                           alert('Not implemented')
                       },
+                      variant: 'secondary',
                   },
               ]
             : undefined,
