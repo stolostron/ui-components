@@ -95,10 +95,15 @@ export interface IAcmTableAction {
 
 /* istanbul ignore next */
 export interface IAcmRowAction<T> {
+    /** Action identifier */
     id: string
+    /** Inject a separator horizontal rule immediately before an action */
     addSeparator?: boolean
+    /** Display an action as being disabled */
     isDisabled?: boolean
+    /** Visible text for action */
     title: string | React.ReactNode
+    /** Function for onClick() action */
     click: (item: T) => void
 }
 
