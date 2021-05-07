@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 /* eslint-disable react/display-name */
-import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { ButtonVariant, PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
 import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
 import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
@@ -255,6 +255,7 @@ function commonProperties(
                       click: () => {
                           alert('Not implemented')
                       },
+                      variant: ButtonVariant.secondary,
                   },
               ]
             : undefined,

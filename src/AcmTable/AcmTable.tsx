@@ -3,6 +3,7 @@
 
 import { makeStyles } from '@material-ui/styles'
 import {
+    ButtonVariant,
     Dropdown,
     DropdownItem,
     DropdownToggle,
@@ -89,6 +90,7 @@ export interface IAcmTableAction {
     click: () => void
     isDisabled?: boolean | undefined
     tooltip?: string | React.ReactNode
+    variant?: ButtonVariant
 }
 
 /* istanbul ignore next */
@@ -693,6 +695,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                             onClick={action.click}
                                             isDisabled={action.isDisabled}
                                             tooltip={action.tooltip}
+                                            variant={action.variant || ButtonVariant.primary}
                                         >
                                             {action.title}
                                         </AcmButton>

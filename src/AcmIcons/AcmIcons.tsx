@@ -1,21 +1,22 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import {
-    AcmTemplateIcon,
-    AcmVisibilityOnIcon,
-    AcmVisibilityOffIcon,
-    BrokenLinkIcon,
-    RedHatIcon,
-    AWSIcon,
-    GCPIcon,
-    AzureIcon,
-    CloudIcon,
-    BareMetalIcon,
-    VMWareIcon,
-    IBMCloudIcon,
-    OCPIcon,
-} from './Icons'
+import { SVGIconProps } from '@patternfly/react-icons/dist/js/createIcon'
+import AnsibleTowerIcon from '@patternfly/react-icons/dist/js/icons/ansibeTower-icon'
+import EyeIcon from '@patternfly/react-icons/dist/js/icons/eye-icon'
+import EyeSlashIcon from '@patternfly/react-icons/dist/js/icons/eye-slash-icon'
+import ServerIcon from '@patternfly/react-icons/dist/js/icons/server-icon'
+import React, { Fragment } from 'react'
+import OpenNewTabIcon from './OpenNewTabIcon'
+import AcmTemplateIcon from './TemplateIcon'
+import AWSIcon from './AWSIcon'
+import AzureIcon from './AzureIcon'
+import BrokenLinkIcon from './BrokenLinkIcon'
+import CloudIcon from './CloudIcon'
+import GCPIcon from './GCPIcon'
+import IBMCloudIcon from './IBMCloudIcon'
+import OCPIcon from './OCPIcon'
+import RedHatIcon from './RedHatIcon'
+import VMWareIcon from './VMWareIcon'
 
 export enum AcmIconVariant {
     template = 'template',
@@ -31,37 +32,46 @@ export enum AcmIconVariant {
     baremetal = 'baremetal',
     vmware = 'vmware',
     cloud = 'cloud',
+    openNewTab = 'opennewtab',
+    ansible = 'ansible',
 }
 
 // https://www.patternfly.org/v4/guidelines/icons
 
-export function AcmIcon(props: { icon: AcmIconVariant }) {
+export function AcmIcon(props: { icon: AcmIconVariant } & SVGIconProps) {
     switch (props.icon) {
         case AcmIconVariant.template:
-            return <AcmTemplateIcon />
+            return <AcmTemplateIcon {...props} />
         case AcmIconVariant.visibilityoff:
-            return <AcmVisibilityOffIcon />
+            return <EyeSlashIcon {...props} />
         case AcmIconVariant.visibilityon:
-            return <AcmVisibilityOnIcon />
+            return <EyeIcon {...props} />
         case AcmIconVariant.brokenlink:
-            return <BrokenLinkIcon />
+            return <BrokenLinkIcon {...props} />
         case AcmIconVariant.redhat:
-            return <RedHatIcon />
+            return <RedHatIcon {...props} />
         case AcmIconVariant.aws:
-            return <AWSIcon />
+            return <AWSIcon {...props} />
         case AcmIconVariant.gcp:
-            return <GCPIcon />
+            return <GCPIcon {...props} />
         case AcmIconVariant.azure:
-            return <AzureIcon />
+            return <AzureIcon {...props} />
         case AcmIconVariant.ocp:
-            return <OCPIcon />
+            return <OCPIcon {...props} />
         case AcmIconVariant.ibm:
-            return <IBMCloudIcon />
+            return <IBMCloudIcon {...props} />
         case AcmIconVariant.baremetal:
-            return <BareMetalIcon />
+            return <ServerIcon {...props} />
         case AcmIconVariant.vmware:
-            return <VMWareIcon />
+            return <VMWareIcon {...props} />
         case AcmIconVariant.cloud:
-            return <CloudIcon />
+            return <CloudIcon {...props} />
+        case AcmIconVariant.openNewTab:
+            return <OpenNewTabIcon {...props} />
+        case AcmIconVariant.ansible:
+            return <AnsibleTowerIcon {...props} color="#EE0000" />
+        /* istanbul ignore next */
+        default:
+            return <Fragment />
     }
 }

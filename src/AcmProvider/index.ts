@@ -47,7 +47,7 @@ export const ProviderLongTextMap = {
 
 export const ProviderIconMap = {
     [Provider.redhatcloud]: AcmIconVariant.redhat,
-    [Provider.ansible]: AcmIconVariant.redhat,
+    [Provider.ansible]: AcmIconVariant.ansible,
     [Provider.openstack]: AcmIconVariant.redhat,
     [Provider.aws]: AcmIconVariant.aws,
     [Provider.gcp]: AcmIconVariant.gcp,
