@@ -18,18 +18,20 @@ export function AcmActionGroup(props: { children: React.ReactNode[] }) {
 
     return (
         <Flex className={classes.group}>
-            {props.children.map((child, i) => {
-                if (i + 2 > props.children.length) {
-                    return <FlexItem key={i}>{child}</FlexItem>
-                } else {
-                    return (
-                        <Fragment key={i}>
-                            <FlexItem>{child}</FlexItem>
-                            <Divider isVertical />
-                        </Fragment>
-                    )
-                }
-            })}
+            {props.children
+                .filter((child) => !!child)
+                .map((child, i) => {
+                    if (i === 0) {
+                        return <FlexItem key={i}>{child}</FlexItem>
+                    } else {
+                        return (
+                            <Fragment key={i}>
+                                <Divider isVertical />
+                                <FlexItem>{child}</FlexItem>
+                            </Fragment>
+                        )
+                    }
+                })}
         </Flex>
     )
 }
