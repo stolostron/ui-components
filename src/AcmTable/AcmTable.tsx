@@ -271,10 +271,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             const newBreakpoint =
                 BREAKPOINT_SIZES.find((b) => viewportWidth <= b.size)?.name || TableGridBreakpoint.none
             setBreakpoint(newBreakpoint)
-            setExactBreakpoint(viewportWidth)
-        } else if (exactBreakpoint && viewportWidth > exactBreakpoint) {
-            // viewport is now bigger than when we last switched to grid; try bigger breakpoint, which will
-            // be reverted in the layout effect if the table is still too wide
+            setExactBreakpoint(width)
+        } else if (exactBreakpoint && width > exactBreakpoint) {
+            // outerDiv is now bigger than when we last switched to grid; try bigger breakpoint, which will
+            // be reverted in the layout effect if the table view is still too wide
             const newBreakpoint =
                 [...BREAKPOINT_SIZES].reverse().find((b) => viewportWidth > b.size)?.name || TableGridBreakpoint.grid
             setBreakpoint(newBreakpoint)
