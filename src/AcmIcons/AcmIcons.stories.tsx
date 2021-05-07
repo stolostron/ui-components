@@ -8,7 +8,6 @@ import { AcmIcon, AcmIconVariant } from './AcmIcons'
 
 const meta: Meta = {
     title: 'Icons',
-    component: AcmIcon,
     argTypes: {
         size: {
             control: { type: 'select', options: ['sm', 'md', 'lg', 'xl'], default: 'lg' },
