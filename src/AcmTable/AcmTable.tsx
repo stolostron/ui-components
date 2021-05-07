@@ -202,7 +202,6 @@ export interface AcmTableProps<T> {
     rowActionResolver?: (item: T) => IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
-    extraToolbarEmbed?: boolean
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
     page?: number
@@ -653,21 +652,19 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     }
 
-    const extraToolbar = (
-        <ToolbarGroup alignment={{ default: 'alignRight' }}>
-            <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
-        </ToolbarGroup>
-    )
-
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
     const showToolbar = props.showToolbar !== false ? hasItems : false
 
     return (
         <Fragment>
-            {props.extraToolbarControls && !props.extraToolbarEmbed && (
+            {props.extraToolbarControls && (
                 <Toolbar style={{ paddingBottom: 0 }}>
-                    <ToolbarContent>{extraToolbar}</ToolbarContent>
+                    <ToolbarContent>
+                        <ToolbarGroup alignment={{ default: 'alignRight' }}>
+                            <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
+                        </ToolbarGroup>
+                    </ToolbarContent>
                 </Toolbar>
             )}
             {showToolbar && (
@@ -753,7 +750,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 />
                             </ToolbarItem>
                         )}
-                        {props.extraToolbarControls && props.extraToolbarEmbed && extraToolbar}
                     </ToolbarContent>
                 </Toolbar>
             )}

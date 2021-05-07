@@ -39,7 +39,6 @@ describe('AcmTable', () => {
             useRowActions?: boolean
             useBulkActions?: boolean
             useExtraToolbarControls?: boolean
-            extraToolbarEmbed?: boolean
             searchPlaceholder?: string
             useSearch?: boolean
             transforms?: boolean
@@ -460,15 +459,6 @@ describe('AcmTable', () => {
         const { queryByText } = render(<Table items={undefined} useExtraToolbarControls={true} />)
         expect(queryByText('Loading')).toBeVisible()
         expect(queryByText('View 1')).toBeVisible()
-    })
-    test('can embed extraToolbarControls', () => {
-        // If the extraToolbar is not embedded, then we'll have two toolbar instances
-        const { rerender, container } = render(
-            <Table items={exampleData} useExtraToolbarControls={true} extraToolbarEmbed={false} />
-        )
-        expect(container.querySelectorAll('div.pf-c-toolbar')).toHaveLength(2)
-        rerender(<Table items={exampleData} useExtraToolbarControls={true} extraToolbarEmbed={true} />)
-        expect(container.querySelectorAll('div.pf-c-toolbar')).toHaveLength(1)
     })
     test('can have sort updated when all items filtered', () => {
         const { getByPlaceholderText, queryByText, getByLabelText, getByText, container } = render(<Table />)
