@@ -652,8 +652,16 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     let actionResolver: IActionsResolver | undefined
     if (rowActionResolver) {
         actionResolver = (rowData: IRowData) => {
-            const tableItem = rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
-            return parseRowAction(rowActionResolver(tableItem.item))
+            let tableItem
+            if (groupFn || addSubRows) {
+                tableItem = rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
+            } else {
+                tableItem = paged[rowData.secretTableRowKeyId].item
+            }
+            if (tableItem) {
+                return parseRowAction(rowActionResolver(tableItem.item))
+            }
+            return []
         }
     }
 
