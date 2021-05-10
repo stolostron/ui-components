@@ -25,6 +25,7 @@ import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon
 import {
     IAction,
     IActionsResolver,
+    IExtraData,
     IRow,
     IRowData,
     ISortBy,
@@ -651,7 +652,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // Wrap provided action resolver
     let actionResolver: IActionsResolver | undefined
     if (rowActionResolver) {
-        actionResolver = (rowData: IRowData) => {
+        actionResolver = (rowData: IRowData, extraData: IExtraData) => {
             let tableItem
             if (groupFn || addSubRows) {
                 tableItem = rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
