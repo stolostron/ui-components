@@ -656,8 +656,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             let tableItem
             if (groupFn || addSubRows) {
                 tableItem = rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
-            } else if ((extraData?.rowIndex ?? -1) >= 0) {
-                tableItem = paged[extraData?.rowIndex ?? 0]
+            } else {
+                tableItem = paged[extraData.rowIndex!]
             }
             if (tableItem) {
                 return parseRowAction(rowActionResolver(tableItem.item))
