@@ -632,7 +632,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
                     if (groupFn || addSubRows) {
                         const tableItem =
-                            rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
+                            rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
                         if (tableItem) {
                             action.click(tableItem.item)
                         }
@@ -654,9 +654,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         actionResolver = (rowData: IRowData) => {
             let tableItem
             if (groupFn || addSubRows) {
-                tableItem = rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
-            } else {
-                tableItem = paged[rowData.secretTableRowKeyId]
+                tableItem = rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
+            } else if ((extraData?.rowIndex ?? -1) >= 0) {
+                tableItem = paged[extraData?.rowIndex ?? 0]
             }
             if (tableItem) {
                 return parseRowAction(rowActionResolver(tableItem.item))
