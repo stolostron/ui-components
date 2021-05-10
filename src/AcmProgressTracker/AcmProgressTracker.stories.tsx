@@ -33,11 +33,11 @@ export const ProgressTracker = () => {
             statusType: StatusType.empty,
             statusText: 'Klusterlet install',
         },
-        {
-            active: false,
-            statusType: StatusType.empty,
-            statusText: 'Post-creation jobs',
-        },
+        // {
+        //     active: false,
+        //     statusType: StatusType.empty,
+        //     statusText: 'Post-creation jobs',
+        // },
     ]
     return (
         <Card>
