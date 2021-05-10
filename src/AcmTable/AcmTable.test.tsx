@@ -652,7 +652,7 @@ describe('AcmTable', () => {
                 noBorders
                 groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)}
                 groupSummaryFn={(items) => {
-                    return { cells: [{ title: `${items.length} items`, props: { colspan: 8 } }] }
+                    return { cells: [{ title: `${items.length} items`, props: { colSpan: 8 } }] }
                 }}
             />
         )
