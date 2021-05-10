@@ -122,9 +122,9 @@ export function AcmLabelsInput(props: {
                                 case 'Backspace':
                                     /* istanbul ignore else */
                                     if (!inputValue) {
-                                        const labels = (document.querySelectorAll(
+                                        const labels = document.querySelectorAll(
                                             '.label-pill button'
-                                        ) as unknown) as HTMLButtonElement[]
+                                        ) as unknown as HTMLButtonElement[]
                                         /* istanbul ignore else */
                                         if (labels && labels.length > 0) {
                                             labels[labels.length - 1].focus()
