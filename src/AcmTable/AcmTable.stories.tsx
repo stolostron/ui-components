@@ -25,6 +25,7 @@ export default {
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
+        'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: false },
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
@@ -267,6 +268,31 @@ function commonProperties(
                       },
                   },
               ]
+            : undefined,
+        rowActionResolver: args['Include rowActionResolver']
+            ? (item: IExampleData) => {
+                  if (item.last_name.indexOf('a') > -1) {
+                      return [
+                          {
+                              id: 'topAction',
+                              title: 'Top action!',
+                              click: () => {
+                                  alert('Not implemented')
+                              },
+                          },
+                          {
+                              id: 'testAction',
+                              title: `${item.firstName} ${item.last_name} is the coolest!`,
+                              addSeparator: true,
+                              click: () => {
+                                  alert('Not implemented')
+                              },
+                          },
+                      ]
+                  } else {
+                      return []
+                  }
+              }
             : undefined,
         bulkActions: args['Include bulkActions']
             ? [

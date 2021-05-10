@@ -23,6 +23,9 @@ import {
 } from '@patternfly/react-core'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
+    IAction,
+    IActionsResolver,
+    IExtraData,
     IRow,
     IRowData,
     ISortBy,
@@ -93,8 +96,15 @@ export interface IAcmTableAction {
 
 /* istanbul ignore next */
 export interface IAcmRowAction<T> {
+    /** Action identifier */
     id: string
+    /** Inject a separator horizontal rule immediately before an action */
+    addSeparator?: boolean
+    /** Display an action as being disabled */
+    isDisabled?: boolean
+    /** Visible text for action */
     title: string | React.ReactNode
+    /** Function for onClick() action */
     click: (item: T) => void
 }
 
@@ -195,6 +205,7 @@ export interface AcmTableProps<T> {
     groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
     rowActions?: IAcmRowAction<T>[]
+    rowActionResolver?: (item: T) => IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
@@ -222,6 +233,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         groupSummaryFn,
         bulkActions = [],
         rowActions = [],
+        rowActionResolver,
         tableActions = [],
     } = props
     const adjustedSortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
@@ -605,22 +617,54 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [filtered, rows, keyFn]
     )
 
-    const actions = rowActions.map((rowAction) => {
-        return {
-            title: rowAction.title,
-            onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
-                if (groupFn || addSubRows) {
-                    const tableItem =
-                        rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
-                    if (tableItem) {
-                        rowAction.click(tableItem.item)
+    // Function to parse provided actions from AcmTable IAcmRowAction --> Patternfly Table IAction
+    const parseRowAction = (rowActions: IAcmRowAction<T>[]) => {
+        const actions: IAction[] = []
+        rowActions.forEach((action) => {
+            // Add separator if specified
+            if (action.addSeparator) {
+                actions.push({
+                    isSeparator: true,
+                })
+            }
+            // Add row action
+            actions.push({
+                title: action.title,
+                onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                    if (groupFn || addSubRows) {
+                        const tableItem =
+                            rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
+                        if (tableItem) {
+                            action.click(tableItem.item)
+                        }
+                    } else {
+                        action.click(paged[rowId].item)
                     }
-                } else {
-                    rowAction.click(paged[rowId].item)
-                }
-            },
+                },
+            })
+        })
+        return actions
+    }
+
+    // Parse static actions
+    const actions = parseRowAction(rowActions)
+
+    // Wrap provided action resolver
+    let actionResolver: IActionsResolver | undefined
+    if (rowActionResolver) {
+        actionResolver = (rowData: IRowData, extraData: IExtraData) => {
+            let tableItem
+            if (groupFn || addSubRows) {
+                tableItem = rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
+            } else {
+                tableItem = paged[extraData.rowIndex!]
+            }
+            if (tableItem) {
+                return parseRowAction(rowActionResolver(tableItem.item))
+            }
+            return []
         }
-    })
+    }
 
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
@@ -772,6 +816,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 })}
                                 rows={rows}
                                 rowWrapper={OuiaIdRowWrapper}
+                                actionResolver={actionResolver}
                                 actions={actions}
                                 aria-label="Simple Table"
                                 sortBy={adjustedSort}
