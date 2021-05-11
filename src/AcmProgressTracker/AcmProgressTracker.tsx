@@ -17,8 +17,8 @@ import {
 export type AcmProgressTrackerProps = {
     steps: ProgressTrackerStep[]
     isCentered?: boolean
-    Title: String
-    Subtitle: String
+    Title: string
+    Subtitle: string
     isStatusPopover?: boolean
     isStacked?: boolean
 }
@@ -28,7 +28,7 @@ export type ProgressTrackerStep = {
     statusType: StatusType
     statusText: string | React.ReactNode
     popover?: PopoverProps
-    statusSubtitle: string
+    statusSubtitle?: string
 }
 
 export enum StatusType {
@@ -94,16 +94,12 @@ const divider = (isStacked: boolean) => {
                 y1="10"
                 y2="10"
                 stroke="#D2D2D2" // --pf-global--palette--black-300
-                stroke-width="2"
-                stroke-linecap="square"
-                stroke-dasharray="1, 3"
+                strokeWidth="2"
+                strokeLinecap="square"
+                strokeDasharray="1, 3"
             />
         </svg>
     )
-}
-
-export function AcmProgressTrackerButton() {
-    return <div></div>
 }
 
 export function AcmProgressTracker(props: AcmProgressTrackerProps) {
@@ -120,7 +116,7 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
             <div>
                 <div className={isStacked ? classes.popoverParentContainer : classes.parentContainer}>
                     {props.steps.map((step, index) => (
-                        <div className={classes.stepContainer}>
+                        <div key={index} className={classes.stepContainer}>
                             <div>
                                 <InlineStatus type={step.statusType} status={step.statusText} popover={step.popover} />
                                 <TextContent>
@@ -162,6 +158,7 @@ export function InlineStatus(props: { type: StatusType; status: string | React.R
 
 function StatusIcon(props: { type: StatusType }) {
     const classes = useStyles()
+    /* istanbul ignore next */
     switch (props.type) {
         case StatusType.healthy:
             return <CheckCircleIcon className={classes.iconMargin} color="var(--pf-global--success-color--100)" />

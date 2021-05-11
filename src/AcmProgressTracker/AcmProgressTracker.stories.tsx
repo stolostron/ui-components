@@ -46,13 +46,20 @@ export const ProgressTracker = () => {
             </Card>
             <Card>
                 <CardBody>
-                <InlineStatus
-                    type={StatusType.progress}
-                    status="Installing"
-                    popover={{
-                        bodyContent: (<AcmProgressTracker isStacked={true} steps={steps} Title="Ansible Jobs" Subtitle="1 out of 3 steps complete" />),
-                    }}
-                />
+                    <InlineStatus
+                        type={StatusType.progress}
+                        status="Installing"
+                        popover={{
+                            bodyContent: (
+                                <AcmProgressTracker
+                                    isStacked={true}
+                                    steps={steps}
+                                    Title="Ansible Jobs"
+                                    Subtitle="1 out of 3 steps complete"
+                                />
+                            ),
+                        }}
+                    />
                 </CardBody>
             </Card>
         </div>
