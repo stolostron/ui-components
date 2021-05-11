@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { Card, CardBody } from '@patternfly/react-core'
+import { Button, Card, CardBody } from '@patternfly/react-core'
 import React from 'react'
 import { StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import { AcmProgressTracker } from './AcmProgressTracker'
@@ -22,28 +22,39 @@ export const ProgressTracker = () => {
             active: false,
             statusType: StatusType.healthy,
             statusText: 'Pre-creation jobs',
+            statusSubtitle: 'Complete',
         },
         {
             active: true,
             statusType: StatusType.progress,
             statusText: 'Cluster install',
+            statusSubtitle: 'Installing',
         },
         {
             active: false,
             statusType: StatusType.empty,
             statusText: 'Klusterlet install',
+            statusSubtitle: 'Pending',
         },
-        // {
-        //     active: false,
-        //     statusType: StatusType.empty,
-        //     statusText: 'Post-creation jobs',
-        // },
     ]
     return (
-        <Card>
-            <CardBody>
-                <AcmProgressTracker steps={steps} />
-            </CardBody>
-        </Card>
+        <div>
+            <Card>
+                <CardBody>
+                    <AcmProgressTracker steps={steps} Title="Ansible Jobs" Subtitle="1 out of 3 steps complete" />
+                </CardBody>
+            </Card>
+            <Card>
+                <CardBody>
+                    <AcmProgressTracker
+                        isPopoverVisible={true}
+                        isStatusPopover={true}
+                        steps={steps}
+                        Title="Ansible Jobs"
+                        Subtitle="1 out of 3 steps complete"
+                    />
+                </CardBody>
+            </Card>
+        </div>
     )
 }

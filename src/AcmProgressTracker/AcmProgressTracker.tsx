@@ -1,14 +1,26 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { makeStyles } from '@material-ui/core'
-import { PopoverProps, Text, TextContent } from '@patternfly/react-core'
+import { Button, Popover, PopoverProps, Spinner, Text, TextContent } from '@patternfly/react-core'
 import React from 'react'
 import { useViewport } from '../AcmCharts/AcmChartGroup'
-import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
+import {
+    AsleepIcon,
+    CheckCircleIcon,
+    ExclamationCircleIcon,
+    ExclamationTriangleIcon,
+    MinusCircleIcon,
+    UnknownIcon,
+    ResourcesEmptyIcon,
+} from '@patternfly/react-icons'
 
 export type AcmProgressTrackerProps = {
     steps: ProgressTrackerStep[]
     isCentered?: boolean
+    Title: String
+    Subtitle: String
+    isStatusPopover?: boolean
+    isPopoverVisible?: boolean
 }
 
 export type ProgressTrackerStep = {
@@ -16,6 +28,19 @@ export type ProgressTrackerStep = {
     statusType: StatusType
     statusText: string | React.ReactNode
     popover?: PopoverProps
+    statusSubtitle: string
+}
+
+export enum StatusType {
+    'healthy' = 'healthy',
+    'danger' = 'danger',
+    'warning' = 'warning',
+    'progress' = 'progress',
+    'detached' = 'detached',
+    'pending' = 'pending',
+    'unknown' = 'unknown',
+    'sleep' = 'sleep',
+    'empty' = 'empty',
 }
 
 const useStyles = makeStyles({
@@ -24,21 +49,38 @@ const useStyles = makeStyles({
         display: 'flex',
         paddingTop: '10px',
     },
-    container: {
+    popoverParentContainer: {
+        display: 'inline-grid'
+    },
+    popoverBody: {
+        display:'flex',
+    },
+    stepContainer: {
         display: 'inline-flex',
+        padding: '10px 0px 10px 0px',
     },
     text: { width: 'max-content' },
-    statusBox: {
-        // display:'flex'
-    },
     divider: {
         padding: '0px 40px 0px 40px',
         maxWidth: '180px',
         maxHeight: '20px',
     },
     stepStatus: {
-        paddingLeft:'25px',
-    }
+        paddingLeft: '25px',
+    },
+    container: {
+        display: 'flex',
+    },
+    icon: {
+        width: '18px', // Progress size md is 18px
+    },
+    iconMargin: {
+        margin: '3px 2px 1px 2px',
+    },
+    button: {
+        padding: 0,
+        fontSize: 'inherit',
+    },
 })
 
 const divider = () => {
@@ -60,27 +102,74 @@ const divider = () => {
     )
 }
 
+export function AcmProgressTrackerButton() {
+    return (
+        <div>
+            <Popover bodyContent="test">
+                <Button>Test</Button>
+            </Popover>
+        </div>
+    )
+}
+
 export function AcmProgressTracker(props: AcmProgressTrackerProps) {
     const { viewWidth } = useViewport()
     const classes = useStyles(viewWidth)
+
+    if (props.isStatusPopover) {
+        return (
+            <div>
+                <Popover
+                    bodyContent={
+                        <div>
+                            <TextContent>
+                                <Text component="h3">{props.Title}</Text>
+                                <Text component="small">{props.Subtitle}</Text>
+                            </TextContent>
+                            <div>
+                                <div className={classes.popoverParentContainer}>
+                                    {props.steps.map((step) => (
+                                        <div className={classes.stepContainer}>
+                                            <div>
+                                                <InlineStatus
+                                                    type={step.statusType}
+                                                    status={step.statusText}
+                                                    popover={step.popover}
+                                                />
+                                                <TextContent>
+                                                    <Text className={classes.stepStatus} component="small">
+                                                        {step.statusSubtitle}
+                                                    </Text>
+                                                </TextContent>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    }
+                >
+                    <Button>Test</Button>
+                </Popover>
+            </div>
+        )
+    }
     return (
         <div>
             <TextContent>
-                <Text component="h3">Title</Text>
-                <Text component="small">Subtitle</Text>
+                <Text component="h3">{props.Title}</Text>
+                <Text component="small">{props.Subtitle}</Text>
             </TextContent>
             <div>
                 <div className={classes.parentContainer}>
                     {props.steps.map((step, index) => (
-                        <div className={classes.container}>
-                            <div className={classes.statusBox}>
+                        <div className={classes.stepContainer}>
+                            <div>
+                                <InlineStatus type={step.statusType} status={step.statusText} popover={step.popover} />
                                 <TextContent>
-                                    <AcmInlineStatus
-                                        type={step.statusType}
-                                        status={step.statusText}
-                                        popover={step.popover}
-                                    />
-                                   <Text className={classes.stepStatus} component='small'>Status</Text>
+                                    <Text className={classes.stepStatus} component="small">
+                                        {step.statusSubtitle}
+                                    </Text>
                                 </TextContent>
                             </div>
                             {index < props.steps.length - 1 && divider()}
@@ -90,4 +179,51 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
             </div>
         </div>
     )
+}
+
+export function InlineStatus(props: { type: StatusType; status: string | React.ReactNode; popover?: PopoverProps }) {
+    const classes = useStyles()
+    return (
+        <div className={classes.container}>
+            <div className={classes.icon}>
+                <StatusIcon type={props.type} />
+            </div>
+            <span style={{ marginLeft: '.4rem' }}>
+                {props.popover ? (
+                    <Popover hasAutoWidth {...props.popover}>
+                        <Button variant="link" className={classes.button}>
+                            {props.status}
+                        </Button>
+                    </Popover>
+                ) : (
+                    props.status
+                )}
+            </span>
+        </div>
+    )
+}
+
+function StatusIcon(props: { type: StatusType }) {
+    const classes = useStyles()
+    switch (props.type) {
+        case StatusType.healthy:
+            return <CheckCircleIcon className={classes.iconMargin} color="var(--pf-global--success-color--100)" />
+        case StatusType.danger:
+            return <ExclamationCircleIcon className={classes.iconMargin} color="var(--pf-global--danger-color--100)" />
+        case StatusType.warning:
+            return (
+                <ExclamationTriangleIcon className={classes.iconMargin} color="var(--pf-global--warning-color--100)" />
+            )
+        case StatusType.progress:
+            return <Spinner size="md" style={{ verticalAlign: 'middle' }} />
+        case StatusType.pending:
+            return <MinusCircleIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
+        case StatusType.sleep:
+            return <AsleepIcon className={classes.iconMargin} color="var(--pf-global--palette--purple-500)" />
+        case StatusType.empty:
+            return <ResourcesEmptyIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
+        case 'unknown':
+        default:
+            return <UnknownIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
+    }
 }
