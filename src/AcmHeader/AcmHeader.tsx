@@ -31,7 +31,7 @@ import {
     Title,
 } from '@patternfly/react-core'
 import { CaretDownIcon, CodeIcon, CogsIcon, ExternalLinkAltIcon } from '@patternfly/react-icons'
-import React, { CSSProperties, useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import logo from '../assets/RHACM-Logo.svg'
@@ -335,6 +335,8 @@ const useStyles = makeStyles({
 export enum AcmRoute {
     Welcome = '/multicloud/welcome',
     Clusters = '/multicloud/clusters',
+    BareMetalAssets = '/multicloud/bare-metal-assets',
+    Automation = '/multicloud/ansible-automations',
     Applications = '/multicloud/applications',
     Credentials = '/multicloud/credentials',
     RiskAndCompliance = '/multicloud/policies',
@@ -350,6 +352,17 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
     const [switcherIsOpen, setSwitcherOpen] = useState(false)
     const switcherExists = showSwitcher
     const iconStyles: CSSProperties = { paddingRight: '7px' }
+
+    const isConsoleRoute = useMemo(() => {
+        switch (route) {
+            case AcmRoute.Clusters:
+            case AcmRoute.BareMetalAssets:
+            case AcmRoute.Automation:
+            case AcmRoute.Credentials:
+                return true
+        }
+        return false
+    }, [props.route])
 
     return (
         <Nav onSelect={() => props.postClick?.()}>
@@ -407,7 +420,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                 <NavExpandable
                     title="Home"
                     isActive={route === AcmRoute.Welcome || route === AcmRoute.Overview}
-                    isExpanded={route === AcmRoute.Welcome || route === AcmRoute.Overview}
+                    isExpanded={true}
                 >
                     <NavItem isActive={route === AcmRoute.Welcome} to={AcmRoute.Welcome}>
                         Welcome
@@ -416,13 +429,29 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                         Overview
                     </NavItem>
                 </NavExpandable>
-                <NavItem isActive={route === AcmRoute.Clusters} to={AcmRoute.Clusters}>
-                    {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
-                        <Link to={AcmRoute.Clusters}>Clusters</Link>
-                    ) : (
-                        'Clusters'
-                    )}
-                </NavItem>
+                <NavExpandable
+                    title="Infrastructure"
+                    isActive={
+                        route === AcmRoute.Clusters ||
+                        route === AcmRoute.BareMetalAssets ||
+                        route === AcmRoute.Automation
+                    }
+                    isExpanded={true}
+                >
+                    <NavItem isActive={route === AcmRoute.Clusters} to={AcmRoute.Clusters}>
+                        {isConsoleRoute ? <Link to={AcmRoute.Clusters}>Clusters</Link> : 'Clusters'}
+                    </NavItem>
+                    <NavItem isActive={route === AcmRoute.BareMetalAssets} to={AcmRoute.BareMetalAssets}>
+                        {isConsoleRoute ? (
+                            <Link to={AcmRoute.BareMetalAssets}>Bare metal assets</Link>
+                        ) : (
+                            'Bare metal assets'
+                        )}
+                    </NavItem>
+                    <NavItem isActive={route === AcmRoute.Automation} to={AcmRoute.Automation}>
+                        {isConsoleRoute ? <Link to={AcmRoute.Automation}>Automation</Link> : 'Automation'}
+                    </NavItem>
+                </NavExpandable>
                 <NavItem isActive={route === AcmRoute.Applications} to={AcmRoute.Applications}>
                     Applications
                 </NavItem>
@@ -430,11 +459,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                     Risk and compliance
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.Credentials} to={AcmRoute.Credentials}>
-                    {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
-                        <Link to={AcmRoute.Credentials}>Credentials</Link>
-                    ) : (
-                        'Credentials'
-                    )}
+                    {isConsoleRoute ? <Link to={AcmRoute.Credentials}>Credentials</Link> : 'Credentials'}
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.VisualWebTerminal} to={AcmRoute.VisualWebTerminal}>
                     Visual Web Terminal
