@@ -1,9 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { Button, Card, CardBody } from '@patternfly/react-core'
+import { Card, CardBody } from '@patternfly/react-core'
 import React from 'react'
 import { StatusType } from '../AcmInlineStatus/AcmInlineStatus'
-import { AcmProgressTracker } from './AcmProgressTracker'
+import { AcmProgressTracker, InlineStatus } from './AcmProgressTracker'
 
 export default {
     title: 'ProgressTracker',
@@ -46,13 +46,13 @@ export const ProgressTracker = () => {
             </Card>
             <Card>
                 <CardBody>
-                    <AcmProgressTracker
-                        isPopoverVisible={true}
-                        isStatusPopover={true}
-                        steps={steps}
-                        Title="Ansible Jobs"
-                        Subtitle="1 out of 3 steps complete"
-                    />
+                <InlineStatus
+                    type={StatusType.progress}
+                    status="Installing"
+                    popover={{
+                        bodyContent: (<AcmProgressTracker isStacked={true} steps={steps} Title="Ansible Jobs" Subtitle="1 out of 3 steps complete" />),
+                    }}
+                />
                 </CardBody>
             </Card>
         </div>

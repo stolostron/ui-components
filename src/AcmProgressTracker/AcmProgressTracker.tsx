@@ -20,7 +20,7 @@ export type AcmProgressTrackerProps = {
     Title: String
     Subtitle: String
     isStatusPopover?: boolean
-    isPopoverVisible?: boolean
+    isStacked?: boolean
 }
 
 export type ProgressTrackerStep = {
@@ -50,10 +50,10 @@ const useStyles = makeStyles({
         paddingTop: '10px',
     },
     popoverParentContainer: {
-        display: 'inline-grid'
+        display: 'inline-grid',
     },
     popoverBody: {
-        display:'flex',
+        display: 'flex',
     },
     stepContainer: {
         display: 'inline-flex',
@@ -83,9 +83,9 @@ const useStyles = makeStyles({
     },
 })
 
-const divider = () => {
-    const { viewWidth } = useViewport()
-    const classes = useStyles(viewWidth)
+const divider = (isStacked: boolean) => {
+    const classes = useStyles()
+    if (isStacked) return undefined
     return (
         <svg className={classes.divider}>
             <line
@@ -103,57 +103,14 @@ const divider = () => {
 }
 
 export function AcmProgressTrackerButton() {
-    return (
-        <div>
-            <Popover bodyContent="test">
-                <Button>Test</Button>
-            </Popover>
-        </div>
-    )
+    return <div></div>
 }
 
 export function AcmProgressTracker(props: AcmProgressTrackerProps) {
+    const classes = useStyles()
     const { viewWidth } = useViewport()
-    const classes = useStyles(viewWidth)
+    const isStacked = props.isStacked || viewWidth < 700
 
-    if (props.isStatusPopover) {
-        return (
-            <div>
-                <Popover
-                    bodyContent={
-                        <div>
-                            <TextContent>
-                                <Text component="h3">{props.Title}</Text>
-                                <Text component="small">{props.Subtitle}</Text>
-                            </TextContent>
-                            <div>
-                                <div className={classes.popoverParentContainer}>
-                                    {props.steps.map((step) => (
-                                        <div className={classes.stepContainer}>
-                                            <div>
-                                                <InlineStatus
-                                                    type={step.statusType}
-                                                    status={step.statusText}
-                                                    popover={step.popover}
-                                                />
-                                                <TextContent>
-                                                    <Text className={classes.stepStatus} component="small">
-                                                        {step.statusSubtitle}
-                                                    </Text>
-                                                </TextContent>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    }
-                >
-                    <Button>Test</Button>
-                </Popover>
-            </div>
-        )
-    }
     return (
         <div>
             <TextContent>
@@ -161,7 +118,7 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                 <Text component="small">{props.Subtitle}</Text>
             </TextContent>
             <div>
-                <div className={classes.parentContainer}>
+                <div className={isStacked ? classes.popoverParentContainer : classes.parentContainer}>
                     {props.steps.map((step, index) => (
                         <div className={classes.stepContainer}>
                             <div>
@@ -172,7 +129,7 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                                     </Text>
                                 </TextContent>
                             </div>
-                            {index < props.steps.length - 1 && divider()}
+                            {index < props.steps.length - 1 && divider(isStacked)}
                         </div>
                     ))}
                 </div>
