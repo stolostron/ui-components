@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import Slide from '@material-ui/core/Slide'
-import { Alert, AlertActionCloseButton, AlertGroup } from '@patternfly/react-core'
+import { Alert, AlertActionCloseButton, AlertGroup, Flex, Stack } from '@patternfly/react-core'
 import React, {
     createContext,
     CSSProperties,
@@ -91,10 +91,12 @@ export function AcmToastGroup() {
 
     return (
         <AlertGroup isToast>
-            {alertContext.alertInfos.map((alertInfo) => {
-                /* istanbul ignore next */
-                return <AcmToast key={alertInfo.id} alertInfo={alertInfo} />
-            })}
+            <Flex direction={{ default: 'column' }}>
+                {alertContext.alertInfos.map((alertInfo) => {
+                    /* istanbul ignore next */
+                    return <AcmToast key={alertInfo.id} alertInfo={alertInfo} />
+                })}
+            </Flex>
         </AlertGroup>
     )
 }

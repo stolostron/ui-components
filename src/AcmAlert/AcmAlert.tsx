@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import Collapse from '@material-ui/core/Collapse'
-import { Alert, AlertActionCloseButton, AlertGroup } from '@patternfly/react-core'
+import { Alert, AlertActionCloseButton, AlertGroup, Flex, Stack } from '@patternfly/react-core'
 import React, {
     createContext,
     CSSProperties,
@@ -165,17 +165,19 @@ export function AcmAlertGroup(props: AcmAlertGroupProps) {
 
     return (
         <AlertGroup isToast={!props.isInline}>
-            {alertContext.alertInfos.map((alertInfo) => {
-                /* istanbul ignore next */
-                return (
-                    <AcmAlert
-                        key={alertInfo.id}
-                        alertInfo={alertInfo}
-                        isInline={props.isInline}
-                        noClose={!props.canClose}
-                    />
-                )
-            })}
+            <Flex direction={{ default: 'column' }}>
+                {alertContext.alertInfos.map((alertInfo) => {
+                    /* istanbul ignore next */
+                    return (
+                        <AcmAlert
+                            key={alertInfo.id}
+                            alertInfo={alertInfo}
+                            isInline={props.isInline}
+                            noClose={!props.canClose}
+                        />
+                    )
+                })}
+            </Flex>
         </AlertGroup>
     )
 }
