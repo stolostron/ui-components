@@ -10,7 +10,7 @@ import { Provider } from '../AcmProvider'
 import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
 import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
 
-interface IExampleData {
+export interface IExampleData {
     uid: number
     firstName: string
     last_name: string

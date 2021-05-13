@@ -18,9 +18,13 @@ import {
 import { Divider } from '@patternfly/react-core/src/components/Divider'
 import { Table, TableBody, TableHeader } from '@patternfly/react-table'
 import { Meta } from '@storybook/react'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { TableFilterProps } from './TableFilter'
 import { TableToolbar } from './TableToolbar'
+import { useCollection } from './old2/useCollection'
+import { exampleData, IExampleData } from '../AcmTable/AcmTable.stories'
+import { useFilter } from './old2/useFilter'
+import { usePage } from './old2/usePage'
 
 const meta: Meta = {
     title: 'TableToolbar',
@@ -108,30 +112,56 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
     ]
 
+    const [items, setItems] = useState(exampleData)
+    const collection = useCollection(items, (item) => item.uid.toString(), 100)
+    const filtered = useFilter(collection, (item) => true)
+    const paged = usePage(
+        filtered,
+        collection,
+        [
+            {
+                title: 'First Name',
+                cellFn: (item: IExampleData) => item.firstName,
+            },
+            {
+                title: 'Last Name',
+                cellFn: (item: IExampleData) => item.last_name,
+            },
+            {
+                title: 'Gender',
+                cellFn: (item: IExampleData) => item.gender,
+            },
+            {
+                title: 'Email',
+                cellFn: (item: IExampleData) => item.email,
+            },
+        ],
+        1,
+        10
+    )
+
+    useEffect(() => {
+        const i = setInterval(() => {
+            const keys = collection.keys()
+            const i = Math.min(keys.length - 1, Math.floor(Math.random() * keys.length))
+            const copy = { ...exampleData[i] }
+            copy.gender = Math.random().toString()
+            collection.push(copy)
+        }, 1)
+        return () => {
+            clearInterval(i)
+        }
+    }, [collection])
+
     return (
         <Page>
             <PageSection>
                 <Stack hasGutter>
-                    <AlertGroup>
+                    {/* <AlertGroup>
                         <Alert title="Alert" isInline variant="success" />
                         <Alert title="Alert" isInline variant="info" />
                         <Alert title="Alert" isInline variant="danger" />
-                    </AlertGroup>
-                    {/* <Hint>
-                        <HintTitle>Do more with Find it Fix it capabilities</HintTitle>
-                        <HintBody>
-                            Upgrade to Red Hat Smart Management to remediate all your systems across regions and
-                            geographies.
-                        </HintBody>
-                        <HintFooter>
-                            <Button variant="link" isInline>
-                                Try it for 90 days
-                            </Button>
-                        </HintFooter>
-                    </Hint>
-                    <Card>
-                        <CardBody>Card</CardBody>
-                    </Card> */}
+                    </AlertGroup> */}
                     <Stack>
                         <TableToolbar
                             itemCount={itemCount}
@@ -161,7 +191,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             paginationBreakpoint={selectedCount ? 'xl' : 'lg'}
                             paginationLargeBreakpoint={selectedCount ? 'never' : '2xl'}
                         />
-                        <Table
+                        {/* <Table
                             cells={columns}
                             rows={rows}
                             onSelect={() => {}}
@@ -182,6 +212,10 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             ]}
                             isStickyHeader
                         >
+                            <TableHeader />
+                            <TableBody />
+                        </Table> */}
+                        <Table {...paged} onSelect={() => {}} canSelectAll={false} isStickyHeader>
                             <TableHeader />
                             <TableBody />
                         </Table>

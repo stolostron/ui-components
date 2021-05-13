@@ -11,20 +11,19 @@ export declare interface Collection<T> {
 }
 
 export class Collection<T> extends EventEmitter {
-    constructor(private readonly getKey: (item: T) => string) {
+    constructor(public readonly getKey: (item: T) => string, private readonly debounce?: number) {
         super()
     }
 
-    readonly items: Record<string, T> = {}
+    readonly itemMap: Record<string, T> = {}
     private event: CollectionChange<T> | undefined
-    public debounce: number | undefined
     private timeout: NodeJS.Timeout | undefined
 
     push(item: T) {
         const key = this.getKey(item)
-        const existing = this.items[key]
+        const existing = this.itemMap[key]
         if (existing === item) return
-        this.items[key] = item
+        this.itemMap[key] = item
 
         if (!this.event) this.event = {}
         if (existing !== undefined) {
@@ -51,9 +50,9 @@ export class Collection<T> extends EventEmitter {
     }
 
     pop(key: string) {
-        const existing = this.items[key]
+        const existing = this.itemMap[key]
         if (existing !== undefined) {
-            delete this.items[key]
+            delete this.itemMap[key]
             if (!this.event) this.event = {}
             if (this.event.added && this.event.added[key]) {
                 delete this.event.added[key]
@@ -69,15 +68,15 @@ export class Collection<T> extends EventEmitter {
     }
 
     public keys(): Readonly<string[]> {
-        return Object.keys(this.items)
-    }
-
-    public getKeyFn(): (item: T) => string {
-        return this.getKey
+        return Object.keys(this.itemMap)
     }
 
     public value(key: string): Readonly<T> {
-        return this.items[key]
+        return this.itemMap[key]
+    }
+
+    public items(): Readonly<T[]> {
+        return Object.values(this.itemMap)
     }
 
     sendEvent(immediate = false) {
