@@ -6,11 +6,12 @@ import React, { useCallback, useContext, useEffect } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { AcmAlertContext, AcmAlertGroup } from './AcmAlert'
+import { AcmToastContext } from './AcmToast'
 
 const meta: Meta = {
     title: 'Alert Group',
     component: AcmAlertGroup,
-    includeStories: ['AlertGroup'],
+    includeStories: ['AlertGroup', 'ToastGroup'],
 }
 export default meta
 
@@ -26,8 +27,20 @@ export function AlertGroup() {
     )
 }
 
-export function AlertGroupStory() {
-    const alertContext = useContext(AcmAlertContext)
+export function ToastGroup() {
+    return (
+        <AcmPage header={<AcmPageHeader title="AcmAlertGroup" />}>
+            <AcmPageContent id="alerts">
+                <PageSection variant="light">
+                    <AlertGroupStory useToast />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
+    )
+}
+
+export function AlertGroupStory(props: { useToast?: boolean }) {
+    const alertContext = useContext(props.useToast ? AcmToastContext : AcmAlertContext)
     const addAlert = useCallback(() => alertContext.addAlert({ title: 'Alert', message: 'Message' }), [])
     const addInfo = useCallback(
         () => alertContext.addAlert({ title: 'Info Alert', message: 'Message', type: 'info' }),
