@@ -1,8 +1,8 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { makeStyles } from '@material-ui/core'
-import { Button, Popover, PopoverProps, Spinner, Text, TextContent } from '@patternfly/react-core'
-import React from 'react'
+import { Button, Gallery, GalleryItem, Popover, PopoverProps, Spinner, Text, TextContent } from '@patternfly/react-core'
+import React, { Fragment } from 'react'
 import { useViewport } from '../AcmCharts/AcmChartGroup'
 import {
     AsleepIcon,
@@ -13,6 +13,7 @@ import {
     UnknownIcon,
     ResourcesEmptyIcon,
 } from '@patternfly/react-icons'
+import { ClassNameMap } from '@material-ui/styles'
 
 export type AcmProgressTrackerProps = {
     steps: ProgressTrackerStep[]
@@ -83,9 +84,7 @@ const useStyles = makeStyles({
     },
 })
 
-const divider = (isStacked: boolean) => {
-    const classes = useStyles()
-    if (isStacked) return undefined
+const divider = (classes: ClassNameMap) => {
     return (
         <svg className={classes.divider}>
             <line
@@ -108,29 +107,28 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
     const isStacked = props.isStacked || viewWidth < 700
 
     return (
-        <div>
+        <Fragment>
             <TextContent>
                 <Text component="h3">{props.Title}</Text>
                 <Text component="small">{props.Subtitle}</Text>
             </TextContent>
-            <div>
-                <div className={isStacked ? classes.popoverParentContainer : classes.parentContainer}>
-                    {props.steps.map((step, index) => (
-                        <div key={index} className={classes.stepContainer}>
-                            <div>
-                                <InlineStatus type={step.statusType} status={step.statusText} popover={step.popover} />
-                                <TextContent>
-                                    <Text className={classes.stepStatus} component="small">
-                                        {step.statusSubtitle}
-                                    </Text>
-                                </TextContent>
-                            </div>
-                            {index < props.steps.length - 1 && divider(isStacked)}
+
+            <Gallery className={isStacked ? classes.popoverParentContainer : classes.parentContainer}>
+                {props.steps.map((step, index) => (
+                    <GalleryItem key={index} className={classes.stepContainer}>
+                        <div>
+                            <InlineStatus type={step.statusType} status={step.statusText} />
+                            <TextContent>
+                                <Text className={classes.stepStatus} component="small">
+                                    {step.statusSubtitle}
+                                </Text>
+                            </TextContent>
                         </div>
-                    ))}
-                </div>
-            </div>
-        </div>
+                        {!isStacked && index < props.steps.length - 1 && divider(classes)}
+                    </GalleryItem>
+                ))}
+            </Gallery>
+        </Fragment>
     )
 }
 

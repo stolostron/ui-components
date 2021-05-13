@@ -2,8 +2,8 @@
 
 import { Card, CardBody } from '@patternfly/react-core'
 import React from 'react'
-import { StatusType } from '../AcmInlineStatus/AcmInlineStatus'
-import { AcmProgressTracker, InlineStatus } from './AcmProgressTracker'
+import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
+import { AcmProgressTracker } from './AcmProgressTracker'
 
 export default {
     title: 'ProgressTracker',
@@ -46,7 +46,7 @@ export const ProgressTracker = () => {
             </Card>
             <Card>
                 <CardBody>
-                    <InlineStatus
+                    <AcmInlineStatus
                         type={StatusType.progress}
                         status="Installing"
                         popover={{
