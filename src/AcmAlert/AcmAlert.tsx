@@ -20,6 +20,7 @@ export interface AcmAlertInfo {
     actions?: ReactNode
     id?: string
     group?: string
+    autoClose?: boolean
 }
 
 export interface IAlertContext {

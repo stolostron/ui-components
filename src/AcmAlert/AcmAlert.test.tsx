@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { render, waitFor } from '@testing-library/react'
+import { render, waitFor, act } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import React, { Fragment } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
@@ -86,6 +86,11 @@ describe('AcmToast', () => {
                             <AcmButton onClick={() => context.addAlert({ title: 'Warning', type: 'warning' })}>
                                 Add Warning
                             </AcmButton>
+                            <AcmButton
+                                onClick={() => context.addAlert({ title: 'Expiring', type: 'info', autoClose: true })}
+                            >
+                                Add Expiring
+                            </AcmButton>
                             <AcmButton onClick={() => context.clearAlerts()}>Clear Alerts</AcmButton>
                             <AcmButton onClick={() => context.clearAlerts((a) => a.type === 'warning')}>
                                 Clear Warnings
@@ -110,6 +115,13 @@ describe('AcmToast', () => {
         getByText('Add Warning').click()
         await waitFor(() => expect(queryAllByText('Warning')).toHaveLength(1))
 
+        await act(async () => {
+            expect(queryAllByText('Expiring')).toHaveLength(0)
+            getByText('Add Expiring').click()
+            await waitFor(() => expect(queryAllByText('Expiring')).toHaveLength(1))
+            await waitFor(() => expect(queryAllByText('Expiring')).toHaveLength(0), { timeout: 5500 })
+        })
+
         expect(await axe(container)).toHaveNoViolations()
 
         getByText('Clear Warnings').click()
@@ -122,6 +134,8 @@ describe('AcmToast', () => {
 
         getByText('Clear Alerts').click()
         await waitFor(() => expect(queryAllByText('Error')).toHaveLength(0))
+
+        await new Promise((resolve) => setTimeout(resolve, 1000))
     })
 
     test('renders alert', async () => {

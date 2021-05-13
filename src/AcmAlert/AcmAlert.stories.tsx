@@ -58,6 +58,10 @@ export function AlertGroupStory(props: { useToast?: boolean }) {
         () => alertContext.addAlert({ title: 'ErrorAlert', message: 'Message', type: 'danger' }),
         []
     )
+    const addExpiring = useCallback(
+        () => alertContext.addAlert({ title: 'Info Alert', message: 'Message', type: 'info', autoClose: true }),
+        []
+    )
     useEffect(() => {
         addAlert()
         addInfo()
@@ -82,6 +86,9 @@ export function AlertGroupStory(props: { useToast?: boolean }) {
                 </ToolbarItem>
                 <ToolbarItem>
                     <AcmButton onClick={addError}>Error</AcmButton>
+                </ToolbarItem>
+                <ToolbarItem>
+                    <AcmButton onClick={addExpiring}>Expiring alert</AcmButton>
                 </ToolbarItem>
                 <ToolbarItem>
                     <AcmButton onClick={() => alertContext.clearAlerts()}>Clear</AcmButton>

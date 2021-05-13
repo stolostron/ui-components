@@ -91,8 +91,6 @@ export function AcmToastGroup() {
 
     return (
         <AlertGroup isToast>
-            <AcmToast key={'lkjsd'} alertInfo={{ title: 'lksjd' }} />
-            <AcmToast key={'2lkj'} alertInfo={{ title: 'lijelkjwelkd' }} />
             {alertContext.alertInfos.map((alertInfo) => {
                 /* istanbul ignore next */
                 return <AcmToast key={alertInfo.id} alertInfo={alertInfo} />
@@ -102,13 +100,14 @@ export function AcmToastGroup() {
 }
 
 export function AcmToast(props: {
-    alertInfo?: AcmAlertInfo
+    alertInfo?: AcmAlertInfo & { autoClose?: boolean }
     title?: ReactNode
     subtitle?: ReactNode
     message?: ReactNode
     variant?: 'success' | 'danger' | 'warning' | 'info' | 'default'
     style?: CSSProperties
     className?: string
+    autoClose?: boolean
 }) {
     const alertContext = useContext(AcmToastContext)
     const { alertInfo } = props
@@ -119,6 +118,12 @@ export function AcmToast(props: {
             setOpen(false)
         }
     }, [alertContext])
+
+    useEffect(() => {
+        if (alertInfo?.autoClose) {
+            setTimeout(() => setOpen(false), 5000)
+        }
+    }, [])
 
     return (
         <Slide
