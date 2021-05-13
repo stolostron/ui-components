@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import Collapse from '@material-ui/core/Collapse'
+import Slide from '@material-ui/core/Slide'
 import { Alert, AlertActionCloseButton, AlertGroup, Flex } from '@patternfly/react-core'
 import React, {
     createContext,
@@ -12,30 +12,12 @@ import React, {
     useEffect,
     useState,
 } from 'react'
-
-export interface AcmAlertInfo {
-    type?: 'success' | 'danger' | 'warning' | 'info' | 'default'
-    title: ReactNode
-    message?: ReactNode
-    actions?: ReactNode
-    id?: string
-    group?: string
-    autoClose?: boolean
-}
-
-export interface IAlertContext {
-    readonly activeAlerts: AcmAlertInfo[]
-    readonly alertInfos: AcmAlertInfo[]
-    addAlert: (alertInfo: AcmAlertInfo) => void
-    removeAlert: (alertInfo: AcmAlertInfo) => void
-    removeVisibleAlert: (alertInfo: AcmAlertInfo) => void
-    clearAlerts: (matcher?: (alertInfo: AcmAlertInfo) => boolean) => void
-}
+import { AcmAlertInfo, IAlertContext } from './AcmAlert'
 
 /* istanbul ignore next */
 const noop = () => null
 
-export const AcmAlertContext = createContext<IAlertContext>({
+export const AcmToastContext = createContext<IAlertContext>({
     activeAlerts: [],
     alertInfos: [],
     addAlert: noop,
@@ -44,7 +26,7 @@ export const AcmAlertContext = createContext<IAlertContext>({
     clearAlerts: noop,
 })
 
-export function AcmAlertProvider(props: { children: ReactNode; isToast?: boolean }) {
+export function AcmToastProvider(props: { children: ReactNode }) {
     const [activeAlerts, setActiveAlerts] = useState<AcmAlertInfo[]>([])
     const [visibleAlerts, setVisibleAlerts] = useState<AcmAlertInfo[]>([])
     const addAlert = useCallback<(alertInfo: AcmAlertInfo) => void>((alert: AcmAlertInfo) => {
@@ -84,7 +66,7 @@ export function AcmAlertProvider(props: { children: ReactNode; isToast?: boolean
     }
 
     return (
-        <AcmAlertContext.Provider
+        <AcmToastContext.Provider
             value={{
                 activeAlerts: activeAlerts,
                 alertInfos: visibleAlerts,
@@ -95,22 +77,41 @@ export function AcmAlertProvider(props: { children: ReactNode; isToast?: boolean
             }}
         >
             {props.children}
-        </AcmAlertContext.Provider>
+        </AcmToastContext.Provider>
     )
 }
 
-export function AcmAlert(props: {
-    alertInfo?: AcmAlertInfo
-    isInline?: boolean
+export function AcmToastGroup() {
+    const alertContext = useContext(AcmToastContext)
+
+    const [hasAlerts, setHasAlerts] = useState(false)
+    useEffect(() => setHasAlerts(alertContext.alertInfos.length > 0), [alertContext.alertInfos])
+
+    if (!hasAlerts) return <Fragment />
+
+    return (
+        <AlertGroup isToast>
+            <Flex direction={{ default: 'column' }}>
+                {alertContext.alertInfos.map((alertInfo) => {
+                    /* istanbul ignore next */
+                    return <AcmToast key={alertInfo.id} alertInfo={alertInfo} />
+                })}
+            </Flex>
+        </AlertGroup>
+    )
+}
+
+export function AcmToast(props: {
+    alertInfo?: AcmAlertInfo & { autoClose?: boolean }
     title?: ReactNode
     subtitle?: ReactNode
     message?: ReactNode
-    noClose?: boolean
     variant?: 'success' | 'danger' | 'warning' | 'info' | 'default'
     style?: CSSProperties
     className?: string
+    autoClose?: boolean
 }) {
-    const alertContext = useContext(AcmAlertContext)
+    const alertContext = useContext(AcmToastContext)
     const { alertInfo } = props
     const [open, setOpen] = useState(false)
     useEffect(() => setOpen(true), [])
@@ -119,9 +120,19 @@ export function AcmAlert(props: {
             setOpen(false)
         }
     }, [alertContext])
+
+    useEffect(() => {
+        if (alertInfo?.autoClose) {
+            setTimeout(() => setOpen(false), 5000)
+        }
+    }, [])
+
     return (
-        <Collapse
+        <Slide
             in={open}
+            direction="left"
+            mountOnEnter
+            unmountOnExit
             onExit={() => {
                 /* istanbul ignore else */
                 if (alertInfo) {
@@ -133,51 +144,17 @@ export function AcmAlert(props: {
             }}
             timeout={150}
         >
-            <Alert
-                isInline={props.isInline}
-                title={alertInfo?.title || props.title}
-                actionClose={!props.noClose && <AlertActionCloseButton onClose={() => setOpen(false)} />}
-                variant={alertInfo?.type || props.variant}
-                style={props.style}
-                className={props.className}
-            >
-                {alertInfo?.message || props.message || props.subtitle}
-            </Alert>
-        </Collapse>
-    )
-}
-
-export type AcmAlertGroupProps = {
-    /** Show alerts in the group as inLine alerts */
-    isInline?: boolean
-
-    /** Allow alerts in the group to be closed with a close button */
-    canClose?: boolean
-}
-
-export function AcmAlertGroup(props: AcmAlertGroupProps) {
-    const alertContext = useContext(AcmAlertContext)
-
-    const [hasAlerts, setHasAlerts] = useState(false)
-    useEffect(() => setHasAlerts(alertContext.alertInfos.length > 0), [alertContext.alertInfos])
-
-    if (!hasAlerts) return <Fragment />
-
-    return (
-        <AlertGroup isToast={!props.isInline}>
-            <Flex direction={{ default: 'column' }}>
-                {alertContext.alertInfos.map((alertInfo) => {
-                    /* istanbul ignore next */
-                    return (
-                        <AcmAlert
-                            key={alertInfo.id}
-                            alertInfo={alertInfo}
-                            isInline={props.isInline}
-                            noClose={!props.canClose}
-                        />
-                    )
-                })}
-            </Flex>
-        </AlertGroup>
+            <div>
+                <Alert
+                    title={alertInfo?.title || props.title}
+                    actionClose={<AlertActionCloseButton onClose={() => setOpen(false)} />}
+                    variant={alertInfo?.type || props.variant}
+                    style={props.style}
+                    className={props.className}
+                >
+                    {alertInfo?.message || props.message || props.subtitle}
+                </Alert>
+            </div>
+        </Slide>
     )
 }
