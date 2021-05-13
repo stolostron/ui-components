@@ -21,7 +21,6 @@ import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
 import React, { Fragment, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
-import { AcmToastGroup, AcmToastProvider } from '../AcmAlert/AcmToast'
 import { AcmDrawer, AcmDrawerProvider } from '../AcmDrawer/AcmDrawer'
 import { AcmErrorBoundary } from '../AcmErrorBoundary/AcmErrorBoundary'
 
@@ -30,27 +29,18 @@ export function AcmPage(props: { header: ReactNode; children: ReactNode; hasDraw
     if (props.hasDrawer) {
         return (
             <AcmDrawerProvider>
-                <AcmToastProvider>
-                    <AcmDrawer>
-                        <Page
-                            additionalGroupedContent={<Fragment>{props.header}</Fragment>}
-                            groupProps={{ sticky: 'top' }}
-                        >
-                            <AcmToastGroup />
-                            {props.children}
-                        </Page>
-                    </AcmDrawer>
-                </AcmToastProvider>
+                <AcmDrawer>
+                    <Page additionalGroupedContent={<Fragment>{props.header}</Fragment>} groupProps={{ sticky: 'top' }}>
+                        {props.children}
+                    </Page>
+                </AcmDrawer>
             </AcmDrawerProvider>
         )
     } else {
         return (
-            <AcmToastProvider>
-                <Page additionalGroupedContent={<Fragment>{props.header}</Fragment>} groupProps={{ sticky: 'top' }}>
-                    <AcmToastGroup />
-                    {props.children}
-                </Page>
-            </AcmToastProvider>
+            <Page additionalGroupedContent={<Fragment>{props.header}</Fragment>} groupProps={{ sticky: 'top' }}>
+                {props.children}
+            </Page>
         )
     }
 }
