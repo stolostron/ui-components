@@ -339,7 +339,7 @@ export enum AcmRoute {
     Automation = '/multicloud/ansible-automations',
     Applications = '/multicloud/applications',
     Credentials = '/multicloud/credentials',
-    RiskAndCompliance = '/multicloud/policies',
+    Governance = '/multicloud/policies',
     VisualWebTerminal = '/kui',
     Overview = '/overview',
     Search = '/search',
@@ -455,8 +455,8 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                 <NavItem isActive={route === AcmRoute.Applications} to={AcmRoute.Applications}>
                     Applications
                 </NavItem>
-                <NavItem isActive={route === AcmRoute.RiskAndCompliance} to={AcmRoute.RiskAndCompliance}>
-                    Risk and compliance
+                <NavItem isActive={route === AcmRoute.Governance} to={AcmRoute.Governance}>
+                    Governance
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.Credentials} to={AcmRoute.Credentials}>
                     {isConsoleRoute ? <Link to={AcmRoute.Credentials}>Credentials</Link> : 'Credentials'}
