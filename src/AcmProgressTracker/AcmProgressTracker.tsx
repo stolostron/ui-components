@@ -1,19 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { makeStyles } from '@material-ui/core'
-import { Button, Gallery, GalleryItem, Popover, PopoverProps, Spinner, Text, TextContent } from '@patternfly/react-core'
+import { Gallery, GalleryItem, PopoverProps, Text, TextContent } from '@patternfly/react-core'
 import React, { Fragment } from 'react'
 import { useViewport } from '../AcmCharts/AcmChartGroup'
-import {
-    AsleepIcon,
-    CheckCircleIcon,
-    ExclamationCircleIcon,
-    ExclamationTriangleIcon,
-    MinusCircleIcon,
-    UnknownIcon,
-    ResourcesEmptyIcon,
-} from '@patternfly/react-icons'
 import { ClassNameMap } from '@material-ui/styles'
+import { AcmInlineStatus } from '../AcmInlineStatus'
 
 export type AcmProgressTrackerProps = {
     steps: ProgressTrackerStep[]
@@ -117,7 +109,7 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                 {props.steps.map((step, index) => (
                     <GalleryItem key={index} className={classes.stepContainer}>
                         <div>
-                            <InlineStatus type={step.statusType} status={step.statusText} />
+                            <AcmInlineStatus type={step.statusType} status={step.statusText} />
                             <TextContent>
                                 <Text className={classes.stepStatus} component="small">
                                     {step.statusSubtitle}
@@ -130,52 +122,4 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
             </Gallery>
         </Fragment>
     )
-}
-
-export function InlineStatus(props: { type: StatusType; status: string | React.ReactNode; popover?: PopoverProps }) {
-    const classes = useStyles()
-    return (
-        <div className={classes.container}>
-            <div className={classes.icon}>
-                <StatusIcon type={props.type} />
-            </div>
-            <span style={{ marginLeft: '.4rem' }}>
-                {props.popover ? (
-                    <Popover hasAutoWidth {...props.popover}>
-                        <Button variant="link" className={classes.button}>
-                            {props.status}
-                        </Button>
-                    </Popover>
-                ) : (
-                    props.status
-                )}
-            </span>
-        </div>
-    )
-}
-
-function StatusIcon(props: { type: StatusType }) {
-    const classes = useStyles()
-    /* istanbul ignore next */
-    switch (props.type) {
-        case StatusType.healthy:
-            return <CheckCircleIcon className={classes.iconMargin} color="var(--pf-global--success-color--100)" />
-        case StatusType.danger:
-            return <ExclamationCircleIcon className={classes.iconMargin} color="var(--pf-global--danger-color--100)" />
-        case StatusType.warning:
-            return (
-                <ExclamationTriangleIcon className={classes.iconMargin} color="var(--pf-global--warning-color--100)" />
-            )
-        case StatusType.progress:
-            return <Spinner size="md" style={{ verticalAlign: 'middle' }} />
-        case StatusType.pending:
-            return <MinusCircleIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
-        case StatusType.sleep:
-            return <AsleepIcon className={classes.iconMargin} color="var(--pf-global--palette--purple-500)" />
-        case StatusType.empty:
-            return <ResourcesEmptyIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
-        case 'unknown':
-        default:
-            return <UnknownIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
-    }
 }
