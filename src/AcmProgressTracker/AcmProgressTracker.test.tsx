@@ -3,8 +3,8 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { configureAxe } from 'jest-axe'
-import { AcmProgressTracker, InlineStatus } from './AcmProgressTracker'
-import { StatusType } from '../AcmInlineStatus/AcmInlineStatus'
+import { AcmProgressTracker } from './AcmProgressTracker'
+import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import userEvent from '@testing-library/user-event'
 
 const axe = configureAxe({
@@ -70,7 +70,7 @@ describe('AcmProgressTracker', () => {
     test('has zero accessibility defects in stepper', async () => {
         // don't test loading because it's covered in AcmLoadingPage
         const { container, getByText } = render(
-            <InlineStatus
+            <AcmInlineStatus
                 type={StatusType.progress}
                 status="Installing"
                 popover={{
