@@ -9,7 +9,7 @@
         "lib"
     ],
     "scripts": {
-        "build": "tsc && cp -R src/assets lib/assets && copyfiles -u 1 src/**/*.css lib",
+        "build": "tsc && cp -R src/assets lib/ && copyfiles -u 1 src/**/*.css lib",
         "build:storybook": "cross-env NODE_ENV=production build-storybook --quiet",
         "lint": "npm run eslint",
         "eslint": "eslint --ext ts,tsx,js,jsx ./src --max-warnings=0",
