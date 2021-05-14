@@ -21,7 +21,7 @@ interface IExampleData {
 
 const hidden = { table: { disable: true } }
 const gridBreakPointLabels: { [key: string]: unknown } = { dynamic: 'dynamic' }
-Object.entries(TableGridBreakpoint).forEach((key, value) => {
+Object.entries(TableGridBreakpoint).forEach(([key, value]) => {
     gridBreakPointLabels[value] = key
 })
 
