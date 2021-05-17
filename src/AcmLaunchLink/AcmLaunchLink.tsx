@@ -8,7 +8,7 @@ import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 
 export type LaunchLink = {
     id: string
-    text: string
+    text: string | React.ReactNode
     href: string
 }
 
