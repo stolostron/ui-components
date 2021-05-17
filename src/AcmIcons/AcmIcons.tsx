@@ -61,7 +61,7 @@ export function AcmIcon(props: { icon: AcmIconVariant } & SVGIconProps) {
         case AcmIconVariant.ibm:
             return <IBMCloudIcon {...props} />
         case AcmIconVariant.baremetal:
-            return <ServerIcon {...props} />
+            return <ServerIcon {...props} color="slategray" />
         case AcmIconVariant.vmware:
             return <VMWareIcon {...props} />
         case AcmIconVariant.cloud:
