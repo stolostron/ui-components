@@ -20,6 +20,7 @@ import {
     ToolbarContent,
     ToolbarGroup,
     ToolbarItem,
+    Tooltip,
 } from '@patternfly/react-core'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
@@ -98,6 +99,8 @@ export interface IAcmTableAction {
 export interface IAcmRowAction<T> {
     /** Action identifier */
     id: string
+    /** Display a tooltip for this action */
+    tooltip?: string
     /** Inject a separator horizontal rule immediately before an action */
     addSeparator?: boolean
     /** Display an action as being disabled */
@@ -627,21 +630,59 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     isSeparator: true,
                 })
             }
-            // Add row action
-            actions.push({
-                title: action.title,
-                onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
-                    if (groupFn || addSubRows) {
-                        const tableItem =
-                            rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
-                        if (tableItem) {
-                            action.click(tableItem.item)
+            // Add row action with tooltip
+            if (action.tooltip) {
+                actions.push({
+                    title: (
+                        <Tooltip
+                            content={action.tooltip}
+                            zIndex={10001}
+                            position={'left'}
+                        >
+                            <AcmButton
+                                isDisabled={action.isDisabled}
+                                variant={ButtonVariant.plain}
+                                isInline={true}
+                                className={'tooltiped-action-wrapper'}
+                                style={{
+                                    padding: 0,
+                                    cursor: action.isDisabled ? 'not-allowed' : 'pointer'
+                                }}
+                            >
+                                {action.title}
+                            </AcmButton>
+                        </Tooltip>
+                    ),
+                    onClick: action.isDisabled ? undefined : (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                        if (groupFn || addSubRows) {
+                            const tableItem =
+                                rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
+                            if (tableItem) {
+                                action.click(tableItem.item)
+                            }
+                        } else {
+                            action.click(paged[rowId].item)
                         }
-                    } else {
-                        action.click(paged[rowId].item)
-                    }
-                },
-            })
+                    },
+                })
+            } else {
+                // Add generic row action
+                actions.push({
+                    title: action.title,
+                    isDisabled: action.isDisabled ? true : false,
+                    onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                        if (groupFn || addSubRows) {
+                            const tableItem =
+                                rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
+                            if (tableItem) {
+                                action.click(tableItem.item)
+                            }
+                        } else {
+                            action.click(paged[rowId].item)
+                        }
+                    },
+                })
+            }
         })
         return actions
     }
