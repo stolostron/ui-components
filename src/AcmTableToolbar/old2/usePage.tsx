@@ -1,59 +1,91 @@
-import { ICell, IRow } from '@patternfly/react-table'
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { Collection } from './collection'
+// import { useCallback, useEffect, useState } from 'react'
+// import { Collection } from './collection'
 
-export type IHeader<T> = ICell & {
-    cellFn: (item: Readonly<T>) => ReactNode
-}
+// export function usePage<T>(source: Collection<T>, page: number, perPage: number) {
+//     const [collection] = useState(new Collection<T>(source.getKey))
 
-export function usePage<T>(
-    source: Collection<T>,
-    selected: Collection<T>,
-    columns: IHeader<T>[],
-    page: number,
-    perPage: number
-) {
-    const [items, setItems] = useState<Readonly<T[]>>([])
+//     const getPageItems = useCallback(
+//         function () {
+//             collection.pause()
+//             const firstIndex = (page - 1) * perPage
+//             const lastIndex = firstIndex + perPage
+//             const pageItems = source.items().slice(firstIndex, lastIndex)
 
-    const handleChange = useCallback(() => {
-        const firstIndex = (page - 1) * perPage
-        const lastIndex = firstIndex + perPage
-        const newItems = source.items().slice(firstIndex, lastIndex)
-        if (items.length !== newItems.length) {
-            setItems(newItems)
-        } else {
-            let change = false
-            for (let i = 0, len = items.length; i < len; i++) {
-                if (items[i] !== newItems[i]) {
-                    change = true
-                    break
-                }
-            }
-            if (change) {
-                setItems(newItems)
-            }
-        }
-    }, [source, items])
+//             for (const key in change?.added) {
+//                 const item = change.added[key]
+//                 if (filter(item)) {
+//                     collection.push(item)
+//                 } else {
+//                     collection.pop(key)
+//                 }
+//             }
+//             for (const key in change?.replaced) {
+//                 const item = change.replaced[key].item
+//                 if (filter(item)) {
+//                     collection.push(item)
+//                 } else {
+//                     collection.pop(key)
+//                 }
+//             }
+//             for (const key in change.removed) {
+//                 collection.pop(key)
+//             }
+//             collection.resume()
+//         },
+//         [source]
+//     )
 
-    useEffect(() => {
-        source.addListener('change', handleChange)
-        return () => {
-            source.removeListener('change', handleChange)
-        }
-    }, [source, handleChange])
+//     useEffect(() => {
+//         collection.pause()
+//         for (const sourceKey of source.keys()) {
+//             const sourceItem = source.item(sourceKey)
+//             if (filter(sourceItem)) {
+//                 collection.push(sourceItem)
+//             } else {
+//                 collection.pop(sourceKey)
+//             }
+//         }
+//         for (const collectionKey of collection.keys()) {
+//             if (!source.hasKey(collectionKey)) {
+//                 collection.pop(collectionKey)
+//             }
+//         }
+//         collection.resume()
+//     }, [source, filter])
 
-    useEffect(() => {
-        handleChange()
-    }, [])
+//     const handleChange = useCallback(
+//         function (change: <CollectionChange></CollectionChange><T>) {
+//             collection.pause()
+//             for (const key in change?.added) {
+//                 const item = change.added[key]
+//                 if (filter(item)) {
+//                     collection.push(item)
+//                 } else {
+//                     collection.pop(key)
+//                 }
+//             }
+//             for (const key in change?.replaced) {
+//                 const item = change.replaced[key].item
+//                 if (filter(item)) {
+//                     collection.push(item)
+//                 } else {
+//                     collection.pop(key)
+//                 }
+//             }
+//             for (const key in change.removed) {
+//                 collection.pop(key)
+//             }
+//             collection.resume()
+//         },
+//         [filter]
+//     )
 
-    const rows = useMemo<IRow[]>(() => {
-        return items.map((item) => {
-            return {
-                selected: selected.value(selected.getKey(item)) !== undefined,
-                cells: columns.map((column) => column.cellFn(item)),
-            }
-        })
-    }, [items])
+//     useEffect(() => {
+//         source.addListener('change', handleChange)
+//         return () => {
+//             source.removeListener('change', handleChange)
+//         }
+//     }, [source, handleChange])
 
-    return useMemo(() => ({ cells: columns, rows }), [columns, rows])
-}
+//     return collection
+// }

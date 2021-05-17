@@ -3,9 +3,15 @@
 import {
     Alert,
     AlertGroup,
+    Bullseye,
     Button,
     Card,
     CardBody,
+    CardHeader,
+    EmptyState,
+    EmptyStateBody,
+    EmptyStateIcon,
+    EmptyStateVariant,
     Hint,
     HintBody,
     HintFooter,
@@ -14,17 +20,23 @@ import {
     PageSection,
     Pagination,
     Stack,
+    Title,
 } from '@patternfly/react-core'
 import { Divider } from '@patternfly/react-core/src/components/Divider'
-import { Table, TableBody, TableHeader } from '@patternfly/react-table'
+import { ICell, Table, TableBody, TableHeader } from '@patternfly/react-table'
 import { Meta } from '@storybook/react'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { TableFilterProps } from './TableFilter'
 import { TableToolbar } from './TableToolbar'
 import { useCollection } from './old2/useCollection'
+import { useSelection } from './old2/useSelection'
 import { exampleData, IExampleData } from '../AcmTable/AcmTable.stories'
+import { useSort } from './old2/useSort'
 import { useFilter } from './old2/useFilter'
-import { usePage } from './old2/usePage'
+// import { usePage } from './old2/usePage'
+import { cellFn, useRows } from './old2/useRows'
+import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
+import { SourceCollection } from './old2/collection'
 
 const meta: Meta = {
     title: 'TableToolbar',
@@ -58,6 +70,8 @@ enum Risk {
 }
 const risks = Object.keys(Risk).filter((k) => typeof Risk[k as any] === 'number')
 
+let render = 0
+
 export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean; 'Risk Filter': boolean }) => {
     const [search, setSearch] = useState('')
     const [status, setStatus] = useState<string[]>([])
@@ -88,37 +102,31 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         filteredCount /= 2
     }
 
-    const columns = ['Repositories', 'Branches', 'Pull requests', 'Workspaces', 'Last commit']
-    const rows = [
-        ['Repository one', 'Branch one', 'PR one', 'Workspace one', 'Commit one'],
-        ['Repository two', 'Branch two', 'PR two', 'Workspace two', 'Commit two'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-        ['Repository three', 'Branch three', 'PR three', 'Workspace three', 'Commit three'],
-    ]
+    const statusFilter = useCallback(
+        (item: IExampleData) => {
+            return !status.includes('New')
+        },
+        [status]
+    )
 
-    const [items, setItems] = useState(exampleData)
-    const collection = useCollection(items, (item) => item.uid.toString(), 100)
-    const filtered = useFilter(collection, (item) => true)
-    const paged = usePage(
-        filtered,
-        collection,
-        [
+    const [collection] = useState(new SourceCollection<IExampleData>((item: IExampleData) => item.uid.toString(), 1000))
+    useEffect(() => {
+        exampleData.slice(0, 10).forEach((example) => {
+            collection.pause()
+            collection.insert(example)
+            collection.resume()
+        })
+    }, [])
+
+    const selected = useSelection<IExampleData>(collection)
+    const filtered = useFilter<IExampleData>(collection, statusFilter)
+    const sorted = useSort<IExampleData>(filtered, (a, b) => {
+        if (a.firstName < b.firstName) return -1
+        if (a.firstName > b.firstName) return 1
+        return 0
+    })
+    const cells = useMemo<ICell[]>(
+        () => [
             {
                 title: 'First Name',
                 cellFn: (item: IExampleData) => item.firstName,
@@ -136,8 +144,12 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                 cellFn: (item: IExampleData) => item.email,
             },
         ],
-        1,
-        10
+        []
+    )
+    const rows = useRows(
+        sorted,
+        selected,
+        (cells as { cellFn: cellFn<IExampleData> }[]).map((cell) => cell.cellFn)
     )
 
     useEffect(() => {
@@ -146,7 +158,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
             const i = Math.min(keys.length - 1, Math.floor(Math.random() * keys.length))
             const copy = { ...exampleData[i] }
             copy.gender = Math.random().toString()
-            collection.push(copy)
+            collection.insert(copy)
         }, 1)
         return () => {
             clearInterval(i)
@@ -157,11 +169,28 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         <Page>
             <PageSection>
                 <Stack hasGutter>
-                    {/* <AlertGroup>
-                        <Alert title="Alert" isInline variant="success" />
-                        <Alert title="Alert" isInline variant="info" />
-                        <Alert title="Alert" isInline variant="danger" />
-                    </AlertGroup> */}
+                    {/* <Hint>
+                        <HintTitle>Custom Change Tracking</HintTitle>
+                        <HintBody>
+                            <p>This uses custom hooks to track item changes.</p>
+                            <p>Only rerenders the react component when an item affecting the current page changes.</p>
+                            <p>Filters, search, and sorting are only applied to changes, making them very efficient.</p>
+                        </HintBody>
+                        <code>
+                            <p>const collection = useCollection(items, ...)</p>
+                            <p>const selected = useSelection(collection, ...)</p>
+                            <p>const filtered = useFilter(collection, filterFn)</p>
+                            <p>const searched = useSearch(filtered, searchFn)</p>
+                            <p>const sorted = useSort(searched, searchFn)</p>
+                            <p>const paged = usePage(sorted, selected, page, perpage, ...)</p>
+                            <p>const tableProps = useTable(6)</p>
+                        </code>
+                    </Hint> */}
+                    <AlertGroup>
+                        <Alert isInline variant="info" title="React Component">
+                            Rendered {++render} times
+                        </Alert>
+                    </AlertGroup>
                     <Stack>
                         <TableToolbar
                             itemCount={itemCount}
@@ -175,9 +204,9 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             setSearch={args.Search ? setSearch : undefined}
                             filters={filters}
                             selectedCount={selectedCount}
-                            onSelectNone={() => setSelectedCount(0)}
+                            onSelectNone={() => selected.clear()}
                             onSelectPage={() => setSelectedCount(perPage)}
-                            onSelectAll={() => setSelectedCount(itemCount)}
+                            onSelectAll={() => selected.selectAll()}
                             selectionActions={[{ id: '1', children: 'Test' }]}
                             tableActions={[
                                 { id: '1', children: 'Primary', isShared: true },
@@ -215,19 +244,54 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             <TableHeader />
                             <TableBody />
                         </Table> */}
-                        <Table {...paged} onSelect={() => {}} canSelectAll={false} isStickyHeader>
+                        <Table
+                            cells={cells}
+                            rows={rows}
+                            onSelect={(
+                                event: React.FormEvent<HTMLInputElement>,
+                                isSelected: boolean,
+                                rowIndex: number
+                                // rowData: IRowData,
+                                // extraData: IExtraData
+                            ) => {
+                                if (rowIndex === -1) {
+                                    selected.selectAll()
+                                }
+                            }}
+                            canSelectAll={false}
+                            isStickyHeader
+                        >
                             <TableHeader />
-                            <TableBody />
+                            {rows.length > 0 && <TableBody />}
                         </Table>
-                        <Divider />
-                        <Pagination
-                            variant="bottom"
-                            itemCount={itemCount}
-                            page={page}
-                            onSetPage={(_, page) => setPage(page)}
-                            perPage={perPage}
-                            onPerPageSelect={(_, perPage) => setPerPage(perPage)}
-                        />
+                        {rows.length === 0 ? (
+                            <PageSection variant="light" padding={{ default: 'noPadding' }} isFilled={false}>
+                                <Bullseye>
+                                    <EmptyState variant={EmptyStateVariant.small}>
+                                        <EmptyStateIcon icon={SearchIcon} />
+                                        <Title headingLevel="h2" size="lg">
+                                            No results found
+                                        </Title>
+                                        <EmptyStateBody>
+                                            <p>No results match the filter criteria.</p>
+                                            <p>Remove filters or clear all filters to show results.</p>
+                                        </EmptyStateBody>
+                                    </EmptyState>
+                                </Bullseye>
+                            </PageSection>
+                        ) : (
+                            <Fragment>
+                                <Divider />
+                                <Pagination
+                                    variant="bottom"
+                                    itemCount={itemCount}
+                                    page={page}
+                                    onSetPage={(_, page) => setPage(page)}
+                                    perPage={perPage}
+                                    onPerPageSelect={(_, perPage) => setPerPage(perPage)}
+                                />
+                            </Fragment>
+                        )}
                     </Stack>
                 </Stack>
             </PageSection>
