@@ -5,6 +5,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { AcmLaunchLink } from './AcmLaunchLink'
+import { Tooltip } from '@patternfly/react-core'
 
 describe('AcmLaunchLink', () => {
     test('renders a link when only one link is provided', async () => {
@@ -28,6 +29,21 @@ describe('AcmLaunchLink', () => {
         userEvent.click(getByTestId('addon-launch-links'))
         expect(getByTestId('grafana')).toBeInTheDocument()
         expect(getByTestId('logs')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link when link text is a tooltip component', async () => {
+        const textTooltip = (
+            <Tooltip content={<div>I have a tooltip!</div>}>
+                <span tabIndex={0} style={{ border: '1px dashed' }}>
+                    Grafana!
+                </span>
+            </Tooltip>
+        )
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink links={[{ id: 'grafana', text: textTooltip, href: '/grafana' }]} />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders null when no links are provided', () => {
