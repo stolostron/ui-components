@@ -24,7 +24,7 @@ export type ProgressTrackerStep = {
     statusSubtitle?: string
 }
 
-export enum StatusType {
+enum StatusType {
     'healthy' = 'healthy',
     'danger' = 'danger',
     'warning' = 'warning',
