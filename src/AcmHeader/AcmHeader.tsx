@@ -55,7 +55,7 @@ function launchToOCP(urlSuffix: string) {
         '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
     )
         .then(({ data }) => {
-            window.open(`${data.consoleURL}/${urlSuffix}`, '_self')
+            window.open(`${data.consoleURL}/${urlSuffix}`)
         })
         .catch((error) => {
             // eslint-disable-next-line no-console
