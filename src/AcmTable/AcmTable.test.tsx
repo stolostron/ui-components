@@ -120,6 +120,35 @@ describe('AcmTable', () => {
                                       setItems(items.filter((i) => i.uid !== item.uid))
                                   },
                               },
+                              {
+                                  id: 'deletedisabled',
+                                  title: 'Disabled delete item',
+                                  isDisabled: true,
+                                  tooltip: 'This button is disabled',
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
+                              {
+                                  id: 'deletetooltipped',
+                                  title: 'Tooltipped delete item',
+                                  isDisabled: false,
+                                  tooltip: 'This button is not disabled',
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
+                              {
+                                  id: 'disablednotooltip',
+                                  title: 'Disabled item',
+                                  isDisabled: true,
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
                           ]
                         : undefined
                 }
@@ -344,6 +373,33 @@ describe('AcmTable', () => {
         expect(getByRole('menu')).toBeVisible()
         expect(getByText('Delete item')).toBeVisible()
         userEvent.click(getByText('Delete item'))
+        expect(deleteAction).toHaveBeenCalled()
+    })
+    test('can support disabled table row actions', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Disabled item')).toBeVisible()
+        userEvent.click(getByText('Disabled item'))
+        expect(deleteAction).not.toHaveBeenCalled()
+    })
+    test('can support disabled table row actions with tooltips', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[1])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Disabled delete item')).toBeVisible()
+        userEvent.click(getByText('Disabled delete item'))
+        expect(deleteAction).not.toHaveBeenCalled()
+    })
+    test('can support table row actions with tooltips', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Tooltipped delete item')).toBeVisible()
+        userEvent.click(getByText('Tooltipped delete item'))
         expect(deleteAction).toHaveBeenCalled()
     })
     test('can customize search placeholder', () => {
@@ -614,6 +670,14 @@ describe('AcmTable', () => {
                             expandedDeleteAction()
                         },
                     },
+                    {
+                        id: 'deleteTT',
+                        title: 'Delete item tooltip',
+                        tooltip: 'delete',
+                        click: () => {
+                            expandedDeleteAction()
+                        },
+                    },
                 ]}
             />
         )
@@ -625,6 +689,13 @@ describe('AcmTable', () => {
         expect(getByRole('menu')).toBeVisible()
         expect(getByText('Delete item')).toBeVisible()
         userEvent.click(getByText('Delete item'))
+        expect(expandedDeleteAction).not.toHaveBeenCalled()
+
+        // Run tooltipped delete action for code coverage (no delete support on expanded content)
+        userEvent.click(getAllByLabelText('Actions')[1])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Delete item tooltip')).toBeVisible()
+        userEvent.click(getByText('Delete item tooltip'))
         expect(expandedDeleteAction).not.toHaveBeenCalled()
     })
     test('renders with grouping', () => {
@@ -643,6 +714,24 @@ describe('AcmTable', () => {
         expect(getByRole('menu')).toBeVisible()
         expect(getByText('Delete item')).toBeVisible()
         userEvent.click(getByText('Delete item'))
+    })
+    test('renders with grouping', () => {
+        const { getAllByLabelText, getByPlaceholderText, getByRole, getByTestId, getByText } = render(
+            // Group some items by name, some by gender, and some not at all to test single-item groups,
+            // multiple-item groups, and ungrouped items
+            <Table groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)} />
+        )
+        userEvent.click(getByTestId('expandable-toggle0'))
+        // search for 'Female'
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'Female')
+
+        // Run tooltipped action for code coverage
+        userEvent.click(getAllByLabelText('Actions')[2])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Tooltipped delete item')).toBeVisible()
+        userEvent.click(getByText('Tooltipped delete item'))
+        expect(deleteAction).toHaveBeenCalled()
     })
     test('renders with grouping and summary', () => {
         const { getByTestId } = render(
