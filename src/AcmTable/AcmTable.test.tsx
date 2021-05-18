@@ -481,6 +481,19 @@ describe('AcmTable', () => {
     test('can be sorted with bulk actions', () => {
         sortTest(true)
     })
+    test('can be sorted by initialSort property', () => {
+        // initially sort by UID
+        const { getByText, container } = render(<Table initialSort={{ direction: 'asc', index: 5 }} />)
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
+
+        // verify clicking UID switches the direction
+        userEvent.click(getByText('UID'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('105')
+
+        // verify clicking on other headers still works
+        userEvent.click(getByText('First Name'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
+    })
     test('page size can be updated', () => {
         const { getByLabelText, getAllByLabelText, getByText, container } = render(
             <Table useExtraToolbarControls={false} useSearch={false} useTableActions={false} />

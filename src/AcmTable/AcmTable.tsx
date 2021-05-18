@@ -218,6 +218,7 @@ export interface AcmTableProps<T> {
     search?: string
     setSearch?: (search: string) => void
     searchPlaceholder?: string
+    initialSort?: ISortBy | undefined
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
     showToolbar?: boolean
@@ -246,11 +247,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         index: sortIndexOffset,
         direction: SortByDirection.asc,
     }
+    const initialSort = props.initialSort || defaultSort
 
     // State that is only stored in the component state
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [actionsOpen, setActionsOpen] = useState(false)
-    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(defaultSort)
+    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
 
@@ -268,7 +270,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const search = props.search || stateSearch
     const setSearch = props.setSearch || stateSetSearch
     const searchPlaceholder = props.searchPlaceholder || 'Search'
-    const [stateSort, stateSetSort] = useState<ISortBy | undefined>(defaultSort)
+    const [stateSort, stateSetSort] = useState<ISortBy | undefined>(initialSort)
     const sort = props.sort || stateSort
     const setSort = props.setSort || stateSetSort
 
