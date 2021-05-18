@@ -28,15 +28,11 @@ import { Meta } from '@storybook/react'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { TableFilterProps } from './TableFilter'
 import { TableToolbar } from './TableToolbar'
-import { useCollection } from './old2/useCollection'
-import { useSelection } from './old2/useSelection'
 import { exampleData, IExampleData } from '../AcmTable/AcmTable.stories'
-import { useSort } from './old2/useSort'
-import { useFilter } from './old2/useFilter'
-// import { usePage } from './old2/usePage'
-import { cellFn, useRows } from './old2/useRows'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
-import { SourceCollection } from './old2/collection'
+import { Collection } from './useCollection/collection'
+import { useFilter, useSelection, useSort } from './useCollection/useCollection'
+import { cellFn, useRows } from './useCollection/useRows'
 
 const meta: Meta = {
     title: 'TableToolbar',
@@ -109,13 +105,9 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         [status]
     )
 
-    const [collection] = useState(new SourceCollection<IExampleData>((item: IExampleData) => item.uid.toString(), 1000))
+    const [collection] = useState(new Collection<IExampleData>((item: IExampleData) => item.uid.toString(), 1000))
     useEffect(() => {
-        exampleData.slice(0, 10).forEach((example) => {
-            collection.pause()
-            collection.insert(example)
-            collection.resume()
-        })
+        collection.insert(exampleData.slice(0, 10))
     }, [])
 
     const selected = useSelection<IExampleData>(collection)
@@ -154,11 +146,11 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
 
     useEffect(() => {
         const i = setInterval(() => {
-            const keys = collection.keys()
-            const i = Math.min(keys.length - 1, Math.floor(Math.random() * keys.length))
-            const copy = { ...exampleData[i] }
-            copy.gender = Math.random().toString()
-            collection.insert(copy)
+            // const keys = collection.keys()
+            // const i = Math.min(keys.length - 1, Math.floor(Math.random() * keys.length))
+            // const copy = { ...exampleData[i] }
+            // copy.gender = Math.random().toString()
+            // collection.insert(copy)
         }, 1)
         return () => {
             clearInterval(i)
@@ -260,6 +252,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             }}
                             canSelectAll={false}
                             isStickyHeader
+                            actionResolver
                         >
                             <TableHeader />
                             {rows.length > 0 && <TableBody />}
@@ -293,6 +286,13 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             </Fragment>
                         )}
                     </Stack>
+
+                    <AlertGroup>
+                        <Alert isInline variant="info" title={`collection items: ${collection.items().length}`} />
+                        <Alert isInline variant="info" title={`selected items: ${selected.items().length}`} />
+                        <Alert isInline variant="info" title={`filtered items: ${filtered.items().length}`} />
+                        <Alert isInline variant="info" title={`sorted items: ${sorted.items().length}`} />
+                    </AlertGroup>
                 </Stack>
             </PageSection>
         </Page>
