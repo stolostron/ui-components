@@ -121,24 +121,33 @@ describe('AcmTable', () => {
                                   },
                               },
                               {
-                                id: 'deletedisabled',
-                                title: 'Disabled delete item',
-                                isDisabled: true,
-                                tooltip: 'This button is disabled',
-                                click: (item: IExampleData) => {
-                                    deleteAction(item)
-                                    setItems(items.filter((i) => i.uid !== item.uid))
-                                },
+                                  id: 'deletedisabled',
+                                  title: 'Disabled delete item',
+                                  isDisabled: true,
+                                  tooltip: 'This button is disabled',
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
                               },
                               {
-                                id: 'deletetooltipped',
-                                title: 'Tooltipped delete item',
-                                isDisabled: false,
-                                tooltip: 'This button is not disabled',
-                                click: (item: IExampleData) => {
-                                    deleteAction(item)
-                                    setItems(items.filter((i) => i.uid !== item.uid))
-                                },
+                                  id: 'deletetooltipped',
+                                  title: 'Tooltipped delete item',
+                                  isDisabled: false,
+                                  tooltip: 'This button is not disabled',
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
+                              {
+                                  id: 'disablednotooltip',
+                                  title: 'Disabled item',
+                                  isDisabled: true,
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
                               },
                           ]
                         : undefined
@@ -369,13 +378,22 @@ describe('AcmTable', () => {
     test('can support disabled table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
         expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Disabled item')).toBeVisible()
+        userEvent.click(getByText('Disabled item'))
+        expect(deleteAction).not.toHaveBeenCalled()
+    })
+    test('can support disabled table row actions with tooltips', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
         userEvent.click(getAllByLabelText('Actions')[1])
         expect(getByRole('menu')).toBeVisible()
         expect(getByText('Disabled delete item')).toBeVisible()
         userEvent.click(getByText('Disabled delete item'))
         expect(deleteAction).not.toHaveBeenCalled()
     })
-    test('can support disabled table row actions', () => {
+    test('can support table row actions with tooltips', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
         expect(getAllByLabelText('Actions')).toHaveLength(10)
         userEvent.click(getAllByLabelText('Actions')[0])
@@ -652,6 +670,14 @@ describe('AcmTable', () => {
                             expandedDeleteAction()
                         },
                     },
+                    {
+                        id: 'deleteTT',
+                        title: 'Delete item tooltip',
+                        tooltip: 'delete',
+                        click: () => {
+                            expandedDeleteAction()
+                        },
+                    },
                 ]}
             />
         )
@@ -663,6 +689,13 @@ describe('AcmTable', () => {
         expect(getByRole('menu')).toBeVisible()
         expect(getByText('Delete item')).toBeVisible()
         userEvent.click(getByText('Delete item'))
+        expect(expandedDeleteAction).not.toHaveBeenCalled()
+
+        // Run tooltipped delete action for code coverage (no delete support on expanded content)
+        userEvent.click(getAllByLabelText('Actions')[1])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Delete item tooltip')).toBeVisible()
+        userEvent.click(getByText('Delete item tooltip'))
         expect(expandedDeleteAction).not.toHaveBeenCalled()
     })
     test('renders with grouping', () => {

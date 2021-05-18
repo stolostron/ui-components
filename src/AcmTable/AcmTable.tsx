@@ -360,7 +360,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 const column = columns[i]
                 if (column.search) {
                     if (typeof column.search === 'string') {
-                        tableItem[`column-${i}`] = get(item as unknown as Record<string, unknown>, column.search)
+                        tableItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
                     } else {
                         tableItem[`column-${i}`] = column.search(item)
                     }
@@ -634,11 +634,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             if (action.tooltip) {
                 actions.push({
                     title: (
-                        <Tooltip
-                            content={action.tooltip}
-                            zIndex={10001}
-                            position={'left'}
-                        >
+                        <Tooltip content={action.tooltip} zIndex={10001} position={'left'}>
                             <AcmButton
                                 isDisabled={action.isDisabled}
                                 variant={ButtonVariant.plain}
@@ -646,24 +642,27 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 className={'tooltiped-action-wrapper'}
                                 style={{
                                     padding: 0,
-                                    cursor: action.isDisabled ? 'not-allowed' : 'pointer'
+                                    cursor: action.isDisabled ? 'not-allowed' : 'pointer',
                                 }}
                             >
                                 {action.title}
                             </AcmButton>
                         </Tooltip>
                     ),
-                    onClick: action.isDisabled ? undefined : (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
-                        if (groupFn || addSubRows) {
-                            const tableItem =
-                                rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
-                            if (tableItem) {
-                                action.click(tableItem.item)
-                            }
-                        } else {
-                            action.click(paged[rowId].item)
-                        }
-                    },
+                    onClick: action.isDisabled
+                        ? undefined
+                        : (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                              if (groupFn || addSubRows) {
+                                  const tableItem =
+                                      rowData.props?.key &&
+                                      paged.find((tableItem) => tableItem.key === rowData.props.key)
+                                  if (tableItem) {
+                                      action.click(tableItem.item)
+                                  }
+                              } else {
+                                  action.click(paged[rowId].item)
+                              }
+                          },
                 })
             } else {
                 // Add generic row action
