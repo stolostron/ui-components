@@ -72,7 +72,7 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
             setPlaceholderText(<span style={{ color: '#666' }}>{placeholder}</span>)
         } else {
             const selectedItems = React.Children.map(props.children, (child) => {
-                const option = (child as unknown) as SelectOption
+                const option = child as unknown as SelectOption
                 if (value.includes(option.props.value as string)) return option.props.children
                 return undefined
             })
