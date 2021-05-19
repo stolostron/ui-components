@@ -692,6 +692,7 @@ describe('AcmTable', () => {
                         },
                     },
                 ]}
+                fuseThreshold={0}
             />
         )
         userEvent.click(getByTestId('expandable-toggle0'))

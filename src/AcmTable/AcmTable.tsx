@@ -226,6 +226,7 @@ export interface AcmTableProps<T> {
     perPageOptions?: PerPageOptions[]
     autoHidePagination?: boolean
     noBorders?: boolean
+    fuseThreshold?: number
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const {
@@ -377,10 +378,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         filtered: ITableItem<T>[]
         filteredCount: number
     }>(() => {
+        let threshold = 0.3
+        if (props.fuseThreshold != undefined) {
+            threshold = props.fuseThreshold
+        }
         if (search && search !== '') {
             const fuse = new Fuse(tableItems, {
                 ignoreLocation: true,
-                threshold: 0.3,
+                threshold: threshold,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
                     .filter((value) => value !== undefined) as string[],
