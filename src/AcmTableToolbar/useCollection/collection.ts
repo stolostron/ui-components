@@ -38,7 +38,7 @@ export class CollectionEmitter<T> extends EventEmitter {
     }
 
     protected insertEvent(key: string, item: T): void {
-        if (this.listenerCount('change')) {
+        if (this.listenerCount('change') === 0) {
             this.event = undefined
             return
         }
@@ -56,7 +56,7 @@ export class CollectionEmitter<T> extends EventEmitter {
     }
 
     protected removeEvent(key: string): void {
-        if (this.listenerCount('change')) {
+        if (this.listenerCount('change') === 0) {
             this.event = undefined
             return
         }
@@ -78,7 +78,7 @@ export class CollectionEmitter<T> extends EventEmitter {
     }
 
     protected orderedEvent() {
-        if (this.listenerCount('change')) {
+        if (this.listenerCount('change') === 0) {
             this.event = undefined
             return
         }
@@ -107,6 +107,7 @@ export class CollectionEmitter<T> extends EventEmitter {
         if (!immediate && this.debounce && this.debounce > 0) {
             if (!this.timeout) {
                 this.timeout = setTimeout(() => {
+                    this.timeout = undefined
                     this.sendEvent(true)
                 }, this.debounce)
             }
@@ -157,6 +158,9 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
         const key = this.getKey(item)
         if (key === undefined) throw new Error('item key cannot be undefined')
         if (typeof key !== 'string') throw new Error(`item key connt be of type ${typeof key}`)
+
+        const existing = this.itemMap[key]
+        if (existing === item) return false
 
         this.itemMap[key] = item
         this.insertEvent(key, item)
@@ -224,15 +228,13 @@ export class Collection<T> extends ReadOnlyCollection<T> {
 export class FilteredCollection<T> extends ReadOnlyCollection<T> {
     constructor(private source: ICollection<T>, private filterFn?: (item: T) => boolean) {
         super(source.getKey)
-        source.addListener('change', this.handleChange)
+        source.addListener('change', this.handleChange.bind(this))
         this.setFilter(filterFn)
-        console.log('TTT', source.items().length)
-        console.log('TTT', this.items().length)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange)
+        this.source.removeListener('change', this.handleChange.bind(this))
     }
 
     public setFilter(filterFn?: (item: T) => boolean) {
@@ -243,6 +245,7 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
     }
 
     public filter() {
+        this.pauseEvents()
         this.source.items().forEach((item) => {
             if (!this.filterFn || this.filterFn(item)) {
                 this.insert(item)
@@ -250,9 +253,10 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
                 this.remove(this.getKey(item))
             }
         })
+        this.resumeEvents()
     }
 
-    handleChange(change: CollectionChange<T>) {
+    private handleChange(change: CollectionChange<T>) {
         this.pauseEvents()
         if (change?.inserted) {
             for (const item of Object.values(change.inserted)) {
@@ -284,13 +288,13 @@ export class SearchedCollection<T> extends CollectionEmitter<T> implements IColl
     constructor(private readonly source: ICollection<T>, private searchFn?: (item: T) => number) {
         super()
         this.getKey = source.getKey
-        source.addListener('change', this.handleChange)
+        source.addListener('change', this.handleChange.bind(this))
         this.setSearch(searchFn)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange)
+        this.source.removeListener('change', this.handleChange.bind(this))
     }
 
     public setSearch(searchFn?: (item: T) => number) {
@@ -357,12 +361,19 @@ export class SearchedCollection<T> extends CollectionEmitter<T> implements IColl
             if (sortNeeded) {
                 this.results.sort((l, r) => l.value - r.value)
             }
+        } else {
+            for (const key in change.inserted) {
+                this.insertEvent(key, change.inserted[key])
+            }
+            for (const key in change.removed) {
+                this.removeEvent(key)
+            }
         }
 
         this.resumeEvents()
     }
 
-    public items(): Readonly<Readonly<T>[]> {
+    public items(): ReadonlyArray<Readonly<T>> {
         if (this.results) {
             return this.results.map((searchResult) => searchResult.item)
         } else {
@@ -379,13 +390,13 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
     constructor(private readonly source: ICollection<T>, private compareFn?: (lhs: T, rhs: T) => number) {
         super()
         this.getKey = source.getKey
-        source.addListener('change', this.handleChange)
+        source.addListener('change', this.handleChange.bind(this))
         this.setCompare(compareFn)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange)
+        this.source.removeListener('change', this.handleChange.bind(this))
     }
 
     public setCompare(compareFn?: (lhs: T, rhs: T) => number) {
@@ -405,7 +416,7 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
         }
     }
 
-    handleChange(change: CollectionChange<T>) {
+    private handleChange(change: CollectionChange<T>) {
         this.pauseEvents()
         this.sort()
         for (const key in change.inserted) {
@@ -417,7 +428,7 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
         this.resumeEvents()
     }
 
-    items(): readonly Readonly<T>[] {
+    public items(): ReadonlyArray<Readonly<T>> {
         if (this.sortedItems) {
             return this.sortedItems
         } else {
@@ -434,17 +445,17 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
     constructor(private readonly source: ICollection<T>, private page: number, private pageSize: number) {
         super()
         this.getKey = source.getKey
-        source.addListener('change', this.handleChange)
+        source.addListener('change', this.handleChange.bind(this))
         this.setPage(page, pageSize)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange)
+        this.source.removeListener('change', this.handleChange.bind(this))
     }
 
     public setPage(page: number, pageSize: number) {
-        if (this.page !== page || pageSize !== this.pageSize) {
+        if (this.page !== page || this.pageSize !== pageSize) {
             this.page = page
             this.pageSize = pageSize
             this.paginate()
@@ -452,19 +463,21 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
     }
 
     public paginate() {
-        this.pagedItems = this.source.items().slice((this.page - 1) * this.pageSize, this.page * this.pageSize)
+        const startIndex = (this.page - 1) * this.pageSize
+        const endIndex = startIndex + this.pageSize
+        this.pagedItems = this.source.items().slice(startIndex, endIndex)
         // TODO - only send orderedEvent if page items really changed...
         this.orderedEvent()
     }
 
-    handleChange(change: CollectionChange<T>) {
+    private handleChange(change: CollectionChange<T>) {
         this.pauseEvents()
         this.paginate()
         // TODO send out inserted and removed events....
         this.resumeEvents()
     }
 
-    items(): readonly Readonly<T>[] {
+    public items(): ReadonlyArray<Readonly<T>> {
         return this.pagedItems
     }
 }
@@ -472,17 +485,21 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
 export class SelectedCollection<T> extends Collection<T> {
     constructor(private readonly source: ICollection<T>) {
         super(source.getKey)
-        source.addListener('change', this.handleChange)
+        source.addListener('change', this.handleChange.bind(this))
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange)
+        this.source.removeListener('change', this.handleChange.bind(this))
     }
 
-    handleChange(change: CollectionChange<T>) {
+    private handleChange(change: CollectionChange<T>) {
         this.pauseEvents()
-        if (change.inserted) this.insert(Object.values(change.inserted))
+        for (const key in change.inserted) {
+            if (this.includes(key)) {
+                this.insert(change.inserted[key])
+            }
+        }
         if (change.removed) this.remove(Object.keys(change.removed))
         this.resumeEvents()
     }

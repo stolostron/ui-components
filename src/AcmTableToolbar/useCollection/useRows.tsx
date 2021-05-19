@@ -18,14 +18,18 @@ export function useRows<T>(source: ICollection<T>, selected: SelectedCollection<
         }))
         // TODO - only update if rows change
         setRows(newRows)
-    }, [source])
+    }, [source, selected])
 
     useEffect(() => updateRows(), [updateRows])
 
     useEffect(() => {
         source.addListener('change', updateRows)
-        return () => source.removeListener('change', updateRows)
-    }, [source, updateRows])
+        selected.addListener('change', updateRows)
+        return () => {
+            source.removeListener('change', updateRows)
+            selected.removeListener('change', updateRows)
+        }
+    }, [source, selected, updateRows])
 
     return rows
 }

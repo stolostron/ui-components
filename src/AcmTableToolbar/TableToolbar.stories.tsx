@@ -16,11 +16,16 @@ import {
     HintBody,
     HintFooter,
     HintTitle,
+    Label,
+    LabelGroup,
     Page,
     PageSection,
     Pagination,
     Stack,
     Title,
+    Toolbar,
+    ToolbarGroup,
+    ToolbarItem,
 } from '@patternfly/react-core'
 import { Divider } from '@patternfly/react-core/src/components/Divider'
 import { ICell, Table, TableBody, TableHeader } from '@patternfly/react-table'
@@ -31,7 +36,7 @@ import { TableToolbar } from './TableToolbar'
 import { exampleData, IExampleData } from '../AcmTable/AcmTable.stories'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
 import { Collection } from './useCollection/collection'
-import { useFilter, useSelection, useSort } from './useCollection/useCollection'
+import { useFilter, usePage, useSearch, useSelection, useSort } from './useCollection/useCollection'
 import { cellFn, useRows } from './useCollection/useRows'
 
 const meta: Meta = {
@@ -73,7 +78,6 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     const [status, setStatus] = useState<string[]>([])
     const [risk, setRisk] = useState<string[]>([])
 
-    const itemCount = 1000
     const searchedCount = 100
     let filteredCount = 1000
 
@@ -107,17 +111,23 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
 
     const [collection] = useState(new Collection<IExampleData>((item: IExampleData) => item.uid.toString(), 1000))
     useEffect(() => {
-        collection.insert(exampleData.slice(0, 10))
+        collection.insert(exampleData)
     }, [])
 
-    const selected = useSelection<IExampleData>(collection)
-    const filtered = useFilter<IExampleData>(collection, statusFilter)
-    const sorted = useSort<IExampleData>(filtered, (a, b) => {
+    const [searchFn] = useState(() => (a) => 0)
+
+    const [sortFn] = useState(() => (a, b) => {
         if (a.firstName < b.firstName) return -1
         if (a.firstName > b.firstName) return 1
         return 0
     })
-    const cells = useMemo<ICell[]>(
+
+    const selected = useSelection<IExampleData>(collection)
+    const filtered = useFilter<IExampleData>(collection, statusFilter)
+    const searched = useSearch<IExampleData>(filtered, searchFn)
+    const sorted = useSort<IExampleData>(searched, sortFn)
+    const paged = usePage<IExampleData>(sorted, page, perPage)
+    const cells = useMemo<(ICell & { cellFn: cellFn<IExampleData> })[]>(
         () => [
             {
                 title: 'First Name',
@@ -139,19 +149,19 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         []
     )
     const rows = useRows(
-        sorted,
+        paged,
         selected,
-        (cells as { cellFn: cellFn<IExampleData> }[]).map((cell) => cell.cellFn)
+        cells.map((cell) => cell.cellFn)
     )
 
     useEffect(() => {
         const i = setInterval(() => {
-            // const keys = collection.keys()
-            // const i = Math.min(keys.length - 1, Math.floor(Math.random() * keys.length))
-            // const copy = { ...exampleData[i] }
-            // copy.gender = Math.random().toString()
-            // collection.insert(copy)
-        }, 1)
+            const items = collection.items()
+            const index = Math.min(items.length - 1, Math.floor(Math.random() * items.length))
+            const copy = { ...items[index] }
+            copy.gender = Math.random().toString()
+            collection.insert(copy)
+        }, 100)
         return () => {
             clearInterval(i)
         }
@@ -161,31 +171,22 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         <Page>
             <PageSection>
                 <Stack hasGutter>
-                    {/* <Hint>
-                        <HintTitle>Custom Change Tracking</HintTitle>
-                        <HintBody>
-                            <p>This uses custom hooks to track item changes.</p>
-                            <p>Only rerenders the react component when an item affecting the current page changes.</p>
-                            <p>Filters, search, and sorting are only applied to changes, making them very efficient.</p>
-                        </HintBody>
-                        <code>
-                            <p>const collection = useCollection(items, ...)</p>
-                            <p>const selected = useSelection(collection, ...)</p>
-                            <p>const filtered = useFilter(collection, filterFn)</p>
-                            <p>const searched = useSearch(filtered, searchFn)</p>
-                            <p>const sorted = useSort(searched, searchFn)</p>
-                            <p>const paged = usePage(sorted, selected, page, perpage, ...)</p>
-                            <p>const tableProps = useTable(6)</p>
-                        </code>
-                    </Hint> */}
                     <AlertGroup>
                         <Alert isInline variant="info" title="React Component">
                             Rendered {++render} times
                         </Alert>
                     </AlertGroup>
+                    <LabelGroup defaultIsOpen numLabels={999}>
+                        <Label variant="outline">{collection.items().length} items</Label>
+                        <Label variant="outline">{selected.items().length} selected</Label>
+                        <Label variant="outline">{filtered.items().length} filtered</Label>
+                        <Label variant="outline">{searched.items().length} searched</Label>
+                        <Label variant="outline">{sorted.items().length} sorted</Label>
+                        <Label variant="outline">{paged.items().length} paged</Label>
+                    </LabelGroup>
                     <Stack>
                         <TableToolbar
-                            itemCount={itemCount}
+                            itemCount={filtered.items().length}
                             searchedCount={searchedCount}
                             filteredCount={filteredCount}
                             page={page}
@@ -252,7 +253,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             }}
                             canSelectAll={false}
                             isStickyHeader
-                            actionResolver
+                            variant="compact"
                         >
                             <TableHeader />
                             {rows.length > 0 && <TableBody />}
@@ -277,7 +278,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                                 <Divider />
                                 <Pagination
                                     variant="bottom"
-                                    itemCount={itemCount}
+                                    itemCount={filtered.items().length}
                                     page={page}
                                     onSetPage={(_, page) => setPage(page)}
                                     perPage={perPage}
@@ -286,13 +287,26 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             </Fragment>
                         )}
                     </Stack>
-
-                    <AlertGroup>
-                        <Alert isInline variant="info" title={`collection items: ${collection.items().length}`} />
-                        <Alert isInline variant="info" title={`selected items: ${selected.items().length}`} />
-                        <Alert isInline variant="info" title={`filtered items: ${filtered.items().length}`} />
-                        <Alert isInline variant="info" title={`sorted items: ${sorted.items().length}`} />
-                    </AlertGroup>
+                    <Hint>
+                        <HintTitle>Custom Change Tracking</HintTitle>
+                        <HintBody>
+                            <p>This uses custom hooks to track item changes.</p>
+                            <p>Only renders the react component when an item affecting the current page changes.</p>
+                            <p>
+                                Filters, search, sorting and pagination are only applied to changes, making them very
+                                efficient.
+                            </p>
+                        </HintBody>
+                        <code>
+                            <p>const collection = useCollection(items, debounce)</p>
+                            <p>const selected = useSelection(collection)</p>
+                            <p>const filtered = useFilter(collection, filterFn)</p>
+                            <p>const searched = useSearch(filtered, searchFn)</p>
+                            <p>const sorted = useSort(searched, searchFn)</p>
+                            <p>const paged = usePage(sorted, page, perPage)</p>
+                            <p>const rows = useRows(paged, selected, cells)</p>
+                        </code>
+                    </Hint>
                 </Stack>
             </PageSection>
         </Page>
