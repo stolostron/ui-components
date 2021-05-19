@@ -143,7 +143,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                 className={'help-button'}
                 onClick={toggleInfoModal}
                 noVerticalAlign
-                title={'Open help modal'}
+                title={'Open Help Modal'}
             />
             <SearchIcon className={'search-icon'} noVerticalAlign />
         </div>
