@@ -6,7 +6,7 @@ import React, { useCallback, useContext, useEffect } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { AcmAlertContext, AcmAlertGroup } from './AcmAlert'
-import { AcmToastContext } from './AcmToast'
+import { AcmToastContext, AcmToastProvider, AcmToastGroup } from './AcmToast'
 
 const meta: Meta = {
     title: 'Alert Group',
@@ -30,11 +30,14 @@ export function AlertGroup() {
 export function ToastGroup() {
     return (
         <AcmPage header={<AcmPageHeader title="AcmAlertGroup" />}>
-            <AcmPageContent id="alerts">
-                <PageSection variant="light">
-                    <AlertGroupStory useToast />
-                </PageSection>
-            </AcmPageContent>
+            <AcmToastProvider>
+                <AcmToastGroup />
+                <AcmPageContent id="alerts">
+                    <PageSection variant="light">
+                        <AlertGroupStory useToast />
+                    </PageSection>
+                </AcmPageContent>
+            </AcmToastProvider>
         </AcmPage>
     )
 }
