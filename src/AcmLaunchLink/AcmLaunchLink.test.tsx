@@ -16,6 +16,51 @@ describe('AcmLaunchLink', () => {
         expect(queryByTestId('grafana')).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
     })
+    test('renders a link when onClick is provided', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link the link is nested in a label', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink links={[{ id: 'grafana', text: 'Grafana', href: '/grafana', label: true }]} />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link when onClick is provided and label=true', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                        label: true,
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
     test('renders a dropdown when multiple links are provided', async () => {
         const { container, getByTestId } = render(
             <AcmLaunchLink
