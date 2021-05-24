@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import React from 'react'
-import { ButtonVariant } from '@patternfly/react-core'
+import { ButtonVariant, Label } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
@@ -9,7 +9,9 @@ import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 export type LaunchLink = {
     id: string
     text: string | React.ReactNode
-    href: string
+    href?: string
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+    label?: boolean
 }
 
 export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
@@ -19,9 +21,30 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
     if (props.links !== undefined && props.links.length > 0) {
         if (props.links.length === 1) {
             const [link] = props.links
+            if (link.label) {
+                return (
+                    <Label>
+                        <AcmButton
+                            href={link.href ? link.href : undefined}
+                            onClick={link.onClick ? link.onClick : undefined}
+                            variant={ButtonVariant.link}
+                            component="a"
+                            target="_blank"
+                            rel="noreferrer"
+                            id={link.id}
+                            icon={<ExternalLinkAltIcon />}
+                            iconPosition="right"
+                            style={{ marginLeft: 0 }}
+                        >
+                            {link.text}
+                        </AcmButton>
+                    </Label>
+                )
+            }
             return (
                 <AcmButton
-                    href={link.href}
+                    href={link.href ? link.href : undefined}
+                    onClick={link.onClick ? link.onClick : undefined}
                     variant={ButtonVariant.link}
                     component="a"
                     target="_blank"
