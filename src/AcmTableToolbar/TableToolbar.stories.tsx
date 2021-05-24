@@ -4,40 +4,44 @@ import {
     Alert,
     AlertGroup,
     Bullseye,
-    Button,
-    Card,
-    CardBody,
-    CardHeader,
     EmptyState,
     EmptyStateBody,
     EmptyStateIcon,
     EmptyStateVariant,
     Hint,
     HintBody,
-    HintFooter,
     HintTitle,
     Label,
     LabelGroup,
     Page,
     PageSection,
     Pagination,
+    Progress,
+    ProgressSize,
+    Spinner,
     Stack,
+    Text,
     Title,
     Toolbar,
-    ToolbarGroup,
+    ToolbarContent,
     ToolbarItem,
 } from '@patternfly/react-core'
 import { Divider } from '@patternfly/react-core/src/components/Divider'
+import SuccessIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon'
+import ErrorIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon'
+import ExclamationIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon'
+import PendingIcon from '@patternfly/react-icons/dist/js/icons/pending-icon'
+import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
 import { ICell, Table, TableBody, TableHeader } from '@patternfly/react-table'
 import { Meta } from '@storybook/react'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { createTasks, Risk, risks, Status, statuses, Task, updateRandomTask } from './mocks/mock-addresses'
 import { TableFilterProps } from './TableFilter'
 import { TableToolbar } from './TableToolbar'
-import { exampleData, IExampleData } from '../AcmTable/AcmTable.stories'
-import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
 import { Collection } from './useCollection/collection'
 import { useFilter, usePage, useSearch, useSelection, useSort } from './useCollection/useCollection'
 import { cellFn, useRows } from './useCollection/useRows'
+import { EnumSelect } from './EnumSelect'
 
 const meta: Meta = {
     title: 'TableToolbar',
@@ -50,26 +54,13 @@ const meta: Meta = {
 }
 export default meta
 
-interface Example {
-    name: string
-    status: Status
-    risk: Risk
+enum UpdateTime {
+    'Never' = 0,
+    '1ms' = 1,
+    '10ms' = 10,
+    '100ms' = 100,
+    '1000ms' = 1000,
 }
-
-enum Status {
-    'New',
-    'Pending',
-    'Running',
-    'Cancelled',
-}
-const statuses = Object.keys(Status).filter((k) => typeof Status[k as any] === 'number')
-
-enum Risk {
-    'Low',
-    'Medium',
-    'High',
-}
-const risks = Object.keys(Risk).filter((k) => typeof Risk[k as any] === 'number')
 
 let render = 0
 
@@ -85,6 +76,8 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     const [perPage, setPerPage] = useState(10)
 
     const [selectedCount, setSelectedCount] = useState(0)
+
+    const [updateTime, setUpdateTime] = useState<UpdateTime>(UpdateTime.Never)
 
     const filters: TableFilterProps[] = []
     if (args['Status Filter']) {
@@ -103,15 +96,15 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     }
 
     const statusFilter = useCallback(
-        (item: IExampleData) => {
+        (item: Task) => {
             return !status.includes('New')
         },
         [status]
     )
 
-    const [collection] = useState(new Collection<IExampleData>((item: IExampleData) => item.uid.toString(), 1000))
+    const [collection] = useState(new Collection<Task>((item: Task) => item.id.toString(), 100))
     useEffect(() => {
-        collection.insert(exampleData)
+        collection.insert(createTasks(1000))
     }, [])
 
     const [searchFn] = useState(() => (a) => 0)
@@ -122,28 +115,87 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         return 0
     })
 
-    const selected = useSelection<IExampleData>(collection)
-    const filtered = useFilter<IExampleData>(collection, statusFilter)
-    const searched = useSearch<IExampleData>(filtered, searchFn)
-    const sorted = useSort<IExampleData>(searched, sortFn)
-    const paged = usePage<IExampleData>(sorted, page, perPage)
-    const cells = useMemo<(ICell & { cellFn: cellFn<IExampleData> })[]>(
+    const selected = useSelection<Task>(collection)
+    const filtered = useFilter<Task>(collection, statusFilter)
+    const searched = useSearch<Task>(filtered, searchFn)
+    const sorted = useSort<Task>(searched, sortFn)
+    const paged = usePage<Task>(sorted, page, perPage)
+    const cells = useMemo<(ICell & { cellFn: cellFn<Task> })[]>(
         () => [
             {
-                title: 'First Name',
-                cellFn: (item: IExampleData) => item.firstName,
+                title: 'Name',
+                cellFn: (item: Task) => (
+                    <Fragment>
+                        <Text>Task {item.id}</Text>
+                        <Text component="small">{item.name}</Text>
+                    </Fragment>
+                ),
             },
             {
-                title: 'Last Name',
-                cellFn: (item: IExampleData) => item.last_name,
+                title: 'Status',
+                cellFn: (item: Task) => (
+                    <Fragment>
+                        {item.progress === 100 ? (
+                            <Fragment>
+                                {item.status === Status.Complete ? (
+                                    <Fragment>
+                                        <SuccessIcon size="sm" color="var(--pf-global--success-color--100)" />
+                                        &nbsp;&nbsp;
+                                        {Status[item.status]}
+                                    </Fragment>
+                                ) : (
+                                    <Fragment>
+                                        <ErrorIcon size="sm" color="var(--pf-global--danger-color--100)" />
+                                        &nbsp;&nbsp;
+                                        {Status[item.status]}
+                                    </Fragment>
+                                )}
+                            </Fragment>
+                        ) : item.progress === 0 ? (
+                            <Fragment>
+                                <PendingIcon size="sm" color="var(--pf-global--info-color--100)" />
+                                &nbsp;&nbsp;
+                                {Status[item.status]}
+                            </Fragment>
+                        ) : (
+                            <Progress
+                                value={item.progress}
+                                isTitleTruncated
+                                title={
+                                    <Fragment>
+                                        <Spinner size="sm" />
+                                        &nbsp;&nbsp;
+                                        {Status[item.status]}
+                                    </Fragment>
+                                }
+                                size={ProgressSize.sm}
+                            />
+                        )}
+                    </Fragment>
+                ),
             },
             {
-                title: 'Gender',
-                cellFn: (item: IExampleData) => item.gender,
-            },
-            {
-                title: 'Email',
-                cellFn: (item: IExampleData) => item.email,
+                title: 'Risk',
+                cellFn: (item: Task) => (
+                    <Fragment>
+                        {item.risk === Risk.High ? (
+                            <Fragment>
+                                <ErrorIcon size="sm" color="var(--pf-global--danger-color--100)" /> &nbsp;
+                                {Risk[item.risk]}
+                            </Fragment>
+                        ) : item.risk === Risk.Medium ? (
+                            <Fragment>
+                                <ExclamationIcon size="sm" color="var(--pf-global--warning-color--100)" /> &nbsp;
+                                {Risk[item.risk]}
+                            </Fragment>
+                        ) : (
+                            <Fragment>
+                                <ExclamationIcon size="sm" color="var(--pf-global--info-color--100)" /> &nbsp;
+                                {Risk[item.risk]}
+                            </Fragment>
+                        )}
+                    </Fragment>
+                ),
             },
         ],
         []
@@ -155,17 +207,15 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     )
 
     useEffect(() => {
-        const i = setInterval(() => {
-            const items = collection.items()
-            const index = Math.min(items.length - 1, Math.floor(Math.random() * items.length))
-            const copy = { ...items[index] }
-            copy.gender = Math.random().toString()
-            collection.insert(copy)
-        }, 100)
+        if (updateTime === 0) return
+        const interval = setInterval(() => {
+            const updated = updateRandomTask(collection.items())
+            collection.insert(updated)
+        }, updateTime)
         return () => {
-            clearInterval(i)
+            clearInterval(interval)
         }
-    }, [collection])
+    }, [collection, updateTime])
 
     return (
         <Page>
@@ -176,6 +226,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             Rendered {++render} times
                         </Alert>
                     </AlertGroup>
+
                     <LabelGroup defaultIsOpen numLabels={999}>
                         <Label variant="outline">{collection.items().length} items</Label>
                         <Label variant="outline">{selected.items().length} selected</Label>
@@ -287,6 +338,25 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             </Fragment>
                         )}
                     </Stack>
+                    <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                        {/* <Toolbar>
+                            <ToolbarContent>
+                                <ToolbarItem variant="label">Update random item every</ToolbarItem>
+                                <ToolbarItem>
+                                    <EnumSelect value={updateTime} anEnum={UpdateTime} onChange={setUpdateTime} />
+                                </ToolbarItem>
+                            </ToolbarContent>
+                        </Toolbar>
+                        <Divider /> */}
+                        <Toolbar>
+                            <ToolbarContent>
+                                <ToolbarItem variant="label">Update random item every</ToolbarItem>
+                                <ToolbarItem>
+                                    <EnumSelect value={updateTime} anEnum={UpdateTime} onChange={setUpdateTime} />
+                                </ToolbarItem>
+                            </ToolbarContent>
+                        </Toolbar>
+                    </PageSection>
                     <Hint>
                         <HintTitle>Custom Change Tracking</HintTitle>
                         <HintBody>

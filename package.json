@@ -32,6 +32,8 @@
         "@patternfly/react-core": "^4.116.0",
         "@patternfly/react-table": "^4.26.12",
         "@react-hook/resize-observer": "^1.2.0",
+        "@types/faker": "^5.5.5",
+        "faker": "^5.5.3",
         "fuse.js": "^6.4.6",
         "get-value": "^3.0.1",
         "isomorphic-fetch": "^3.0.0",

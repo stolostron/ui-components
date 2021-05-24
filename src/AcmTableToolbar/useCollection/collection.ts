@@ -228,13 +228,14 @@ export class Collection<T> extends ReadOnlyCollection<T> {
 export class FilteredCollection<T> extends ReadOnlyCollection<T> {
     constructor(private source: ICollection<T>, private filterFn?: (item: T) => boolean) {
         super(source.getKey)
-        source.addListener('change', this.handleChange.bind(this))
+        this.handleChange = this.handleChange.bind(this)
+        source.addListener('change', this.handleChange)
         this.setFilter(filterFn)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange.bind(this))
+        this.source.removeListener('change', this.handleChange)
     }
 
     public setFilter(filterFn?: (item: T) => boolean) {
@@ -288,13 +289,14 @@ export class SearchedCollection<T> extends CollectionEmitter<T> implements IColl
     constructor(private readonly source: ICollection<T>, private searchFn?: (item: T) => number) {
         super()
         this.getKey = source.getKey
-        source.addListener('change', this.handleChange.bind(this))
+        this.handleChange = this.handleChange.bind(this)
+        source.addListener('change', this.handleChange)
         this.setSearch(searchFn)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange.bind(this))
+        this.source.removeListener('change', this.handleChange)
     }
 
     public setSearch(searchFn?: (item: T) => number) {
@@ -390,13 +392,14 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
     constructor(private readonly source: ICollection<T>, private compareFn?: (lhs: T, rhs: T) => number) {
         super()
         this.getKey = source.getKey
-        source.addListener('change', this.handleChange.bind(this))
+        this.handleChange = this.handleChange.bind(this)
+        source.addListener('change', this.handleChange)
         this.setCompare(compareFn)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange.bind(this))
+        this.source.removeListener('change', this.handleChange)
     }
 
     public setCompare(compareFn?: (lhs: T, rhs: T) => number) {
@@ -445,13 +448,14 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
     constructor(private readonly source: ICollection<T>, private page: number, private pageSize: number) {
         super()
         this.getKey = source.getKey
-        source.addListener('change', this.handleChange.bind(this))
+        this.handleChange = this.handleChange.bind(this)
+        source.addListener('change', this.handleChange)
         this.setPage(page, pageSize)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange.bind(this))
+        this.source.removeListener('change', this.handleChange)
     }
 
     public setPage(page: number, pageSize: number) {
@@ -485,12 +489,13 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
 export class SelectedCollection<T> extends Collection<T> {
     constructor(private readonly source: ICollection<T>) {
         super(source.getKey)
-        source.addListener('change', this.handleChange.bind(this))
+        this.handleChange = this.handleChange.bind(this)
+        source.addListener('change', this.handleChange)
     }
 
     public dispose() {
         super.dispose()
-        this.source.removeListener('change', this.handleChange.bind(this))
+        this.source.removeListener('change', this.handleChange)
     }
 
     private handleChange(change: CollectionChange<T>) {
