@@ -37,7 +37,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                             style={{
                                 marginLeft: 0,
                                 paddingLeft: 0,
-                                fontSize: '14px'
+                                fontSize: '14px',
                             }}
                         >
                             {link.text}
