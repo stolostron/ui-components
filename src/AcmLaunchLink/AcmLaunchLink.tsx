@@ -34,7 +34,11 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                             id={link.id}
                             icon={<ExternalLinkAltIcon />}
                             iconPosition="right"
-                            style={{ marginLeft: 0 }}
+                            style={{
+                                marginLeft: 0,
+                                paddingLeft: 0,
+                                fontSize: '14px'
+                            }}
                         >
                             {link.text}
                         </AcmButton>
