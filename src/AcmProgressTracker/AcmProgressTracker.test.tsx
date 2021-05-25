@@ -17,25 +17,21 @@ describe('AcmProgressTracker', () => {
     const ProgressTracker = (props: { isStacked: boolean }) => {
         const steps = [
             {
-                active: false,
                 statusType: StatusType.healthy,
                 statusText: 'Pre-creation jobs',
                 statusSubtitle: 'Complete',
             },
             {
-                active: true,
                 statusType: StatusType.progress,
                 statusText: 'Cluster install',
                 statusSubtitle: 'Installing',
             },
             {
-                active: false,
                 statusType: StatusType.empty,
                 statusText: 'Klusterlet install',
                 statusSubtitle: 'Pending',
             },
             {
-                active: false,
                 statusType: StatusType.empty,
                 statusText: 'Post-creation jobs',
                 statusSubtitle: 'Pending',

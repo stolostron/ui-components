@@ -17,7 +17,6 @@ export type AcmProgressTrackerProps = {
 }
 
 export type ProgressTrackerStep = {
-    active: boolean
     statusType: StatusType
     statusText: string | React.ReactNode
     popover?: PopoverProps
