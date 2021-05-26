@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { FormGroup, Popover, TextArea, TextAreaProps } from '@patternfly/react-core'
+import { Button, FormGroup, Popover, TextArea, TextAreaProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
 import { useValidationContext } from '../AcmForm/AcmForm'
@@ -58,14 +58,15 @@ export function AcmTextArea(props: AcmTextAreaProps) {
                 /* istanbul ignore next */
                 props.labelHelp ? (
                     <Popover headerContent={labelHelpTitle} bodyContent={labelHelp}>
-                        <button
+                        <Button
+                            variant="plain"
                             aria-label="More info"
                             onClick={(e) => e.preventDefault()}
                             // aria-describedby="simple-form-name"
                             className="pf-c-form__group-label-help"
                         >
                             <HelpIcon noVerticalAlign />
-                        </button>
+                        </Button>
                     </Popover>
                 ) : (
                     <Fragment />
@@ -75,11 +76,11 @@ export function AcmTextArea(props: AcmTextAreaProps) {
             <TextArea
                 {...(textAreaProps as unknown)}
                 validated={validated}
-                style={{ height: '88px', minHeight: '36px' }}
                 resizeOrientation={
                     /* istanbul ignore next */ props.resizeOrientation ? props.resizeOrientation : 'vertical'
                 }
                 disabled={ValidationContext.isReadOnly}
+                autoResize
             />
         </FormGroup>
     )

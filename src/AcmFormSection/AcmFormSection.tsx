@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { useMediaQuery } from '@material-ui/core'
-import { Popover, Split, SplitItem, Title, TitleProps } from '@patternfly/react-core'
+import { Button, Popover, Split, SplitItem, Title, TitleProps } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment } from 'react'
 
@@ -33,14 +33,15 @@ export function AcmFormSection(props: AcmFormSectionProps) {
                             headerContent={'labelHelpTitle'}
                             bodyContent={'labelHelp'}
                         >
-                            <button
+                            <Button
+                                variant="plain"
                                 id={`${props.id}-label-help-button`}
                                 aria-label="More info"
                                 onClick={/* istanbul ignore next */ (e) => e.preventDefault()}
                                 className="pf-c-form__group-label-help"
                             >
                                 <HelpIcon noVerticalAlign size="sm" />
-                            </button>
+                            </Button>
                         </Popover>
                     </Fragment>
                 </SplitItem>

@@ -1,11 +1,11 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React, { useState } from 'react'
-import { OptionsMenu, OptionsMenuItem, OptionsMenuToggleWithText } from '@patternfly/react-core'
-import { MemoryRouter } from 'react-router-dom'
+import { Button, OptionsMenu, OptionsMenuItem, OptionsMenuToggleWithText } from '@patternfly/react-core'
+import { CaretDownIcon } from '@patternfly/react-icons'
 import { render } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import { CaretDownIcon } from '@patternfly/react-icons'
+import React, { useState } from 'react'
+import { MemoryRouter } from 'react-router-dom'
 import { AcmSummaryList } from './AcmSummaryList'
 
 describe('AcmSummaryList', () => {
@@ -38,7 +38,7 @@ describe('AcmSummaryList', () => {
                     title="Summary"
                     list={list}
                     actions={[<Menu key="menu" />]}
-                    rightAction={<button>Expand details</button>}
+                    rightAction={<Button variant="plain">Expand details</Button>}
                 />
             </MemoryRouter>
         )
