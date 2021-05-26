@@ -101,6 +101,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
         props.onSelect(id)
         setOpen(false)
         const element = document.getElementById(props.id)
+        /* istanbul ignore else */
         if (element) element.focus()
     }
 
