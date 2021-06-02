@@ -57,7 +57,7 @@ export const DonutChart = () => {
                 title="Cluster issues"
                 description="Overview of cluster issues"
                 data={insightData}
-                donutTitle={{
+                donutLabel={{
                     title: '1',
                     subTitle: 'Clusters with issues',
                 }}

@@ -82,7 +82,7 @@ export function AcmDonutChart(props: {
     data: Array<Data>
     loading?: boolean
     colorScale?: string[]
-    donutTitle?: {
+    donutLabel?: {
         title: string
         subTitle: string
     }
@@ -92,13 +92,13 @@ export function AcmDonutChart(props: {
     const total = props.data.reduce((a, b) => a + b.value, 0)
     /* istanbul ignore next */
     const primary = props.data.find((d) => d.isPrimary) || { key: '', value: 0 }
-    let donutTitle = ''
-    if (props.donutTitle) {
-        donutTitle = props.donutTitle.title
+    let donutLabel = ''
+    if (props.donutLabel) {
+        donutLabel = props.donutLabel.title
     } else if (total === 0) {
-        donutTitle = '0%'
+        donutLabel = '0%'
     } else {
-        donutTitle = `${Math.round((primary.value / total) * 100)}%`
+        donutLabel = `${Math.round((primary.value / total) * 100)}%`
     }
 
     const { viewWidth } = useViewport()
@@ -127,8 +127,8 @@ export function AcmDonutChart(props: {
                         right: 145,
                         top: 20,
                     }}
-                    title={donutTitle}
-                    subTitle={props.donutTitle?.subTitle ?? primary.key}
+                    title={donutLabel}
+                    subTitle={props.donutLabel?.subTitle ?? primary.key}
                     width={/* istanbul ignore next */ viewWidth < 376 ? viewWidth : 376}
                     height={/* istanbul ignore next */ viewWidth < 376 ? 150 : 200}
                     // Devs can supply an array of colors the donut chart will use ex: ['#E62325', '#EC7A08', '#F4C145', '#2B9AF3', '#72767B']

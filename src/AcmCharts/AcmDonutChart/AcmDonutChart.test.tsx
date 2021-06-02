@@ -62,7 +62,7 @@ describe('AcmDonutChart', () => {
                 title="Pods"
                 description="Overview of pod count and status"
                 data={podData}
-                donutTitle={{
+                donutLabel={{
                     title: '100',
                     subTitle: 'total pods',
                 }}
