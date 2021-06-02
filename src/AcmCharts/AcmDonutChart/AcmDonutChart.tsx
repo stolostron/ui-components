@@ -82,12 +82,24 @@ export function AcmDonutChart(props: {
     data: Array<Data>
     loading?: boolean
     colorScale?: string[]
+    donutTitle?: {
+        title: string
+        subTitle: string
+    }
 }) {
     const chartData = props.data.map((d) => ({ x: d.key, y: d.value }))
     const legendData: Array<LegendData> = props.data.map((d) => ({ name: `${d.value} ${d.key}`, link: d.link }))
     const total = props.data.reduce((a, b) => a + b.value, 0)
     /* istanbul ignore next */
     const primary = props.data.find((d) => d.isPrimary) || { key: '', value: 0 }
+    let donutTitle = ''
+    if (props.donutTitle) {
+        donutTitle = props.donutTitle.title
+    } else if (total === 0) {
+        donutTitle = '0%'
+    } else {
+        donutTitle = `${Math.round((primary.value / total) * 100)}%`
+    }
 
     const { viewWidth } = useViewport()
     const classes = useStyles({ ...props, danger: props.data.some((d) => d.isDanger), viewWidth } as StyleProps)
@@ -115,8 +127,8 @@ export function AcmDonutChart(props: {
                         right: 145,
                         top: 20,
                     }}
-                    title={total == 0 ? '0%' : `${Math.round((primary.value / total) * 100)}%`}
-                    subTitle={primary.key}
+                    title={donutTitle}
+                    subTitle={props.donutTitle?.subTitle ?? primary.key}
                     width={/* istanbul ignore next */ viewWidth < 376 ? viewWidth : 376}
                     height={/* istanbul ignore next */ viewWidth < 376 ? 150 : 200}
                     // Devs can supply an array of colors the donut chart will use ex: ['#E62325', '#EC7A08', '#F4C145', '#2B9AF3', '#72767B']
