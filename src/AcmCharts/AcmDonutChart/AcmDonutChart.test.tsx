@@ -55,4 +55,19 @@ describe('AcmDonutChart', () => {
         )
         expect(await axe(container)).toHaveNoViolations()
     })
+
+    test('alternate donut title text', async () => {
+        const { queryByText } = render(
+            <AcmDonutChart
+                title="Pods"
+                description="Overview of pod count and status"
+                data={podData}
+                donutLabel={{
+                    title: '100',
+                    subTitle: 'total pods',
+                }}
+            />
+        )
+        expect(queryByText('total pods')).toBeInTheDocument()
+    })
 })
