@@ -159,7 +159,11 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
                           }
                         : undefined
                 }
-                placeholderText={placeholderText}
+                placeholderText={
+                    /* istanbul ignore next */ props.variant === SelectVariant.typeaheadMulti
+                        ? placeholder
+                        : placeholderText
+                }
                 isDisabled={props.isDisabled || ValidationContext.isReadOnly}
             />
             {validated === 'error' ? (

@@ -19,6 +19,8 @@ export function AcmLabels(props: {
     style?: CSSProperties
     collapsedText?: string
     expandedText?: string
+    color?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
+    variant?: 'outline' | 'filled'
 }) {
     const classes = useStyles()
 
@@ -61,12 +63,12 @@ export function AcmLabels(props: {
             expandedText={props.expandedText}
         >
             {labels.map((label) => (
-                <Label key={label} className={classes.label} title={label}>
+                <Label key={label} className={classes.label} title={label} variant={props.variant} color={props.color}>
                     {label}
                 </Label>
             ))}
             {hidden.map((label) => (
-                <Label key={label} className={classes.label} title={label}>
+                <Label key={label} className={classes.label} title={label} variant={props.variant} color={props.color}>
                     {label}
                 </Label>
             ))}
