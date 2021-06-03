@@ -99,7 +99,10 @@ export function AcmDropdown(props: AcmDropdownProps) {
 
     const onSelect = (id: string) => {
         props.onSelect(id)
-        setOpen(!isOpen)
+        setOpen(false)
+        const element = document.getElementById(props.id)
+        /* istanbul ignore else */
+        if (element) element.focus()
     }
 
     return (
