@@ -363,7 +363,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 const column = columns[i]
                 if (column.search) {
                     if (typeof column.search === 'string') {
-                        tableItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
+                        tableItem[`column-${i}`] = get(item as unknown as Record<string, unknown>, column.search)
                     } else {
                         tableItem[`column-${i}`] = column.search(item)
                     }
