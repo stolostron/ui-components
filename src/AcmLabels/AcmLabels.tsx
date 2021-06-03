@@ -10,6 +10,8 @@ export function AcmLabels(props: {
     style?: CSSProperties
     collapsedText?: string
     expandedText?: string
+    color?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
+    variant?: 'outline' | 'filled'
 }) {
     const labelsRecord: Record<string, string> = useMemo(() => {
         if (props.labels === undefined) return {}
@@ -50,12 +52,12 @@ export function AcmLabels(props: {
             expandedText={props.expandedText}
         >
             {labels.map((label) => (
-                <Label key={label} title={label}>
+                <Label key={label} title={label} variant={props.variant} color={props.color}>
                     {label}
                 </Label>
             ))}
             {hidden.map((label) => (
-                <Label key={label} title={label}>
+                <Label key={label} title={label} variant={props.variant} color={props.color}>
                     {label}
                 </Label>
             ))}

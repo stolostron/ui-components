@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { FormGroup, Popover, NumberInput, NumberInputProps } from '@patternfly/react-core'
+import { Button, FormGroup, NumberInput, NumberInputProps, Popover } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
 import { useValidationContext } from '../AcmForm/AcmForm'
@@ -64,7 +64,8 @@ export function AcmNumberInput(props: AcmNumberInputProps) {
                         headerContent={labelHelpTitle}
                         bodyContent={labelHelp}
                     >
-                        <button
+                        <Button
+                            variant="plain"
                             id={`${props.id}-label-help-button`}
                             aria-label="More info"
                             onClick={(e) => e.preventDefault()}
@@ -72,7 +73,7 @@ export function AcmNumberInput(props: AcmNumberInputProps) {
                             className="pf-c-form__group-label-help"
                         >
                             <HelpIcon noVerticalAlign />
-                        </button>
+                        </Button>
                     </Popover>
                 ) : (
                     <Fragment />

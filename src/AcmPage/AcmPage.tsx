@@ -182,7 +182,7 @@ export function AcmBreadcrumb(props: { breadcrumb?: { text: string; to?: string 
         return (
             <Breadcrumb>
                 {breadcrumb.map((crumb, i) => (
-                    <BreadcrumbItem key={crumb.to}>
+                    <BreadcrumbItem key={i}>
                         {breadcrumb.length > 1 && i === breadcrumb.length - 1 ? (
                             <a aria-current="page" className="pf-c-breadcrumb__link pf-m-current">
                                 {crumb.text}
