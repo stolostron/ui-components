@@ -3,6 +3,7 @@
 import { EmptyState, EmptyStateBody, EmptyStatePrimary, EmptyStateVariant, Title } from '@patternfly/react-core'
 import React, { ReactNode } from 'react'
 import emptyPagePng from '../assets/EmptyPageIcon.png'
+import emptyTablePng from '../assets/EmptyTableIcon.png'
 import Folder from '../assets/Folder.png'
 
 export enum AcmEmptyStateImage {
@@ -15,11 +16,16 @@ export function AcmEmptyState(props: {
     action?: ReactNode
     showIcon?: boolean
     image?: AcmEmptyStateImage
+    isEmptyTableState?: boolean
 }) {
     return (
         <EmptyState variant={EmptyStateVariant.large}>
             {props.showIcon !== false && (
-                <img src={props.image ?? emptyPagePng} style={{ width: '50%' }} alt="Empty state" />
+                <img
+                    src={props.image ?? (props.isEmptyTableState ? emptyTablePng : emptyPagePng)}
+                    style={{ width: props.isEmptyTableState ? '65%' : '50%' }}
+                    alt="Empty state"
+                />
             )}
             <Title headingLevel="h4" size="lg">
                 {props.title}
