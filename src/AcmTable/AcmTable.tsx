@@ -720,7 +720,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     return (
         <Fragment>
             {props.extraToolbarControls && (
-                <Toolbar style={{ paddingBottom: 0 }}>
+                <Toolbar style={items ? {} : { paddingBottom: 0 }}>
                     <ToolbarContent>
                         <ToolbarGroup alignment={{ default: 'alignRight' }}>
                             <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
@@ -825,11 +825,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 </PageSection>
             ) : items.length === 0 ? (
                 props.emptyState ? (
-                    <PageSection variant="light" padding={{ default: 'noPadding' }}>
-                        {props.emptyState}
-                    </PageSection>
+                    <PageSection padding={{ default: 'noPadding' }}>{props.emptyState}</PageSection>
                 ) : (
-                    <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                    <PageSection padding={{ default: 'noPadding' }}>
                         <AcmEmptyState
                             title={`No ${props.plural} found`}
                             message={`You do not have any ${props.plural} yet.`}
