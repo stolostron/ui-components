@@ -20,7 +20,7 @@ import {
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons'
 import React, { Fragment, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
+import { AcmAlertContext, AcmAlertGroup, AcmAlertProvider } from '../AcmAlert/AcmAlert'
 import { AcmDrawer, AcmDrawerProvider } from '../AcmDrawer/AcmDrawer'
 import { AcmErrorBoundary } from '../AcmErrorBoundary/AcmErrorBoundary'
 
@@ -206,13 +206,25 @@ export type AcmPageContentProps = {
 
     /** React children for this component */
     children: ReactNode
+
+    variant?: 'light'
 }
 
 export function AcmPageContent(props: AcmPageContentProps) {
     return (
         <AcmErrorBoundary key={props.id}>
             <AcmAlertProvider>
-                <AcmAlertGroup isInline canClose />
+                <AcmAlertContext.Consumer>
+                    {(context) => (
+                        <Fragment>
+                            {context.alertInfos.length > 0 && (
+                                <PageSection variant={props.variant} style={{ paddingBottom: 0 }}>
+                                    <AcmAlertGroup isInline canClose />
+                                </PageSection>
+                            )}
+                        </Fragment>
+                    )}
+                </AcmAlertContext.Consumer>
                 {props.children}
             </AcmAlertProvider>
         </AcmErrorBoundary>
