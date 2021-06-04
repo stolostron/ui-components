@@ -716,11 +716,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
     const showToolbar = props.showToolbar !== false ? hasItems : false
+    const topToolbarStyle = items ? {} : { paddingBottom: 0 }
 
     return (
         <Fragment>
             {props.extraToolbarControls && (
-                <Toolbar style={items ? {} : { paddingBottom: 0 }}>
+                <Toolbar style={topToolbarStyle}>
                     <ToolbarContent>
                         <ToolbarGroup alignment={{ default: 'alignRight' }}>
                             <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
