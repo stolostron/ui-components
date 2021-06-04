@@ -1,11 +1,12 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
+import React, { Fragment, useContext } from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { AcmPage, AcmPageHeader, AcmPageCard, AcmBreadcrumb, AcmPageContent } from './AcmPage'
 import { AcmButton } from '../AcmButton/AcmButton'
+import { AcmAlertContext } from '../AcmAlert/AcmAlert'
 
 describe('AcmPage', () => {
     test('AcmPage renders', () => {
@@ -137,12 +138,29 @@ describe('AcmBreadcrumb', () => {
 })
 
 describe('AcmPageContent', () => {
-    test('AcmPage renders', () => {
+    test('AcmPageContent renders', () => {
         const { getByText } = render(
             <AcmPage header={<AcmPageHeader title="Title" />}>
                 <AcmPageContent id="page">Content goes here</AcmPageContent>
             </AcmPage>
         )
         expect(getByText('Content goes here')).toBeInTheDocument()
+    })
+
+    test('AcmPageContent renders alerts', async () => {
+        function Content() {
+            const alertContext = useContext(AcmAlertContext)
+            alertContext.addAlert({ title: 'Alert title' })
+            return <Fragment />
+        }
+
+        const { getByText } = render(
+            <AcmPage header={<AcmPageHeader title="Title" />}>
+                <AcmPageContent id="page">
+                    <Content />
+                </AcmPageContent>
+            </AcmPage>
+        )
+        waitFor(() => expect(getByText('Alert title')).toBeInTheDocument())
     })
 })

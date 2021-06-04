@@ -73,7 +73,7 @@ export function AlertGroupStory(props: { useToast?: boolean }) {
         addError()
     }, [])
     return (
-        <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <Toolbar>
             <ToolbarContent>
                 <ToolbarItem>
                     <AcmButton onClick={addAlert}>Alert</AcmButton>
