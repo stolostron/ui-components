@@ -20,6 +20,10 @@ describe('AcmProgressTracker', () => {
                 statusType: StatusType.healthy,
                 statusText: 'Pre-creation jobs',
                 statusSubtitle: 'Complete',
+                link: {
+                    linkName: 'View logs',
+                    linkTo: () => {},
+                },
             },
             {
                 statusType: StatusType.progress,
@@ -55,6 +59,7 @@ describe('AcmProgressTracker', () => {
         expect(getByText('Cluster install')).toBeInTheDocument()
         expect(getByText('Klusterlet install')).toBeInTheDocument()
         expect(getByText('Post-creation jobs')).toBeInTheDocument()
+        expect(getByText('View logs')).toBeInTheDocument()
     })
     test('renders stacked status', async () => {
         const { getByText } = render(<ProgressTracker isStacked={true} />)

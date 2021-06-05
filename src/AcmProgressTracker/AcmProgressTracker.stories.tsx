@@ -21,8 +21,12 @@ export const ProgressTracker = () => {
         {
             active: false,
             statusType: StatusType.healthy,
-            statusText: 'Pre-creation jobs',
+            statusText: 'Prehook',
             statusSubtitle: 'Complete',
+            link: {
+                linkName: 'View logs',
+                linkTo: () => {},
+            },
         },
         {
             active: true,
