@@ -27,7 +27,7 @@ export type ProgressTrackerStep = {
 }
 
 export type ProgressTrackerStepLink = {
-    linkTo: Function // redirect function
+    linkTo: () => void // redirect function
     linkName: string
 }
 
@@ -131,7 +131,7 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                                     variant="link"
                                     icon={<ExternalLinkAltIcon size="sm" />}
                                     iconPosition="right"
-                                    onClick={() => step.link?.linkTo}
+                                    onClick={() => step.link?.linkTo()}
                                 >
                                     <Text className={classes.link} component="a">
                                         {step.link.linkName}
