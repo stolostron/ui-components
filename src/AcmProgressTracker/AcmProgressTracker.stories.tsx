@@ -25,7 +25,7 @@ export const ProgressTracker = () => {
             statusSubtitle: 'Complete',
             link: {
                 linkName: 'View logs',
-                linkTo: () => console.log('testing'),
+                linkTo: () => {},
             },
         },
         {
