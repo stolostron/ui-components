@@ -78,11 +78,7 @@ const useStyles = makeStyles({
         margin: '3px 2px 1px 2px',
     },
     button: {
-        padding: 0,
-    },
-    link: {
         paddingLeft: '25px',
-        fontSize: 'small',
     },
 })
 
@@ -129,16 +125,15 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                                 <AcmButton
                                     className={classes.button}
                                     variant="link"
-                                    icon={<ExternalLinkAltIcon size="sm" />}
+                                    isSmall
+                                    icon={<ExternalLinkAltIcon />}
                                     iconPosition="right"
                                     onClick={() => {
                                         /* istanbul ignore next */
                                         window.open(step.link?.linkUrl)
                                     }}
                                 >
-                                    <Text className={classes.link} component="a">
-                                        {step.link.linkName}
-                                    </Text>
+                                    {step.link.linkName}
                                 </AcmButton>
                             )}
                         </div>
