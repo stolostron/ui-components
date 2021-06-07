@@ -18,3 +18,13 @@ export const InlineCopy = () => {
         </Card>
     )
 }
+
+export const InlineCopyWithDisplayText = () => {
+    return (
+        <Card>
+            <CardBody>
+                <AcmInlineCopy text="Copy me" displayText="Non-copy text" />
+            </CardBody>
+        </Card>
+    )
+}
