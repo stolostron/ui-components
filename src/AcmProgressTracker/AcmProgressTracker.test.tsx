@@ -20,6 +20,10 @@ describe('AcmProgressTracker', () => {
                 statusType: StatusType.healthy,
                 statusText: 'Pre-creation jobs',
                 statusSubtitle: 'Complete',
+                link: {
+                    linkName: 'View logs',
+                    linkUrl: '/ansible/url',
+                },
             },
             {
                 statusType: StatusType.progress,
@@ -50,11 +54,14 @@ describe('AcmProgressTracker', () => {
     }
 
     test('renders stepper status', async () => {
+        window.open = jest.fn()
         const { getByText } = render(<ProgressTracker isStacked={false} />)
         expect(getByText('Pre-creation jobs')).toBeInTheDocument()
         expect(getByText('Cluster install')).toBeInTheDocument()
         expect(getByText('Klusterlet install')).toBeInTheDocument()
         expect(getByText('Post-creation jobs')).toBeInTheDocument()
+        userEvent.click(getByText('View logs'))
+        expect(window.open).toHaveBeenCalledWith('/ansible/url')
     })
     test('renders stacked status', async () => {
         const { getByText } = render(<ProgressTracker isStacked={true} />)

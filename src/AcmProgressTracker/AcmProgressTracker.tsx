@@ -6,6 +6,8 @@ import React, { Fragment } from 'react'
 import { useViewport } from '../AcmCharts/AcmChartGroup'
 import { ClassNameMap } from '@material-ui/styles'
 import { AcmInlineStatus } from '../AcmInlineStatus'
+import { AcmButton } from '../AcmButton'
+import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 
 export type AcmProgressTrackerProps = {
     steps: ProgressTrackerStep[]
@@ -21,6 +23,12 @@ export type ProgressTrackerStep = {
     statusText: string | React.ReactNode
     popover?: PopoverProps
     statusSubtitle?: string
+    link?: ProgressTrackerStepLink
+}
+
+export type ProgressTrackerStepLink = {
+    linkUrl: string
+    linkName: string
 }
 
 enum StatusType {
@@ -71,7 +79,10 @@ const useStyles = makeStyles({
     },
     button: {
         padding: 0,
-        fontSize: 'inherit',
+    },
+    link: {
+        paddingLeft: '25px',
+        fontSize: 'small',
     },
 })
 
@@ -114,6 +125,22 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                                     {step.statusSubtitle}
                                 </Text>
                             </TextContent>
+                            {step.link && (
+                                <AcmButton
+                                    className={classes.button}
+                                    variant="link"
+                                    icon={<ExternalLinkAltIcon size="sm" />}
+                                    iconPosition="right"
+                                    onClick={() => {
+                                        /* istanbul ignore next */
+                                        window.open(step.link?.linkUrl)
+                                    }}
+                                >
+                                    <Text className={classes.link} component="a">
+                                        {step.link.linkName}
+                                    </Text>
+                                </AcmButton>
+                            )}
                         </div>
                         {!isStacked && index < props.steps.length - 1 && divider(classes)}
                     </GalleryItem>

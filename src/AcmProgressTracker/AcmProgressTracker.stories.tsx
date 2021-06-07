@@ -21,19 +21,33 @@ export const ProgressTracker = () => {
         {
             active: false,
             statusType: StatusType.healthy,
-            statusText: 'Pre-creation jobs',
-            statusSubtitle: 'Complete',
+            statusText: 'Prehook',
+            statusSubtitle: 'No jobs selected',
+            link: {
+                linkName: 'Learn more about automation',
+                linkUrl: '',
+            },
         },
         {
             active: true,
             statusType: StatusType.progress,
             statusText: 'Cluster install',
             statusSubtitle: 'Installing',
+            link: {
+                linkName: 'View logs',
+                linkUrl: '',
+            },
         },
         {
             active: false,
             statusType: StatusType.empty,
             statusText: 'Klusterlet install',
+            statusSubtitle: 'Pending',
+        },
+        {
+            active: false,
+            statusType: StatusType.pending,
+            statusText: 'Posthook',
             statusSubtitle: 'Pending',
         },
     ]
