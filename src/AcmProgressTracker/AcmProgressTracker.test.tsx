@@ -22,7 +22,7 @@ describe('AcmProgressTracker', () => {
                 statusSubtitle: 'Complete',
                 link: {
                     linkName: 'View logs',
-                    linkTo: () => {},
+                    linkTo: () => null,
                 },
             },
             {

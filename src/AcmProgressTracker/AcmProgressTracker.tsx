@@ -131,7 +131,10 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                                     variant="link"
                                     icon={<ExternalLinkAltIcon size="sm" />}
                                     iconPosition="right"
-                                    onClick={() => step.link?.linkTo()}
+                                    onClick={() => {
+                                        /* istanbul ignore next */
+                                        step.link?.linkTo()
+                                    }}
                                 >
                                     <Text className={classes.link} component="a">
                                         {step.link.linkName}
