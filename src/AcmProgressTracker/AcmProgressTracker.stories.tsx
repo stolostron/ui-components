@@ -36,6 +36,7 @@ export const ProgressTracker = () => {
             link: {
                 linkName: 'View logs',
                 linkUrl: '',
+                isDisabled: true,
             },
         },
         {
