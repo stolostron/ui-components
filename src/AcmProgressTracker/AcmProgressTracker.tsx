@@ -29,6 +29,7 @@ export type ProgressTrackerStep = {
 export type ProgressTrackerStepLink = {
     linkUrl: string
     linkName: string
+    isDisabled?: boolean
 }
 
 enum StatusType {
@@ -128,6 +129,7 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                                     isSmall
                                     icon={<ExternalLinkAltIcon />}
                                     iconPosition="right"
+                                    isDisabled={step.link.isDisabled}
                                     onClick={() => {
                                         /* istanbul ignore next */
                                         window.open(step.link?.linkUrl)
