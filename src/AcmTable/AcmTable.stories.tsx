@@ -1,7 +1,15 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 /* eslint-disable react/display-name */
-import { ButtonVariant, PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import {
+    ButtonVariant,
+    PageSection,
+    Text,
+    TextContent,
+    TextVariants,
+    ToggleGroup,
+    ToggleGroupItem,
+} from '@patternfly/react-core'
 import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
 import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
@@ -113,30 +121,35 @@ export function TableExpandable(args: Record<string, unknown>) {
                                     cells: [
                                         {
                                             title: (
-                                                <AcmTable<IExampleSubData>
-                                                    plural="stuffs"
-                                                    showToolbar={false}
-                                                    autoHidePagination
-                                                    keyFn={(item: IExampleSubData) => item.suid}
-                                                    columns={[
-                                                        {
-                                                            header: 'First Name',
-                                                            sort: 'firstName',
-                                                            cell: 'firstName',
-                                                        },
-                                                        {
-                                                            header: 'Last Name',
-                                                            sort: 'lastName',
-                                                            cell: 'lastName',
-                                                        },
-                                                        {
-                                                            header: 'Color',
-                                                            cell: 'color',
-                                                        },
-                                                    ]}
-                                                    items={mappedItems}
-                                                    gridBreakPoint={TableGridBreakpoint.none}
-                                                />
+                                                <div style={{ marginTop: '16px', marginBottom: '16px' }}>
+                                                    <TextContent>
+                                                        <Text component={TextVariants.h3}>Favorite Colors</Text>
+                                                    </TextContent>
+                                                    <AcmTable<IExampleSubData>
+                                                        plural="stuffs"
+                                                        showToolbar={false}
+                                                        autoHidePagination
+                                                        keyFn={(item: IExampleSubData) => item.suid}
+                                                        columns={[
+                                                            {
+                                                                header: 'First Name',
+                                                                sort: 'firstName',
+                                                                cell: 'firstName',
+                                                            },
+                                                            {
+                                                                header: 'Last Name',
+                                                                sort: 'lastName',
+                                                                cell: 'lastName',
+                                                            },
+                                                            {
+                                                                header: 'Color',
+                                                                cell: 'color',
+                                                            },
+                                                        ]}
+                                                        items={mappedItems}
+                                                        gridBreakPoint={TableGridBreakpoint.none}
+                                                    />
+                                                </div>
                                             ),
                                         },
                                     ],

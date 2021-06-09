@@ -30,7 +30,7 @@ describe('AcmSelect', () => {
         expect(getByText('Red')).toBeVisible()
         getAllByRole('option')[0].click()
         expect(getByText('Red')).toBeVisible()
-        userEvent.click(getByRole('button', { name: 'Clear all' }))
+        getByRole('button', { name: 'Clear all' }).click()
         expect(queryByTestId('acm-select')).toBeNull()
         expect(queryByText('Red')).toBeNull()
     })

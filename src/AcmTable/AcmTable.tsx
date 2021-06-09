@@ -24,6 +24,7 @@ import {
 } from '@patternfly/react-core'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
+    expandable,
     IAction,
     IActionsResolver,
     IExtraData,
@@ -140,6 +141,10 @@ const useStyles = makeStyles({
     table: {
         '& tbody.pf-m-expanded > tr': {
             borderBottom: 0,
+            '& .pf-c-table__expandable-row-content': {
+                paddingTop: 0,
+                paddingBottom: 0,
+            },
             '&:first-of-type, &:last-of-type': {
                 borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)',
             },
@@ -466,7 +471,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         return grouped.slice(start, start + perPage)
     }, [grouped, page, perPage])
 
-    const rows = useMemo<IRow[]>(() => {
+    const { rows, addedSubRowCount } = useMemo<{ rows: IRow[]; addedSubRowCount: number }>(() => {
         const newRows: IRow[] = []
         const itemToCells = (item: T, key: string) =>
             columns.map((column) => {
@@ -474,7 +479,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     ? get(item as Record<string, unknown>, column.cell)
                     : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
             })
-        let addedSubRows = 0
+        let addedSubRowCount = 0
         paged.forEach((tableItem, i) => {
             const { item, key, group, subItems, subRows } = tableItem
             let isOpen: boolean | undefined = undefined
@@ -510,34 +515,34 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 allSubItems.forEach((item) => {
                     const key = keyFn(item)
                     newRows.push({
-                        parent: i + addedSubRows,
+                        parent: i + addedSubRowCount,
                         props: { key },
                         cells: itemToCells(item, key),
                     })
                 })
-                addedSubRows += allSubItems.length
+                addedSubRowCount += allSubItems.length
             } else if (subRows) {
-                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i + addedSubRows }))
-                addedSubRows += subRows.length
+                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i + addedSubRowCount }))
+                addedSubRowCount += subRows.length
             }
         })
-        return newRows
+        return { rows: newRows, addedSubRowCount }
     }, [selected, paged, columns, expanded, openGroups, keyFn])
 
     const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
-        if (groupFn) {
+        if (groupFn && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
                 const rowKey = rows[rowIndex].props.group.toString()
                 setOpenGroups({ ...openGroups, [rowKey]: isOpen })
             }
-        } else if (addSubRows) {
+        } else if (addSubRows && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
                 const rowKey = rows[rowIndex].props.key.toString()
                 setExpanded({ ...expanded, [rowKey]: isOpen })
             }
         }
         return undefined
-    }, [rows, openGroups, setOpenGroups, expanded, setExpanded, groupFn, addSubRows])
+    }, [rows, addedSubRowCount, openGroups, setOpenGroups, expanded, setExpanded, groupFn, addSubRows])
 
     const updateSearch = useCallback(
         (newSearch: string) => {
@@ -858,6 +863,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                             ...(column.sort ? [sortable] : []),
                                         ],
                                         cellTransforms: column.cellTransforms || [],
+                                        cellFormatters: onCollapse ? [expandable] : [],
                                     }
                                 })}
                                 rows={rows}
