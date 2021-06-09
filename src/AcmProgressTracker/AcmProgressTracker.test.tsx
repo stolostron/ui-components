@@ -29,6 +29,10 @@ describe('AcmProgressTracker', () => {
                 statusType: StatusType.progress,
                 statusText: 'Cluster install',
                 statusSubtitle: 'Installing',
+                link: {
+                    linkName: 'Learn more',
+                    linkCallback: () => window.open('/ansible/url/docs'),
+                },
             },
             {
                 statusType: StatusType.empty,
@@ -62,6 +66,8 @@ describe('AcmProgressTracker', () => {
         expect(getByText('Post-creation jobs')).toBeInTheDocument()
         userEvent.click(getByText('View logs'))
         expect(window.open).toHaveBeenCalledWith('/ansible/url')
+        userEvent.click(getByText('Learn more'))
+        expect(window.open).toHaveBeenCalledWith('/ansible/url/docs')
     })
     test('renders stacked status', async () => {
         const { getByText } = render(<ProgressTracker isStacked={true} />)
