@@ -141,6 +141,10 @@ const useStyles = makeStyles({
     table: {
         '& tbody.pf-m-expanded > tr': {
             borderBottom: 0,
+            '& .pf-c-table__expandable-row-content': {
+                paddingTop: 0,
+                paddingBottom: 0,
+            },
             '&:first-of-type, &:last-of-type': {
                 borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)',
             },
@@ -859,6 +863,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                             ...(column.sort ? [sortable] : []),
                                         ],
                                         cellTransforms: column.cellTransforms || [],
+                                        cellFormatters: onCollapse ? [expandable] : [],
                                     }
                                 })}
                                 rows={rows}
