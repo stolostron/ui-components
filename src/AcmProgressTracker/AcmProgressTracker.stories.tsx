@@ -25,7 +25,7 @@ export const ProgressTracker = () => {
             statusSubtitle: 'No jobs selected',
             link: {
                 linkName: 'Learn more about automation',
-                linkUrl: '',
+                linkCallback: () => window.open(''),
             },
         },
         {

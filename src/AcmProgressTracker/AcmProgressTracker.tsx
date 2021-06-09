@@ -27,9 +27,10 @@ export type ProgressTrackerStep = {
 }
 
 export type ProgressTrackerStepLink = {
-    linkUrl: string
+    linkUrl?: string
     linkName: string
     isDisabled?: boolean
+    linkCallback?: () => void
 }
 
 enum StatusType {
@@ -132,7 +133,9 @@ export function AcmProgressTracker(props: AcmProgressTrackerProps) {
                                     isDisabled={step.link.isDisabled}
                                     onClick={() => {
                                         /* istanbul ignore next */
-                                        window.open(step.link?.linkUrl)
+                                        step.link?.linkUrl && window.open(step.link?.linkUrl)
+                                        /* istanbul ignore next */
+                                        step.link?.linkCallback && step.link?.linkCallback()
                                     }}
                                 >
                                     {step.link.linkName}
