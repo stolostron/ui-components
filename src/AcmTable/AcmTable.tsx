@@ -246,11 +246,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         rowActionResolver,
         tableActions = [],
     } = props
-    const adjustedSortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
-    const sortIndexOffset = adjustedSortIndexOffset + (groupFn || addSubRows ? 1 : 0)
 
     const defaultSort = {
-        index: sortIndexOffset,
+        index: 0,
         direction: SortByDirection.asc,
     }
     const initialSort = props.initialSort || defaultSort
@@ -403,18 +401,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     }, [search, items, tableItems, totalCount, columns, groupFn])
 
-    // Compensate for off-by-one error in sort column when all items are filtered out
-    const adjustedSort =
-        sort && sort.index && sort.direction && filtered.length === 0
-            ? {
-                  index: sort.index - adjustedSortIndexOffset,
-                  direction: sort.direction,
-              }
-            : sort
-
     const sorted = useMemo<ITableItem<T>[]>(() => {
         if (sort && sort.index !== undefined) {
-            const compare = columns[sort.index - sortIndexOffset].sort
+            const compare = columns[sort.index].sort
             const sorted: ITableItem<T>[] = [...filtered]
             /* istanbul ignore else */
             if (compare) {
@@ -544,6 +533,18 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         return undefined
     }, [rows, addedSubRowCount, openGroups, setOpenGroups, expanded, setExpanded, groupFn, addSubRows])
 
+    // Compensate for PF auto-added columns
+    // sort state always contains the data index
+    // adjustedSort and the updateSort callback compensate for header display index used in PF
+    const adjustedSortIndexOffset = (bulkActions && bulkActions.length ? 1 : 0) + (onCollapse ? 1 : 0)
+    const adjustedSort =
+        sort && sort.index !== undefined && sort.index !== null && sort.direction && filtered.length > 0
+            ? {
+                  index: sort.index + adjustedSortIndexOffset,
+                  direction: sort.direction,
+              }
+            : sort
+
     const updateSearch = useCallback(
         (newSearch: string) => {
             setSearch(newSearch)
@@ -567,20 +568,19 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const updateSort = useCallback(
         (newSort: ISortBy) => {
             if (filtered.length === 0) {
-                /* istanbul ignore next */
+                setSort(newSort)
+            } else {
                 setSort({
-                    index: (newSort && newSort.index ? newSort.index : 0) + adjustedSortIndexOffset,
+                    index: (newSort && newSort.index ? newSort.index : 0) - adjustedSortIndexOffset,
                     direction: newSort && newSort.direction,
                 })
-            } else {
-                setSort(newSort)
             }
             if (search) {
                 // sort changed while filtering; forget previous setting
                 setPreFilterSort(undefined)
             }
         },
-        [search, filtered]
+        [search, filtered, adjustedSortIndexOffset]
     )
 
     const updatePerPage = useCallback(
