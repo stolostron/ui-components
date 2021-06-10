@@ -491,7 +491,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     ...groupSummary,
                     isOpen,
                     selected: selected[key] === true,
-                    props: { key, group },
+                    props: { key: group, group },
                 })
             } else {
                 newRows.push({
@@ -685,7 +685,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
                         if (groupFn || addSubRows) {
                             const tableItem =
-                                rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
+                                rowData.props?.key && filtered.find((tableItem) => tableItem.key === rowData.props.key)
                             if (tableItem) {
                                 action.click(tableItem.item)
                             }
@@ -708,7 +708,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         actionResolver = (rowData: IRowData, extraData: IExtraData) => {
             let tableItem
             if (groupFn || addSubRows) {
-                tableItem = rowData.props?.key && paged.find((tableItem) => tableItem.key === rowData.props.key)
+                tableItem = rowData.props?.key && filtered.find((tableItem) => tableItem.key === rowData.props.key)
             } else {
                 tableItem = paged[extraData.rowIndex!]
             }
