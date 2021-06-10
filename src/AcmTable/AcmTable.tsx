@@ -141,6 +141,7 @@ const useStyles = makeStyles({
     table: {
         '& tbody.pf-m-expanded > tr': {
             borderBottom: 0,
+            overflowY: 'visible !important',
             '& .pf-c-table__expandable-row-content': {
                 paddingTop: 0,
                 paddingBottom: 0,
