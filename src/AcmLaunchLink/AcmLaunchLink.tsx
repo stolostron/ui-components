@@ -63,6 +63,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
         } else {
             return (
                 <AcmDropdown
+                    isPlain
                     onSelect={onSelect}
                     text="Launch dashboard"
                     id="addon-launch-links"
