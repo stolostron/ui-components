@@ -17,6 +17,7 @@ import IBMCloudIcon from './IBMCloudIcon'
 import OCPIcon from './OCPIcon'
 import RedHatIcon from './RedHatIcon'
 import VMWareIcon from './VMWareIcon'
+import IBMLogoIcon from './IBMLogoIcon'
 
 export enum AcmIconVariant {
     template = 'template',
@@ -29,6 +30,7 @@ export enum AcmIconVariant {
     azure = 'azure',
     ocp = 'ocp',
     ibm = 'ibm',
+    ibmlogo = 'ibmlogo',
     baremetal = 'baremetal',
     vmware = 'vmware',
     cloud = 'cloud',
@@ -70,6 +72,8 @@ export function AcmIcon(props: { icon: AcmIconVariant } & SVGIconProps) {
             return <OpenNewTabIcon {...props} />
         case AcmIconVariant.ansible:
             return <AnsibleTowerIcon {...props} color="#EE0000" />
+        case AcmIconVariant.ibmlogo:
+            return <IBMLogoIcon {...props} />
         /* istanbul ignore next */
         default:
             return <Fragment />
