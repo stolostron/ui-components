@@ -831,19 +831,17 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     </EmptyState>
                 </PageSection>
             ) : items.length === 0 ? (
-                props.emptyState ? (
-                    <PageSection padding={{ default: 'noPadding' }}>{props.emptyState}</PageSection>
-                ) : (
-                    <PageSection
-                        variant={props.extraToolbarControls ? 'light' : 'default'}
-                        padding={{ default: 'noPadding' }}
-                    >
+                <PageSection
+                    variant={props.extraToolbarControls ? 'light' : 'default'}
+                    padding={{ default: 'noPadding' }}
+                >
+                    {props.emptyState ?? (
                         <AcmEmptyState
                             title={`No ${props.plural} found`}
                             message={`You do not have any ${props.plural} yet.`}
                         />
-                    </PageSection>
-                )
+                    )}
+                </PageSection>
             ) : (
                 <Fragment>
                     <div ref={outerDivRef} className={classes.outerDiv}>
