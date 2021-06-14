@@ -568,6 +568,10 @@ describe('AcmTable', () => {
         const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
         expect(queryByText('Look elsewhere!')).toBeVisible()
     })
+    test('can provide default empty state with extra toolbar controls', () => {
+        const { queryByText } = render(<Table items={[]} useExtraToolbarControls={true} />)
+        expect(queryByText('No addresses found')).toBeVisible()
+    })
     test('can render as a controlled component', () => {
         const setPage = jest.fn()
         const setSearch = jest.fn()
