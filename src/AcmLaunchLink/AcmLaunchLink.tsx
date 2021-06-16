@@ -12,6 +12,13 @@ export type LaunchLink = {
     href?: string
     onClick?: React.MouseEventHandler<HTMLButtonElement>
     label?: boolean
+    noIcon?: boolean
+    icon?: React.ReactNode
+}
+
+function getLinkIcon(link: LaunchLink) {
+    const customizedIcon = link.icon ? link.icon : <ExternalLinkAltIcon />
+    return link.noIcon ? null : customizedIcon
 }
 
 export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
@@ -32,7 +39,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                             target="_blank"
                             rel="noreferrer"
                             id={link.id}
-                            icon={<ExternalLinkAltIcon />}
+                            icon={getLinkIcon(link)}
                             iconPosition="right"
                             style={{
                                 marginLeft: 0,
@@ -54,7 +61,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                     target="_blank"
                     rel="noreferrer"
                     id={link.id}
-                    icon={<ExternalLinkAltIcon />}
+                    icon={getLinkIcon(link)}
                     iconPosition="right"
                 >
                     {link.text}
@@ -74,7 +81,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                         component: 'a',
                         target: '_blank',
                         rel: 'noreferrer',
-                        icon: <ExternalLinkAltIcon />,
+                        icon: getLinkIcon(link),
                     }))}
                 />
             )

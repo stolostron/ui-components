@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { AcmLaunchLink } from './AcmLaunchLink'
 import { Tooltip } from '@patternfly/react-core'
+import RedHatIcon from '../AcmIcons/RedHatIcon'
 
 describe('AcmLaunchLink', () => {
     test('renders a link when only one link is provided', async () => {
@@ -53,6 +54,47 @@ describe('AcmLaunchLink', () => {
                             alert('')
                         },
                         label: true,
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link without icon', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                        label: true,
+                        noIcon: true,
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link with user pass-in icon', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                        label: true,
+                        noIcon: false,
+                        icon: RedHatIcon,
                     },
                 ]}
             />
