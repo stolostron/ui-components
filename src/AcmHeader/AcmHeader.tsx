@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/styles'
 import {
     AboutModal,
     ApplicationLauncher,
+    ApplicationLauncherGroup,
+    ApplicationLauncherSeparator,
     ApplicationLauncherItem,
     Brand,
     Button,
@@ -30,7 +32,7 @@ import {
     TextListItem,
     Title,
 } from '@patternfly/react-core'
-import { CaretDownIcon, CodeIcon, CogsIcon, ExternalLinkAltIcon } from '@patternfly/react-icons'
+import { CaretDownIcon, CodeIcon, CogsIcon } from '@patternfly/react-icons'
 import React, { CSSProperties, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
@@ -482,24 +484,87 @@ export function AcmHeader(props: AcmHeaderProps) {
         }
     }, [isFullWidthPage])
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
-    const [appSwitcherOpen, setAppSwitcherOpen] = useState<boolean>(false)
     const [appSwitcherExists, setAppSwitcherExists] = useState<boolean>(true)
 
     const classes = useStyles()
 
     function OCPButton() {
         return (
-            <ApplicationLauncherItem component="button" onClick={() => launchToOCP('')}>
-                <div style={{ minWidth: 'fit-content' }}>
-                    <span style={{ verticalAlign: '-0.125em' }}>
-                        <AcmIcon icon={AcmIconVariant.ocp} />
-                    </span>
-                    <span style={{ marginRight: '10px' }}>Red Hat Openshift Container Platform</span>
-                    <span style={{ verticalAlign: '-0.125em' }}>
-                        <ExternalLinkAltIcon style={{ width: '1em' }}></ExternalLinkAltIcon>
-                    </span>
-                </div>
+            <ApplicationLauncherItem
+                key="app_launch"
+                isExternal
+                icon={<AcmIcon icon={AcmIconVariant.ocp} />}
+                component="button"
+                onClick={() => launchToOCP('')}
+            >
+                Red Hat Openshift Container Platform
             </ApplicationLauncherItem>
+        )
+    }
+
+    interface AppSwitcherData {
+        name: string
+        url: string
+        icon: string
+    }
+    function AppSwitcherTopBar() {
+        const [extraItems, setExtraItems] = useState<Record<string, [AppSwitcherData]>>({})
+        const [appSwitcherOpen, setAppSwitcherOpen] = useState<boolean>(false)
+
+        useEffect(() => {
+            const dev = process.env.NODE_ENV !== 'production'
+            const serverForTest = dev ? 'https://localhost:3000' : ''
+            api<{ data: Record<string, [AppSwitcherData]> }>(`${serverForTest}/multicloud/common/applinks/`)
+                .then(({ data }) => {
+                    setExtraItems(data)
+                })
+                .catch((error) => {
+                    // eslint-disable-next-line no-console
+                    console.error(error)
+                })
+        }, [])
+
+        const extraMenuItems = []
+        let count = 0
+        for (const section in extraItems) {
+            extraMenuItems.push(
+                <ApplicationLauncherGroup label={section} key={section}>
+                    {extraItems[section].map((sectionItem) => (
+                        <ApplicationLauncherItem
+                            key="app_launch"
+                            isExternal
+                            icon={<img src={sectionItem.icon} />}
+                            component="button"
+                            onClick={() => window.open(sectionItem.url, '_blank')}
+                        >
+                            {sectionItem.name}
+                        </ApplicationLauncherItem>
+                    ))}
+                    {count < Object.keys(extraItems).length - 1 && <ApplicationLauncherSeparator key="separator" />}
+                </ApplicationLauncherGroup>
+            )
+            count = count + 1
+        }
+        return (
+            <ApplicationLauncher
+                hidden={appSwitcherExists}
+                aria-label="app-menu"
+                data-test="app-dropdown"
+                className="co-app-launcher co-app-menu"
+                onSelect={() => setAppSwitcherOpen(false)}
+                onToggle={() => setAppSwitcherOpen(!appSwitcherOpen)}
+                isOpen={appSwitcherOpen}
+                items={[
+                    <ApplicationLauncherGroup label="Red Hat applications" key="ocp-group">
+                        <OCPButton />
+                        {Object.keys(extraItems).length > 0 && <ApplicationLauncherSeparator key="separator" />}
+                    </ApplicationLauncherGroup>,
+                    ...extraMenuItems,
+                ]}
+                data-quickstart-id="qs-masthead-appmenu"
+                position="right"
+                style={{ verticalAlign: '0.125em' }}
+            />
         )
     }
 
@@ -516,19 +581,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                 }}
             >
                 <PageHeaderToolsItem>
-                    <ApplicationLauncher
-                        hidden={appSwitcherExists}
-                        aria-label="app-menu"
-                        data-test="app-dropdown"
-                        className="co-app-launcher co-app-menu"
-                        onSelect={() => setAppSwitcherOpen(false)}
-                        onToggle={() => setAppSwitcherOpen(!appSwitcherOpen)}
-                        isOpen={appSwitcherOpen}
-                        items={[<OCPButton key="app_launch" />]}
-                        data-quickstart-id="qs-masthead-appmenu"
-                        position="right"
-                        style={{ verticalAlign: '0.125em' }}
-                    />
+                    <AppSwitcherTopBar></AppSwitcherTopBar>
                     <Button
                         aria-label="search-button"
                         onClick={() => window.open('/search', '_self')}
