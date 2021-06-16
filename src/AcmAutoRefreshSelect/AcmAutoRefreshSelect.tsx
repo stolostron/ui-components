@@ -95,18 +95,20 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
     const { refetch } = props
 
     useEffect(() => {
+        refetch()
+        setInitialFetchCalled(true)
         document.addEventListener('visibilitychange', onVisibilityChange)
         return () => document.removeEventListener('visibilitychange', onVisibilityChange)
     }, [])
 
     useEffect(() => {
-        if (!initialFetchCalled || (!docHidden && selected !== 0)) {
-            refetch()
-            setInitialFetchCalled(true)
-            if (!docHidden && selected !== 0) {
-                const interval = setInterval(() => refetch(), selected)
-                return () => clearInterval(interval)
+        if (!docHidden && selected !== 0) {
+            if (initialFetchCalled) {
+                // avoid double fetch on the first render
+                refetch()
             }
+            const interval = setInterval(() => refetch(), selected)
+            return () => clearInterval(interval)
         }
         return
     }, [selected, docHidden])
