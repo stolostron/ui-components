@@ -32,7 +32,7 @@ import {
     TextListItem,
     Title,
 } from '@patternfly/react-core'
-import { CaretDownIcon, CodeIcon, CogsIcon, ExternalLinkAltIcon } from '@patternfly/react-icons'
+import { CaretDownIcon, CodeIcon, CogsIcon } from '@patternfly/react-icons'
 import React, { CSSProperties, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
@@ -490,7 +490,8 @@ export function AcmHeader(props: AcmHeaderProps) {
 
     function OCPButton() {
         return (
-            <ApplicationLauncherItem key="app_launch"
+            <ApplicationLauncherItem
+                key="app_launch"
                 isExternal
                 icon={<AcmIcon icon={AcmIconVariant.ocp} />}
                 component="button"
@@ -502,8 +503,8 @@ export function AcmHeader(props: AcmHeaderProps) {
     }
 
     interface AppSwitcherData {
-        name: string,
-        url: string,
+        name: string
+        url: string
         icon: string
     }
     function AppSwitcherTopBar() {
@@ -525,11 +526,12 @@ export function AcmHeader(props: AcmHeaderProps) {
 
         const extraMenuItems = []
         let count = 0
-        for (var section in extraItems) {
+        for (const section in extraItems) {
             extraMenuItems.push(
                 <ApplicationLauncherGroup label={section} key={section}>
                     {extraItems[section].map((sectionItem) => (
-                        <ApplicationLauncherItem key="app_launch"
+                        <ApplicationLauncherItem
+                            key="app_launch"
                             isExternal
                             icon={<img src={sectionItem.icon} />}
                             component="button"
@@ -538,8 +540,8 @@ export function AcmHeader(props: AcmHeaderProps) {
                             {sectionItem.name}
                         </ApplicationLauncherItem>
                     ))}
-                    {(count < Object.keys(extraItems).length - 1) && <ApplicationLauncherSeparator key="separator" />}
-                </ApplicationLauncherGroup>,
+                    {count < Object.keys(extraItems).length - 1 && <ApplicationLauncherSeparator key="separator" />}
+                </ApplicationLauncherGroup>
             )
             count = count + 1
         }
@@ -555,9 +557,9 @@ export function AcmHeader(props: AcmHeaderProps) {
                 items={[
                     <ApplicationLauncherGroup label="Red Hat applications" key="ocp-group">
                         <OCPButton />
-                        {(Object.keys(extraItems).length > 0) && <ApplicationLauncherSeparator key="separator" />}
+                        {Object.keys(extraItems).length > 0 && <ApplicationLauncherSeparator key="separator" />}
                     </ApplicationLauncherGroup>,
-                    ...extraMenuItems
+                    ...extraMenuItems,
                 ]}
                 data-quickstart-id="qs-masthead-appmenu"
                 position="right"
