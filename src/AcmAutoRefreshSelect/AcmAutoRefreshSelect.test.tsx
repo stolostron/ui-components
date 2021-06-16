@@ -42,7 +42,7 @@ describe('AcmAutoRefreshSelect ', () => {
         render(<AcmAutoRefreshSelect refetch={refetch} />)
 
         expect(window.localStorage.getItem).toHaveBeenCalledTimes(1)
-        expect(window.localStorage.setItem).toHaveBeenCalledTimes(2)
+        expect(window.localStorage.setItem).toHaveBeenCalledTimes(1)
         expect(window.localStorage.setItem).toHaveBeenCalledWith('acm-page-refresh-interval', '60000')
     })
 
@@ -116,30 +116,80 @@ describe('AcmAutoRefreshSelect ', () => {
     })
 
     test('refetch is not fired when the browser is hidden', async () => {
-        const refetchFn = jest.fn()
-        let hidden = false
+        let eventCallback: unknown = null
 
-        Object.defineProperty(document, 'hidden', {
-            get: () => hidden,
-        })
-        Object.defineProperty(document, 'addEventListener', {
-            value: (eventName: string, eventCallback: () => void) => {
+        jest.spyOn(document, 'hidden', 'get').mockReturnValue(false)
+        jest.spyOn(document, 'addEventListener').mockImplementation(
+            (eventName: string, callback: EventListenerOrEventListenerObject) => {
                 if (eventName == 'visibilitychange') {
-                    act(() => {
-                        setTimeout(() => {
-                            hidden = true
-                            eventCallback()
-                        }, 10)
-                    })
+                    eventCallback = callback
                 }
-            },
-        })
+            }
+        )
 
+        render(<AcmAutoRefreshSelect refetch={refetch} refreshIntervals={[1, 30, 60]} pollInterval={100} />)
+        expect(refetch).toHaveBeenCalledTimes(1) // initial fetch only
+        jest.spyOn(document, 'hidden', 'get').mockReturnValue(true)
         await act(async () => {
-            render(<AcmAutoRefreshSelect refetch={refetch} refreshIntervals={[1, 30, 60]} pollInterval={100} />)
-            await new Promise((resolve) => setTimeout(resolve, 200))
+            expect(eventCallback).not.toBeNull()
+            if (typeof eventCallback === 'function') {
+                eventCallback()
+            }
         })
-        expect(refetchFn).toHaveBeenCalledTimes(0)
+        await new Promise((resolve) => setTimeout(resolve, 200))
+        expect(refetch).toHaveBeenCalledTimes(1) // still initial fetch only
+    })
+
+    test('refetch is fired when the browser is unhidden', async () => {
+        let eventCallback: unknown = null
+
+        jest.spyOn(document, 'hidden', 'get').mockReturnValue(true)
+        jest.spyOn(document, 'addEventListener').mockImplementation(
+            (eventName: string, callback: EventListenerOrEventListenerObject) => {
+                if (eventName == 'visibilitychange') {
+                    eventCallback = callback
+                }
+            }
+        )
+
+        render(<AcmAutoRefreshSelect refetch={refetch} refreshIntervals={[1, 30, 60]} pollInterval={100} />)
+        expect(refetch).toHaveBeenCalledTimes(1) // initial fetch only
+        await new Promise((resolve) => setTimeout(resolve, 200))
+        expect(refetch).toHaveBeenCalledTimes(1) // still initial fetch only
+        jest.spyOn(document, 'hidden', 'get').mockReturnValue(false)
+        await act(async () => {
+            expect(eventCallback).not.toBeNull()
+            if (typeof eventCallback === 'function') {
+                eventCallback()
+            }
+        })
+        await new Promise((resolve) => setTimeout(resolve, 100))
+        expect(refetch).toHaveBeenCalledTimes(3) // unhide + interval refetch
+    })
+
+    test('refetch is not fired when disabled and the browser is unhidden', async () => {
+        let eventCallback: unknown = null
+
+        jest.spyOn(document, 'hidden', 'get').mockReturnValue(true)
+        jest.spyOn(document, 'addEventListener').mockImplementation(
+            (eventName: string, callback: EventListenerOrEventListenerObject) => {
+                if (eventName == 'visibilitychange') {
+                    eventCallback = callback
+                }
+            }
+        )
+
+        render(<AcmAutoRefreshSelect refetch={refetch} refreshIntervals={[1, 30, 60]} pollInterval={0} />)
+        expect(refetch).toHaveBeenCalledTimes(1) // initial fetch only
+        jest.spyOn(document, 'hidden', 'get').mockReturnValue(false)
+        await act(async () => {
+            expect(eventCallback).not.toBeNull()
+            if (typeof eventCallback === 'function') {
+                eventCallback()
+            }
+        })
+        await new Promise((resolve) => setTimeout(resolve, 200))
+        expect(refetch).toHaveBeenCalledTimes(1) // still initial fetch only
     })
 
     test('refresh button fires refetch', () => {
