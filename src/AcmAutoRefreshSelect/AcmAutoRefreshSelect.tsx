@@ -101,17 +101,20 @@ export function AcmAutoRefreshSelect(props: AcmAutoRefreshSelectProps) {
         return () => document.removeEventListener('visibilitychange', onVisibilityChange)
     }, [])
 
-    useEffect(() => {
-        if (!docHidden && selected !== 0) {
-            if (initialFetchCalled) {
-                // avoid double fetch on the first render
-                refetch()
+    useEffect(
+        () => {
+            if (!docHidden && selected !== 0) {
+                if (initialFetchCalled) {
+                    // avoid double fetch on the first render
+                    refetch()
+                }
+                const interval = setInterval(() => refetch(), selected)
+                return () => clearInterval(interval)
             }
-            const interval = setInterval(() => refetch(), selected)
-            return () => clearInterval(interval)
-        }
-        return
-    }, [selected, docHidden])
+            return
+        },
+        [selected, docHidden] // intentionally exclude initialFetchCalled to avoid double refetch
+    )
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
         /* istanbul ignore else */
