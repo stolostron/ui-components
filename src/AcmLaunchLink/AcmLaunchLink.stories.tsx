@@ -25,8 +25,8 @@ export const DynamicLaunchLink = (args) => {
         { id: 'grafana', text: 'Grafana', href: '/grafana' },
         { id: 'logs', text: 'Kibana', href: '/kibana' },
         { id: 'cloud-pak', text: 'IBM CP4MCM', href: 'https://www.ibm.com' },
-        { id: 'cloud-pak', text: 'IBM CP4MCM no icon', href: 'https://www.ibm.com', noIcon: true },
-        { id: 'cloud-pak', text: 'RedHat icon', href: 'https://www.redhat.com/', noIcon: false, icon: RedHatIcon },
+        { id: 'cloud-pak-no-icon', text: 'IBM CP4MCM no icon', href: 'https://www.ibm.com', noIcon: true },
+        { id: 'redhat', text: 'RedHat icon', href: 'https://www.redhat.com/', noIcon: false, icon: RedHatIcon },
     ]
 
     const displayLinks = links.slice(0, args.count)
