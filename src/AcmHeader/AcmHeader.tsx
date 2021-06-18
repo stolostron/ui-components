@@ -357,7 +357,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
     const acmIconStyle: CSSProperties = {
         height: '14px',
         fill: 'currentColor',
-        paddingRight: '7px'
+        paddingRight: '7px',
     }
     const textStyles: CSSProperties = { fontSize: '14px' }
 
