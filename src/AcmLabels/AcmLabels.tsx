@@ -1,17 +1,8 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { makeStyles } from '@material-ui/core'
 import { CSSProperties } from '@material-ui/styles'
 import { Label, LabelGroup } from '@patternfly/react-core'
 import React, { Fragment, useMemo } from 'react'
-
-const useStyles = makeStyles({
-    label: {
-        margin: 1,
-        overflow: 'hidden',
-    },
-})
 
 export function AcmLabels(props: {
     labels?: string[] | Record<string, string>
@@ -19,9 +10,9 @@ export function AcmLabels(props: {
     style?: CSSProperties
     collapsedText?: string
     expandedText?: string
+    color?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
+    variant?: 'outline' | 'filled'
 }) {
-    const classes = useStyles()
-
     const labelsRecord: Record<string, string> = useMemo(() => {
         if (props.labels === undefined) return {}
         else if (Array.isArray(props.labels))
@@ -61,12 +52,12 @@ export function AcmLabels(props: {
             expandedText={props.expandedText}
         >
             {labels.map((label) => (
-                <Label key={label} className={classes.label} title={label}>
+                <Label key={label} title={label} variant={props.variant} color={props.color}>
                     {label}
                 </Label>
             ))}
             {hidden.map((label) => (
-                <Label key={label} className={classes.label} title={label}>
+                <Label key={label} title={label} variant={props.variant} color={props.color}>
                     {label}
                 </Label>
             ))}

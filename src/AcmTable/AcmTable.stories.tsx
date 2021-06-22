@@ -1,7 +1,15 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 /* eslint-disable react/display-name */
-import { PageSection, ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import {
+    ButtonVariant,
+    PageSection,
+    Text,
+    TextContent,
+    TextVariants,
+    ToggleGroup,
+    ToggleGroupItem,
+} from '@patternfly/react-core'
 import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
 import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
@@ -18,6 +26,13 @@ export interface IExampleData {
     gender: string
     ip_address: string
 }
+
+const hidden = { table: { disable: true } }
+const gridBreakPointLabels: { [key: string]: unknown } = { dynamic: 'dynamic' }
+Object.entries(TableGridBreakpoint).forEach(([key, value]) => {
+    gridBreakPointLabels[value] = key
+})
+
 export default {
     title: 'Table',
     component: AcmTable,
@@ -25,22 +40,49 @@ export default {
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
+        'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: false },
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
-        'Remove borders': { control: { type: 'boolean' }, defaultValue: false },
-        'Pagination at bottom': { control: { type: 'boolean' }, defaultValue: false },
+        gridBreakPoint: {
+            options: ['dynamic', ...Object.values(TableGridBreakpoint)],
+            control: {
+                type: 'inline-radio',
+                labels: gridBreakPointLabels,
+            },
+            defaultValue: 'dynamic',
+        },
+        plural: { defaultValue: 'addresses' },
+        items: hidden,
+        addSubRows: hidden,
+        initialSelectedItems: hidden,
+        columns: hidden,
+        keyFn: hidden,
+        groupFn: hidden,
+        groupSummaryFn: hidden,
+        tableActions: hidden,
+        rowActions: hidden,
+        rowActionResolver: hidden,
+        bulkActions: hidden,
+        extraToolbarControls: hidden,
+        emptyState: hidden,
+        onSelect: hidden,
+        page: hidden,
+        setPage: hidden,
+        search: hidden,
+        setSearch: hidden,
+        sort: hidden,
+        setSort: hidden,
+        perPageOptions: hidden,
     },
 }
 
 export function Table(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable" />}>
-            <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
-                    <TableStory {...args} />
-                </PageSection>
-            </AcmPageContent>
+            <PageSection>
+                <TableStory {...args} />
+            </PageSection>
         </AcmPage>
     )
 }
@@ -49,12 +91,10 @@ export function TableStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
         <AcmTable<IExampleData>
-            plural="addresses"
             items={items}
             columns={columns}
             keyFn={(item: IExampleData) => item.uid.toString()}
             {...commonProperties(args, (items) => setItems(items), items)}
-            gridBreakPoint={TableGridBreakpoint.none}
         />
     )
 }
@@ -64,9 +104,8 @@ export function TableExpandable(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <AcmTable<IExampleData>
-                        plural="addresses"
                         items={items}
                         columns={columns}
                         keyFn={(item: IExampleData) => item.uid?.toString()}
@@ -82,30 +121,35 @@ export function TableExpandable(args: Record<string, unknown>) {
                                     cells: [
                                         {
                                             title: (
-                                                <AcmTable<IExampleSubData>
-                                                    plural="stuffs"
-                                                    showToolbar={false}
-                                                    autoHidePagination
-                                                    keyFn={(item: IExampleSubData) => item.suid}
-                                                    columns={[
-                                                        {
-                                                            header: 'First Name',
-                                                            sort: 'firstName',
-                                                            cell: 'firstName',
-                                                        },
-                                                        {
-                                                            header: 'Last Name',
-                                                            sort: 'lastName',
-                                                            cell: 'lastName',
-                                                        },
-                                                        {
-                                                            header: 'Color',
-                                                            cell: 'color',
-                                                        },
-                                                    ]}
-                                                    items={mappedItems}
-                                                    gridBreakPoint={TableGridBreakpoint.none}
-                                                />
+                                                <div style={{ marginTop: '16px', marginBottom: '16px' }}>
+                                                    <TextContent>
+                                                        <Text component={TextVariants.h3}>Favorite Colors</Text>
+                                                    </TextContent>
+                                                    <AcmTable<IExampleSubData>
+                                                        plural="stuffs"
+                                                        showToolbar={false}
+                                                        autoHidePagination
+                                                        keyFn={(item: IExampleSubData) => item.suid}
+                                                        columns={[
+                                                            {
+                                                                header: 'First Name',
+                                                                sort: 'firstName',
+                                                                cell: 'firstName',
+                                                            },
+                                                            {
+                                                                header: 'Last Name',
+                                                                sort: 'lastName',
+                                                                cell: 'lastName',
+                                                            },
+                                                            {
+                                                                header: 'Color',
+                                                                cell: 'color',
+                                                            },
+                                                        ]}
+                                                        items={mappedItems}
+                                                        gridBreakPoint={TableGridBreakpoint.none}
+                                                    />
+                                                </div>
                                             ),
                                         },
                                     ],
@@ -113,7 +157,6 @@ export function TableExpandable(args: Record<string, unknown>) {
                             ]
                         }}
                         {...commonProperties(args, (items) => setItems(items), items)}
-                        gridBreakPoint={TableGridBreakpoint.none}
                     />
                 </PageSection>
             </AcmPageContent>
@@ -123,9 +166,8 @@ export function TableExpandable(args: Record<string, unknown>) {
 export function TableGrouped(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-            <AcmPageHeader title="AcmTable" />
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <TableGroupedStory {...args} />
                 </PageSection>
             </AcmPageContent>
@@ -137,7 +179,6 @@ function TableGroupedStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
     return (
         <AcmTable<IExampleData>
-            plural="addresses"
             items={items}
             columns={columns}
             keyFn={(item: IExampleData) => item.uid.toString()}
@@ -180,17 +221,15 @@ function TableGroupedStory(args: Record<string, unknown>) {
                     : undefined
             }
             {...commonProperties(args, (items) => setItems(items), items)}
-            gridBreakPoint={TableGridBreakpoint.none}
         />
     )
 }
 
 export function TableEmpty(args: Record<string, unknown>) {
     return (
-        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-            <AcmPageHeader title="AcmTable Empty" />
+        <AcmPage header={<AcmPageHeader title="AcmTable Empty" />}>
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <TableEmptyStory {...args} />
                 </PageSection>
             </AcmPageContent>
@@ -202,7 +241,6 @@ function TableEmptyStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>()
     return (
         <AcmTable<IExampleData>
-            plural="addresses"
             items={[]}
             columns={columns}
             keyFn={(item: IExampleData) => item.uid.toString()}
@@ -213,10 +251,9 @@ function TableEmptyStory(args: Record<string, unknown>) {
 
 export function TableLoading(args: Record<string, unknown>) {
     return (
-        <AcmPage header={<AcmPageHeader title="AcmTable with expandable row" />}>
-            <AcmPageHeader title="AcmTable Loading" />
+        <AcmPage header={<AcmPageHeader title="AcmTable Loading" />}>
             <AcmPageContent id="table">
-                <PageSection variant="light" isFilled>
+                <PageSection>
                     <TableLoadingStory {...args} />
                 </PageSection>
             </AcmPageContent>
@@ -228,7 +265,6 @@ function TableLoadingStory(args: Record<string, unknown>) {
     const [items, setItems] = useState<IExampleData[]>()
     return (
         <AcmTable<IExampleData>
-            plural="addresses"
             items={undefined}
             columns={columns}
             keyFn={(item: IExampleData) => item.uid.toString()}
@@ -243,8 +279,10 @@ function commonProperties(
     items: IExampleData[] | undefined
 ) {
     return {
-        paginationAtBottom: !!args['Pagination at bottom'],
-        noBorders: !!args['Remove borders'],
+        plural: args.plural as string,
+        searchPlaceholder: args.searchPlaceholder as string,
+        noBorders: args.noBorders as boolean,
+        gridBreakPoint: args.gridBreakPoint === 'dynamic' ? undefined : (args.gridBreakPoint as TableGridBreakpoint),
         tableActions: args['Include tableActions']
             ? [
                   {
@@ -260,6 +298,7 @@ function commonProperties(
                       click: () => {
                           alert('Not implemented')
                       },
+                      variant: ButtonVariant.secondary,
                   },
               ]
             : undefined,
@@ -273,6 +312,31 @@ function commonProperties(
                       },
                   },
               ]
+            : undefined,
+        rowActionResolver: args['Include rowActionResolver']
+            ? (item: IExampleData) => {
+                  if (item.last_name.indexOf('a') > -1) {
+                      return [
+                          {
+                              id: 'topAction',
+                              title: 'Top action!',
+                              click: () => {
+                                  alert('Not implemented')
+                              },
+                          },
+                          {
+                              id: 'testAction',
+                              title: `${item.firstName} ${item.last_name} is the coolest!`,
+                              addSeparator: true,
+                              click: () => {
+                                  alert('Not implemented')
+                              },
+                          },
+                      ]
+                  } else {
+                      return []
+                  }
+              }
             : undefined,
         bulkActions: args['Include bulkActions']
             ? [

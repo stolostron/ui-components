@@ -19,7 +19,8 @@ git checkout main
 rm -rf node_modules
 rm -f package-lock.json
 
-npx npm-check-updates --doctor --upgrade --target minor
+npx npm-check-updates --doctor --upgrade --filter ts-loader --target minor
+npx npm-check-updates --doctor --upgrade --reject ts-loader,typescript
 npm dedup
 npm audit fix
 

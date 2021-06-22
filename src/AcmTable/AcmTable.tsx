@@ -3,11 +3,13 @@
 
 import { makeStyles } from '@material-ui/styles'
 import {
+    ButtonVariant,
     Dropdown,
     DropdownItem,
     DropdownToggle,
     EmptyState,
     EmptyStateIcon,
+    PageSection,
     Pagination,
     PaginationVariant,
     PerPageOptions,
@@ -18,9 +20,14 @@ import {
     ToolbarContent,
     ToolbarGroup,
     ToolbarItem,
+    Tooltip,
 } from '@patternfly/react-core'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
+    expandable,
+    IAction,
+    IActionsResolver,
+    IExtraData,
     IRow,
     IRowData,
     ISortBy,
@@ -86,12 +93,22 @@ export interface IAcmTableAction {
     click: () => void
     isDisabled?: boolean | undefined
     tooltip?: string | React.ReactNode
+    variant?: ButtonVariant
 }
 
 /* istanbul ignore next */
 export interface IAcmRowAction<T> {
+    /** Action identifier */
     id: string
+    /** Display a tooltip for this action */
+    tooltip?: string
+    /** Inject a separator horizontal rule immediately before an action */
+    addSeparator?: boolean
+    /** Display an action as being disabled */
+    isDisabled?: boolean
+    /** Visible text for action */
     title: string | React.ReactNode
+    /** Function for onClick() action */
     click: (item: T) => void
 }
 
@@ -124,6 +141,11 @@ const useStyles = makeStyles({
     table: {
         '& tbody.pf-m-expanded > tr': {
             borderBottom: 0,
+            overflowY: 'visible !important',
+            '& .pf-c-table__expandable-row-content': {
+                paddingTop: 0,
+                paddingBottom: 0,
+            },
             '&:first-of-type, &:last-of-type': {
                 borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)',
             },
@@ -192,16 +214,17 @@ export interface AcmTableProps<T> {
     groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
     rowActions?: IAcmRowAction<T>[]
+    rowActionResolver?: (item: T) => IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
     page?: number
-    paginationAtBottom?: boolean
     setPage?: (page: number) => void
     search?: string
     setSearch?: (search: string) => void
     searchPlaceholder?: string
+    initialSort?: ISortBy | undefined
     sort?: ISortBy | undefined
     setSort?: (sort: ISortBy | undefined) => void
     showToolbar?: boolean
@@ -209,6 +232,7 @@ export interface AcmTableProps<T> {
     perPageOptions?: PerPageOptions[]
     autoHidePagination?: boolean
     noBorders?: boolean
+    fuseThreshold?: number
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const {
@@ -220,20 +244,20 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         groupSummaryFn,
         bulkActions = [],
         rowActions = [],
+        rowActionResolver,
         tableActions = [],
     } = props
-    const adjustedSortIndexOffset = bulkActions && bulkActions.length ? 1 : 0
-    const sortIndexOffset = adjustedSortIndexOffset + (groupFn || addSubRows ? 1 : 0)
 
     const defaultSort = {
-        index: sortIndexOffset,
+        index: 0,
         direction: SortByDirection.asc,
     }
+    const initialSort = props.initialSort || defaultSort
 
     // State that is only stored in the component state
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [actionsOpen, setActionsOpen] = useState(false)
-    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(defaultSort)
+    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
 
@@ -251,7 +275,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const search = props.search || stateSearch
     const setSearch = props.setSearch || stateSetSearch
     const searchPlaceholder = props.searchPlaceholder || 'Search'
-    const [stateSort, stateSetSort] = useState<ISortBy | undefined>(defaultSort)
+    const [stateSort, stateSetSort] = useState<ISortBy | undefined>(initialSort)
     const sort = props.sort || stateSort
     const setSort = props.setSort || stateSetSort
 
@@ -267,14 +291,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const updateBreakpoint = (width: number, tableWidth: number) => {
         const viewportWidth = window.innerWidth
         if (tableWidth > width) {
-            // table needs to switch to grid; make the change and record viewport size when this happened
+            // table needs to switch to cards; make the change and record viewport size when this happened
             const newBreakpoint =
                 BREAKPOINT_SIZES.find((b) => viewportWidth <= b.size)?.name || TableGridBreakpoint.none
             setBreakpoint(newBreakpoint)
-            setExactBreakpoint(viewportWidth)
-        } else if (exactBreakpoint && viewportWidth > exactBreakpoint) {
-            // viewport is now bigger than when we last switched to grid; try bigger breakpoint, which will
-            // be reverted in the layout effect if the table is still too wide
+            setExactBreakpoint(width)
+        } else if (exactBreakpoint && width > exactBreakpoint) {
+            // outerDiv is now bigger than when we last switched to cards; try bigger breakpoint, which will
+            // be reverted in the layout effect if the table view is still too wide
             const newBreakpoint =
                 [...BREAKPOINT_SIZES].reverse().find((b) => viewportWidth > b.size)?.name || TableGridBreakpoint.grid
             setBreakpoint(newBreakpoint)
@@ -288,15 +312,15 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
         },
         // Check breakpoints as soon as ref callbacks are set, in case initial viewport is too small for table
-        // Need to check on every update to breakpoint as well for the same case, to that display
-        // doesn't thrash between table/grid on intial expansion of viewport
+        // Need to check on every update to breakpoint as well for the same case, so that display
+        // doesn't thrash between table/cards on initial expansion of viewport
         [breakpoint, outerDiv, tableDiv]
     )
 
     /* istanbul ignore next */
-    useResizeObserver(outerDiv, (entry) => {
-        if (!props.gridBreakPoint && entry.contentRect && tableDiv) {
-            const width = Math.floor(entry.contentRect.width)
+    useResizeObserver(outerDiv, () => {
+        if (!props.gridBreakPoint && outerDiv && tableDiv) {
+            const width = outerDiv.clientWidth
             const tableWidth = tableDiv.clientWidth
             updateBreakpoint(width, tableWidth)
         }
@@ -343,7 +367,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 const column = columns[i]
                 if (column.search) {
                     if (typeof column.search === 'string') {
-                        tableItem[`column-${i}`] = get((item as unknown) as Record<string, unknown>, column.search)
+                        tableItem[`column-${i}`] = get(item as unknown as Record<string, unknown>, column.search)
                     } else {
                         tableItem[`column-${i}`] = column.search(item)
                     }
@@ -358,10 +382,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         filtered: ITableItem<T>[]
         filteredCount: number
     }>(() => {
+        let threshold = 0.3
+        if (props.fuseThreshold != undefined) {
+            threshold = props.fuseThreshold
+        }
         if (search && search !== '') {
             const fuse = new Fuse(tableItems, {
                 ignoreLocation: true,
-                threshold: 0.3,
+                threshold: threshold,
                 keys: columns
                     .map((column, i) => (column.search ? `column-${i}` : undefined))
                     .filter((value) => value !== undefined) as string[],
@@ -374,18 +402,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     }, [search, items, tableItems, totalCount, columns, groupFn])
 
-    // Compensate for off-by-one error in sort column when all items are filtered out
-    const adjustedSort =
-        sort && sort.index && sort.direction && filtered.length === 0
-            ? {
-                  index: sort.index - adjustedSortIndexOffset,
-                  direction: sort.direction,
-              }
-            : sort
-
     const sorted = useMemo<ITableItem<T>[]>(() => {
         if (sort && sort.index !== undefined) {
-            const compare = columns[sort.index - sortIndexOffset].sort
+            const compare = columns[sort.index].sort
             const sorted: ITableItem<T>[] = [...filtered]
             /* istanbul ignore else */
             if (compare) {
@@ -442,7 +461,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         return grouped.slice(start, start + perPage)
     }, [grouped, page, perPage])
 
-    const rows = useMemo<IRow[]>(() => {
+    const { rows, addedSubRowCount } = useMemo<{ rows: IRow[]; addedSubRowCount: number }>(() => {
         const newRows: IRow[] = []
         const itemToCells = (item: T, key: string) =>
             columns.map((column) => {
@@ -450,7 +469,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     ? get(item as Record<string, unknown>, column.cell)
                     : { title: <Fragment key={key}>{column.cell(item)}</Fragment> }
             })
-        let addedSubRows = 0
+        let addedSubRowCount = 0
         paged.forEach((tableItem, i) => {
             const { item, key, group, subItems, subRows } = tableItem
             let isOpen: boolean | undefined = undefined
@@ -472,7 +491,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     ...groupSummary,
                     isOpen,
                     selected: selected[key] === true,
-                    props: { key, group },
+                    props: { key: group, group },
                 })
             } else {
                 newRows.push({
@@ -486,34 +505,46 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 allSubItems.forEach((item) => {
                     const key = keyFn(item)
                     newRows.push({
-                        parent: i + addedSubRows,
+                        parent: i + addedSubRowCount,
                         props: { key },
                         cells: itemToCells(item, key),
                     })
                 })
-                addedSubRows += allSubItems.length
+                addedSubRowCount += allSubItems.length
             } else if (subRows) {
-                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i + addedSubRows }))
-                addedSubRows += subRows.length
+                subRows.forEach((subRow) => newRows.push({ ...subRow, parent: i + addedSubRowCount }))
+                addedSubRowCount += subRows.length
             }
         })
-        return newRows
+        return { rows: newRows, addedSubRowCount }
     }, [selected, paged, columns, expanded, openGroups, keyFn])
 
     const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
-        if (groupFn) {
+        if (groupFn && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
                 const rowKey = rows[rowIndex].props.group.toString()
                 setOpenGroups({ ...openGroups, [rowKey]: isOpen })
             }
-        } else if (addSubRows) {
+        } else if (addSubRows && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
                 const rowKey = rows[rowIndex].props.key.toString()
                 setExpanded({ ...expanded, [rowKey]: isOpen })
             }
         }
         return undefined
-    }, [rows, openGroups, setOpenGroups, expanded, setExpanded, groupFn, addSubRows])
+    }, [rows, addedSubRowCount, openGroups, setOpenGroups, expanded, setExpanded, groupFn, addSubRows])
+
+    // Compensate for PF auto-added columns
+    // sort state always contains the data index
+    // adjustedSort and the updateSort callback compensate for header display index used in PF
+    const adjustedSortIndexOffset = (bulkActions && bulkActions.length ? 1 : 0) + (onCollapse ? 1 : 0)
+    const adjustedSort =
+        sort && sort.index !== undefined && sort.index !== null && sort.direction && filtered.length > 0
+            ? {
+                  index: sort.index + adjustedSortIndexOffset,
+                  direction: sort.direction,
+              }
+            : sort
 
     const updateSearch = useCallback(
         (newSearch: string) => {
@@ -538,20 +569,19 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const updateSort = useCallback(
         (newSort: ISortBy) => {
             if (filtered.length === 0) {
-                /* istanbul ignore next */
+                setSort(newSort)
+            } else {
                 setSort({
-                    index: (newSort && newSort.index ? newSort.index : 0) + adjustedSortIndexOffset,
+                    index: (newSort && newSort.index ? newSort.index : 0) - adjustedSortIndexOffset,
                     direction: newSort && newSort.direction,
                 })
-            } else {
-                setSort(newSort)
             }
             if (search) {
                 // sort changed while filtering; forget previous setting
                 setPreFilterSort(undefined)
             }
         },
-        [search, filtered]
+        [search, filtered, adjustedSortIndexOffset]
     )
 
     const updatePerPage = useCallback(
@@ -562,21 +592,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             setPerPage(newPerPage)
         },
         [page, perPage, setPage, setPerPage]
-    )
-
-    const pagination = (
-        <ToolbarItem alignment={{ default: 'alignRight' }}>
-            <Pagination
-                itemCount={itemCount}
-                perPage={perPage}
-                page={page}
-                variant={PaginationVariant.top}
-                onSetPage={(_event, page) => setPage(page)}
-                onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
-                style={{ paddingRight: 0 }}
-                aria-label="Pagination top"
-            />
-        </ToolbarItem>
     )
 
     const onSelect = useCallback(
@@ -618,31 +633,101 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [filtered, rows, keyFn]
     )
 
-    const actions = rowActions.map((rowAction) => {
-        return {
-            title: rowAction.title,
-            onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
-                if (groupFn || addSubRows) {
-                    const tableItem =
-                        rowData.props?.key && sorted.find((tableItem) => tableItem.key === rowData.props.key)
-                    if (tableItem) {
-                        rowAction.click(tableItem.item)
-                    }
-                } else {
-                    rowAction.click(paged[rowId].item)
-                }
-            },
+    // Function to parse provided actions from AcmTable IAcmRowAction --> Patternfly Table IAction
+    const parseRowAction = (rowActions: IAcmRowAction<T>[]) => {
+        const actions: IAction[] = []
+        rowActions.forEach((action) => {
+            // Add separator if specified
+            if (action.addSeparator) {
+                actions.push({
+                    isSeparator: true,
+                })
+            }
+            // Add row action with tooltip
+            if (action.tooltip) {
+                actions.push({
+                    title: (
+                        <Tooltip content={action.tooltip} zIndex={10001} position={'left'}>
+                            <AcmButton
+                                isDisabled={action.isDisabled}
+                                variant={ButtonVariant.plain}
+                                isInline={true}
+                                className={'tooltiped-action-wrapper'}
+                                style={{
+                                    padding: 0,
+                                    cursor: action.isDisabled ? 'not-allowed' : 'pointer',
+                                }}
+                            >
+                                {action.title}
+                            </AcmButton>
+                        </Tooltip>
+                    ),
+                    onClick: action.isDisabled
+                        ? undefined
+                        : (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                              if (groupFn || addSubRows) {
+                                  const tableItem =
+                                      rowData.props?.key &&
+                                      paged.find((tableItem) => tableItem.key === rowData.props.key)
+                                  if (tableItem) {
+                                      action.click(tableItem.item)
+                                  }
+                              } else {
+                                  action.click(paged[rowId].item)
+                              }
+                          },
+                })
+            } else {
+                // Add generic row action
+                actions.push({
+                    title: action.title,
+                    isDisabled: action.isDisabled ? true : false,
+                    onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
+                        if (groupFn || addSubRows) {
+                            const tableItem =
+                                rowData.props?.key && filtered.find((tableItem) => tableItem.key === rowData.props.key)
+                            if (tableItem) {
+                                action.click(tableItem.item)
+                            }
+                        } else {
+                            action.click(paged[rowId].item)
+                        }
+                    },
+                })
+            }
+        })
+        return actions
+    }
+
+    // Parse static actions
+    const actions = parseRowAction(rowActions)
+
+    // Wrap provided action resolver
+    let actionResolver: IActionsResolver | undefined
+    if (rowActionResolver) {
+        actionResolver = (rowData: IRowData, extraData: IExtraData) => {
+            let tableItem
+            if (groupFn || addSubRows) {
+                tableItem = rowData.props?.key && filtered.find((tableItem) => tableItem.key === rowData.props.key)
+            } else {
+                tableItem = paged[extraData.rowIndex!]
+            }
+            if (tableItem) {
+                return parseRowAction(rowActionResolver(tableItem.item))
+            }
+            return []
         }
-    })
+    }
 
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasItems = items && items.length > 0 && filtered
     const showToolbar = props.showToolbar !== false ? hasItems : false
+    const topToolbarStyle = items ? {} : { paddingBottom: 0 }
 
     return (
         <Fragment>
             {props.extraToolbarControls && (
-                <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
+                <Toolbar style={topToolbarStyle}>
                     <ToolbarContent>
                         <ToolbarGroup alignment={{ default: 'alignRight' }}>
                             <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
@@ -651,7 +736,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 </Toolbar>
             )}
             {showToolbar && (
-                <Toolbar inset={{ default: 'insetNone' }} style={{ paddingTop: 0 }}>
+                <Toolbar>
                     <ToolbarContent>
                         {hasSearch && (
                             <ToolbarGroup variant="filter-group">
@@ -675,6 +760,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                             onClick={action.click}
                                             isDisabled={action.isDisabled}
                                             tooltip={action.tooltip}
+                                            variant={action.variant || ButtonVariant.primary}
                                         >
                                             {action.title}
                                         </AcmButton>
@@ -718,28 +804,44 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
                             </ToolbarGroup>
                         )}
-                        {(!props.autoHidePagination || filtered.length > perPage) &&
-                            !props.paginationAtBottom &&
-                            pagination}
+                        {(!props.autoHidePagination || filtered.length > perPage) && (
+                            <ToolbarItem variant="pagination">
+                                <Pagination
+                                    itemCount={itemCount}
+                                    perPage={perPage}
+                                    page={page}
+                                    variant={PaginationVariant.top}
+                                    onSetPage={(_event, page) => setPage(page)}
+                                    onPerPageSelect={(_event, perPage) => updatePerPage(perPage)}
+                                    aria-label="Pagination top"
+                                    isCompact
+                                />
+                            </ToolbarItem>
+                        )}
                     </ToolbarContent>
                 </Toolbar>
             )}
             {!items || !rows || !filtered || !paged ? (
-                <EmptyState>
-                    <EmptyStateIcon variant="container" component={Spinner} />
-                    <Title size="lg" headingLevel="h4">
-                        Loading
-                    </Title>
-                </EmptyState>
+                <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                    <EmptyState>
+                        <EmptyStateIcon variant="container" component={Spinner} />
+                        <Title size="lg" headingLevel="h4">
+                            Loading
+                        </Title>
+                    </EmptyState>
+                </PageSection>
             ) : items.length === 0 ? (
-                props.emptyState ? (
-                    props.emptyState
-                ) : (
-                    <AcmEmptyState
-                        title={`No ${props.plural} found`}
-                        message={`You do not have any ${props.plural} yet.`}
-                    />
-                )
+                <PageSection
+                    variant={props.extraToolbarControls ? 'light' : 'default'}
+                    padding={{ default: 'noPadding' }}
+                >
+                    {props.emptyState ?? (
+                        <AcmEmptyState
+                            title={`No ${props.plural} found`}
+                            message={`You do not have any ${props.plural} yet.`}
+                        />
+                    )}
+                </PageSection>
             ) : (
                 <Fragment>
                     <div ref={outerDivRef} className={classes.outerDiv}>
@@ -763,10 +865,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                             ...(column.sort ? [sortable] : []),
                                         ],
                                         cellTransforms: column.cellTransforms || [],
+                                        cellFormatters: onCollapse ? [expandable] : [],
                                     }
                                 })}
                                 rows={rows}
                                 rowWrapper={OuiaIdRowWrapper}
+                                actionResolver={actionResolver}
                                 actions={actions}
                                 aria-label="Simple Table"
                                 sortBy={adjustedSort}
@@ -786,18 +890,30 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         </div>
                     </div>
                     {!filtered.length && (
-                        <AcmEmptyState
-                            title="No results found"
-                            message="No results match the filter criteria. Clear filters to show results."
-                            showIcon={false}
-                            action={
-                                <AcmButton variant="link" onClick={() => updateSearch('')}>
-                                    Clear all filters
-                                </AcmButton>
-                            }
+                        <PageSection variant="light" padding={{ default: 'noPadding' }}>
+                            <AcmEmptyState
+                                title="No results found"
+                                message="No results match the filter criteria. Clear filters to show results."
+                                showIcon={false}
+                                action={
+                                    <AcmButton variant="link" onClick={() => updateSearch('')}>
+                                        Clear all filters
+                                    </AcmButton>
+                                }
+                            />
+                        </PageSection>
+                    )}
+                    {(!props.autoHidePagination || filtered.length > perPage) && (
+                        <Pagination
+                            itemCount={itemCount}
+                            perPage={perPage}
+                            page={page}
+                            variant={PaginationVariant.bottom}
+                            onSetPage={/* istanbul ignore next */ (_event, page) => setPage(page)}
+                            onPerPageSelect={/* istanbul ignore next */ (_event, perPage) => updatePerPage(perPage)}
+                            aria-label="Pagination bottom"
                         />
                     )}
-                    {(!props.autoHidePagination || filtered.length > perPage) && props.paginationAtBottom && pagination}
                 </Fragment>
             )}
         </Fragment>

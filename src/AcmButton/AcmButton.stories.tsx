@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { Button, ButtonVariant } from '@patternfly/react-core'
+import { ButtonVariant } from '@patternfly/react-core'
 import { Meta } from '@storybook/react'
 import React from 'react'
 import { AcmButton } from './AcmButton'

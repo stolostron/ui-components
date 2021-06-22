@@ -6,6 +6,8 @@ import { makeStyles } from '@material-ui/styles'
 import {
     AboutModal,
     ApplicationLauncher,
+    ApplicationLauncherGroup,
+    ApplicationLauncherSeparator,
     ApplicationLauncherItem,
     Brand,
     Button,
@@ -30,8 +32,8 @@ import {
     TextListItem,
     Title,
 } from '@patternfly/react-core'
-import { CaretDownIcon, CodeIcon, CogsIcon, ExternalLinkAltIcon } from '@patternfly/react-icons'
-import React, { CSSProperties, useEffect, useState } from 'react'
+import { CaretDownIcon, CodeIcon, CogsIcon } from '@patternfly/react-icons'
+import React, { CSSProperties, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import logo from '../assets/RHACM-Logo.svg'
@@ -55,7 +57,7 @@ function launchToOCP(urlSuffix: string) {
         '/multicloud/api/v1/namespaces/openshift-config-managed/configmaps/console-public/'
     )
         .then(({ data }) => {
-            window.open(`${data.consoleURL}/${urlSuffix}`, '_self')
+            window.open(`${data.consoleURL}/${urlSuffix}`)
         })
         .catch((error) => {
             // eslint-disable-next-line no-console
@@ -116,7 +118,7 @@ function AboutDropdown(props: AboutDropdownProps) {
 
     function DocsButton() {
         return (
-            <ApplicationLauncherItem href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.2/">
+            <ApplicationLauncherItem href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.3/">
                 Documentation
             </ApplicationLauncherItem>
         )
@@ -311,19 +313,12 @@ const useStyles = makeStyles({
             'font-size': '14px',
             'font-family': 'var(--pf-global--FontFamily--sans-serif)',
             '& .oc-nav-header__icon': {
-                'padding-right': '7px',
                 'vertical-align': '-0.125em',
             },
             '& h2': {
                 'font-size': '$co-side-nav-section-font-size',
                 'font-family': 'var(--pf-global--FontFamily--sans-serif)',
             },
-        },
-
-        '& svg': {
-            height: '1em',
-            width: '1em',
-            fill: 'currentColor',
         },
 
         '&::before': {
@@ -335,9 +330,11 @@ const useStyles = makeStyles({
 export enum AcmRoute {
     Welcome = '/multicloud/welcome',
     Clusters = '/multicloud/clusters',
+    BareMetalAssets = '/multicloud/bare-metal-assets',
+    Automation = '/multicloud/ansible-automations',
     Applications = '/multicloud/applications',
     Credentials = '/multicloud/credentials',
-    RiskAndCompliance = '/multicloud/policies',
+    Governance = '/multicloud/policies',
     VisualWebTerminal = '/kui',
     Overview = '/overview',
     Search = '/search',
@@ -350,6 +347,35 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
     const [switcherIsOpen, setSwitcherOpen] = useState(false)
     const switcherExists = showSwitcher
     const iconStyles: CSSProperties = { paddingRight: '7px' }
+    const acmIconStyle: CSSProperties = {
+        height: '14px',
+        fill: 'currentColor',
+        paddingRight: '7px',
+    }
+    const textStyles: CSSProperties = { fontSize: '14px' }
+
+    function ACMIcon() {
+        return (
+            <svg viewBox="0 0 14 13.97" style={acmIconStyle}>
+                <g id="Layer_2" data-name="Layer 2">
+                    <g id="Layer_1-2" data-name="Layer 1">
+                        <path d="M12.63,6A1.5,1.5,0,1,0,11,4.51l-1.54.91a2.94,2.94,0,0,0-1.85-1L7.35,2.66a1.52,1.52,0,0,0,.49-.72,1.5,1.5,0,0,0-1-1.87A1.49,1.49,0,0,0,5,1.06a1.51,1.51,0,0,0,.88,1.83L6.12,4.6A2.9,2.9,0,0,0,4.5,6.29L2.88,6.07a1.52,1.52,0,0,0-.55-.68,1.51,1.51,0,0,0-2.08.43A1.49,1.49,0,0,0,2.67,7.56l1.68.23A3,3,0,0,0,5.41,9.6L4.8,11a1.5,1.5,0,1,0,1.14,2.63,1.49,1.49,0,0,0,.24-2l.61-1.39a3.44,3.44,0,0,0,.45,0,2.92,2.92,0,0,0,1.6-.48L10.21,11a1.45,1.45,0,0,0,.09.87,1.5,1.5,0,1,0,.91-2L9.85,8.66a3,3,0,0,0,.33-1.34,3.1,3.1,0,0,0,0-.54l1.64-1A1.47,1.47,0,0,0,12.63,6ZM5.48,7.32A1.77,1.77,0,1,1,7.24,9.08,1.76,1.76,0,0,1,5.48,7.32Z" />
+                    </g>
+                </g>
+            </svg>
+        )
+    }
+
+    const isConsoleRoute = useMemo(() => {
+        switch (route) {
+            case AcmRoute.Clusters:
+            case AcmRoute.BareMetalAssets:
+            case AcmRoute.Automation:
+            case AcmRoute.Credentials:
+                return true
+        }
+        return false
+    }, [props.route])
 
     return (
         <Nav onSelect={() => props.postClick?.()}>
@@ -369,25 +395,27 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                         >
                             <Title headingLevel="h2" size="md">
                                 <span className="oc-nav-header__icon">
-                                    <svg viewBox="0 0 14 13.97">
-                                        <g id="Layer_2" data-name="Layer 2">
-                                            <g id="Layer_1-2" data-name="Layer 1">
-                                                <path d="M12.63,6A1.5,1.5,0,1,0,11,4.51l-1.54.91a2.94,2.94,0,0,0-1.85-1L7.35,2.66a1.52,1.52,0,0,0,.49-.72,1.5,1.5,0,0,0-1-1.87A1.49,1.49,0,0,0,5,1.06a1.51,1.51,0,0,0,.88,1.83L6.12,4.6A2.9,2.9,0,0,0,4.5,6.29L2.88,6.07a1.52,1.52,0,0,0-.55-.68,1.51,1.51,0,0,0-2.08.43A1.49,1.49,0,0,0,2.67,7.56l1.68.23A3,3,0,0,0,5.41,9.6L4.8,11a1.5,1.5,0,1,0,1.14,2.63,1.49,1.49,0,0,0,.24-2l.61-1.39a3.44,3.44,0,0,0,.45,0,2.92,2.92,0,0,0,1.6-.48L10.21,11a1.45,1.45,0,0,0,.09.87,1.5,1.5,0,1,0,.91-2L9.85,8.66a3,3,0,0,0,.33-1.34,3.1,3.1,0,0,0,0-.54l1.64-1A1.47,1.47,0,0,0,12.63,6ZM5.48,7.32A1.77,1.77,0,1,1,7.24,9.08,1.76,1.76,0,0,1,5.48,7.32Z" />
-                                            </g>
-                                        </g>
-                                    </svg>
+                                    <ACMIcon></ACMIcon>
                                 </span>
                                 Advanced Cluster Management
                             </Title>
                         </DropdownToggle>
                     }
                     dropdownItems={[
+                        <DropdownItem onClick={() => setSwitcherOpen(false)} key={'acm'}>
+                            <Title headingLevel="h2" size="md">
+                                <span className="oc-nav-header__icon">
+                                    <ACMIcon></ACMIcon>
+                                </span>
+                                <span style={textStyles}>Advanced Cluster Management</span>
+                            </Title>
+                        </DropdownItem>,
                         <DropdownItem onClick={() => launchToOCP('?perspective=admin')} key={'administrator'}>
                             <Title headingLevel="h2" size="md">
                                 <span className="oc-nav-header__icon" style={iconStyles}>
                                     <CogsIcon></CogsIcon>
                                 </span>
-                                Administrator
+                                <span style={textStyles}>Administrator</span>
                             </Title>
                         </DropdownItem>,
                         <DropdownItem onClick={() => launchToOCP('?perspective=dev')} key={'devbutton'}>
@@ -395,7 +423,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                                 <span className="oc-nav-header__icon" style={iconStyles}>
                                     <CodeIcon></CodeIcon>
                                 </span>
-                                Developer
+                                <span style={textStyles}>Developer</span>
                             </Title>
                         </DropdownItem>,
                     ]}
@@ -407,7 +435,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                 <NavExpandable
                     title="Home"
                     isActive={route === AcmRoute.Welcome || route === AcmRoute.Overview}
-                    isExpanded={route === AcmRoute.Welcome || route === AcmRoute.Overview}
+                    isExpanded={true}
                 >
                     <NavItem isActive={route === AcmRoute.Welcome} to={AcmRoute.Welcome}>
                         Welcome
@@ -416,25 +444,37 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                         Overview
                     </NavItem>
                 </NavExpandable>
-                <NavItem isActive={route === AcmRoute.Clusters} to={AcmRoute.Clusters}>
-                    {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
-                        <Link to={AcmRoute.Clusters}>Clusters</Link>
-                    ) : (
-                        'Clusters'
-                    )}
-                </NavItem>
+                <NavExpandable
+                    title="Infrastructure"
+                    isActive={
+                        route === AcmRoute.Clusters ||
+                        route === AcmRoute.BareMetalAssets ||
+                        route === AcmRoute.Automation
+                    }
+                    isExpanded={true}
+                >
+                    <NavItem isActive={route === AcmRoute.Clusters} to={AcmRoute.Clusters}>
+                        {isConsoleRoute ? <Link to={AcmRoute.Clusters}>Clusters</Link> : 'Clusters'}
+                    </NavItem>
+                    <NavItem isActive={route === AcmRoute.BareMetalAssets} to={AcmRoute.BareMetalAssets}>
+                        {isConsoleRoute ? (
+                            <Link to={AcmRoute.BareMetalAssets}>Bare metal assets</Link>
+                        ) : (
+                            'Bare metal assets'
+                        )}
+                    </NavItem>
+                    <NavItem isActive={route === AcmRoute.Automation} to={AcmRoute.Automation}>
+                        {isConsoleRoute ? <Link to={AcmRoute.Automation}>Automation</Link> : 'Automation'}
+                    </NavItem>
+                </NavExpandable>
                 <NavItem isActive={route === AcmRoute.Applications} to={AcmRoute.Applications}>
                     Applications
                 </NavItem>
-                <NavItem isActive={route === AcmRoute.RiskAndCompliance} to={AcmRoute.RiskAndCompliance}>
-                    Risk and compliance
+                <NavItem isActive={route === AcmRoute.Governance} to={AcmRoute.Governance}>
+                    Governance
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.Credentials} to={AcmRoute.Credentials}>
-                    {route === AcmRoute.Clusters || route === AcmRoute.Credentials ? (
-                        <Link to={AcmRoute.Credentials}>Credentials</Link>
-                    ) : (
-                        'Credentials'
-                    )}
+                    {isConsoleRoute ? <Link to={AcmRoute.Credentials}>Credentials</Link> : 'Credentials'}
                 </NavItem>
                 <NavItem isActive={route === AcmRoute.VisualWebTerminal} to={AcmRoute.VisualWebTerminal}>
                     Visual Web Terminal
@@ -457,24 +497,96 @@ export function AcmHeader(props: AcmHeaderProps) {
         }
     }, [isFullWidthPage])
     const [aboutModalOpen, setAboutModalOpen] = useState<boolean>(false)
-    const [appSwitcherOpen, setAppSwitcherOpen] = useState<boolean>(false)
     const [appSwitcherExists, setAppSwitcherExists] = useState<boolean>(true)
 
     const classes = useStyles()
 
     function OCPButton() {
         return (
-            <ApplicationLauncherItem component="button" onClick={() => launchToOCP('')}>
-                <div style={{ minWidth: 'fit-content' }}>
-                    <span style={{ verticalAlign: '-0.125em' }}>
-                        <AcmIcon icon={AcmIconVariant.ocp} />
-                    </span>
-                    <span style={{ marginRight: '10px' }}>Red Hat Openshift Container Platform</span>
-                    <span style={{ verticalAlign: '-0.125em' }}>
-                        <ExternalLinkAltIcon style={{ width: '1em' }}></ExternalLinkAltIcon>
-                    </span>
-                </div>
+            <ApplicationLauncherItem
+                key="ocp_launch"
+                isExternal
+                icon={<AcmIcon icon={AcmIconVariant.ocp} />}
+                component="button"
+                onClick={() => launchToOCP('')}
+            >
+                Red Hat Openshift Container Platform
             </ApplicationLauncherItem>
+        )
+    }
+
+    interface AppSwitcherData {
+        name: string
+        url: string
+        icon: string
+    }
+    function AppSwitcherTopBar() {
+        const [extraItems, setExtraItems] = useState<Record<string, [AppSwitcherData]>>({})
+        const [appSwitcherOpen, setAppSwitcherOpen] = useState<boolean>(false)
+
+        useEffect(() => {
+            const dev = process.env.NODE_ENV !== 'production'
+            const serverForTest = dev ? 'https://localhost:3000' : ''
+            api<{ data: Record<string, [AppSwitcherData]> }>(`${serverForTest}/multicloud/common/applinks/`)
+                .then(({ data }) => {
+                    setExtraItems(data)
+                })
+                .catch((error) => {
+                    // eslint-disable-next-line no-console
+                    console.error(error)
+                })
+        }, [])
+
+        const extraMenuItems = []
+        let count = 0
+        for (const section in extraItems) {
+            extraMenuItems.push(
+                <ApplicationLauncherGroup label={section} key={section}>
+                    {extraItems[section].map((sectionItem) => (
+                        <ApplicationLauncherItem
+                            key={sectionItem.name + '-launcher'}
+                            isExternal
+                            icon={<img src={sectionItem.icon} />}
+                            component="button"
+                            onClick={() => window.open(sectionItem.url, '_blank')}
+                        >
+                            {sectionItem.name}
+                        </ApplicationLauncherItem>
+                    ))}
+                    {count < Object.keys(extraItems).length - 1 && <ApplicationLauncherSeparator key="separator" />}
+                </ApplicationLauncherGroup>
+            )
+            count = count + 1
+        }
+        return (
+            <ApplicationLauncher
+                hidden={appSwitcherExists}
+                aria-label="app-menu"
+                data-test="app-dropdown"
+                className="co-app-launcher co-app-menu"
+                onSelect={() => setAppSwitcherOpen(false)}
+                onToggle={() => setAppSwitcherOpen(!appSwitcherOpen)}
+                isOpen={appSwitcherOpen}
+                items={[
+                    <ApplicationLauncherGroup label="Red Hat applications" key="ocp-group">
+                        <OCPButton />
+                        <ApplicationLauncherItem
+                            key="app_launch"
+                            isExternal
+                            icon={<AcmIcon icon={AcmIconVariant.redhat} />}
+                            component="button"
+                            onClick={() => window.open('https://cloud.redhat.com/openshift/', '_blank')}
+                        >
+                            Openshift Cluster Manager
+                        </ApplicationLauncherItem>
+                        {Object.keys(extraItems).length > 0 && <ApplicationLauncherSeparator key="separator" />}
+                    </ApplicationLauncherGroup>,
+                    ...extraMenuItems,
+                ]}
+                data-quickstart-id="qs-masthead-appmenu"
+                position="right"
+                style={{ verticalAlign: '0.125em' }}
+            />
         )
     }
 
@@ -491,19 +603,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                 }}
             >
                 <PageHeaderToolsItem>
-                    <ApplicationLauncher
-                        hidden={appSwitcherExists}
-                        aria-label="app-menu"
-                        data-test="app-dropdown"
-                        className="co-app-launcher co-app-menu"
-                        onSelect={() => setAppSwitcherOpen(false)}
-                        onToggle={() => setAppSwitcherOpen(!appSwitcherOpen)}
-                        isOpen={appSwitcherOpen}
-                        items={[<OCPButton key="app_launch" />]}
-                        data-quickstart-id="qs-masthead-appmenu"
-                        position="right"
-                        style={{ verticalAlign: '0.125em' }}
-                    />
+                    <AppSwitcherTopBar></AppSwitcherTopBar>
                     <Button
                         aria-label="search-button"
                         onClick={() => window.open('/search', '_self')}
@@ -589,7 +689,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                     nav={
                         <NavExpandableList
                             route={props.route}
-                            showSwitcher={appSwitcherExists}
+                            showSwitcher={true}
                             postClick={() => {
                                 if (!isFullWidthPage) setNavOpen(false)
                             }}

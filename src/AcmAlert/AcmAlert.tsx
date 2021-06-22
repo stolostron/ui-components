@@ -1,8 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { makeStyles, useMediaQuery } from '@material-ui/core'
 import Collapse from '@material-ui/core/Collapse'
-import { Alert, AlertActionCloseButton } from '@patternfly/react-core'
+import { Alert, AlertActionCloseButton, AlertGroup, Flex } from '@patternfly/react-core'
 import React, {
     createContext,
     CSSProperties,
@@ -21,6 +20,7 @@ export interface AcmAlertInfo {
     actions?: ReactNode
     id?: string
     group?: string
+    autoClose?: boolean
 }
 
 export interface IAlertContext {
@@ -44,7 +44,7 @@ export const AcmAlertContext = createContext<IAlertContext>({
     clearAlerts: noop,
 })
 
-export function AcmAlertProvider(props: { children: ReactNode }) {
+export function AcmAlertProvider(props: { children: ReactNode; isToast?: boolean }) {
     const [activeAlerts, setActiveAlerts] = useState<AcmAlertInfo[]>([])
     const [visibleAlerts, setVisibleAlerts] = useState<AcmAlertInfo[]>([])
     const addAlert = useCallback<(alertInfo: AcmAlertInfo) => void>((alert: AcmAlertInfo) => {
@@ -82,6 +82,7 @@ export function AcmAlertProvider(props: { children: ReactNode }) {
             }
         }
     }
+
     return (
         <AcmAlertContext.Provider
             value={{
@@ -152,25 +153,9 @@ export type AcmAlertGroupProps = {
 
     /** Allow alerts in the group to be closed with a close button */
     canClose?: boolean
-
-    /** Add standard PatternFly padding to the top of alert group */
-    padTop?: boolean
-
-    /** Add standard PatternFly padding to the bottom of alert group */
-    padBottom?: boolean
 }
 
-const useStyles = makeStyles({
-    alertSpacing: { marginTop: '16px' },
-    padTop: { paddingTop: '16px' },
-    padTopLg: { paddingTop: '24px' },
-    padBottom: { paddingBottom: '16px' },
-    padBottomLg: { paddingBottom: '24px' },
-})
-
 export function AcmAlertGroup(props: AcmAlertGroupProps) {
-    const classes = useStyles()
-    const useLargePadding = useMediaQuery('(min-width: 1200px)', { noSsr: true })
     const alertContext = useContext(AcmAlertContext)
 
     const [hasAlerts, setHasAlerts] = useState(false)
@@ -179,42 +164,20 @@ export function AcmAlertGroup(props: AcmAlertGroupProps) {
     if (!hasAlerts) return <Fragment />
 
     return (
-        <Fragment>
-            {props.padTop && (
-                /* istanbul ignore next */
-                <Collapse in={hasAlerts}>
-                    <div
-                        className={
-                            /* istanbul ignore next */
-                            useLargePadding ? classes.padTopLg : classes.padTop
-                        }
-                    />
-                </Collapse>
-            )}
-            {alertContext.alertInfos.map((alertInfo, index) => {
-                /* istanbul ignore next */
-                const spacingClassName = props.isInline !== true && index !== 0 ? classes.alertSpacing : undefined
-                return (
-                    <AcmAlert
-                        key={alertInfo.id}
-                        alertInfo={alertInfo}
-                        isInline={props.isInline}
-                        noClose={!props.canClose}
-                        className={spacingClassName}
-                    />
-                )
-            })}
-            {props.padBottom && (
-                /* istanbul ignore next */
-                <Collapse in={hasAlerts}>
-                    <div
-                        className={
-                            /* istanbul ignore next */
-                            useLargePadding ? classes.padBottomLg : classes.padBottom
-                        }
-                    />
-                </Collapse>
-            )}
-        </Fragment>
+        <AlertGroup isToast={!props.isInline}>
+            <Flex direction={{ default: 'column' }}>
+                {alertContext.alertInfos.map((alertInfo) => {
+                    /* istanbul ignore next */
+                    return (
+                        <AcmAlert
+                            key={alertInfo.id}
+                            alertInfo={alertInfo}
+                            isInline={props.isInline}
+                            noClose={!props.canClose}
+                        />
+                    )
+                })}
+            </Flex>
+        </AlertGroup>
     )
 }

@@ -1,15 +1,24 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import React from 'react'
-import { ButtonVariant } from '@patternfly/react-core'
+import { ButtonVariant, Label } from '@patternfly/react-core'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 
 export type LaunchLink = {
     id: string
-    text: string
-    href: string
+    text: string | React.ReactNode
+    href?: string
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+    label?: boolean
+    noIcon?: boolean
+    icon?: React.ReactNode
+}
+
+function getLinkIcon(link: LaunchLink) {
+    const customizedIcon = link.icon ? link.icon : <ExternalLinkAltIcon />
+    return link.noIcon ? null : customizedIcon
 }
 
 export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
@@ -19,15 +28,40 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
     if (props.links !== undefined && props.links.length > 0) {
         if (props.links.length === 1) {
             const [link] = props.links
+            if (link.label) {
+                return (
+                    <Label>
+                        <AcmButton
+                            href={link.href ? link.href : undefined}
+                            onClick={link.onClick ? link.onClick : undefined}
+                            variant={ButtonVariant.link}
+                            component="a"
+                            target="_blank"
+                            rel="noreferrer"
+                            id={link.id}
+                            icon={getLinkIcon(link)}
+                            iconPosition="right"
+                            style={{
+                                marginLeft: 0,
+                                paddingLeft: 0,
+                                fontSize: '14px',
+                            }}
+                        >
+                            {link.text}
+                        </AcmButton>
+                    </Label>
+                )
+            }
             return (
                 <AcmButton
-                    href={link.href}
+                    href={link.href ? link.href : undefined}
+                    onClick={link.onClick ? link.onClick : undefined}
                     variant={ButtonVariant.link}
                     component="a"
                     target="_blank"
                     rel="noreferrer"
                     id={link.id}
-                    icon={<ExternalLinkAltIcon />}
+                    icon={getLinkIcon(link)}
                     iconPosition="right"
                 >
                     {link.text}
@@ -36,6 +70,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
         } else {
             return (
                 <AcmDropdown
+                    isPlain
                     onSelect={onSelect}
                     text="Launch dashboard"
                     id="addon-launch-links"
@@ -46,7 +81,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                         component: 'a',
                         target: '_blank',
                         rel: 'noreferrer',
-                        icon: <ExternalLinkAltIcon />,
+                        icon: getLinkIcon(link),
                     }))}
                 />
             )

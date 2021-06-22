@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { FormGroup, Popover, Select, SelectOption, SelectProps, SelectVariant } from '@patternfly/react-core'
+import { Button, FormGroup, Popover, Select, SelectOption, SelectProps, SelectVariant } from '@patternfly/react-core'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import React, { Fragment, ReactNode, useLayoutEffect, useState } from 'react'
 import { useValidationContext } from '../AcmForm/AcmForm'
@@ -72,7 +72,7 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
             setPlaceholderText(<span style={{ color: '#666' }}>{placeholder}</span>)
         } else {
             const selectedItems = React.Children.map(props.children, (child) => {
-                const option = (child as unknown) as SelectOption
+                const option = child as unknown as SelectOption
                 if (value.includes(option.props.value as string)) return option.props.children
                 return undefined
             })
@@ -118,14 +118,15 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
                         headerContent={labelHelpTitle}
                         bodyContent={labelHelp}
                     >
-                        <button
+                        <Button
+                            variant="plain"
                             id={`${props.id}-label-help-button`}
                             aria-label="More info"
                             onClick={(e) => e.preventDefault()}
                             className="pf-c-form__group-label-help"
                         >
                             <HelpIcon noVerticalAlign />
-                        </button>
+                        </Button>
                     </Popover>
                 ) : (
                     <Fragment />
@@ -159,7 +160,11 @@ export function AcmMultiSelect(props: AcmMultiSelectProps) {
                           }
                         : undefined
                 }
-                placeholderText={placeholderText}
+                placeholderText={
+                    /* istanbul ignore next */ props.variant === SelectVariant.typeaheadMulti
+                        ? placeholder
+                        : placeholderText
+                }
                 isDisabled={props.isDisabled || ValidationContext.isReadOnly}
             />
             {validated === 'error' ? (

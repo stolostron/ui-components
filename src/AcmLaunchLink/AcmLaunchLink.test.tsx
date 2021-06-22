@@ -5,11 +5,99 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { AcmLaunchLink } from './AcmLaunchLink'
+import { Tooltip } from '@patternfly/react-core'
+import RedHatIcon from '../AcmIcons/RedHatIcon'
 
 describe('AcmLaunchLink', () => {
     test('renders a link when only one link is provided', async () => {
         const { container, queryByTestId } = render(
             <AcmLaunchLink links={[{ id: 'grafana', text: 'Grafana', href: '/grafana' }]} />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link when onClick is provided', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link the link is nested in a label', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink links={[{ id: 'grafana', text: 'Grafana', href: '/grafana', label: true }]} />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link when onClick is provided and label=true', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                        label: true,
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link without icon', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                        label: true,
+                        noIcon: true,
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link with user pass-in icon', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                        label: true,
+                        noIcon: false,
+                        icon: RedHatIcon,
+                    },
+                ]}
+            />
         )
         expect(queryByTestId('addon-launch-links')).toBeNull()
         expect(queryByTestId('grafana')).toBeInTheDocument()
@@ -28,6 +116,21 @@ describe('AcmLaunchLink', () => {
         userEvent.click(getByTestId('addon-launch-links'))
         expect(getByTestId('grafana')).toBeInTheDocument()
         expect(getByTestId('logs')).toBeInTheDocument()
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a link when link text is a tooltip component', async () => {
+        const textTooltip = (
+            <Tooltip content={<div>I have a tooltip!</div>}>
+                <span tabIndex={0} style={{ border: '1px dashed' }}>
+                    Grafana!
+                </span>
+            </Tooltip>
+        )
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink links={[{ id: 'grafana', text: textTooltip, href: '/grafana' }]} />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders null when no links are provided', () => {

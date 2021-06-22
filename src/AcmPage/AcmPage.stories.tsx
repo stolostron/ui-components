@@ -147,11 +147,7 @@ export const Page = (args: {
                 {secondaryTab === 'table' ? (
                     <AcmPageContent id="table">
                         <PageSection>
-                            <Card isLarge>
-                                <CardBody>
-                                    <TableStory />
-                                </CardBody>
-                            </Card>
+                            <TableStory />
                         </PageSection>
                     </AcmPageContent>
                 ) : secondaryTab === 'form' ? (
@@ -180,7 +176,7 @@ export const Page = (args: {
                     </AcmPageContent>
                 ) : secondaryTab === 'alerts' ? (
                     <AcmPageContent id="alerts">
-                        <PageSection variant="light" isFilled>
+                        <PageSection>
                             <AlertGroupStory />
                         </PageSection>
                     </AcmPageContent>

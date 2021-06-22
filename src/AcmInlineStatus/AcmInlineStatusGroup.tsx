@@ -11,7 +11,7 @@ import {
     InProgressIcon,
     AsleepIcon,
 } from '@patternfly/react-icons'
-import { BrokenLinkIcon } from '../AcmIcons/Icons'
+import { BrokenLinkIcon } from '../AcmIcons/BrokenLinkIcon'
 
 type AcmInlineStatusGroupProps = {
     healthy?: number

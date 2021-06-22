@@ -120,6 +120,35 @@ describe('AcmTable', () => {
                                       setItems(items.filter((i) => i.uid !== item.uid))
                                   },
                               },
+                              {
+                                  id: 'deletedisabled',
+                                  title: 'Disabled delete item',
+                                  isDisabled: true,
+                                  tooltip: 'This button is disabled',
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
+                              {
+                                  id: 'deletetooltipped',
+                                  title: 'Tooltipped delete item',
+                                  isDisabled: false,
+                                  tooltip: 'This button is not disabled',
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
+                              {
+                                  id: 'disablednotooltip',
+                                  title: 'Disabled item',
+                                  isDisabled: true,
+                                  click: (item: IExampleData) => {
+                                      deleteAction(item)
+                                      setItems(items.filter((i) => i.uid !== item.uid))
+                                  },
+                              },
                           ]
                         : undefined
                 }
@@ -156,18 +185,105 @@ describe('AcmTable', () => {
     test('renders without actions', () => {
         const { container } = render(<Table useTableActions={false} useRowActions={false} />)
         expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeNull()
     })
-    test('renders pagination at the bottom when paginationAtBottom is set', () => {
-        const { container } = render(<Table items={exampleData} paginationAtBottom />)
-        expect(container.querySelector('div.pf-c-toolbar div.pf-c-pagination')).toBeNull()
-        expect(
-            container.querySelector('div.pf-c-toolbar ~ div.pf-c-toolbar__item > div.pf-c-pagination')
-        ).toBeInTheDocument()
+    test('renders actions given an actionResolver', () => {
+        const tableActionResolver = (item: IExampleData) => {
+            if (item.last_name.indexOf('a') > -1) {
+                return [
+                    {
+                        id: 'testAction',
+                        title: `${item.firstName} ${item.last_name} is the coolest!`,
+                        addSeparator: true,
+                        click: createAction,
+                    },
+                ]
+            } else {
+                return []
+            }
+        }
+        const { container } = render(
+            <Table useTableActions={false} useRowActions={false} rowActionResolver={tableActionResolver} />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeInTheDocument()
+    })
+    test('renders actions given an actionResolver with an expandable table', () => {
+        const tableActionResolver = (item: IExampleData) => {
+            if (item.last_name.indexOf('a') > -1) {
+                return [
+                    {
+                        id: 'testAction',
+                        title: `${item.firstName} ${item.last_name} is the coolest!`,
+                        addSeparator: true,
+                        click: createAction,
+                    },
+                ]
+            } else {
+                return []
+            }
+        }
+        const { container } = render(
+            <AcmTable<IExampleData>
+                plural="addresses"
+                showToolbar={false}
+                items={exampleData.slice(0, 10)}
+                addSubRows={(item: IExampleData) => {
+                    if (item.uid === 1) {
+                        return [
+                            {
+                                cells: [
+                                    {
+                                        title: <div id="expanded">{item.uid}</div>,
+                                    },
+                                ],
+                            },
+                        ]
+                    } else {
+                        return undefined
+                    }
+                }}
+                columns={[
+                    {
+                        header: 'First Name',
+                        sort: 'firstName',
+                        cell: 'firstName',
+                    },
+                    {
+                        header: 'Last Name',
+                        sort: 'last_name',
+                        cell: 'last_name',
+                    },
+                    {
+                        header: 'EMail',
+                        cell: 'email',
+                    },
+                    {
+                        header: 'Gender',
+                        sort: 'gender',
+                        cell: (item) => item.gender,
+                    },
+                    {
+                        header: 'IP Address',
+                        sort: sortFunction,
+                        cell: 'ip_address',
+                    },
+                    {
+                        header: 'UID',
+                        sort: 'uid',
+                        cell: 'uid',
+                    },
+                ]}
+                keyFn={(item: IExampleData) => item.uid.toString()}
+                rowActionResolver={tableActionResolver}
+            />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('table .pf-c-dropdown__toggle')).toBeInTheDocument()
     })
     test('renders pagination with autoHidePagination when more that perPage items', () => {
         const { container } = render(<Table items={exampleData} autoHidePagination />)
-        expect(container.querySelector('div.pf-c-toolbar div.pf-c-pagination')).toBeInTheDocument()
-        expect(container.querySelector('div.pf-c-toolbar ~ div.pf-c-toolbar__item > div.pf-c-pagination')).toBeNull()
+        expect(container.querySelector('.pf-c-pagination')).toBeInTheDocument()
     })
     test('hides pagination with autoHidePagination when less than perPage items', () => {
         const { container } = render(<Table items={exampleData.slice(0, 8)} autoHidePagination />)
@@ -259,6 +375,33 @@ describe('AcmTable', () => {
         userEvent.click(getByText('Delete item'))
         expect(deleteAction).toHaveBeenCalled()
     })
+    test('can support disabled table row actions', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Disabled item')).toBeVisible()
+        userEvent.click(getByText('Disabled item'))
+        expect(deleteAction).not.toHaveBeenCalled()
+    })
+    test('can support disabled table row actions with tooltips', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[1])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Disabled delete item')).toBeVisible()
+        userEvent.click(getByText('Disabled delete item'))
+        expect(deleteAction).not.toHaveBeenCalled()
+    })
+    test('can support table row actions with tooltips', () => {
+        const { getAllByLabelText, getByRole, getByText } = render(<Table />)
+        expect(getAllByLabelText('Actions')).toHaveLength(10)
+        userEvent.click(getAllByLabelText('Actions')[0])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Tooltipped delete item')).toBeVisible()
+        userEvent.click(getByText('Tooltipped delete item'))
+        expect(deleteAction).toHaveBeenCalled()
+    })
     test('can customize search placeholder', () => {
         const customPlaceholder = 'Other placeholder'
         const { container } = render(<Table searchPlaceholder={customPlaceholder} />)
@@ -338,6 +481,19 @@ describe('AcmTable', () => {
     test('can be sorted with bulk actions', () => {
         sortTest(true)
     })
+    test('can be sorted by initialSort property', () => {
+        // initially sort by UID
+        const { getByText, container } = render(<Table initialSort={{ direction: 'asc', index: 5 }} />)
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('1')
+
+        // verify clicking UID switches the direction
+        userEvent.click(getByText('UID'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('105')
+
+        // verify clicking on other headers still works
+        userEvent.click(getByText('First Name'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
+    })
     test('page size can be updated', () => {
         const { getByLabelText, getAllByLabelText, getByText, container } = render(
             <Table useExtraToolbarControls={false} useSearch={false} useTableActions={false} />
@@ -411,6 +567,10 @@ describe('AcmTable', () => {
     test('can use custom empty state', () => {
         const { queryByText } = render(<Table items={[]} emptyState={<div>Look elsewhere!</div>} />)
         expect(queryByText('Look elsewhere!')).toBeVisible()
+    })
+    test('can provide default empty state with extra toolbar controls', () => {
+        const { queryByText } = render(<Table items={[]} useExtraToolbarControls={true} />)
+        expect(queryByText('No addresses found')).toBeVisible()
     })
     test('can render as a controlled component', () => {
         const setPage = jest.fn()
@@ -527,7 +687,16 @@ describe('AcmTable', () => {
                             expandedDeleteAction()
                         },
                     },
+                    {
+                        id: 'deleteTT',
+                        title: 'Delete item tooltip',
+                        tooltip: 'delete',
+                        click: () => {
+                            expandedDeleteAction()
+                        },
+                    },
                 ]}
+                fuseThreshold={0}
             />
         )
         userEvent.click(getByTestId('expandable-toggle0'))
@@ -538,6 +707,13 @@ describe('AcmTable', () => {
         expect(getByRole('menu')).toBeVisible()
         expect(getByText('Delete item')).toBeVisible()
         userEvent.click(getByText('Delete item'))
+        expect(expandedDeleteAction).not.toHaveBeenCalled()
+
+        // Run tooltipped delete action for code coverage (no delete support on expanded content)
+        userEvent.click(getAllByLabelText('Actions')[1])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Delete item tooltip')).toBeVisible()
+        userEvent.click(getByText('Delete item tooltip'))
         expect(expandedDeleteAction).not.toHaveBeenCalled()
     })
     test('renders with grouping', () => {
@@ -557,6 +733,24 @@ describe('AcmTable', () => {
         expect(getByText('Delete item')).toBeVisible()
         userEvent.click(getByText('Delete item'))
     })
+    test('renders with grouping', () => {
+        const { getAllByLabelText, getByPlaceholderText, getByRole, getByTestId, getByText } = render(
+            // Group some items by name, some by gender, and some not at all to test single-item groups,
+            // multiple-item groups, and ungrouped items
+            <Table groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)} />
+        )
+        userEvent.click(getByTestId('expandable-toggle0'))
+        // search for 'Female'
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), 'Female')
+
+        // Run tooltipped action for code coverage
+        userEvent.click(getAllByLabelText('Actions')[2])
+        expect(getByRole('menu')).toBeVisible()
+        expect(getByText('Tooltipped delete item')).toBeVisible()
+        userEvent.click(getByText('Tooltipped delete item'))
+        expect(deleteAction).toHaveBeenCalled()
+    })
     test('renders with grouping and summary', () => {
         const { getByTestId } = render(
             // Group some items by name, some by gender, and some not at all to test single-item groups,
@@ -565,7 +759,7 @@ describe('AcmTable', () => {
                 noBorders
                 groupFn={(item) => (item.uid < 25 ? item.firstName : item.uid < 50 ? null : item.gender)}
                 groupSummaryFn={(items) => {
-                    return { cells: [{ title: `${items.length} items`, props: { colspan: 8 } }] }
+                    return { cells: [{ title: `${items.length} items`, props: { colSpan: 8 } }] }
                 }}
             />
         )
