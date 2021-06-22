@@ -17,7 +17,7 @@ import {
 import React, { Fragment, useMemo, useState } from 'react'
 
 export type TableActionsToolbarProps = {
-    tableActions?: OverflowMenuDropdownItemProps[]
+    tableActions?: (OverflowMenuDropdownItemProps & { variant?: 'primary' | 'secondary' })[]
     selectedCount: number
     actionsBreakpoint?: 'md' | 'lg' | 'xl' | '2xl'
 }
@@ -27,16 +27,22 @@ export function TableActionsToolbar(props: TableActionsToolbarProps) {
 
     const OverflowMenuButtonContent = useMemo(() => {
         if (!props.tableActions) return <Fragment />
-        const sharedActions: OverflowMenuDropdownItemProps[] = props.tableActions.filter(
-            (action) => (action as OverflowMenuDropdownItemProps).isShared
-        )
+        const sharedActions = props.tableActions.filter((action) => (action as OverflowMenuDropdownItemProps).isShared)
         if (sharedActions.length === 0) return <Fragment />
         return (
             <OverflowMenuContent>
                 <OverflowMenuGroup groupType="button">
                     {sharedActions.map((action) => (
                         <OverflowMenuItem key={action.key}>
-                            <Button variant={props.selectedCount ? ButtonVariant.secondary : ButtonVariant.primary}>
+                            <Button
+                                variant={
+                                    action.variant
+                                        ? action.variant
+                                        : props.selectedCount
+                                        ? ButtonVariant.secondary
+                                        : ButtonVariant.primary
+                                }
+                            >
                                 {action.children}
                             </Button>
                         </OverflowMenuItem>

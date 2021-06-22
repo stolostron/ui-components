@@ -32,7 +32,7 @@ export class SearchedCollection<T> extends CollectionEmitter<T> implements IColl
     }
 
     public get length() {
-        return this.results?.length ?? 0
+        return this.results ? this.results.length : this.source.length
     }
 
     public dispose() {

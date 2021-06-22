@@ -5,7 +5,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { breakpoints } from './TableToolbarBreakpoints'
 
 export type TablePaginationToolbarProps = {
-    itemCount: number
+    searchedCount: number
     page: number
     perPage: number
     setPage: (page: number) => void
@@ -50,7 +50,7 @@ export function TablePaginationToolbar(props: TablePaginationToolbarProps) {
         <ToolbarItem variant="pagination">
             <Pagination
                 variant="top"
-                itemCount={props.itemCount}
+                itemCount={props.searchedCount}
                 page={props.page}
                 onSetPage={(_, page) => props.setPage(page)}
                 perPage={props.perPage}

@@ -1,16 +1,12 @@
+/* eslint-disable react/display-name */
 /* Copyright Contributors to the Open Cluster Management project */
 
 import {
-    Alert,
-    AlertGroup,
     Bullseye,
     EmptyState,
     EmptyStateBody,
     EmptyStateIcon,
     EmptyStateVariant,
-    Hint,
-    HintBody,
-    HintTitle,
     Label,
     LabelGroup,
     Page,
@@ -26,7 +22,6 @@ import {
     ToolbarContent,
     ToolbarItem,
 } from '@patternfly/react-core'
-import { Divider } from '@patternfly/react-core/src/components/Divider'
 import SuccessIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon'
 import ErrorIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-icon'
 import ExclamationIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon'
@@ -35,17 +30,18 @@ import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
 import { ICell, Table, TableBody, TableHeader } from '@patternfly/react-table'
 import { Meta } from '@storybook/react'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { createTasks, Risk, risks, Status, statuses, Task, updateRandomTask } from './mocks/mock-tasks'
+import { useCollectionCount } from './collections/collection'
+import { useFilteredCollection } from './collections/filtered-collection'
+import { usePagedCollection } from './collections/paged-collection'
+import { useSearchedCollection } from './collections/searched-collection'
+import { useSelectedCollection } from './collections/selected-collection'
+import { useSortedCollection } from './collections/sorted-collection'
+import { EnumSelect } from './EnumSelect'
+import { Risk, risks, Status, statuses, Task, updateRandomTask, useMockTasks } from './mocks/mock-tasks'
 import { TableFilterProps } from './TableFilter'
 import { TableToolbar } from './TableToolbar'
 import { cellFn, useRows } from './useCollection/useRows'
-import { EnumSelect } from './EnumSelect'
-import { Collection } from './collections/collection'
-import { useSelectedCollection } from './collections/selected-collection'
-import { useSearchedCollection } from './collections/searched-collection'
-import { useFilteredCollection } from './collections/filtered-collection'
-import { usePagedCollection } from './collections/paged-collection'
-import { useSortedCollection } from './collections/sorted-collection'
+import Fuse from 'fuse.js'
 
 const meta: Meta = {
     title: 'TableToolbar',
@@ -69,49 +65,49 @@ enum UpdateTime {
 let render = 0
 
 export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean; 'Risk Filter': boolean }) => {
-    const [search, setSearch] = useState('')
-    const [status, setStatus] = useState<string[]>([])
-    const [risk, setRisk] = useState<string[]>([])
-
-    const searchedCount = 100
-    let filteredCount = 1000
-
-    const [page, setPage] = useState(1)
-    const [perPage, setPerPage] = useState(10)
-
-    const [selectedCount, setSelectedCount] = useState(0)
-
     const [updateTime, setUpdateTime] = useState<UpdateTime>(UpdateTime.Never)
+    const collection = useMockTasks(100000, 100)
+    const collectionCount = useCollectionCount(collection)
 
-    const filters: TableFilterProps[] = []
-    if (args['Status Filter']) {
-        filters.push({
-            label: 'Status',
-            selections: status,
-            setSelections: setStatus,
-            options: statuses,
-        })
-        filteredCount /= 2
-    }
-
-    if (args['Risk Filter']) {
-        filters.push({ label: 'Risk', selections: risk, setSelections: setRisk, options: risks })
-        filteredCount /= 2
-    }
-
-    const statusFilter = useCallback(
+    const [statusFilter, setStatusFilter] = useState<Status[]>([])
+    const [riskFilter, setRiskFilter] = useState<Risk[]>([])
+    const filterFn = useCallback(
         (item: Task) => {
-            return !status.includes('New')
+            if (statusFilter.length > 0 && !statusFilter.includes(item.status)) return false
+            if (riskFilter.length > 0 && !riskFilter.includes(item.risk)) return false
+            return true
         },
-        [status]
+        [statusFilter, riskFilter]
     )
+    const filters = useMemo<TableFilterProps[]>(() => {
+        return [
+            {
+                label: 'Status',
+                selections: statusFilter,
+                setSelections: setStatusFilter,
+                options: statuses,
+            },
+            {
+                label: 'Risk',
+                selections: riskFilter,
+                setSelections: setRiskFilter,
+                options: risks,
+            },
+        ]
+    }, [statusFilter, riskFilter])
+    const filtered = useFilteredCollection<Task>(collection, filterFn)
+    const filteredCount = useCollectionCount(filtered)
 
-    const [collection] = useState(new Collection<Task>((item: Task) => item.id.toString(), 100))
-    useEffect(() => {
-        collection.insert(createTasks(1000))
-    }, [])
-
-    const [searchFn] = useState(() => (a) => 0)
+    const [search, setSearch] = useState('')
+    const [searchOptions] = useState<Fuse.IFuseOptions<Task>>({
+        keys: [
+            { name: 'name', weight: 1 },
+            { name: 'description', weight: 0.5 },
+        ],
+        shouldSort: true,
+    })
+    const searched = useSearchedCollection<Task>(filtered, search, searchOptions)
+    const searchedCount = useCollectionCount(searched)
 
     const [sortFn] = useState(() => (a, b) => {
         if (a.firstName < b.firstName) return -1
@@ -119,19 +115,25 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         return 0
     })
 
-    const selected = useSelectedCollection<Task>(collection)
-    const filtered = useFilteredCollection<Task>(collection, statusFilter)
-    const searched = useSearchedCollection<Task>(filtered, {}, '')
     const sorted = useSortedCollection<Task>(searched, sortFn)
+    const sortedCount = useCollectionCount(sorted)
+
+    const [page, setPage] = useState(1)
+    const [perPage, setPerPage] = useState(10)
     const paged = usePagedCollection<Task>(sorted, page, perPage)
+    const pagedCount = useCollectionCount(paged)
+
+    const selected = useSelectedCollection<Task>(collection)
+    const selectedCount = useCollectionCount(selected)
+
     const cells = useMemo<(ICell & { cellFn: cellFn<Task> })[]>(
         () => [
             {
                 title: 'Name',
                 cellFn: (item: Task) => (
                     <Fragment>
-                        <Text>Task {item.id}</Text>
-                        <Text component="small">{item.name}</Text>
+                        <Text>{item.name}</Text>
+                        <Text component="small">{item.description}</Text>
                     </Fragment>
                 ),
             },
@@ -169,9 +171,10 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                                     <Fragment>
                                         <Spinner size="sm" />
                                         &nbsp;&nbsp;
-                                        {Status[item.status]}
+                                        {item.status}
                                     </Fragment>
                                 }
+                                style={{ gridRowGap: '8px' }}
                                 size={ProgressSize.sm}
                             />
                         )}
@@ -185,17 +188,17 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                         {item.risk === Risk.High ? (
                             <Fragment>
                                 <ErrorIcon size="sm" color="var(--pf-global--danger-color--100)" /> &nbsp;
-                                {Risk[item.risk]}
+                                {item.risk}
                             </Fragment>
                         ) : item.risk === Risk.Medium ? (
                             <Fragment>
                                 <ExclamationIcon size="sm" color="var(--pf-global--warning-color--100)" /> &nbsp;
-                                {Risk[item.risk]}
+                                {item.risk}
                             </Fragment>
                         ) : (
                             <Fragment>
                                 <ExclamationIcon size="sm" color="var(--pf-global--info-color--100)" /> &nbsp;
-                                {Risk[item.risk]}
+                                {item.risk}
                             </Fragment>
                         )}
                     </Fragment>
@@ -204,11 +207,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         ],
         []
     )
-    const rows = useRows(
-        paged,
-        selected,
-        cells.map((cell) => cell.cellFn)
-    )
+    const rows = useRows(paged, selected, cells)
 
     useEffect(() => {
         if (updateTime === 0) return
@@ -225,20 +224,35 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         <Page>
             <PageSection>
                 <Stack hasGutter>
-                    <AlertGroup>
-                        <Alert isInline variant="info" title="React Component">
-                            Rendered {++render} times
-                        </Alert>
-                    </AlertGroup>
-
-                    <LabelGroup defaultIsOpen numLabels={999}>
-                        <Label variant="outline">{collection.items().length} items</Label>
-                        <Label variant="outline">{selected.items().length} selected</Label>
-                        <Label variant="outline">{filtered.items().length} filtered</Label>
-                        <Label variant="outline">{searched.items().length} searched</Label>
-                        <Label variant="outline">{sorted.items().length} sorted</Label>
-                        <Label variant="outline">{paged.items().length} paged</Label>
-                    </LabelGroup>
+                    <Toolbar>
+                        <ToolbarContent>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    flexWrap: 'wrap',
+                                    rowGap: '16px',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <ToolbarItem variant="label">Update random item every</ToolbarItem>
+                                <ToolbarItem>
+                                    <EnumSelect value={updateTime} anEnum={UpdateTime} onChange={setUpdateTime} />
+                                </ToolbarItem>
+                                <ToolbarItem>
+                                    <LabelGroup defaultIsOpen numLabels={999}>
+                                        <Label variant="outline">{collectionCount} items</Label>
+                                        <Label variant="outline">{selectedCount} selected</Label>
+                                        <Label variant="outline">{filteredCount} filtered</Label>
+                                        <Label variant="outline">{searchedCount} searched</Label>
+                                        <Label variant="outline">{sortedCount} sorted</Label>
+                                        <Label variant="outline">{pagedCount} paged</Label>
+                                        <Label variant="outline">{++render} renders</Label>
+                                    </LabelGroup>
+                                </ToolbarItem>
+                            </div>
+                        </ToolbarContent>
+                    </Toolbar>
                     <Stack>
                         <TableToolbar
                             itemCount={filtered.items().length}
@@ -253,12 +267,17 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             filters={filters}
                             selectedCount={selectedCount}
                             onSelectNone={() => selected.clear()}
-                            onSelectPage={() => setSelectedCount(perPage)}
+                            onSelectPage={() => {
+                                selected.pauseEvents()
+                                selected.clear()
+                                selected.insert(paged.items())
+                                selected.resumeEvents()
+                            }}
                             onSelectAll={() => selected.selectAll()}
                             selectionActions={[{ id: '1', children: 'Test' }]}
                             tableActions={[
                                 { id: '1', children: 'Primary', isShared: true },
-                                { id: '2', children: 'Secondary', isShared: true },
+                                { id: '2', children: 'Secondary', isShared: true, variant: 'secondary' },
                                 { id: '3', children: 'Action 3' },
                                 { id: '4', children: 'Action 4' },
                             ]}
@@ -330,10 +349,10 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             </PageSection>
                         ) : (
                             <Fragment>
-                                <Divider />
+                                {/* <Divider /> */}
                                 <Pagination
                                     variant="bottom"
-                                    itemCount={filtered.items().length}
+                                    itemCount={searchedCount}
                                     page={page}
                                     onSetPage={(_, page) => setPage(page)}
                                     perPage={perPage}
@@ -342,45 +361,6 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             </Fragment>
                         )}
                     </Stack>
-                    <PageSection variant="light" padding={{ default: 'noPadding' }}>
-                        {/* <Toolbar>
-                            <ToolbarContent>
-                                <ToolbarItem variant="label">Update random item every</ToolbarItem>
-                                <ToolbarItem>
-                                    <EnumSelect value={updateTime} anEnum={UpdateTime} onChange={setUpdateTime} />
-                                </ToolbarItem>
-                            </ToolbarContent>
-                        </Toolbar>
-                        <Divider /> */}
-                        <Toolbar>
-                            <ToolbarContent>
-                                <ToolbarItem variant="label">Update random item every</ToolbarItem>
-                                <ToolbarItem>
-                                    <EnumSelect value={updateTime} anEnum={UpdateTime} onChange={setUpdateTime} />
-                                </ToolbarItem>
-                            </ToolbarContent>
-                        </Toolbar>
-                    </PageSection>
-                    <Hint>
-                        <HintTitle>Custom Change Tracking</HintTitle>
-                        <HintBody>
-                            <p>This uses custom hooks to track item changes.</p>
-                            <p>Only renders the react component when an item affecting the current page changes.</p>
-                            <p>
-                                Filters, search, sorting and pagination are only applied to changes, making them very
-                                efficient.
-                            </p>
-                        </HintBody>
-                        <code>
-                            <p>const collection = useCollection(items, debounce)</p>
-                            <p>const selected = useSelection(collection)</p>
-                            <p>const filtered = useFilter(collection, filterFn)</p>
-                            <p>const searched = useSearch(filtered, searchFn)</p>
-                            <p>const sorted = useSort(searched, searchFn)</p>
-                            <p>const paged = usePage(sorted, page, perPage)</p>
-                            <p>const rows = useRows(paged, selected, cells)</p>
-                        </code>
-                    </Hint>
                 </Stack>
             </PageSection>
         </Page>

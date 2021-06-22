@@ -26,7 +26,7 @@ export function TableFiltersToolbarGroup(props: TableFiltersToolbarProps) {
                         value={props.search}
                         onChange={props.setSearch}
                         onClear={() => props.setSearch?.('')}
-                        resultsCount={`${props.selectedCount} / ${
+                        resultsCount={`${props.searchedCount} / ${
                             props.filteredCount !== undefined ? props.filteredCount : props.itemCount
                         }`}
                     />

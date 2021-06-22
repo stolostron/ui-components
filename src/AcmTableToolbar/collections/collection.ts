@@ -229,13 +229,14 @@ export class Collection<T> extends ReadOnlyCollection<T> {
 }
 
 export function useCollectionCount<T>(source: ICollection<T>) {
-    const [count, setCount] = useState(0)
+    const [count, setCount] = useState(source.length)
 
     const updateCount = useCallback(() => {
         setCount(source.length)
     }, [source])
 
     useEffect(() => {
+        updateCount()
         source.addListener('change', updateCount)
         return () => {
             source.removeListener('change', updateCount)

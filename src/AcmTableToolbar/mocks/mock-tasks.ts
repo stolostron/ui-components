@@ -5,6 +5,7 @@ import { Collection } from '../collections/collection'
 export interface Task {
     id: string
     name: string
+    description: string
     status: Status
     risk: Risk
     progress: number
@@ -13,25 +14,23 @@ export interface Task {
 }
 
 export enum Status {
-    'Pending',
-    'Running',
-    'Complete',
-    'Cancelled',
-    'Error',
+    'Pending' = 'Pending',
+    'Running' = 'Running',
+    'Complete' = 'Complete',
+    'Cancelled' = 'Cancelled',
+    'Error' = 'Error',
 }
-export const statuses = Object.keys(Status).filter((k) => typeof Status[k as any] === 'number')
+export const statuses = Object.keys(Status)
 
 export enum Risk {
-    'Low',
-    'Medium',
-    'High',
+    'Low' = 'Low',
+    'Medium' = 'Medium',
+    'High' = 'High',
 }
-export const risks = Object.keys(Risk).filter((k) => typeof Risk[k as any] === 'number')
+export const risks = Object.keys(Risk)
 
 function randomEnum<T>(anEnum: T): T[keyof T] {
     const enumValues = Object.keys(anEnum)
-        .map((n) => Number.parseInt(n))
-        .filter((n) => !Number.isNaN(n)) as unknown as T[keyof T][]
     const randomIndex = Math.floor(Math.random() * enumValues.length)
     const randomEnumValue = enumValues[randomIndex]
     return randomEnumValue
@@ -39,9 +38,11 @@ function randomEnum<T>(anEnum: T): T[keyof T] {
 
 let id = 0
 export function createTask(): Task {
+    const taskId = ++id
     const task: Task = {
-        id: (++id).toString(),
-        name: faker.lorem.sentence(8, 3),
+        id: taskId.toString(),
+        name: `Task ${taskId}`,
+        description: faker.lorem.sentence(8, 3),
         progress: 0,
         status: Status.Pending,
         risk: randomEnum(Risk),
@@ -88,7 +89,7 @@ export function useMockTasks(count: number, debounce: number): Collection<Task> 
         collectionRef.current.collection.debounce = debounce
     }, [debounce])
     useEffect(() => {
-        // collectionRef.current.collection.
+        collectionRef.current.collection.insert(createTasks(count))
     }, [count])
     return collectionRef.current.collection
 }

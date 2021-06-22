@@ -1,65 +1,78 @@
-import { ICell, IRow } from '@patternfly/react-table'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { ICollection } from '../collections/collection'
 import { SelectedCollection } from '../collections/selected-collection'
 
-export type IHeader<T> = ICell & {
-    cellFn: (item: Readonly<T>) => ReactNode
+export interface IRowColumn<T> {
+    cellFn: cellFn<T>
 }
 
 export type cellFn<T> = (item: Readonly<T>) => ReactNode
 
-export function useRows<T>(source: ICollection<T>, selected: SelectedCollection<T>, cellFns: cellFn<T>[]): IRow[] {
-    const [rows, setRows] = useState<IRow[]>([])
+export interface IRow<T> {
+    selected: boolean
+    item: T
+    cells: ReactNode[]
+}
+
+export function useRows<T>(
+    source: ICollection<T>,
+    selected: SelectedCollection<T>,
+    columns: IRowColumn<T>[]
+): IRow<T>[] {
+    const [rows, setRows] = useState<IRow<T>[]>([])
     const existingRows = useRef<{
-        map: Record<
-            string,
-            {
-                selected: boolean
-                item: T
-                row: IRow
-            }
-        >
-    }>({ map: {} })
+        map: Record<string, IRow<T>>
+        states: IRow<T>[]
+    }>({ map: {}, states: [] })
 
     const updateRows = useCallback(() => {
-        const existingKeys = Object.keys(existingRows.current.map)
         const items = source.items()
 
-        let index = 0
         let change = false
-        const newRows: IRow[] = []
+
+        const newStates: IRow<T>[] = []
         for (const item of items) {
             const key = source.getKey(item)
-            const existing = existingRows.current.map['id-' + key]
-            if (existing && existing.item === item && existing.selected === selected.includes(key)) {
-                newRows.push(existing.row)
-                if (index !== existingKeys.indexOf('id-' + key)) change = true
+            const existing = existingRows.current.map[key]
+            const isSelected = selected.includes(item)
+            if (existing && existing.item === item && existing.selected === isSelected) {
+                newStates.push(existing)
             } else {
-                newRows.push({
-                    selected: selected.includes(item),
-                    cells: cellFns.map((cellFn) => cellFn(item)),
-                })
                 change = true
-            }
-            index++
-        }
-        if (change) {
-            const newExisiting: Record<string, { selected: boolean; item: T; row: IRow }> = {}
-            index = 0
-            for (const item of items) {
-                const key = source.getKey(item)
-                newExisiting['id-' + key] = {
-                    selected: selected.includes(key),
+                newStates.push({
+                    selected: isSelected,
                     item,
-                    row: newRows[index],
-                }
-                index++
+                    cells: columns.map((columns) => columns.cellFn(item)),
+                })
             }
-            existingRows.current.map = newExisiting
-            setRows(newRows)
         }
-    }, [source, selected])
+
+        if (!change) {
+            // TODO CHECK FOR ORDER CHANGE
+            const existingStates = existingRows.current.states
+            if (newStates.length !== existingStates.length) {
+                change = true
+            } else {
+                for (let i = 0, len = existingStates.length; i < len; i++) {
+                    if (existingStates[i].item !== newStates[i].item) {
+                        change = true
+                        break
+                    }
+                }
+            }
+        }
+
+        if (change) {
+            const newMap: Record<string, IRow<T>> = {}
+            for (const state of newStates) {
+                const key = source.getKey(state.item)
+                newMap[key] = state
+            }
+            existingRows.current.map = newMap
+            existingRows.current.states = newStates
+            setRows(newStates)
+        }
+    }, [source, selected, columns])
 
     useEffect(() => updateRows(), [updateRows])
 
