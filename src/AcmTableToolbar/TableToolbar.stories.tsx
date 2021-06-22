@@ -35,13 +35,17 @@ import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
 import { ICell, Table, TableBody, TableHeader } from '@patternfly/react-table'
 import { Meta } from '@storybook/react'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { createTasks, Risk, risks, Status, statuses, Task, updateRandomTask } from './mocks/mock-addresses'
+import { createTasks, Risk, risks, Status, statuses, Task, updateRandomTask } from './mocks/mock-tasks'
 import { TableFilterProps } from './TableFilter'
 import { TableToolbar } from './TableToolbar'
-import { Collection } from './useCollection/collection'
-import { useFilter, usePage, useSearch, useSelection, useSort } from './useCollection/useCollection'
 import { cellFn, useRows } from './useCollection/useRows'
 import { EnumSelect } from './EnumSelect'
+import { Collection } from './collections/collection'
+import { useSelectedCollection } from './collections/selected-collection'
+import { useSearchedCollection } from './collections/searched-collection'
+import { useFilteredCollection } from './collections/filtered-collection'
+import { usePagedCollection } from './collections/paged-collection'
+import { useSortedCollection } from './collections/sorted-collection'
 
 const meta: Meta = {
     title: 'TableToolbar',
@@ -115,11 +119,11 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         return 0
     })
 
-    const selected = useSelection<Task>(collection)
-    const filtered = useFilter<Task>(collection, statusFilter)
-    const searched = useSearch<Task>(filtered, searchFn)
-    const sorted = useSort<Task>(searched, sortFn)
-    const paged = usePage<Task>(sorted, page, perPage)
+    const selected = useSelectedCollection<Task>(collection)
+    const filtered = useFilteredCollection<Task>(collection, statusFilter)
+    const searched = useSearchedCollection<Task>(filtered, {}, '')
+    const sorted = useSortedCollection<Task>(searched, sortFn)
+    const paged = usePagedCollection<Task>(sorted, page, perPage)
     const cells = useMemo<(ICell & { cellFn: cellFn<Task> })[]>(
         () => [
             {

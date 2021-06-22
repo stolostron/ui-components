@@ -1,6 +1,7 @@
 import { ICell, IRow } from '@patternfly/react-table'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { ICollection, SelectedCollection } from './collection'
+import { ICollection } from '../collections/collection'
+import { SelectedCollection } from '../collections/selected-collection'
 
 export type IHeader<T> = ICell & {
     cellFn: (item: Readonly<T>) => ReactNode

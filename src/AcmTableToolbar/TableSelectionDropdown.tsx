@@ -109,11 +109,10 @@ export function TableSelectionDropdown(props: TableSelectionDropdownProps) {
         )
     }, [props.onSelectAll, props.itemCount])
 
-    const dropdownItems = useMemo(() => [selectNoneDropdownItem, selectPageDropdownItem, selectAllDropdownItem], [
-        selectNoneDropdownItem,
-        selectPageDropdownItem,
-        selectAllDropdownItem,
-    ])
+    const dropdownItems = useMemo(
+        () => [selectNoneDropdownItem, selectPageDropdownItem, selectAllDropdownItem],
+        [selectNoneDropdownItem, selectPageDropdownItem, selectAllDropdownItem]
+    )
 
     return <Dropdown isOpen={isOpen} toggle={toggle} dropdownItems={dropdownItems} />
 }

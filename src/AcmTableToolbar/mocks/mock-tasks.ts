@@ -1,4 +1,6 @@
 import faker from 'faker'
+import { useEffect, useRef } from 'react'
+import { Collection } from '../collections/collection'
 
 export interface Task {
     id: string
@@ -27,9 +29,9 @@ export enum Risk {
 export const risks = Object.keys(Risk).filter((k) => typeof Risk[k as any] === 'number')
 
 function randomEnum<T>(anEnum: T): T[keyof T] {
-    const enumValues = (Object.keys(anEnum)
+    const enumValues = Object.keys(anEnum)
         .map((n) => Number.parseInt(n))
-        .filter((n) => !Number.isNaN(n)) as unknown) as T[keyof T][]
+        .filter((n) => !Number.isNaN(n)) as unknown as T[keyof T][]
     const randomIndex = Math.floor(Math.random() * enumValues.length)
     const randomEnumValue = enumValues[randomIndex]
     return randomEnumValue
@@ -49,7 +51,7 @@ export function createTask(): Task {
 }
 
 export function createTasks(count: number): Task[] {
-    return new Array<Task>(count).fill((null as unknown) as Task).map(() => createTask())
+    return new Array<Task>(count).fill(null as unknown as Task).map(() => createTask())
 }
 
 export function updateTask(task: Task): Task {
@@ -78,4 +80,15 @@ export function updateTask(task: Task): Task {
 export function updateRandomTask(tasks: ReadonlyArray<Task>) {
     const randomIndex = Math.floor(Math.random() * tasks.length)
     return updateTask(tasks[randomIndex])
+}
+
+export function useMockTasks(count: number, debounce: number): Collection<Task> {
+    const collectionRef = useRef({ collection: new Collection<Task>((task) => task.id, debounce) })
+    useEffect(() => {
+        collectionRef.current.collection.debounce = debounce
+    }, [debounce])
+    useEffect(() => {
+        // collectionRef.current.collection.
+    }, [count])
+    return collectionRef.current.collection
 }
