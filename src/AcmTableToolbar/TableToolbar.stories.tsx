@@ -323,6 +323,13 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             ) => {
                                 if (rowIndex === -1) {
                                     selected.selectAll()
+                                } else {
+                                    const item = paged.items()[rowIndex]
+                                    if (selected.includes(item)) {
+                                        selected.remove(item)
+                                    } else {
+                                        selected.insert(item)
+                                    }
                                 }
                             }}
                             canSelectAll={false}

@@ -104,8 +104,8 @@ export class CollectionEmitter<T> extends EventEmitter {
     }
 
     private sendEvent(immediate = false) {
-        if (!this.event) return
         if (this.eventsPaused) return
+        if (!this.event) return
         if (!immediate && this.debounce && this.debounce > 0) {
             if (!this.timeout) {
                 this.timeout = setTimeout(() => {
