@@ -55,7 +55,8 @@ const meta: Meta = {
 export default meta
 
 enum UpdateTime {
-    'Never' = 0,
+    'Never' = -1,
+    '0ms' = 0,
     '1ms' = 1,
     '10ms' = 10,
     '100ms' = 100,
@@ -103,6 +104,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         keys: [
             { name: 'name', weight: 1 },
             { name: 'description', weight: 0.5 },
+            { name: 'labels', weight: 0.75 },
         ],
         shouldSort: true,
     })
@@ -158,11 +160,11 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                                 )}
                             </Fragment>
                         ) : item.progress === 0 ? (
-                            <Fragment>
+                            <span style={{ whiteSpace: 'nowrap' }}>
                                 <PendingIcon size="sm" color="var(--pf-global--info-color--100)" />
                                 &nbsp;&nbsp;
                                 {Status[item.status]}
-                            </Fragment>
+                            </span>
                         ) : (
                             <Progress
                                 value={item.progress}
@@ -186,22 +188,34 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                 cellFn: (item: Task) => (
                     <Fragment>
                         {item.risk === Risk.High ? (
-                            <Fragment>
+                            <span style={{ whiteSpace: 'nowrap' }}>
                                 <ErrorIcon size="sm" color="var(--pf-global--danger-color--100)" /> &nbsp;
                                 {item.risk}
-                            </Fragment>
+                            </span>
                         ) : item.risk === Risk.Medium ? (
-                            <Fragment>
+                            <span style={{ whiteSpace: 'nowrap' }}>
                                 <ExclamationIcon size="sm" color="var(--pf-global--warning-color--100)" /> &nbsp;
                                 {item.risk}
-                            </Fragment>
+                            </span>
                         ) : (
-                            <Fragment>
+                            <span style={{ whiteSpace: 'nowrap' }}>
                                 <ExclamationIcon size="sm" color="var(--pf-global--info-color--100)" /> &nbsp;
                                 {item.risk}
-                            </Fragment>
+                            </span>
                         )}
                     </Fragment>
+                ),
+            },
+            {
+                title: 'Labels',
+                cellFn: (item: Task) => (
+                    <span>
+                        <LabelGroup>
+                            {item.labels.map((label) => (
+                                <Label key={label}>{label}</Label>
+                            ))}
+                        </LabelGroup>
+                    </span>
                 ),
             },
         ],
@@ -210,7 +224,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     const rows = useRows(paged, selected, cells)
 
     useEffect(() => {
-        if (updateTime === 0) return
+        if (updateTime === -1) return
         const interval = setInterval(() => {
             const updated = updateRandomTask(collection.items())
             collection.insert(updated)
@@ -312,6 +326,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             <TableBody />
                         </Table> */}
                         <Table
+                            aria-label="TODO"
                             cells={cells}
                             rows={rows}
                             onSelect={(

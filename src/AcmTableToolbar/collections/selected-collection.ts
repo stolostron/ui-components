@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Collection, CollectionChange, ICollection } from './collection'
 
 export class SelectedCollection<T> extends Collection<T> {
@@ -30,7 +30,7 @@ export class SelectedCollection<T> extends Collection<T> {
 }
 
 export function useSelectedCollection<T>(source: ICollection<T>): SelectedCollection<T> {
-    const selectedRef = useRef({ selected: new SelectedCollection<T>(source) })
-    useEffect(() => () => selectedRef.current.selected.dispose(), [])
-    return selectedRef.current.selected
+    const [selected] = useState(() => new SelectedCollection<T>(source))
+    useEffect(() => () => selected.dispose(), [])
+    return selected
 }

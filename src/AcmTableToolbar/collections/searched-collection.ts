@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CollectionChange, CollectionEmitter, ICollection } from './collection'
 import { compareNumbers } from './compare-items'
 
@@ -153,9 +153,9 @@ export function useSearchedCollection<T>(
     search: string,
     searchOptions: Fuse.IFuseOptions<T>
 ): SearchedCollection<T> {
-    const searchedRef = useRef({ searched: new SearchedCollection<T>(source) })
-    useEffect(() => searchedRef.current.searched.setSearchOptions(searchOptions), [searchOptions])
-    useEffect(() => searchedRef.current.searched.setSearch(search), [search])
-    useEffect(() => () => searchedRef.current.searched.dispose(), [])
-    return searchedRef.current.searched
+    const [searched] = useState(() => new SearchedCollection<T>(source))
+    useEffect(() => searched.setSearchOptions(searchOptions), [searchOptions])
+    useEffect(() => searched.setSearch(search), [search])
+    useEffect(() => () => searched.dispose(), [])
+    return searched
 }

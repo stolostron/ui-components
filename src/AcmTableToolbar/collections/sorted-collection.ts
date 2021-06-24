@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CollectionChange, CollectionEmitter, ICollection } from './collection'
 
 export interface ISort<T> {
@@ -73,8 +73,8 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
 }
 
 export function useSortedCollection<T>(source: ICollection<T>, sort?: ISort<T>): SortedCollection<T> {
-    const sortedRef = useRef({ sorted: new SortedCollection<T>(source) })
-    useEffect(() => sortedRef.current.sorted.setSort(sort), [sort])
-    useEffect(() => () => sortedRef.current.sorted.dispose(), [])
-    return sortedRef.current.sorted
+    const [sorted] = useState(() => new SortedCollection<T>(source))
+    useEffect(() => sorted.setSort(sort), [sort])
+    useEffect(() => () => sorted.dispose(), [])
+    return sorted
 }

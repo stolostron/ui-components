@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { CollectionChange, ICollection, ReadOnlyCollection } from './collection'
 
 export class FilteredCollection<T> extends ReadOnlyCollection<T> {
@@ -57,8 +57,8 @@ export function useFilteredCollection<T>(
     source: ICollection<T>,
     filterFn?: (item: T) => boolean
 ): FilteredCollection<T> {
-    const filteredRef = useRef({ filtered: new FilteredCollection<T>(source) })
-    useEffect(() => filteredRef.current.filtered.setFilter(filterFn), [filterFn])
-    useEffect(() => () => filteredRef.current.filtered.dispose(), [])
-    return filteredRef.current.filtered
+    const [filtered] = useState(() => new FilteredCollection<T>(source))
+    useEffect(() => filtered.setFilter(filterFn), [filterFn])
+    useEffect(() => () => filtered.dispose(), [])
+    return filtered
 }

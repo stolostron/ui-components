@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CollectionChange, CollectionEmitter, ICollection } from './collection'
 
 export class PagedCollection<T> extends CollectionEmitter<T> implements ICollection<T> {
@@ -52,8 +52,8 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
 }
 
 export function usePagedCollection<T>(source: ICollection<T>, page: number, perPage: number): PagedCollection<T> {
-    const pagedRef = useRef({ paged: new PagedCollection<T>(source, page, perPage) })
-    useEffect(() => pagedRef.current.paged.setPage(page, perPage), [page, perPage])
-    useEffect(() => () => pagedRef.current.paged.dispose(), [])
-    return pagedRef.current.paged
+    const [paged] = useState(() => new PagedCollection<T>(source, page, perPage))
+    useEffect(() => paged.setPage(page, perPage), [page, perPage])
+    useEffect(() => () => paged.dispose(), [])
+    return paged
 }

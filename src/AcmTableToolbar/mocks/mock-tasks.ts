@@ -11,6 +11,7 @@ export interface Task {
     progress: number
     created: number
     modified?: number
+    labels: string[]
 }
 
 export enum Status {
@@ -47,6 +48,16 @@ export function createTask(): Task {
         status: Status.Pending,
         risk: randomEnum(Risk),
         created: Date.now(),
+        labels: new Array(Math.ceil(Math.random() * 10))
+            .fill('')
+            .map(() => faker.hacker.noun())
+            .reduce((previousValue, currentValue, currentIndex, array) => {
+                if (currentIndex === array.indexOf(currentValue)) {
+                    previousValue.push(currentValue)
+                }
+                return previousValue
+            }, [] as string[])
+            .sort(),
     }
     return task
 }
