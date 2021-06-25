@@ -36,6 +36,7 @@ import { CaretDownIcon, CodeIcon, CogsIcon } from '@patternfly/react-icons'
 import React, { CSSProperties, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
+import { AcmLabels } from '../AcmLabels'
 import logo from '../assets/RHACM-Logo.svg'
 
 export type AcmHeaderProps = {
@@ -160,6 +161,70 @@ function AboutDropdown(props: AboutDropdownProps) {
                                 />
                             </g>
                         </g>
+                    </g>
+                </svg>
+            }
+        />
+    )
+}
+
+function VisualWebTerminalDropdown() {
+    const [aboutDDIsOpen, aboutDDSetOpen] = useState<boolean>(false)
+    const classes = useStyles()
+
+    function OpenInCurrentTabButton() {
+        return (
+            <ApplicationLauncherItem
+                component="button"
+                icon={<AcmIcon icon={AcmIconVariant.openCurrentTab} />}
+                onClick={() => window.open('/kui', '_self')}
+            >
+                Open in current browser tab
+            </ApplicationLauncherItem>
+        )
+    }
+    function OpenInNewTabButton() {
+        return (
+            <ApplicationLauncherItem
+                component="button"
+                icon={<AcmIcon icon={AcmIconVariant.openNewTab} />}
+                onClick={() => window.open('/kui', '_blank')}
+            >
+                Open in new browser tab
+            </ApplicationLauncherItem>
+        )
+    }
+
+    return (
+        <ApplicationLauncher
+            aria-label="visual-web-terminal-menu"
+            data-test="visual-web-terminal-dropdown"
+            className="co-app-launcher co-app-menu"
+            onSelect={() => aboutDDSetOpen(false)}
+            onToggle={() => aboutDDSetOpen(!aboutDDIsOpen)}
+            isOpen={aboutDDIsOpen}
+            items={[
+                <ApplicationLauncherGroup label="Visual Web Terminal" key="vwt-group">
+                    <span className={classes.techPreview}>
+                        <AcmLabels labels={['Tech Preview']} color={'orange'}></AcmLabels>
+                    </span>
+                    <ApplicationLauncherSeparator></ApplicationLauncherSeparator>
+                    <OpenInCurrentTabButton key="vwt_in_current_tab_button" />
+                    <OpenInNewTabButton key="vwt_in_new_tab_button" />
+                </ApplicationLauncherGroup>,
+            ]}
+            data-quickstart-id="qs-masthead-visual-web-terminal-menu"
+            position="right"
+            toggleIcon={
+                <svg width="25px" height="25px" viewBox="0 -3 32 32" version="1.1">
+                    <title>visual-web-terminal-icon</title>
+                    <g stroke="none" strokeWidth="1" fillRule="evenodd" fill="#EDEDED">
+                        <path
+                            d="M26,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V6A2,2,0,0,0,26,4Zm0,2v4H6V6ZM6,26V12H26V26Z"
+                            transform="translate(0 0.01)"
+                        ></path>
+                        <polygon points="10.76 16.18 13.58 19.01 10.76 21.84 12.17 23.25 16.41 19.01 12.17 14.77 10.76 16.18"></polygon>
+                        <rect width="32" height="32" fill="none"></rect>
                     </g>
                 </svg>
             }
@@ -325,6 +390,13 @@ const useStyles = makeStyles({
             border: 'none',
         },
     },
+    vwt: {
+        'padding-right': '1em',
+    },
+    techPreview: {
+        'border-left-width': '16px',
+        'padding-left': '14px',
+    },
 })
 
 export enum AcmRoute {
@@ -476,8 +548,13 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                 <NavItem isActive={route === AcmRoute.Credentials} to={AcmRoute.Credentials}>
                     {isConsoleRoute ? <Link to={AcmRoute.Credentials}>Credentials</Link> : 'Credentials'}
                 </NavItem>
-                <NavItem isActive={route === AcmRoute.VisualWebTerminal} to={AcmRoute.VisualWebTerminal}>
-                    Visual Web Terminal
+                <NavItem
+                    isActive={route === AcmRoute.VisualWebTerminal}
+                    to={AcmRoute.VisualWebTerminal}
+                    target="_blank"
+                >
+                    <span className={classes.vwt}>Visual Web Terminal</span>
+                    <AcmIcon icon={AcmIconVariant.openNewTab} />
                 </NavItem>
             </NavList>
         </Nav>
@@ -648,6 +725,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                             </svg>
                         }
                     />
+                    <VisualWebTerminalDropdown></VisualWebTerminalDropdown>
                     <AboutDropdown aboutClick={() => setAboutModalOpen(!aboutModalOpen)} />
                     <AboutModal
                         isOpen={aboutModalOpen}
