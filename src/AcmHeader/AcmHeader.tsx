@@ -169,7 +169,7 @@ function AboutDropdown(props: AboutDropdownProps) {
 }
 
 function VisualWebTerminalDropdown() {
-    const [aboutDDIsOpen, aboutDDSetOpen] = useState<boolean>(false)
+    const [vwtDDIsOpen, vwtDDSetOpen] = useState<boolean>(false)
     const classes = useStyles()
 
     function OpenInCurrentTabButton() {
@@ -200,9 +200,9 @@ function VisualWebTerminalDropdown() {
             aria-label="visual-web-terminal-menu"
             data-test="visual-web-terminal-dropdown"
             className="co-app-launcher co-app-menu"
-            onSelect={() => aboutDDSetOpen(false)}
-            onToggle={() => aboutDDSetOpen(!aboutDDIsOpen)}
-            isOpen={aboutDDIsOpen}
+            onSelect={() => vwtDDSetOpen(false)}
+            onToggle={() => vwtDDSetOpen(!vwtDDIsOpen)}
+            isOpen={vwtDDIsOpen}
             items={[
                 <ApplicationLauncherGroup label="Visual Web Terminal" key="vwt-group">
                     <span className={classes.techPreview}>
@@ -393,6 +393,10 @@ const useStyles = makeStyles({
     vwt: {
         'padding-right': '1em',
     },
+    vwtAndIcon: {
+        display: 'flex',
+        alignItems: 'center',
+    },
     techPreview: {
         'border-left-width': '16px',
         'padding-left': '14px',
@@ -551,6 +555,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                 <NavItem
                     isActive={route === AcmRoute.VisualWebTerminal}
                     to={AcmRoute.VisualWebTerminal}
+                    className={classes.vwtAndIcon}
                     target="_blank"
                 >
                     <span className={classes.vwt}>Visual Web Terminal</span>
