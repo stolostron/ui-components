@@ -6,6 +6,7 @@ import EyeIcon from '@patternfly/react-icons/dist/js/icons/eye-icon'
 import EyeSlashIcon from '@patternfly/react-icons/dist/js/icons/eye-slash-icon'
 import ServerIcon from '@patternfly/react-icons/dist/js/icons/server-icon'
 import React, { Fragment } from 'react'
+import OpenCurrentTabIcon from './OpenCurrentTabIcon'
 import OpenNewTabIcon from './OpenNewTabIcon'
 import AcmTemplateIcon from './TemplateIcon'
 import AWSIcon from './AWSIcon'
@@ -34,6 +35,7 @@ export enum AcmIconVariant {
     baremetal = 'baremetal',
     vmware = 'vmware',
     cloud = 'cloud',
+    openCurrentTab = 'opencurrenttab',
     openNewTab = 'opennewtab',
     ansible = 'ansible',
 }
@@ -68,6 +70,8 @@ export function AcmIcon(props: { icon: AcmIconVariant } & SVGIconProps) {
             return <VMWareIcon {...props} />
         case AcmIconVariant.cloud:
             return <CloudIcon {...props} />
+        case AcmIconVariant.openCurrentTab:
+            return <OpenCurrentTabIcon {...props} />
         case AcmIconVariant.openNewTab:
             return <OpenNewTabIcon {...props} />
         case AcmIconVariant.ansible:
