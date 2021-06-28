@@ -772,7 +772,7 @@ export function AcmHeader(props: AcmHeaderProps) {
                     nav={
                         <NavExpandableList
                             route={props.route}
-                            showSwitcher={true}
+                            showSwitcher={appSwitcherExists}
                             postClick={() => {
                                 if (!isFullWidthPage) setNavOpen(false)
                             }}
