@@ -537,7 +537,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // Compensate for PF auto-added columns
     // sort state always contains the data index
     // adjustedSort and the updateSort callback compensate for header display index used in PF
-    const adjustedSortIndexOffset = (bulkActions?.length || !!props.onSelect ? 1 : 0) + (onCollapse ? 1 : 0)
+    /* istanbul ignore next */
+    const hasSelectionColumn = bulkActions?.length || !!props.onSelect
+    const adjustedSortIndexOffset = (hasSelectionColumn ? 1 : 0) + (onCollapse ? 1 : 0)
     const adjustedSort =
         sort && sort.index !== undefined && sort.index !== null && sort.direction && filtered.length > 0
             ? {
