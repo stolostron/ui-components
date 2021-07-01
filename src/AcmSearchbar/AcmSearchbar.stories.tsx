@@ -26,6 +26,15 @@ function getSuggestions(query: string): DropdownSuggestionsProps[] {
             { id: '2', name: 'pod', kind: 'value' },
             { id: '3', name: 'deployment', kind: 'value' },
             { id: '4', name: 'cluster', kind: 'value' },
+            { id: '5', name: 'apiservice', kind: 'value' },
+            { id: '6', name: 'deployable', kind: 'value' },
+            { id: '7', name: 'application', kind: 'value' },
+            { id: '8', name: 'subscription', kind: 'value' },
+            { id: '9', name: 'service', kind: 'value' },
+            { id: '10', name: 'ingress', kind: 'value' },
+            { id: '11', name: 'secret', kind: 'value' },
+            { id: '12', name: 'node', kind: 'value' },
+            { id: '13', name: 'replicaset', kind: 'value' },
         ]
     } else if (lastTag && lastTag.name.includes('name:')) {
         return [
@@ -48,14 +57,16 @@ function getSuggestions(query: string): DropdownSuggestionsProps[] {
 export const Searchbar = () => {
     const [currentQuery, setCurrentQuery] = useState('kind:pod namespace:default name:')
     return (
-        <AcmSearchbar
-            loadingSuggestions={false}
-            queryString={currentQuery}
-            suggestions={getSuggestions(currentQuery)}
-            currentQueryCallback={(updatedQuery) => {
-                setCurrentQuery(updatedQuery)
-            }}
-            toggleInfoModal={() => null}
-        />
+        <div style={{ display: 'flex', margin: '50px 50px 0px 50px' }}>
+            <AcmSearchbar
+                loadingSuggestions={false}
+                queryString={currentQuery}
+                suggestions={getSuggestions(currentQuery)}
+                currentQueryCallback={(updatedQuery) => {
+                    setCurrentQuery(updatedQuery)
+                }}
+                toggleInfoModal={() => null}
+            />
+        </div>
     )
 }
