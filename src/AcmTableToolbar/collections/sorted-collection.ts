@@ -23,7 +23,6 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements IOrdere
 
     public dispose() {
         super.dispose()
-        this.removeAllListeners()
         this.source.removeListener('change', this.handleChange)
     }
 
@@ -32,8 +31,7 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements IOrdere
     }
 
     public items(start?: number, end?: number): ReadonlyArray<Readonly<T>> {
-        if (start) return this.sortedItems.slice(start, end)
-        else return this.sortedItems
+        return this.sortedItems.slice(start, end)
     }
 
     public forEach(callback: (key: string, value: T) => void) {
@@ -44,6 +42,7 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements IOrdere
     }
 
     public setSort(sortObj?: ISort<T>) {
+        if (this.sortObj === sortObj) return
         this.sortObj = sortObj
         this.sort()
     }
@@ -62,7 +61,9 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements IOrdere
 
     private handleChange(change: CollectionChange<T>) {
         // TODO - efficient sorting....
-        this.sort()
+        this.sortedItems = []
+        this.source.forEach((_key, item) => this.sortedItems.push(item))
+        this.orderedEvent()
     }
 }
 

@@ -16,7 +16,6 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
 
     public dispose() {
         super.dispose()
-        this.removeAllListeners()
         this.source.removeListener('change', this.handleChange)
     }
 
@@ -50,8 +49,7 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
     }
 
     public items(start?: number, end?: number): ReadonlyArray<Readonly<T>> {
-        if (start) return this.pagedItems.slice(start, end)
-        else return this.pagedItems
+        return this.pagedItems.slice(start, end)
     }
 }
 

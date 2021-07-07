@@ -6,7 +6,6 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
 
     constructor(private source: ICollection<T>, private filterFn?: (item: T) => boolean) {
         super(source.getKey)
-        this.filter = this.filter.bind(this)
         this.filterItem = this.filterItem.bind(this)
         this.handleChange = this.handleChange.bind(this)
         source.addListener('change', this.handleChange)
@@ -15,7 +14,6 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
 
     public dispose() {
         super.dispose()
-        this.removeAllListeners()
         this.source.removeListener('change', this.handleChange)
     }
 
@@ -27,16 +25,25 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
         this.filter()
     }
 
+    private filterTimeout: NodeJS.Timeout | undefined
+
     private filter() {
+        if (this.filterTimeout) return
         this.pauseEvents()
+        this.filterTimeout = setTimeout(() => this.process(), 0)
+    }
+
+    private process() {
         const start = Date.now()
-        while (this.itemQueue.length > 0 && Date.now() - start < 10) {
-            const item = this.itemQueue.shift()
+        while (this.itemQueue.length > 0 && Date.now() - start < 100) {
+            const item = this.itemQueue.pop()
             if (item) this.filterItem(item)
         }
-        this.resumeEvents()
         if (this.itemQueue.length > 0) {
-            setTimeout(() => this.filter(), 0)
+            this.filterTimeout = setTimeout(() => this.process(), 10)
+        } else {
+            this.filterTimeout = undefined
+            this.resumeEvents()
         }
     }
 

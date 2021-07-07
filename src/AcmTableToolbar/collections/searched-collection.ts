@@ -35,7 +35,6 @@
 
 //     public dispose() {
 //         super.dispose()
-//         this.removeAllListeners()
 //         this.source.removeListener('change', this.handleChange)
 //     }
 

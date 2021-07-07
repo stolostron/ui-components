@@ -67,7 +67,7 @@ let render = 0
 
 export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean; 'Risk Filter': boolean }) => {
     const [updateTime, setUpdateTime] = useState<UpdateTime>(UpdateTime.Never)
-    const collection = useMockTasks(1000, 100)
+    const collection = useMockTasks(1000000, 100)
     const collectionCount = useCollectionCount(collection)
 
     const [statusFilter, setStatusFilter] = useState<Status[]>([])
