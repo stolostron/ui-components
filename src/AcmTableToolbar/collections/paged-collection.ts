@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { CollectionChange, CollectionEmitter, ICollection } from './collection'
+import { CollectionEmitter, ICollection, IOrderedCollection } from './collection'
 
 export class PagedCollection<T> extends CollectionEmitter<T> implements ICollection<T> {
-    private pagedItems: T[] = []
+    private pagedItems: ReadonlyArray<Readonly<T>> = []
 
     public readonly getKey: (item: Readonly<T>) => string
 
-    constructor(private readonly source: ICollection<T>, private page: number, private pageSize: number) {
+    constructor(private readonly source: IOrderedCollection<T>, private page: number, private pageSize: number) {
         super()
         this.getKey = source.getKey
         this.handleChange = this.handleChange.bind(this)
@@ -14,40 +14,52 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
         this.setPage(page, pageSize)
     }
 
-    public get length() {
-        return this.pagedItems?.length ?? 0
-    }
-
     public dispose() {
         super.dispose()
+        this.removeAllListeners()
         this.source.removeListener('change', this.handleChange)
     }
 
-    public setPage(page: number, pageSize: number) {
-        if (this.page !== page || this.pageSize !== pageSize) {
-            this.page = page
-            this.pageSize = pageSize
-            this.paginate()
+    public get length() {
+        return this.pagedItems.length
+    }
+
+    public forEach(callback: (key: string, value: T) => void) {
+        for (const item of this.pagedItems) {
+            const key = this.getKey(item)
+            callback(key, item)
         }
+    }
+
+    public setPage(page: number, pageSize: number) {
+        if (this.page === page && this.pageSize === pageSize) return
+        this.page = page
+        this.pageSize = pageSize
+        this.paginate()
     }
 
     public paginate() {
         const startIndex = (this.page - 1) * this.pageSize
         const endIndex = startIndex + this.pageSize
-        this.pagedItems = this.source.items().slice(startIndex, endIndex)
+        this.pagedItems = this.source.items(startIndex, endIndex)
         this.orderedEvent()
     }
 
-    private handleChange(change: CollectionChange<T>) {
+    private handleChange() {
         this.paginate()
     }
 
-    public items(): ReadonlyArray<Readonly<T>> {
-        return this.pagedItems
+    public items(start?: number, end?: number): ReadonlyArray<Readonly<T>> {
+        if (start) return this.pagedItems.slice(start, end)
+        else return this.pagedItems
     }
 }
 
-export function usePagedCollection<T>(source: ICollection<T>, page: number, perPage: number): PagedCollection<T> {
+export function usePagedCollection<T>(
+    source: IOrderedCollection<T>,
+    page: number,
+    perPage: number
+): PagedCollection<T> {
     const [paged] = useState(() => new PagedCollection<T>(source, page, perPage))
     useEffect(() => paged.setPage(page, perPage), [page, perPage])
     useEffect(() => () => paged.dispose(), [])

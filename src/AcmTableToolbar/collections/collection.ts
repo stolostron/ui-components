@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 declare global {
     interface ArrayConstructor {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         isArray(arg: any): arg is ReadonlyArray<any>
     }
 }
@@ -13,14 +14,20 @@ export interface CollectionChange<T> {
     ordered?: boolean
 }
 
+// export function mergeCollectionChange<T>(lhs: CollectionChange<T>, rhs: CollectionChange<T>) {}
+
 export interface ICollection<T> {
     readonly getKey: (item: Readonly<T>) => string
     on(event: 'change', listener: (changeEvent: CollectionChange<T>) => void): void
     addListener(event: 'change', listener: (changeEvent: CollectionChange<T>) => void): void
     removeListener(event: 'change', listener: (changeEvent: CollectionChange<T>) => void): void
     dispose(): void
-    items(): ReadonlyArray<Readonly<T>>
     readonly length: number
+    forEach: (callback: (key: string, value: T) => void) => void
+}
+
+export interface IOrderedCollection<T> extends ICollection<T> {
+    items(start?: number, end?: number): ReadonlyArray<Readonly<T>>
 }
 
 export declare interface CollectionEmitter<T> {
@@ -137,15 +144,17 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
         return Object.keys(this.itemMap).length
     }
 
+    forEach(callback: (key: string, value: T) => void) {
+        for (const key in this.itemMap) {
+            callback(key, this.itemMap[key])
+        }
+    }
+
     public includes(key: string | Readonly<T>) {
         if (typeof key !== 'string') {
             key = this.getKey(key)
         }
         return this.itemMap[key] !== undefined
-    }
-
-    public items(): ReadonlyArray<Readonly<T>> {
-        return Object.values(this.itemMap)
     }
 
     protected insert(item?: Readonly<T> | ReadonlyArray<Readonly<T>>): boolean {

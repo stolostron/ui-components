@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { ICollection } from '../collections/collection'
+import { IOrderedCollection } from '../collections/collection'
 import { SelectedCollection } from '../collections/selected-collection'
 
 export interface IRowColumn<T> {
@@ -15,7 +15,7 @@ export interface IRow<T> {
 }
 
 export function useRows<T>(
-    source: ICollection<T>,
+    source: IOrderedCollection<T>,
     selected: SelectedCollection<T>,
     columns: IRowColumn<T>[]
 ): IRow<T>[] {

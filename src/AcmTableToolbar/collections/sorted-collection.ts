@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CollectionChange, CollectionEmitter, ICollection } from './collection'
+import { CollectionChange, CollectionEmitter, ICollection, IOrderedCollection } from './collection'
 
 export interface ISort<T> {
     id: string
@@ -8,8 +8,8 @@ export interface ISort<T> {
     sortFn?: (lhs: Readonly<T>, rhs: Readonly<T>) => number
 }
 
-export class SortedCollection<T> extends CollectionEmitter<T> implements ICollection<T> {
-    private sortedItems?: T[]
+export class SortedCollection<T> extends CollectionEmitter<T> implements IOrderedCollection<T> {
+    private sortedItems: T[] = []
 
     public readonly getKey: (item: Readonly<T>) => string
 
@@ -21,13 +21,26 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
         this.setSort(sortObj)
     }
 
-    public get length() {
-        return this.sortedItems?.length ?? 0
-    }
-
     public dispose() {
         super.dispose()
+        this.removeAllListeners()
         this.source.removeListener('change', this.handleChange)
+    }
+
+    public get length() {
+        return this.sortedItems.length
+    }
+
+    public items(start?: number, end?: number): ReadonlyArray<Readonly<T>> {
+        if (start) return this.sortedItems.slice(start, end)
+        else return this.sortedItems
+    }
+
+    public forEach(callback: (key: string, value: T) => void) {
+        for (const item of this.sortedItems) {
+            const key = this.getKey(item)
+            callback(key, item)
+        }
     }
 
     public setSort(sortObj?: ISort<T>) {
@@ -36,37 +49,20 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
     }
 
     public sort() {
+        this.sortedItems = []
+        this.source.forEach((_key, item) => this.sortedItems.push(item))
         if (this.sortObj) {
-            this.sortedItems = [...this.source.items()].sort(this.sortObj.sortFn)
+            this.sortedItems.sort(this.sortObj.sortFn)
             if (this.sortObj.direction === 'desc') {
                 this.sortedItems.reverse()
             }
-            this.orderedEvent()
-        } else if (this.sortedItems) {
-            this.sortedItems = undefined
-            this.orderedEvent()
         }
+        this.orderedEvent()
     }
 
     private handleChange(change: CollectionChange<T>) {
-        this.pauseEvents()
+        // TODO - efficient sorting....
         this.sort()
-        for (const key in change.inserted) {
-            this.insertEvent(key, change.inserted[key])
-        }
-        for (const key in change.removed) {
-            this.removeEvent(key)
-        }
-        this.orderedEvent()
-        this.resumeEvents()
-    }
-
-    public items(): ReadonlyArray<Readonly<T>> {
-        if (this.sortedItems) {
-            return this.sortedItems
-        } else {
-            return this.source.items()
-        }
     }
 }
 

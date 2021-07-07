@@ -2,8 +2,12 @@ import { useEffect, useState } from 'react'
 import { CollectionChange, ICollection, ReadOnlyCollection } from './collection'
 
 export class FilteredCollection<T> extends ReadOnlyCollection<T> {
+    private itemQueue: T[] = []
+
     constructor(private source: ICollection<T>, private filterFn?: (item: T) => boolean) {
         super(source.getKey)
+        this.filter = this.filter.bind(this)
+        this.filterItem = this.filterItem.bind(this)
         this.handleChange = this.handleChange.bind(this)
         source.addListener('change', this.handleChange)
         this.setFilter(filterFn)
@@ -11,43 +15,53 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
 
     public dispose() {
         super.dispose()
+        this.removeAllListeners()
         this.source.removeListener('change', this.handleChange)
     }
 
     public setFilter(filterFn?: (item: T) => boolean) {
+        if (this.filterFn === filterFn) return
         this.filterFn = filterFn
+        this.itemQueue = []
+        this.source.forEach((_key, item) => this.itemQueue.push(item))
         this.filter()
     }
 
-    public filter() {
+    private filter() {
         this.pauseEvents()
-        this.source.items().forEach((item) => {
-            if (!this.filterFn || this.filterFn(item)) {
-                this.insert(item)
-            } else {
-                this.remove(this.getKey(item))
-            }
-        })
+        const start = Date.now()
+        while (this.itemQueue.length > 0 && Date.now() - start < 10) {
+            const item = this.itemQueue.shift()
+            if (item) this.filterItem(item)
+        }
         this.resumeEvents()
+        if (this.itemQueue.length > 0) {
+            setTimeout(() => this.filter(), 0)
+        }
+    }
+
+    private filterItem(item: T) {
+        if (!this.filterFn || this.filterFn(item)) {
+            this.insert(item)
+        } else {
+            this.remove(this.getKey(item))
+        }
     }
 
     private handleChange(change: CollectionChange<T>) {
         this.pauseEvents()
-        if (change?.inserted) {
-            for (const item of Object.values(change.inserted)) {
-                if (!this.filterFn || this.filterFn(item)) {
-                    this.insert(item)
-                } else {
-                    this.remove(this.getKey(item))
-                }
-            }
+        this.itemQueue = this.itemQueue.filter((item) => {
+            const key = this.getKey(item)
+            return change.removed?.[key] !== undefined && change.inserted?.[key] !== undefined
+        })
+        for (const key in change.inserted) {
+            this.itemQueue.push(change.inserted[key])
         }
-        if (change?.removed) {
-            for (const key in change.removed) {
-                this.remove(key)
-            }
+        for (const key in change.removed) {
+            this.remove(key)
         }
         this.resumeEvents()
+        this.filter()
     }
 }
 

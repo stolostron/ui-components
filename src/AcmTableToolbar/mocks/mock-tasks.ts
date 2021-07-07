@@ -1,5 +1,5 @@
 import faker from 'faker'
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { Collection } from '../collections/collection'
 
 export interface Task {
@@ -95,12 +95,12 @@ export function updateRandomTask(tasks: ReadonlyArray<Task>) {
 }
 
 export function useMockTasks(count: number, debounce: number): Collection<Task> {
-    const collectionRef = useRef({ collection: new Collection<Task>((task) => task.id, debounce) })
+    const [collection] = useState(() => new Collection<Task>((task) => task.id, debounce))
     useEffect(() => {
-        collectionRef.current.collection.debounce = debounce
+        collection.debounce = debounce
     }, [debounce])
     useEffect(() => {
-        collectionRef.current.collection.insert(createTasks(count))
+        collection.insert(createTasks(count))
     }, [count])
-    return collectionRef.current.collection
+    return collection
 }

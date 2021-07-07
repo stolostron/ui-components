@@ -4,12 +4,14 @@ import { Collection, CollectionChange, ICollection } from './collection'
 export class SelectedCollection<T> extends Collection<T> {
     constructor(private readonly source: ICollection<T>) {
         super(source.getKey)
+        this.insert = this.insert.bind(this)
         this.handleChange = this.handleChange.bind(this)
         source.addListener('change', this.handleChange)
     }
 
     public dispose() {
         super.dispose()
+        this.removeAllListeners()
         this.source.removeListener('change', this.handleChange)
     }
 
@@ -25,7 +27,9 @@ export class SelectedCollection<T> extends Collection<T> {
     }
 
     public selectAll() {
-        this.insert(this.source.items())
+        this.source.forEach((_key, item) => {
+            this.insert(item)
+        })
     }
 }
 

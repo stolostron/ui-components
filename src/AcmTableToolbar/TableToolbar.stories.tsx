@@ -33,7 +33,7 @@ import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'reac
 import { useCollectionCount } from './collections/collection'
 import { useFilteredCollection } from './collections/filtered-collection'
 import { usePagedCollection } from './collections/paged-collection'
-import { useSearchedCollection } from './collections/searched-collection'
+// import { useSearchedCollection } from './collections/searched-collection'
 import { useSelectedCollection } from './collections/selected-collection'
 import { useSortedCollection } from './collections/sorted-collection'
 import { EnumSelect } from './EnumSelect'
@@ -67,7 +67,7 @@ let render = 0
 
 export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean; 'Risk Filter': boolean }) => {
     const [updateTime, setUpdateTime] = useState<UpdateTime>(UpdateTime.Never)
-    const collection = useMockTasks(100000, 100)
+    const collection = useMockTasks(1000, 100)
     const collectionCount = useCollectionCount(collection)
 
     const [statusFilter, setStatusFilter] = useState<Status[]>([])
@@ -108,8 +108,8 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         ],
         shouldSort: true,
     })
-    const searched = useSearchedCollection<Task>(filtered, search, searchOptions)
-    const searchedCount = useCollectionCount(searched)
+    // const searched = useSearchedCollection<Task>(filtered, search, searchOptions)
+    // const searchedCount = useCollectionCount(searched)
 
     const [sortFn] = useState(() => (a, b) => {
         if (a.firstName < b.firstName) return -1
@@ -117,7 +117,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
         return 0
     })
 
-    const sorted = useSortedCollection<Task>(searched, sortFn)
+    const sorted = useSortedCollection<Task>(filtered, undefined)
     const sortedCount = useCollectionCount(sorted)
 
     const [page, setPage] = useState(1)
@@ -224,14 +224,14 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     const rows = useRows(paged, selected, cells)
 
     useEffect(() => {
-        if (updateTime === -1) return
-        const interval = setInterval(() => {
-            const updated = updateRandomTask(collection.items())
-            collection.insert(updated)
-        }, updateTime)
-        return () => {
-            clearInterval(interval)
-        }
+        // if (updateTime === -1) return
+        // const interval = setInterval(() => {
+        //     const updated = updateRandomTask(collection.items())
+        //     collection.insert(updated)
+        // }, updateTime)
+        // return () => {
+        //     clearInterval(interval)
+        // }
     }, [collection, updateTime])
 
     return (
@@ -258,7 +258,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                                         <Label variant="outline">{collectionCount} items</Label>
                                         <Label variant="outline">{selectedCount} selected</Label>
                                         <Label variant="outline">{filteredCount} filtered</Label>
-                                        <Label variant="outline">{searchedCount} searched</Label>
+                                        {/* <Label variant="outline">{searchedCount} searched</Label> */}
                                         <Label variant="outline">{sortedCount} sorted</Label>
                                         <Label variant="outline">{pagedCount} paged</Label>
                                         <Label variant="outline">{++render} renders</Label>
@@ -269,8 +269,8 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                     </Toolbar>
                     <Stack>
                         <TableToolbar
-                            itemCount={filtered.items().length}
-                            searchedCount={searchedCount}
+                            itemCount={collectionCount}
+                            searchedCount={filteredCount}
                             filteredCount={filteredCount}
                             page={page}
                             perPage={perPage}
@@ -374,7 +374,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                                 {/* <Divider /> */}
                                 <Pagination
                                     variant="bottom"
-                                    itemCount={searchedCount}
+                                    itemCount={filteredCount}
                                     page={page}
                                     onSetPage={(_, page) => setPage(page)}
                                     perPage={perPage}
