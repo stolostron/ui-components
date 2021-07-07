@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CollectionChange, CollectionEmitter, ICollection } from './collection'
 
 export class PagedCollection<T> extends CollectionEmitter<T> implements ICollection<T> {
@@ -35,15 +35,11 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
         const startIndex = (this.page - 1) * this.pageSize
         const endIndex = startIndex + this.pageSize
         this.pagedItems = this.source.items().slice(startIndex, endIndex)
-        // TODO - only send orderedEvent if page items really changed...
         this.orderedEvent()
     }
 
     private handleChange(change: CollectionChange<T>) {
-        this.pauseEvents()
         this.paginate()
-        // TODO send out inserted and removed events....
-        this.resumeEvents()
     }
 
     public items(): ReadonlyArray<Readonly<T>> {

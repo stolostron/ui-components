@@ -99,7 +99,7 @@ export class CollectionEmitter<T> extends EventEmitter {
     protected resumeEvents() {
         this.eventsPaused--
         if (this.eventsPaused === 0) {
-            this.sendEvent(true)
+            this.sendEvent()
         }
     }
 
@@ -164,7 +164,6 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
 
         const key = this.getKey(item)
         if (key === undefined) throw new Error('item key cannot be undefined')
-        if (typeof key !== 'string') throw new Error(`item key connt be of type ${typeof key}`)
 
         const existing = this.itemMap[key]
         if (existing === item) return false
@@ -174,13 +173,13 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
         return true
     }
 
-    protected remove(key?: string | ReadonlyArray<string> | Readonly<T> | ReadonlyArray<Readonly<T>>): boolean {
-        if (key === undefined) return false
+    protected remove(value?: string | ReadonlyArray<string> | Readonly<T> | ReadonlyArray<Readonly<T>>): boolean {
+        if (value === undefined) return false
 
-        if (Array.isArray(key)) {
+        if (Array.isArray(value)) {
             let removed = false
             this.pauseEvents()
-            for (const i of key) {
+            for (const i of value) {
                 if (this.remove(i)) {
                     removed = true
                 }
@@ -189,15 +188,15 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
             return removed
         }
 
-        if (typeof key !== 'string') {
-            key = this.getKey(key)
+        if (typeof value !== 'string') {
+            value = this.getKey(value)
         }
 
-        const existing = this.itemMap[key]
+        const existing = this.itemMap[value]
         if (existing === undefined) return false
 
-        delete this.itemMap[key]
-        this.removeEvent(key)
+        delete this.itemMap[value]
+        this.removeEvent(value)
         return true
     }
 

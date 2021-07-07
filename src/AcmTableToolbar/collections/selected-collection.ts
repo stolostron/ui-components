@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Collection, CollectionChange, ICollection } from './collection'
 
 export class SelectedCollection<T> extends Collection<T> {

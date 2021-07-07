@@ -15,10 +15,8 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
     }
 
     public setFilter(filterFn?: (item: T) => boolean) {
-        if (this.filterFn !== filterFn) {
-            this.filterFn = filterFn
-            this.filter()
-        }
+        this.filterFn = filterFn
+        this.filter()
     }
 
     public filter() {

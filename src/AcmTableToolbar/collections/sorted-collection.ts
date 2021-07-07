@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CollectionChange, CollectionEmitter, ICollection } from './collection'
 
 export interface ISort<T> {
@@ -31,10 +31,8 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements ICollec
     }
 
     public setSort(sortObj?: ISort<T>) {
-        if (this.sortObj !== sortObj) {
-            this.sortObj = sortObj
-            this.sort()
-        }
+        this.sortObj = sortObj
+        this.sort()
     }
 
     public sort() {
