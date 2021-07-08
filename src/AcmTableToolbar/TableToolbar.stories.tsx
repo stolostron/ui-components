@@ -27,7 +27,7 @@ import ErrorIcon from '@patternfly/react-icons/dist/js/icons/exclamation-circle-
 import ExclamationIcon from '@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon'
 import PendingIcon from '@patternfly/react-icons/dist/js/icons/pending-icon'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
-import { ICell, Table, TableBody, TableHeader } from '@patternfly/react-table'
+import { ICell, sortable, Table, TableBody, TableHeader } from '@patternfly/react-table'
 import { Meta } from '@storybook/react'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useCollectionCount } from './collections/collection'
@@ -35,13 +35,14 @@ import { useFilteredCollection } from './collections/filtered-collection'
 import { usePagedCollection } from './collections/paged-collection'
 // import { useSearchedCollection } from './collections/searched-collection'
 import { useSelectedCollection } from './collections/selected-collection'
-import { useSortedCollection } from './collections/sorted-collection'
+import { SortFn, useSortedCollection } from './collections/sorted-collection'
 import { EnumSelect } from './EnumSelect'
 import { Risk, risks, Status, statuses, Task, updateRandomTask, useMockTasks } from './mocks/mock-tasks'
 import { TableFilterProps } from './TableFilter'
 import { TableToolbar } from './TableToolbar'
 import { cellFn, useRows } from './useCollection/useRows'
 import Fuse from 'fuse.js'
+import { compareStrings } from './collections/compare-items'
 
 const meta: Meta = {
     title: 'TableToolbar',
@@ -67,7 +68,7 @@ let render = 0
 
 export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean; 'Risk Filter': boolean }) => {
     const [updateTime, setUpdateTime] = useState<UpdateTime>(UpdateTime.Never)
-    const collection = useMockTasks(1000000, 100)
+    const collection = useMockTasks(100000, 100)
     const collectionCount = useCollectionCount(collection)
 
     const [statusFilter, setStatusFilter] = useState<Status[]>([])
@@ -111,13 +112,15 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     // const searched = useSearchedCollection<Task>(filtered, search, searchOptions)
     // const searchedCount = useCollectionCount(searched)
 
-    const [sortFn] = useState(() => (a, b) => {
-        if (a.firstName < b.firstName) return -1
-        if (a.firstName > b.firstName) return 1
-        return 0
-    })
-
-    const sorted = useSortedCollection<Task>(filtered, undefined)
+    const [sortBy, setSortBy] = useState<{
+        index: number
+        direction: 'asc' | 'desc'
+    }>()
+    const onSort = useCallback((_event, index: number, direction: 'asc' | 'desc') => {
+        setSortBy({ index, direction })
+    }, [])
+    const sortFn = useCallback<SortFn<Task>>((a, b) => compareStrings(a.name, b.name), [sortBy])
+    const sorted = useSortedCollection<Task>(filtered, sortFn)
     const sortedCount = useCollectionCount(sorted)
 
     const [page, setPage] = useState(1)
@@ -138,6 +141,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                         <Text component="small">{item.description}</Text>
                     </Fragment>
                 ),
+                transforms: [sortable],
             },
             {
                 title: 'Status',
@@ -205,6 +209,7 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                         )}
                     </Fragment>
                 ),
+                transforms: [sortable],
             },
             {
                 title: 'Labels',
@@ -329,6 +334,8 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
                             aria-label="TODO"
                             cells={cells}
                             rows={rows}
+                            sortBy={sortBy}
+                            onSort={onSort}
                             onSelect={(
                                 event: React.FormEvent<HTMLInputElement>,
                                 isSelected: boolean,

@@ -58,29 +58,29 @@
 //     }
 
 //     public search() {
-//         // if (this.searchString && this.searchOptions) {
-//         //     this.resultMap = {}
-//         //     this.fuse = new Fuse<T>(this.source.items(), this.searchOptions)
-//         //     this.results = this.fuse.search(this.searchString)
+//         if (this.searchString && this.searchOptions) {
+//             this.resultMap = {}
+//             this.fuse = new Fuse<T>(this.source.items(), this.searchOptions)
+//             this.results = this.fuse.search(this.searchString)
 
-//         //     // this.results = this.source.items().map((item) => {
-//         //     //     const key = this.source.getKey(item)
+//             // this.results = this.source.items().map((item) => {
+//             //     const key = this.source.getKey(item)
 
-//         //     //     const fuse = new Fuse<T>([item], this.searchOptions)
-//         //     //     fuse.search(this.searchString)
-//         //     //     const result = { value: 0, item }
-//         //     //     if (this.resultMap) this.resultMap[key] = result
-//         //     //     return result
-//         //     // })
+//             //     const fuse = new Fuse<T>([item], this.searchOptions)
+//             //     fuse.search(this.searchString)
+//             //     const result = { value: 0, item }
+//             //     if (this.resultMap) this.resultMap[key] = result
+//             //     return result
+//             // })
 
-//         //     this.orderedEvent()
-//         // } else {
-//         this.fuse = undefined
-//         // TODO reconcile and send events...
-//         this.results = undefined
-//         this.resultMap = undefined
-//         this.orderedEvent()
-//         // }
+//             this.orderedEvent()
+//         } else {
+//             this.fuse = undefined
+//             // TODO reconcile and send events...
+//             this.results = undefined
+//             this.resultMap = undefined
+//             this.orderedEvent()
+//         }
 //     }
 
 //     // TODO - asynchronous search with cancel...

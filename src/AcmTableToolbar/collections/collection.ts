@@ -10,11 +10,9 @@ declare global {
 
 export interface CollectionChange<T> {
     inserted?: Record<string, T>
-    removed?: Record<string, true>
+    removed?: Record<string, T>
     ordered?: boolean
 }
-
-// export function mergeCollectionChange<T>(lhs: CollectionChange<T>, rhs: CollectionChange<T>) {}
 
 export interface ICollection<T> {
     readonly getKey: (item: Readonly<T>) => string
@@ -64,7 +62,7 @@ export class CollectionEmitter<T> extends EventEmitter {
         this.sendEvent()
     }
 
-    protected removeEvent(key: string): void {
+    protected removeEvent(key: string, item: T): void {
         if (this.listenerCount('change') === 0) {
             this.event = undefined
             return
@@ -81,7 +79,7 @@ export class CollectionEmitter<T> extends EventEmitter {
         } else {
             if (!this.event) this.event = {}
             if (!this.event.removed) this.event.removed = {}
-            this.event.removed[key] = true
+            this.event.removed[key] = item
         }
         this.sendEvent()
     }
@@ -205,7 +203,7 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
         if (existing === undefined) return false
 
         delete this.itemMap[value]
-        this.removeEvent(value)
+        this.removeEvent(value, existing)
         return true
     }
 

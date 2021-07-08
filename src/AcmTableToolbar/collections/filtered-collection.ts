@@ -6,7 +6,6 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
 
     constructor(private source: ICollection<T>, private filterFn?: (item: T) => boolean) {
         super(source.getKey)
-        this.filterItem = this.filterItem.bind(this)
         this.handleChange = this.handleChange.bind(this)
         source.addListener('change', this.handleChange)
         this.setFilter(filterFn)
@@ -40,7 +39,7 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
             if (item) this.filterItem(item)
         }
         if (this.itemQueue.length > 0) {
-            this.filterTimeout = setTimeout(() => this.process(), 10)
+            this.filterTimeout = setTimeout(() => this.process(), 1)
         } else {
             this.filterTimeout = undefined
             this.resumeEvents()
@@ -56,7 +55,6 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
     }
 
     private handleChange(change: CollectionChange<T>) {
-        this.pauseEvents()
         this.itemQueue = this.itemQueue.filter((item) => {
             const key = this.getKey(item)
             return change.removed?.[key] !== undefined && change.inserted?.[key] !== undefined
@@ -64,10 +62,13 @@ export class FilteredCollection<T> extends ReadOnlyCollection<T> {
         for (const key in change.inserted) {
             this.itemQueue.push(change.inserted[key])
         }
-        for (const key in change.removed) {
-            this.remove(key)
+        if (change.removed) {
+            this.pauseEvents()
+            for (const key in change.removed) {
+                this.remove(key)
+            }
+            this.resumeEvents()
         }
-        this.resumeEvents()
         this.filter()
     }
 }
