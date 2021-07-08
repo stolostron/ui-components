@@ -21,7 +21,7 @@ export interface ICollection<T> {
     removeListener(event: 'change', listener: (changeEvent: CollectionChange<T>) => void): void
     dispose(): void
     readonly length: number
-    items(start?: number, end?: number): ReadonlyArray<Readonly<T>>
+    forEach: (callback: (key: string, value: T) => void) => void
 }
 
 export interface IOrderedCollection<T> extends ICollection<T> {
