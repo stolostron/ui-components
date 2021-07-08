@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { sortedRemove, sortedReplace } from './array-utils'
 import { CollectionChange, CollectionEmitter, ICollection, IOrderedCollection } from './collection'
-import { compareStrings } from './compare-items'
 
 export type SortFn<T> = (lhs: Readonly<T>, rhs: Readonly<T>) => number
 
@@ -15,8 +14,10 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements IOrdere
         this.getKey = source.getKey
         this.handleChange = this.handleChange.bind(this)
         source.addListener('change', this.handleChange)
-        this.source.forEach((_key, item) => this.sortedItems.push(item))
-        this.setSort(sortFn)
+        if (sortFn) {
+            this.source.forEach((_key, item) => this.sortedItems.push(item))
+            this.setSort(sortFn)
+        }
     }
 
     public dispose() {
@@ -29,7 +30,8 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements IOrdere
     }
 
     public items(start?: number, end?: number): ReadonlyArray<Readonly<T>> {
-        return this.sortedItems.slice(start, end)
+        if (this.sortFn) return this.sortedItems.slice(start, end)
+        else return []
     }
 
     public forEach(callback: (key: string, value: T) => void) {
@@ -39,29 +41,29 @@ export class SortedCollection<T> extends CollectionEmitter<T> implements IOrdere
         }
     }
 
-    public setSort(sortObj?: SortFn<T>) {
-        if (this.sortFn === sortObj) return
-        this.sortFn = sortObj
+    public setSort(sortFn?: SortFn<T>) {
+        if (this.sortFn === sortFn) return
+        this.sortFn = sortFn
 
-        let sortFn = this.sortFn
-        if (!sortFn) sortFn = (lhs: T, rhs: T) => compareStrings(this.getKey(lhs), this.getKey(rhs))
-        this.sortedItems.sort(sortFn)
+        if (sortFn) {
+            this.sortedItems.sort(sortFn)
+            this.orderedEvent()
+        }
 
         this.orderedEvent()
     }
 
     private handleChange(change: CollectionChange<T>) {
-        let sortFn = this.sortFn
-        if (!sortFn) sortFn = (lhs: T, rhs: T) => compareStrings(this.getKey(lhs), this.getKey(rhs))
+        if (this.sortFn) {
+            for (const key in change.inserted) {
+                const item = change.inserted[key]
+                sortedReplace<T>(this.sortedItems, item, this.sortFn)
+            }
 
-        for (const key in change.inserted) {
-            const item = change.inserted[key]
-            sortedReplace<T>(this.sortedItems, item, sortFn)
-        }
-
-        for (const key in change.removed) {
-            const item = change.removed[key]
-            sortedRemove<T>(this.sortedItems, item, sortFn)
+            for (const key in change.removed) {
+                const item = change.removed[key]
+                sortedRemove<T>(this.sortedItems, item, this.sortFn)
+            }
         }
 
         this.orderedEvent()

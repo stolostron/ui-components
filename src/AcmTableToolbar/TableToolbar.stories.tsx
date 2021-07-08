@@ -119,7 +119,20 @@ export const Table_Toolbar = (args: { Search: boolean; 'Status Filter': boolean;
     const onSort = useCallback((_event, index: number, direction: 'asc' | 'desc') => {
         setSortBy({ index, direction })
     }, [])
-    const sortFn = useCallback<SortFn<Task>>((a, b) => compareStrings(a.name, b.name), [sortBy])
+    const sortFn = useCallback<SortFn<Task> | undefined>(
+        (a, b) => {
+            switch (sortBy.index) {
+                case 1:
+                    if (sortBy.direction === 'asc') return compareStrings(a.name, b.name)
+                    else return compareStrings(b.name, a.name)
+                case 3:
+                    if (sortBy.direction === 'asc') return compareStrings(a.risk, b.risk)
+                    else return compareStrings(b.risk, a.risk)
+            }
+            return undefined
+        },
+        [sortBy]
+    )
     const sorted = useSortedCollection<Task>(filtered, sortFn)
     const sortedCount = useCollectionCount(sorted)
 
