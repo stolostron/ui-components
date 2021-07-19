@@ -1,5 +1,3 @@
-/* Copyright Contributors to the Open Cluster Management project */
-
 import { ToolbarGroup, ToolbarItem } from '@patternfly/react-core'
 import React, { Fragment, useMemo } from 'react'
 import { TableSelectionActionsDropdown, TableSelectionActionsDropdownProps } from './TableSelectionActions'

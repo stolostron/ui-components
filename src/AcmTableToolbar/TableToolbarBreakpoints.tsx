@@ -1,4 +1,3 @@
-/* Copyright Contributors to the Open Cluster Management project */
 import xl2Breakpoint from '@patternfly/react-tokens/dist/js/global_breakpoint_2xl'
 import lgBreakpoint from '@patternfly/react-tokens/dist/js/global_breakpoint_lg'
 import mdBreakpoint from '@patternfly/react-tokens/dist/js/global_breakpoint_md'

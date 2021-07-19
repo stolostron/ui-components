@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Collection, CollectionChange, ICollection } from './collection'
+import { Collection, CollectionChange, ICollection } from '../collections/collection'
 
 export class SelectedCollection<T> extends Collection<T> {
     constructor(private readonly source: ICollection<T>) {
         super(source.getKey)
-        this.insert = this.insert.bind(this)
         this.handleChange = this.handleChange.bind(this)
         source.addListener('change', this.handleChange)
     }
@@ -18,17 +17,15 @@ export class SelectedCollection<T> extends Collection<T> {
         this.pauseEvents()
         for (const key in change.inserted) {
             if (this.includes(key)) {
-                this.insert(change.inserted[key])
+                this.insertItem(change.inserted[key], key)
             }
         }
-        if (change.removed) this.remove(Object.keys(change.removed))
+        if (change.removed) this.removeKeys(Object.keys(change.removed))
         this.resumeEvents()
     }
 
     public selectAll() {
-        this.source.forEach((_key, item) => {
-            this.insert(item)
-        })
+        this.insertItems(this.source.items())
     }
 }
 

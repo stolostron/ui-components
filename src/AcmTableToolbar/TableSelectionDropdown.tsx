@@ -1,5 +1,3 @@
-/* Copyright Contributors to the Open Cluster Management project */
-
 import { Dropdown, DropdownItem, DropdownToggle, DropdownToggleCheckbox } from '@patternfly/react-core'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { breakpoints } from './TableToolbarBreakpoints'

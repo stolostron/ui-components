@@ -31,6 +31,7 @@
         "@patternfly/react-charts": "^6.15.3",
         "@patternfly/react-core": "^4.135.0",
         "@patternfly/react-table": "^4.29.0",
+        "@react-hook/media-query": "^1.1.1",
         "@react-hook/resize-observer": "^1.2.2",
         "@types/faker": "^5.5.5",
         "faker": "^5.5.3",

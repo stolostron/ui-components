@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
-import { CollectionEmitter, ICollection, IOrderedCollection } from './collection'
+import { CollectionEmitter, ICollection } from './collection'
 
 export class PagedCollection<T> extends CollectionEmitter<T> implements ICollection<T> {
     private pagedItems: ReadonlyArray<Readonly<T>> = []
 
     public readonly getKey: (item: Readonly<T>) => string
 
-    constructor(private readonly source: IOrderedCollection<T>, private page: number, private pageSize: number) {
+    constructor(private readonly source: ICollection<T>, private page: number, private pageSize: number) {
         super()
         this.getKey = source.getKey
         this.handleChange = this.handleChange.bind(this)
         source.addListener('change', this.handleChange)
-        this.setPage(page, pageSize)
+        this.paginate()
     }
 
     public dispose() {
@@ -23,11 +23,8 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
         return this.pagedItems.length
     }
 
-    public forEach(callback: (key: string, value: T) => void) {
-        for (const item of this.pagedItems) {
-            const key = this.getKey(item)
-            callback(key, item)
-        }
+    public items(start?: number, end?: number): ReadonlyArray<Readonly<T>> {
+        return this.pagedItems.slice(start, end)
     }
 
     public setPage(page: number, pageSize: number) {
@@ -47,17 +44,9 @@ export class PagedCollection<T> extends CollectionEmitter<T> implements ICollect
     private handleChange() {
         this.paginate()
     }
-
-    public items(start?: number, end?: number): ReadonlyArray<Readonly<T>> {
-        return this.pagedItems.slice(start, end)
-    }
 }
 
-export function usePagedCollection<T>(
-    source: IOrderedCollection<T>,
-    page: number,
-    perPage: number
-): PagedCollection<T> {
+export function usePagedCollection<T>(source: ICollection<T>, page: number, perPage: number): PagedCollection<T> {
     const [paged] = useState(() => new PagedCollection<T>(source, page, perPage))
     useEffect(() => paged.setPage(page, perPage), [page, perPage])
     useEffect(() => () => paged.dispose(), [])

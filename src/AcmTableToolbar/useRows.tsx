@@ -1,12 +1,12 @@
+import { ICell } from '@patternfly/react-table'
+import { ICollection, SelectedCollection } from './collections'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { IOrderedCollection } from '../collections/collection'
-import { SelectedCollection } from '../collections/selected-collection'
-
-export interface IRowColumn<T> {
-    cellFn: cellFn<T>
-}
 
 export type cellFn<T> = (item: Readonly<T>) => ReactNode
+
+export interface IRowColumn<T> extends ICell {
+    cellFn: cellFn<T>
+}
 
 export interface IRow<T> {
     selected: boolean
@@ -15,7 +15,7 @@ export interface IRow<T> {
 }
 
 export function useRows<T>(
-    source: IOrderedCollection<T>,
+    source: ICollection<T>,
     selected: SelectedCollection<T>,
     columns: IRowColumn<T>[]
 ): IRow<T>[] {

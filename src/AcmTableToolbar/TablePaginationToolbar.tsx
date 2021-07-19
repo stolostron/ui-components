@@ -1,5 +1,3 @@
-/* Copyright Contributors to the Open Cluster Management project */
-
 import { Pagination, ToolbarItem } from '@patternfly/react-core'
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { breakpoints } from './TableToolbarBreakpoints'
@@ -19,12 +17,10 @@ export function TablePaginationToolbar(props: TablePaginationToolbarProps) {
     const [isCompact, setIsCompact] = useState(false)
 
     const handleResize = useCallback(() => {
-        if (props.paginationBreakpoint) {
-            const breakpointWidth = breakpoints[props.paginationBreakpoint]
-            if (breakpointWidth) {
-                const isBelowBreakpoint = window.innerWidth < breakpointWidth
-                setIsHidden(isBelowBreakpoint)
-            }
+        const breakpointWidth = breakpoints[props.paginationBreakpoint ?? 'sm']
+        if (breakpointWidth) {
+            const isBelowBreakpoint = window.innerWidth < breakpointWidth
+            setIsHidden(isBelowBreakpoint)
         }
         if (props.paginationLargeBreakpoint) {
             if (props.paginationLargeBreakpoint === 'never') {

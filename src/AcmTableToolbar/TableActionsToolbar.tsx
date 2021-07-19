@@ -1,5 +1,3 @@
-/* Copyright Contributors to the Open Cluster Management project */
-
 import {
     Button,
     ButtonVariant,
@@ -14,10 +12,22 @@ import {
     OverflowMenuItem,
     ToolbarItem,
 } from '@patternfly/react-core'
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, ReactNode, useMemo, useState } from 'react'
+
+export type ITableAction = {
+    id: string
+    label: ReactNode
+    variant?: 'primary' | 'secondary'
+    action: () => void
+}
+// | {
+//       variant?: 'seperator'
+//   }
+
+export type TableToolbarAction = OverflowMenuDropdownItemProps & { variant?: 'primary' | 'secondary' }
 
 export type TableActionsToolbarProps = {
-    tableActions?: (OverflowMenuDropdownItemProps & { variant?: 'primary' | 'secondary' })[]
+    tableActions?: TableToolbarAction[]
     selectedCount: number
     actionsBreakpoint?: 'md' | 'lg' | 'xl' | '2xl'
 }
@@ -33,7 +43,7 @@ export function TableActionsToolbar(props: TableActionsToolbarProps) {
             <OverflowMenuContent>
                 <OverflowMenuGroup groupType="button">
                     {sharedActions.map((action) => (
-                        <OverflowMenuItem key={action.key}>
+                        <OverflowMenuItem key={action.key ?? action.id}>
                             <Button
                                 variant={
                                     action.variant
@@ -65,7 +75,7 @@ export function TableActionsToolbar(props: TableActionsToolbarProps) {
                     toggle={<KebabToggle onToggle={setIsOpen} />}
                     isPlain
                     dropdownItems={props.tableActions.map((action) => (
-                        <OverflowMenuDropdownItem key={action.key} {...action}>
+                        <OverflowMenuDropdownItem key={action.key ?? action.id} {...action}>
                             {action.children}
                         </OverflowMenuDropdownItem>
                     ))}

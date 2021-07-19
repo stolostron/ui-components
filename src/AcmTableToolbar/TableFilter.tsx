@@ -1,22 +1,20 @@
-/* Copyright Contributors to the Open Cluster Management project */
-
 import { Select, SelectOption, SelectVariant, ToolbarChip, ToolbarFilter } from '@patternfly/react-core'
 import React, { ReactNode, useCallback, useState } from 'react'
 
-export interface TableFilterProps {
+export type TableFilterOption = string | { key: string; node?: ReactNode }
+
+export interface ITableFilter<T = unknown> {
     label: string
-    selections: string[]
-    setSelections: (set: (selections: string[]) => string[]) => void
-    options: (
-        | string
-        | {
-              key: string
-              node?: ReactNode
-          }
-    )[]
+    options: TableFilterOption[]
+    filterItem: (values: string[], item: T) => boolean
 }
 
-export function TableFilter(props: TableFilterProps) {
+export interface TableFilterProps<T> extends ITableFilter<T> {
+    selections: string[]
+    setSelections: (setSelections: (selections: string[]) => string[]) => void
+}
+
+export function TableFilter<T>(props: TableFilterProps<T>) {
     const [isOpen, setIsOpen] = useState(false)
     const onToggle = useCallback(() => setIsOpen((expanded) => !expanded), [])
     const onSelect = useCallback(

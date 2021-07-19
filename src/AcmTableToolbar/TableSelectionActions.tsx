@@ -1,5 +1,3 @@
-/* Copyright Contributors to the Open Cluster Management project */
-
 import { Dropdown, DropdownItem, DropdownItemProps, DropdownToggle, KebabToggle } from '@patternfly/react-core'
 import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import { breakpoints } from './TableToolbarBreakpoints'

@@ -1,13 +1,12 @@
-/* Copyright Contributors to the Open Cluster Management project */
-
 import { Toolbar, ToolbarContent } from '@patternfly/react-core'
 import React, { useCallback } from 'react'
 import { TableActionsToolbar, TableActionsToolbarProps } from './TableActionsToolbar'
 import { TableFiltersToolbarGroup, TableFiltersToolbarProps } from './TableFiltersToolbarGroup'
 import { TablePaginationToolbar, TablePaginationToolbarProps } from './TablePaginationToolbar'
 import { TableSelectionToolbar, TableSelectionToolbarProps } from './TableSelectionToolbar'
+import './TableToolbar.css'
 
-export type TableToolbarProps = TableFiltersToolbarProps &
+export type TableToolbarProps<T> = TableFiltersToolbarProps<T> &
     TableSelectionToolbarProps &
     TableActionsToolbarProps &
     TablePaginationToolbarProps &
@@ -21,13 +20,13 @@ export interface TableToolbarBreakpoints {
     paginationLargeBreakpoint?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'never'
 }
 
-export function TableToolbar(props: TableToolbarProps) {
+export function TableToolbar<T>(props: TableToolbarProps<T>) {
     const clearAllFilters = useCallback(() => {
         props.filters?.forEach((filter) => filter.setSelections(() => []))
     }, [props.filters])
 
     return (
-        <Toolbar clearAllFilters={clearAllFilters}>
+        <Toolbar clearAllFilters={clearAllFilters} inset={{ lg: 'insetMd', xl: 'insetLg' }}>
             <ToolbarContent>
                 <TableSelectionToolbar {...props} />
                 <TableFiltersToolbarGroup {...props} />

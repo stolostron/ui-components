@@ -21,10 +21,6 @@ export interface ICollection<T> {
     removeListener(event: 'change', listener: (changeEvent: CollectionChange<T>) => void): void
     dispose(): void
     readonly length: number
-    forEach: (callback: (key: string, value: T) => void) => void
-}
-
-export interface IOrderedCollection<T> extends ICollection<T> {
     items(start?: number, end?: number): ReadonlyArray<Readonly<T>>
 }
 
@@ -122,6 +118,12 @@ export class CollectionEmitter<T> extends EventEmitter {
             const event = this.event
             this.event = undefined
             try {
+                // console.log(
+                //     'event sent',
+                //     event.inserted ? Object.keys(event.inserted).length : 0,
+                //     event.removed ? Object.keys(event.removed).length : 0,
+                //     event.ordered ?? false
+                // )
                 this.emit('change', event)
             } catch {
                 /* Do nothing */
@@ -134,17 +136,18 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
     constructor(public readonly getKey: (item: Readonly<T>) => string, debounce?: number) {
         super(debounce)
     }
-
-    protected readonly itemMap: Record<string, T> = {}
+    protected itemMap: Record<string, T> = {}
 
     public get length() {
         // TODO optimize... by keeping a count
         return Object.keys(this.itemMap).length
     }
 
-    forEach(callback: (key: string, value: T) => void) {
-        for (const key in this.itemMap) {
-            callback(key, this.itemMap[key])
+    public items(start?: number, end?: number): readonly Readonly<T>[] {
+        if (start !== undefined) {
+            return Object.values(this.itemMap).slice(start, end)
+        } else {
+            return Object.values(this.itemMap)
         }
     }
 
@@ -155,70 +158,69 @@ export class ReadOnlyCollection<T> extends CollectionEmitter<T> implements IColl
         return this.itemMap[key] !== undefined
     }
 
-    protected insert(item?: Readonly<T> | ReadonlyArray<Readonly<T>>): boolean {
-        if (item === undefined) return false
-        if (Array.isArray(item)) {
-            let inserted = false
-            this.pauseEvents()
-            for (const i of item) {
-                if (this.insert(i)) {
-                    inserted = true
-                }
-            }
-            this.resumeEvents()
-            return inserted
-        }
-
-        const key = this.getKey(item)
-        if (key === undefined) throw new Error('item key cannot be undefined')
-
+    protected insertItem(item: Readonly<T>, key?: string) {
+        if (!key) key = this.getKey(item)
         const existing = this.itemMap[key]
-        if (existing === item) return false
-
+        if (existing === item) return
         this.itemMap[key] = item
         this.insertEvent(key, item)
-        return true
     }
 
-    protected remove(value?: string | ReadonlyArray<string> | Readonly<T> | ReadonlyArray<Readonly<T>>): boolean {
-        if (value === undefined) return false
-
-        if (Array.isArray(value)) {
-            let removed = false
-            this.pauseEvents()
-            for (const i of value) {
-                if (this.remove(i)) {
-                    removed = true
-                }
-            }
-            this.resumeEvents()
-            return removed
+    protected insertItems(items: ReadonlyArray<Readonly<T>>) {
+        this.pauseEvents()
+        for (const item of items) {
+            this.insertItem(item)
         }
+        this.resumeEvents()
+    }
 
-        if (typeof value !== 'string') {
-            value = this.getKey(value)
+    protected insertItemMap(itemMap: Record<string, Readonly<T>>) {
+        this.pauseEvents()
+        for (const key in itemMap) {
+            this.insertItem(itemMap[key], key)
         }
+        this.resumeEvents()
+    }
 
-        const existing = this.itemMap[value]
-        if (existing === undefined) return false
+    protected removeKey(key: string) {
+        const existing = this.itemMap[key]
+        if (existing === undefined) return
+        delete this.itemMap[key]
+        this.removeEvent(key, existing)
+    }
 
-        delete this.itemMap[value]
-        this.removeEvent(value, existing)
-        return true
+    protected removeKeys(keys: string[]) {
+        this.pauseEvents()
+        for (const key of keys) {
+            this.removeKey(key)
+        }
+        this.resumeEvents()
     }
 
     protected clear(): void {
-        this.remove(Object.keys(this.itemMap))
+        this.removeKeys(Object.keys(this.itemMap))
     }
 }
 
 export class Collection<T> extends ReadOnlyCollection<T> {
-    public insert(item?: Readonly<T> | ReadonlyArray<Readonly<T>>): boolean {
-        return super.insert(item)
+    public insertItem(item: Readonly<T>, key?: string) {
+        return super.insertItem(item, key)
     }
 
-    public remove(key?: string | Readonly<string[]> | Readonly<T> | Readonly<T[]>): boolean {
-        return super.remove(key)
+    public insertItems(items: ReadonlyArray<Readonly<T>>) {
+        return super.insertItems(items)
+    }
+
+    public insertItemMap(itemMap: Record<string, Readonly<T>>) {
+        return super.insertItemMap(itemMap)
+    }
+
+    public removeKey(key: string) {
+        return super.removeKey(key)
+    }
+
+    public removeKeys(keys: string[]) {
+        return super.removeKeys(keys)
     }
 
     public clear(): void {
