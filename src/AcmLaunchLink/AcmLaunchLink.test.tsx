@@ -33,6 +33,27 @@ describe('AcmLaunchLink', () => {
         )
         expect(queryByTestId('addon-launch-links')).toBeNull()
         expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'false')
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a disabled link when onClick is provided', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[
+                    {
+                        id: 'grafana',
+                        text: 'Grafana',
+                        onClick: () => {
+                            alert('')
+                        },
+                        disabled: true,
+                    },
+                ]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'true')
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders a link the link is nested in a label', async () => {
@@ -41,6 +62,18 @@ describe('AcmLaunchLink', () => {
         )
         expect(queryByTestId('addon-launch-links')).toBeNull()
         expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'false')
+        expect(await axe(container)).toHaveNoViolations()
+    })
+    test('renders a disabled link the link is nested in a label', async () => {
+        const { container, queryByTestId } = render(
+            <AcmLaunchLink
+                links={[{ id: 'grafana', text: 'Grafana', href: '/grafana', label: true, disabled: true }]}
+            />
+        )
+        expect(queryByTestId('addon-launch-links')).toBeNull()
+        expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'true')
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders a link when onClick is provided and label=true', async () => {
@@ -60,6 +93,7 @@ describe('AcmLaunchLink', () => {
         )
         expect(queryByTestId('addon-launch-links')).toBeNull()
         expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'false')
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders a link without icon', async () => {
@@ -80,6 +114,7 @@ describe('AcmLaunchLink', () => {
         )
         expect(queryByTestId('addon-launch-links')).toBeNull()
         expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'false')
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders a link with user pass-in icon', async () => {
@@ -101,6 +136,7 @@ describe('AcmLaunchLink', () => {
         )
         expect(queryByTestId('addon-launch-links')).toBeNull()
         expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'false')
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders a dropdown when multiple links are provided', async () => {
@@ -131,6 +167,7 @@ describe('AcmLaunchLink', () => {
         )
         expect(queryByTestId('addon-launch-links')).toBeNull()
         expect(queryByTestId('grafana')).toBeInTheDocument()
+        expect(queryByTestId('grafana')).toHaveAttribute('aria-disabled', 'false')
         expect(await axe(container)).toHaveNoViolations()
     })
     test('renders null when no links are provided', () => {
