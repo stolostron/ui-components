@@ -5,7 +5,7 @@ import { Gallery, GalleryItem, PopoverProps, Text, TextContent } from '@patternf
 import React, { Fragment } from 'react'
 import { useViewport } from '../AcmCharts/AcmChartGroup'
 import { ClassNameMap } from '@material-ui/styles'
-import { AcmInlineStatus } from '../AcmInlineStatus'
+import { AcmInlineStatus, StatusType } from '../AcmInlineStatus'
 import { AcmButton } from '../AcmButton'
 import { ExternalLinkAltIcon } from '@patternfly/react-icons'
 
@@ -31,18 +31,6 @@ export type ProgressTrackerStepLink = {
     linkName: string
     isDisabled?: boolean
     linkCallback?: () => void
-}
-
-enum StatusType {
-    'healthy' = 'healthy',
-    'danger' = 'danger',
-    'warning' = 'warning',
-    'progress' = 'progress',
-    'detached' = 'detached',
-    'pending' = 'pending',
-    'unknown' = 'unknown',
-    'sleep' = 'sleep',
-    'empty' = 'empty',
 }
 
 const useStyles = makeStyles({
