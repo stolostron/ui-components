@@ -43,6 +43,7 @@ export default {
         'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: false },
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
+        'Include tableDropdown': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
         gridBreakPoint: {
             options: ['dynamic', ...Object.values(TableGridBreakpoint)],
@@ -61,6 +62,7 @@ export default {
         groupFn: hidden,
         groupSummaryFn: hidden,
         tableActions: hidden,
+        tableDropdown: hidden,
         rowActions: hidden,
         rowActionResolver: hidden,
         bulkActions: hidden,
@@ -367,6 +369,30 @@ function commonProperties(
                 <ToggleGroupItem text="View 2" />
             </ToggleGroup>
         ) : undefined,
+        tableDropdown: args['Include tableDropdown']
+            ? {
+                  id: 'create',
+                  isDisabled: false,
+                  toggleText: 'Create',
+                  disableText: 'Disabled',
+                  actions: [
+                      {
+                          id: 'action1',
+                          isDisabled: false,
+                          component: 'div',
+                          children: 'Action 1',
+                          disableText: 'Disabled',
+                      },
+                      {
+                          id: 'action2',
+                          isDisabled: false,
+                          component: 'div',
+                          children: 'Action 2',
+                          disableText: 'Disabled',
+                      },
+                  ],
+              }
+            : undefined,
     }
 }
 

@@ -97,6 +97,24 @@ export interface IAcmTableAction {
 }
 
 /* istanbul ignore next */
+export interface IAcmTableDropdown {
+    id: string
+    isDisabled?: boolean | undefined
+    toggleText: string | React.ReactNode
+    disableText?: string | React.ReactNode
+    actions: IAcmTableDropdownAction[]
+}
+
+/* istanbul ignore next */
+export interface IAcmTableDropdownAction {
+    id: string
+    isDisabled?: boolean | undefined
+    component?: string
+    children: string | React.ReactNode
+    disableText?: string | React.ReactNode
+}
+
+/* istanbul ignore next */
 export interface IAcmRowAction<T> {
     /** Action identifier */
     id: string
@@ -213,6 +231,7 @@ export interface AcmTableProps<T> {
     groupFn?: (item: T) => string | null
     groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
+    tableDropdown?: IAcmTableDropdown
     rowActions?: IAcmRowAction<T>[]
     rowActionResolver?: (item: T) => IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
@@ -246,6 +265,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         rowActions = [],
         rowActionResolver,
         tableActions = [],
+        tableDropdown,
     } = props
 
     const defaultSort = {
@@ -257,6 +277,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // State that is only stored in the component state
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [actionsOpen, setActionsOpen] = useState(false)
+    const [tableDropdownOpen, setTableDropdownOpen] = useState(false)
     const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
@@ -704,6 +725,80 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // Parse static actions
     const actions = parseRowAction(rowActions)
 
+    // render dropdownItem
+    const renderDropdownItem = (tableDropdownAction: IAcmTableDropdownAction) => {
+        return (
+            <DropdownItem
+                key={tableDropdownAction.id}
+                isDisabled={tableDropdownAction.isDisabled}
+                component={tableDropdownAction.component}
+                styleChildren={false}
+            >
+                {tableDropdownAction.children}
+            </DropdownItem>
+        )
+    }
+
+    // render dropdown
+    const renderDropdown = (tableDropdown: IAcmTableDropdown) => {
+        const dropdownItems: React.ReactNode[] = []
+
+        if (!tableDropdown.isDisabled) {
+            tableDropdown.actions.forEach((action) => {
+                if (action.isDisabled) {
+                    dropdownItems.push(
+                        <Tooltip content={tableDropdown.disableText} position="bottom">
+                            {renderDropdownItem(action)}
+                        </Tooltip>
+                    )
+                } else {
+                    dropdownItems.push(renderDropdownItem(action))
+                }
+            })
+        }
+
+        return (
+            <ToolbarGroup variant="button-group">
+                <ToolbarItem>
+                    <Dropdown
+                        toggle={
+                            <DropdownToggle
+                                isPrimary={!tableDropdown.isDisabled}
+                                id={tableDropdown.id}
+                                onToggle={
+                                    !tableDropdown.isDisabled
+                                        ? () => setTableDropdownOpen(!tableDropdownOpen)
+                                        : undefined
+                                }
+                                toggleIndicator={CaretDownIcon}
+                                isDisabled={tableDropdown.isDisabled}
+                            >
+                                {tableDropdown.toggleText}
+                            </DropdownToggle>
+                        }
+                        isOpen={tableDropdownOpen}
+                        dropdownItems={dropdownItems}
+                    />
+                </ToolbarItem>
+            </ToolbarGroup>
+        )
+    }
+
+    // helper function to render the table dropdown actions with RBAC support
+    const renderDropdownHelper = (tableDropdown: IAcmTableDropdown) => {
+        if (tableDropdown.isDisabled) {
+            return (
+                <Tooltip content={tableDropdown.disableText} position="bottom">
+                    {renderDropdown(tableDropdown)}
+                </Tooltip>
+            )
+        } else {
+            return renderDropdown(tableDropdown)
+        }
+    }
+
+    const dropdownResults = tableDropdown && renderDropdownHelper(tableDropdown)
+
     // Wrap provided action resolver
     let actionResolver: IActionsResolver | undefined
     if (rowActionResolver) {
@@ -770,6 +865,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 ))}
                             </ToolbarGroup>
                         )}
+                        {dropdownResults}
                         {Object.keys(selected).length > 0 && bulkActions.length > 0 && (
                             <ToolbarGroup variant="button-group">
                                 <ToolbarItem>
