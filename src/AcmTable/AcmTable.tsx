@@ -97,6 +97,24 @@ export interface IAcmTableAction {
 }
 
 /* istanbul ignore next */
+export interface IAcmTableDropdown {
+    id: string
+    isDisabled?: boolean | undefined
+    toggleText: string | React.ReactNode
+    disableText?: string | React.ReactNode
+    actions: IAcmTableDropdownAction[]
+}
+
+/* istanbul ignore next */
+export interface IAcmTableDropdownAction {
+    id: string
+    isDisabled?: boolean | undefined
+    component?: string
+    children: string | React.ReactNode
+    disableText?: string | React.ReactNode
+}
+
+/* istanbul ignore next */
 export interface IAcmRowAction<T> {
     /** Action identifier */
     id: string
@@ -213,6 +231,7 @@ export interface AcmTableProps<T> {
     groupFn?: (item: T) => string | null
     groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
+    tableDropdown?: IAcmTableDropdown
     rowActions?: IAcmRowAction<T>[]
     rowActionResolver?: (item: T) => IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
@@ -246,6 +265,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         rowActions = [],
         rowActionResolver,
         tableActions = [],
+        tableDropdown,
     } = props
 
     const defaultSort = {
@@ -257,6 +277,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // State that is only stored in the component state
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
     const [actionsOpen, setActionsOpen] = useState(false)
+    const [tableDropdownOpen, setTableDropdownOpen] = useState(false)
     const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
@@ -769,6 +790,79 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                     </ToolbarItem>
                                 ))}
                             </ToolbarGroup>
+                        )}
+                        {tableDropdown && (
+                            <Fragment>
+                                {tableDropdown.isDisabled ? (
+                                    <ToolbarGroup variant="button-group">
+                                        <ToolbarItem>
+                                            <Tooltip content={tableDropdown.disableText} position="right">
+                                                <Dropdown
+                                                    toggle={
+                                                        <DropdownToggle
+                                                            isPrimary={!tableDropdown.isDisabled}
+                                                            id={tableDropdown.id}
+                                                            toggleIndicator={CaretDownIcon}
+                                                            isDisabled={tableDropdown.isDisabled}
+                                                        >
+                                                            {tableDropdown.toggleText}
+                                                        </DropdownToggle>
+                                                    }
+                                                    isOpen={tableDropdownOpen}
+                                                />
+                                            </Tooltip>
+                                        </ToolbarItem>
+                                    </ToolbarGroup>
+                                ) : (
+                                    <ToolbarGroup variant="button-group">
+                                        <ToolbarItem>
+                                            <Dropdown
+                                                toggle={
+                                                    <DropdownToggle
+                                                        isPrimary={!tableDropdown.isDisabled}
+                                                        id={tableDropdown.id}
+                                                        onToggle={() => setTableDropdownOpen(!tableDropdownOpen)}
+                                                        toggleIndicator={CaretDownIcon}
+                                                        isDisabled={tableDropdown.isDisabled}
+                                                    >
+                                                        {tableDropdown.toggleText}
+                                                    </DropdownToggle>
+                                                }
+                                                isOpen={tableDropdownOpen}
+                                                dropdownItems={tableDropdown.actions.map((action) => (
+                                                    <Fragment key={action.id}>
+                                                        {action.isDisabled ? (
+                                                            // DropdownItem doesn't show tooltip when disabled PF#4581
+                                                            <Tooltip
+                                                                content={tableDropdown.disableText}
+                                                                position="right"
+                                                            >
+                                                                <DropdownItem
+                                                                    key={action.id}
+                                                                    isDisabled={action.isDisabled}
+                                                                    component={action.component}
+                                                                    styleChildren={false}
+                                                                >
+                                                                    {action.children}
+                                                                </DropdownItem>
+                                                            </Tooltip>
+                                                        ) : (
+                                                            <DropdownItem
+                                                                key={action.id}
+                                                                isDisabled={action.isDisabled}
+                                                                component={action.component}
+                                                                styleChildren={false}
+                                                            >
+                                                                {action.children}
+                                                            </DropdownItem>
+                                                        )}
+                                                    </Fragment>
+                                                ))}
+                                            />
+                                        </ToolbarItem>
+                                    </ToolbarGroup>
+                                )}
+                            </Fragment>
                         )}
                         {Object.keys(selected).length > 0 && bulkActions.length > 0 && (
                             <ToolbarGroup variant="button-group">

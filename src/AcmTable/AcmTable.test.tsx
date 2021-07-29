@@ -39,6 +39,7 @@ describe('AcmTable', () => {
             useRowActions?: boolean
             useBulkActions?: boolean
             useExtraToolbarControls?: boolean
+            useTableDropdown?: boolean
             searchPlaceholder?: string
             useSearch?: boolean
             transforms?: boolean
@@ -53,6 +54,7 @@ describe('AcmTable', () => {
             useBulkActions = false,
             useExtraToolbarControls = false,
             useSearch = true,
+            useTableDropdown = false,
         } = props
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
@@ -173,6 +175,32 @@ describe('AcmTable', () => {
                             <ToggleGroupItem text="View 2" />
                         </ToggleGroup>
                     ) : undefined
+                }
+                tableDropdown={
+                    useTableDropdown
+                        ? {
+                              id: 'create',
+                              isDisabled: false,
+                              toggleText: 'Create',
+                              disableText: 'Disabled',
+                              actions: [
+                                  {
+                                      id: 'action1',
+                                      isDisabled: false,
+                                      component: 'div',
+                                      children: 'Action 1',
+                                      disableText: 'Disabled',
+                                  },
+                                  {
+                                      id: 'action2',
+                                      isDisabled: false,
+                                      component: 'div',
+                                      children: 'Action 2',
+                                      disableText: 'Disabled',
+                                  },
+                              ],
+                          }
+                        : undefined
                 }
                 {...props}
             />
@@ -764,5 +792,57 @@ describe('AcmTable', () => {
             />
         )
         userEvent.click(getByTestId('expandable-toggle0'))
+    })
+    test('renders with tableDropdown', () => {
+        const { container, getByTestId } = render(
+            <Table useTableDropdown={true} useTableActions={false} useRowActions={false} />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
+        userEvent.click(getByTestId('create'))
+    })
+    test('renders with tableDropdown disabled', () => {
+        const tableDropdownData = {
+            id: 'create',
+            isDisabled: true,
+            toggleText: 'Create',
+            disableText: 'Disabled',
+            actions: [],
+        }
+        const { container } = render(
+            <Table tableDropdown={tableDropdownData} useTableActions={false} useRowActions={false} />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
+    })
+    test('renders with tableDropdown some actions disabled', () => {
+        const tableDropdownData = {
+            id: 'create',
+            isDisabled: false,
+            toggleText: 'Create',
+            disableText: 'Disabled',
+            actions: [
+                {
+                    id: 'action1',
+                    isDisabled: true,
+                    component: 'div',
+                    children: 'Action 1',
+                    disableText: 'Disabled',
+                },
+                {
+                    id: 'action2',
+                    isDisabled: false,
+                    component: 'div',
+                    children: 'Action 2',
+                    disableText: 'Disabled',
+                },
+            ],
+        }
+        const { container, getByTestId } = render(
+            <Table tableDropdown={tableDropdownData} useTableActions={false} useRowActions={false} />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
+        userEvent.click(getByTestId('create'))
     })
 })
