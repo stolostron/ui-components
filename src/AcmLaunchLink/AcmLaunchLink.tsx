@@ -14,6 +14,7 @@ export type LaunchLink = {
     label?: boolean
     noIcon?: boolean
     icon?: React.ReactNode
+    disabled?: boolean
 }
 
 function getLinkIcon(link: LaunchLink) {
@@ -41,6 +42,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                             id={link.id}
                             icon={getLinkIcon(link)}
                             iconPosition="right"
+                            isDisabled={link.disabled ? link.disabled : false}
                             style={{
                                 marginLeft: 0,
                                 paddingLeft: 0,
@@ -63,6 +65,7 @@ export function AcmLaunchLink(props: { links?: LaunchLink[] }) {
                     id={link.id}
                     icon={getLinkIcon(link)}
                     iconPosition="right"
+                    isDisabled={link.disabled ? link.disabled : false}
                 >
                     {link.text}
                 </AcmButton>

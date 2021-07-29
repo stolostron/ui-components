@@ -1,6 +1,6 @@
 {
     "name": "@open-cluster-management/ui-components",
-    "version": "0.180.0",
+    "version": "0.184.0",
     "description": "UI component library for open cluster management",
     "license": "Apache-2.0",
     "main": "lib/index.js",
@@ -38,7 +38,7 @@
         "moment": "^2.29.1",
         "nock": "^13.1.0",
         "react-router-dom": "^5.2.0",
-        "react-tag-autocomplete": "^6.1.0"
+        "react-tag-autocomplete": "6.1.0"
     },
     "devDependencies": {
         "@babel/core": "^7.14.6",

@@ -30,6 +30,8 @@ type AcmSearchbarProps = {
 }
 
 export function AcmSearchbar(props: AcmSearchbarProps) {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    const reactTags: any = React.createRef()
     const { loadingSuggestions, suggestions, queryString, currentQueryCallback, toggleInfoModal } = props
     const [currentQuery, setCurrentQuery] = useState(queryString)
     const [searchbarTags, setSearchbarTags] = useState(convertStringToTags(currentQuery))
@@ -43,6 +45,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
     return (
         <div className={'searchbar-container'}>
             <ReactTags
+                ref={reactTags}
                 placeholderText={currentQuery === '' ? 'Search items' : ''}
                 tags={searchbarTags}
                 suggestions={
@@ -134,6 +137,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                     setCurrentQuery('')
                     currentQueryCallback('')
                     setSearchbarTags([])
+                    reactTags.current.clearInput()
                 }}
                 noVerticalAlign
                 title={'Remove current search tags'}
