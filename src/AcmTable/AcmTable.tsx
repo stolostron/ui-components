@@ -747,7 +747,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             tableDropdown.actions.forEach((action) => {
                 if (action.isDisabled) {
                     dropdownItems.push(
-                        <Tooltip content={tableDropdown.disableText} position="bottom">
+                        <Tooltip content={tableDropdown.disableText} position="right">
                             {renderDropdownItem(action)}
                         </Tooltip>
                     )
@@ -788,7 +788,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const renderDropdownHelper = (tableDropdown: IAcmTableDropdown) => {
         if (tableDropdown.isDisabled) {
             return (
-                <Tooltip content={tableDropdown.disableText} position="bottom">
+                <Tooltip content={tableDropdown.disableText} position="right">
                     {renderDropdown(tableDropdown)}
                 </Tooltip>
             )
