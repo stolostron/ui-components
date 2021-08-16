@@ -178,39 +178,37 @@ describe('AcmTable', () => {
                     ) : undefined
                 }
                 customTableAction={
-                    useCustomTableAction
-                        ? (
-                            <AcmDropdown
-                                isDisabled={false}
-                                tooltip="Disabled"
-                                id="create"
-                                onSelect={() => null}
-                                text="Create"
-                                dropdownItems={[
-                                    {
-                                        id: 'action1',
-                                        isDisabled: false,
-                                        text: 'Action 1',
-                                        tooltip: 'Disabled',
-                                        href: '/action1',
-                                        tooltipPosition: TooltipPosition.right,
-                                    },
-                                    {
-                                        id: 'action2',
-                                        isDisabled: false,
-                                        text: 'Action 2',
-                                        tooltip: 'Disabled',
-                                        href: '/action1',
-                                        tooltipPosition: TooltipPosition.right,
-                                    },
-                                ]}
-                                isKebab={false}
-                                isPlain={true}
-                                isPrimary={true}
-                                tooltipPosition={TooltipPosition.right}
-                            />
-                        )
-                        : undefined
+                    useCustomTableAction ? (
+                        <AcmDropdown
+                            isDisabled={false}
+                            tooltip="Disabled"
+                            id="create"
+                            onSelect={() => null}
+                            text="Create"
+                            dropdownItems={[
+                                {
+                                    id: 'action1',
+                                    isDisabled: false,
+                                    text: 'Action 1',
+                                    tooltip: 'Disabled',
+                                    href: '/action1',
+                                    tooltipPosition: TooltipPosition.right,
+                                },
+                                {
+                                    id: 'action2',
+                                    isDisabled: false,
+                                    text: 'Action 2',
+                                    tooltip: 'Disabled',
+                                    href: '/action1',
+                                    tooltipPosition: TooltipPosition.right,
+                                },
+                            ]}
+                            isKebab={false}
+                            isPlain={true}
+                            isPrimary={true}
+                            tooltipPosition={TooltipPosition.right}
+                        />
+                    ) : undefined
                 }
                 {...props}
             />
@@ -814,34 +812,34 @@ describe('AcmTable', () => {
     test('renders with customTableAction disabled', () => {
         const customTableActionComponent = (
             <AcmDropdown
-                    isDisabled={true}
-                    tooltip="Disabled"
-                    id="create"
-                    onSelect={() => null}
-                    text="Create"
-                    dropdownItems={[
-                        {
-                            id: 'action1',
-                            isDisabled: false,
-                            text: 'Action 1',
-                            tooltip: 'Disabled',
-                            href: '/action1',
-                            tooltipPosition: TooltipPosition.right,
-                        },
-                        {
-                            id: 'action2',
-                            isDisabled: false,
-                            text: 'Action 2',
-                            tooltip: 'Disabled',
-                            href: '/action1',
-                            tooltipPosition: TooltipPosition.right,
-                        },
-                    ]}
-                    isKebab={false}
-                    isPlain={true}
-                    isPrimary={true}
-                    tooltipPosition={TooltipPosition.right}
-                />
+                isDisabled={true}
+                tooltip="Disabled"
+                id="create"
+                onSelect={() => null}
+                text="Create"
+                dropdownItems={[
+                    {
+                        id: 'action1',
+                        isDisabled: false,
+                        text: 'Action 1',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                    {
+                        id: 'action2',
+                        isDisabled: false,
+                        text: 'Action 2',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                ]}
+                isKebab={false}
+                isPlain={true}
+                isPrimary={true}
+                tooltipPosition={TooltipPosition.right}
+            />
         )
         const { container } = render(
             <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />
@@ -852,34 +850,34 @@ describe('AcmTable', () => {
     test('renders with tableDropdown some actions disabled', () => {
         const customTableActionComponent = (
             <AcmDropdown
-                    isDisabled={false}
-                    tooltip="Disabled"
-                    id="create"
-                    onSelect={() => null}
-                    text="Create"
-                    dropdownItems={[
-                        {
-                            id: 'action1',
-                            isDisabled: true,
-                            text: 'Action 1',
-                            tooltip: 'Disabled',
-                            href: '/action1',
-                            tooltipPosition: TooltipPosition.right,
-                        },
-                        {
-                            id: 'action2',
-                            isDisabled: false,
-                            text: 'Action 2',
-                            tooltip: 'Disabled',
-                            href: '/action1',
-                            tooltipPosition: TooltipPosition.right,
-                        },
-                    ]}
-                    isKebab={false}
-                    isPlain={true}
-                    isPrimary={true}
-                    tooltipPosition={TooltipPosition.right}
-                />
+                isDisabled={false}
+                tooltip="Disabled"
+                id="create"
+                onSelect={() => null}
+                text="Create"
+                dropdownItems={[
+                    {
+                        id: 'action1',
+                        isDisabled: true,
+                        text: 'Action 1',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                    {
+                        id: 'action2',
+                        isDisabled: false,
+                        text: 'Action 2',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                ]}
+                isKebab={false}
+                isPlain={true}
+                isPrimary={true}
+                tooltipPosition={TooltipPosition.right}
+            />
         )
         const { container, getByTestId } = render(
             <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />

@@ -371,39 +371,37 @@ function commonProperties(
                 <ToggleGroupItem text="View 2" />
             </ToggleGroup>
         ) : undefined,
-        customTableAction: args['Include customTableAction']
-            ? (
-                <AcmDropdown
-                    isDisabled={false}
-                    tooltip="Disabled"
-                    id="create"
-                    onSelect={() => null}
-                    text="Create"
-                    dropdownItems={[
-                        {
-                            id: 'action1',
-                            isDisabled: false,
-                            text: 'Action 1',
-                            tooltip: 'Disabled',
-                            href: '/action1',
-                            tooltipPosition: TooltipPosition.right,
-                        },
-                        {
-                            id: 'action2',
-                            isDisabled: false,
-                            text: 'Action 2',
-                            tooltip: 'Disabled',
-                            href: '/action1',
-                            tooltipPosition: TooltipPosition.right,
-                        },
-                    ]}
-                    isKebab={false}
-                    isPlain={true}
-                    isPrimary={true}
-                    tooltipPosition={TooltipPosition.right}
-                />
-            )
-            : undefined,
+        customTableAction: args['Include customTableAction'] ? (
+            <AcmDropdown
+                isDisabled={false}
+                tooltip="Disabled"
+                id="create"
+                onSelect={() => null}
+                text="Create"
+                dropdownItems={[
+                    {
+                        id: 'action1',
+                        isDisabled: false,
+                        text: 'Action 1',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                    {
+                        id: 'action2',
+                        isDisabled: false,
+                        text: 'Action 2',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                ]}
+                isKebab={false}
+                isPlain={true}
+                isPrimary={true}
+                tooltipPosition={TooltipPosition.right}
+            />
+        ) : undefined,
     }
 }
 
