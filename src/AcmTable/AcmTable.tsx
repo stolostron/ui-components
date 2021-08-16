@@ -21,7 +21,6 @@ import {
     ToolbarGroup,
     ToolbarItem,
     Tooltip,
-    TooltipPosition,
 } from '@patternfly/react-core'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
@@ -61,7 +60,6 @@ import React, {
 } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
-import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 
 type SortFn<T> = (a: T, b: T) => number
 type CellFn<T> = (item: T) => ReactNode
@@ -96,27 +94,6 @@ export interface IAcmTableAction {
     isDisabled?: boolean | undefined
     tooltip?: string | React.ReactNode
     variant?: ButtonVariant
-}
-
-/* istanbul ignore next */
-export interface IAcmTableDropdown {
-    id: string
-    isDisabled?: boolean | undefined
-    toggleText: string
-    disableText?: string | React.ReactNode
-    actions: IAcmTableDropdownAction[]
-    handleSelect: () => void
-    tooltipPosition?: TooltipPosition
-}
-
-/* istanbul ignore next */
-export interface IAcmTableDropdownAction {
-    id: string
-    isDisabled?: boolean | undefined
-    href: string
-    text: string | React.ReactNode
-    tooltip?: string | React.ReactNode
-    tooltipPosition?: TooltipPosition
 }
 
 /* istanbul ignore next */
@@ -236,7 +213,7 @@ export interface AcmTableProps<T> {
     groupFn?: (item: T) => string | null
     groupSummaryFn?: (items: T[]) => IRow
     tableActions?: IAcmTableAction[]
-    tableDropdown?: IAcmTableDropdown
+    customTableAction?: ReactNode
     rowActions?: IAcmRowAction<T>[]
     rowActionResolver?: (item: T) => IAcmRowAction<T>[]
     bulkActions?: IAcmTableBulkAction<T>[]
@@ -270,7 +247,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         rowActions = [],
         rowActionResolver,
         tableActions = [],
-        tableDropdown,
+        customTableAction,
     } = props
 
     const defaultSort = {
@@ -729,24 +706,11 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // Parse static actions
     const actions = parseRowAction(rowActions)
 
-    const renderDropdown = (tableDropdown: IAcmTableDropdown) => {
-        return (
-            <AcmDropdown
-                isDisabled={tableDropdown.isDisabled}
-                tooltip={tableDropdown.disableText}
-                id={tableDropdown.id}
-                onSelect={tableDropdown.handleSelect}
-                text={tableDropdown.toggleText}
-                dropdownItems={tableDropdown.actions}
-                isKebab={false}
-                isPlain={true}
-                isPrimary={true}
-                tooltipPosition={tableDropdown.tooltipPosition}
-            />
-        )
+    const renderCustomTableAction = (customTableAction: ReactNode) => {
+        return customTableAction
     }
 
-    const dropdownResults = tableDropdown && renderDropdown(tableDropdown)
+    const renderCustomTableActionResults = customTableAction && renderCustomTableAction(customTableAction)
 
     // Wrap provided action resolver
     let actionResolver: IActionsResolver | undefined
@@ -814,7 +778,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 ))}
                             </ToolbarGroup>
                         )}
-                        {dropdownResults}
+                        {renderCustomTableActionResults}
                         {Object.keys(selected).length > 0 && bulkActions.length > 0 && (
                             <ToolbarGroup variant="button-group">
                                 <ToolbarItem>

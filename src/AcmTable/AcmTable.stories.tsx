@@ -18,6 +18,7 @@ import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { Provider } from '../AcmProvider'
 import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
 import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
+import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 
 interface IExampleData {
     uid: number
@@ -44,7 +45,7 @@ export default {
         'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: false },
         'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
-        'Include tableDropdown': { control: { type: 'boolean' }, defaultValue: true },
+        'Include customTableAction': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
         gridBreakPoint: {
             options: ['dynamic', ...Object.values(TableGridBreakpoint)],
@@ -63,7 +64,7 @@ export default {
         groupFn: hidden,
         groupSummaryFn: hidden,
         tableActions: hidden,
-        tableDropdown: hidden,
+        customTableAction: hidden,
         rowActions: hidden,
         rowActionResolver: hidden,
         bulkActions: hidden,
@@ -370,33 +371,38 @@ function commonProperties(
                 <ToggleGroupItem text="View 2" />
             </ToggleGroup>
         ) : undefined,
-        tableDropdown: args['Include tableDropdown']
-            ? {
-                  id: 'create',
-                  isDisabled: false,
-                  toggleText: 'Create',
-                  disableText: 'Disabled',
-                  actions: [
-                      {
-                          id: 'action1',
-                          isDisabled: false,
-                          text: 'Action 1',
-                          tooltip: 'Disabled',
-                          href: '/action1',
-                          tooltipPosition: TooltipPosition.right,
-                      },
-                      {
-                          id: 'action2',
-                          isDisabled: false,
-                          text: 'Action 2',
-                          tooltip: 'Disabled',
-                          href: '/action1',
-                          tooltipPosition: TooltipPosition.right,
-                      },
-                  ],
-                  handleSelect: () => null,
-                  tooltipPosition: TooltipPosition.right,
-              }
+        customTableAction: args['Include customTableAction']
+            ? (
+                <AcmDropdown
+                    isDisabled={false}
+                    tooltip="Disabled"
+                    id="create"
+                    onSelect={() => null}
+                    text="Create"
+                    dropdownItems={[
+                        {
+                            id: 'action1',
+                            isDisabled: false,
+                            text: 'Action 1',
+                            tooltip: 'Disabled',
+                            href: '/action1',
+                            tooltipPosition: TooltipPosition.right,
+                        },
+                        {
+                            id: 'action2',
+                            isDisabled: false,
+                            text: 'Action 2',
+                            tooltip: 'Disabled',
+                            href: '/action1',
+                            tooltipPosition: TooltipPosition.right,
+                        },
+                    ]}
+                    isKebab={false}
+                    isPlain={true}
+                    isPrimary={true}
+                    tooltipPosition={TooltipPosition.right}
+                />
+            )
             : undefined,
     }
 }
