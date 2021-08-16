@@ -9,6 +9,7 @@ import {
     TextVariants,
     ToggleGroup,
     ToggleGroupItem,
+    TooltipPosition,
 } from '@patternfly/react-core'
 import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
@@ -379,18 +380,22 @@ function commonProperties(
                       {
                           id: 'action1',
                           isDisabled: false,
-                          component: 'div',
-                          children: 'Action 1',
-                          disableText: 'Disabled',
+                          text: 'Action 1',
+                          tooltip: 'Disabled',
+                          href: '/action1',
+                          tooltipPosition: TooltipPosition.right,
                       },
                       {
                           id: 'action2',
                           isDisabled: false,
-                          component: 'div',
-                          children: 'Action 2',
-                          disableText: 'Disabled',
+                          text: 'Action 2',
+                          tooltip: 'Disabled',
+                          href: '/action1',
+                          tooltipPosition: TooltipPosition.right,
                       },
                   ],
+                  handleSelect: () => null,
+                  tooltipPosition: TooltipPosition.right,
               }
             : undefined,
     }

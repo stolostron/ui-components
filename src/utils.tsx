@@ -7,9 +7,10 @@ export function TooltipWrapper(props: {
     children: React.ReactElement
     showTooltip?: boolean
     tooltip?: string | React.ReactNode
+    tooltipPosition?: TooltipPosition
 }) {
     return props.showTooltip ? (
-        <Tooltip content={props.tooltip} position={TooltipPosition.top}>
+        <Tooltip content={props.tooltip} position={props.tooltipPosition || TooltipPosition.top}>
             {props.children}
         </Tooltip>
     ) : (

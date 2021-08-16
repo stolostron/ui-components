@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { ToggleGroup, ToggleGroupItem, TooltipPosition } from '@patternfly/react-core'
 import { fitContent, IRow, SortByDirection, TableGridBreakpoint } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -187,18 +187,22 @@ describe('AcmTable', () => {
                                   {
                                       id: 'action1',
                                       isDisabled: false,
-                                      component: 'div',
-                                      children: 'Action 1',
-                                      disableText: 'Disabled',
+                                      text: 'Action 1',
+                                      tooltip: 'Disabled',
+                                      href: '/action1',
+                                      tooltipPosition: TooltipPosition.right,
                                   },
                                   {
                                       id: 'action2',
                                       isDisabled: false,
-                                      component: 'div',
-                                      children: 'Action 2',
-                                      disableText: 'Disabled',
+                                      text: 'Action 2',
+                                      tooltip: 'Disabled',
+                                      href: '/action1',
+                                      tooltipPosition: TooltipPosition.right,
                                   },
                               ],
+                              handleSelect: () => null,
+                              tooltipPosition: TooltipPosition.right,
                           }
                         : undefined
                 }
@@ -808,6 +812,8 @@ describe('AcmTable', () => {
             toggleText: 'Create',
             disableText: 'Disabled',
             actions: [],
+            handleSelect: () => null,
+            tooltipPosition: TooltipPosition.right,
         }
         const { container } = render(
             <Table tableDropdown={tableDropdownData} useTableActions={false} useRowActions={false} />
@@ -825,18 +831,22 @@ describe('AcmTable', () => {
                 {
                     id: 'action1',
                     isDisabled: true,
-                    component: 'div',
-                    children: 'Action 1',
-                    disableText: 'Disabled',
+                    text: 'Action 1',
+                    tooltip: 'Disabled',
+                    href: '/action1',
+                    tooltipPosition: TooltipPosition.right,
                 },
                 {
                     id: 'action2',
                     isDisabled: false,
-                    component: 'div',
-                    children: 'Action 2',
-                    disableText: 'Disabled',
+                    text: 'Action 2',
+                    tooltip: 'Disabled',
+                    href: '/action1',
+                    tooltipPosition: TooltipPosition.right,
                 },
             ],
+            handleSelect: () => null,
+            tooltipPosition: TooltipPosition.right,
         }
         const { container, getByTestId } = render(
             <Table tableDropdown={tableDropdownData} useTableActions={false} useRowActions={false} />

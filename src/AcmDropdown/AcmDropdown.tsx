@@ -8,6 +8,7 @@ import {
     DropdownPosition,
     KebabToggle,
     DropdownProps,
+    TooltipPosition,
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import { TooltipWrapper } from '../utils'
@@ -29,6 +30,7 @@ export type AcmDropdownProps = Props & {
     isPlain?: boolean
     isPrimary?: boolean
     onToggle?: (isOpen?: boolean) => void
+    tooltipPosition?: TooltipPosition
 }
 
 export type AcmDropdownItems = {
@@ -39,6 +41,7 @@ export type AcmDropdownItems = {
     text: string | React.ReactNode
     href?: string
     icon?: React.ReactNode
+    tooltipPosition?: TooltipPosition
 }
 
 const useStyles = makeStyles({
@@ -106,7 +109,11 @@ export function AcmDropdown(props: AcmDropdownProps) {
     }
 
     return (
-        <TooltipWrapper showTooltip={props.isDisabled && !!props.tooltip} tooltip={props.tooltip}>
+        <TooltipWrapper
+            showTooltip={props.isDisabled && !!props.tooltip}
+            tooltip={props.tooltip}
+            tooltipPosition={props.tooltipPosition}
+        >
             <Dropdown
                 className={classes.button}
                 onMouseOver={props.onHover}
@@ -116,6 +123,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
                         showTooltip={item.isDisabled && !!item.tooltip}
                         tooltip={item.tooltip}
                         key={item.id}
+                        tooltipPosition={item.tooltipPosition}
                     >
                         <DropdownItem {...item} onClick={() => onSelect(item.id)}>
                             {item.text}
