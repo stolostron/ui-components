@@ -1,12 +1,13 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { ToggleGroup, ToggleGroupItem } from '@patternfly/react-core'
+import { ToggleGroup, ToggleGroupItem, TooltipPosition } from '@patternfly/react-core'
 import { fitContent, IRow, SortByDirection, TableGridBreakpoint } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { configureAxe } from 'jest-axe'
 import React, { useState } from 'react'
 import { AcmTable, AcmTablePaginationContextProvider, AcmTableProps } from './AcmTable'
+import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 import { exampleData } from './AcmTable.stories'
 const axe = configureAxe({
     rules: {
@@ -39,7 +40,7 @@ describe('AcmTable', () => {
             useRowActions?: boolean
             useBulkActions?: boolean
             useExtraToolbarControls?: boolean
-            useTableDropdown?: boolean
+            useCustomTableAction?: boolean
             searchPlaceholder?: string
             useSearch?: boolean
             transforms?: boolean
@@ -54,7 +55,7 @@ describe('AcmTable', () => {
             useBulkActions = false,
             useExtraToolbarControls = false,
             useSearch = true,
-            useTableDropdown = false,
+            useCustomTableAction = false,
         } = props
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
@@ -176,31 +177,38 @@ describe('AcmTable', () => {
                         </ToggleGroup>
                     ) : undefined
                 }
-                tableDropdown={
-                    useTableDropdown
-                        ? {
-                              id: 'create',
-                              isDisabled: false,
-                              toggleText: 'Create',
-                              disableText: 'Disabled',
-                              actions: [
-                                  {
-                                      id: 'action1',
-                                      isDisabled: false,
-                                      component: 'div',
-                                      children: 'Action 1',
-                                      disableText: 'Disabled',
-                                  },
-                                  {
-                                      id: 'action2',
-                                      isDisabled: false,
-                                      component: 'div',
-                                      children: 'Action 2',
-                                      disableText: 'Disabled',
-                                  },
-                              ],
-                          }
-                        : undefined
+                customTableAction={
+                    useCustomTableAction ? (
+                        <AcmDropdown
+                            isDisabled={false}
+                            tooltip="Disabled"
+                            id="create"
+                            onSelect={() => null}
+                            text="Create"
+                            dropdownItems={[
+                                {
+                                    id: 'action1',
+                                    isDisabled: false,
+                                    text: 'Action 1',
+                                    tooltip: 'Disabled',
+                                    href: '/action1',
+                                    tooltipPosition: TooltipPosition.right,
+                                },
+                                {
+                                    id: 'action2',
+                                    isDisabled: false,
+                                    text: 'Action 2',
+                                    tooltip: 'Disabled',
+                                    href: '/action1',
+                                    tooltipPosition: TooltipPosition.right,
+                                },
+                            ]}
+                            isKebab={false}
+                            isPlain={true}
+                            isPrimary={true}
+                            tooltipPosition={TooltipPosition.right}
+                        />
+                    ) : undefined
                 }
                 {...props}
             />
@@ -793,53 +801,86 @@ describe('AcmTable', () => {
         )
         userEvent.click(getByTestId('expandable-toggle0'))
     })
-    test('renders with tableDropdown', () => {
+    test('renders with customTableAction', () => {
         const { container, getByTestId } = render(
-            <Table useTableDropdown={true} useTableActions={false} useRowActions={false} />
+            <Table useCustomTableAction={true} useTableActions={false} useRowActions={false} />
         )
         expect(container.querySelector('table')).toBeInTheDocument()
         expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
         userEvent.click(getByTestId('create'))
     })
-    test('renders with tableDropdown disabled', () => {
-        const tableDropdownData = {
-            id: 'create',
-            isDisabled: true,
-            toggleText: 'Create',
-            disableText: 'Disabled',
-            actions: [],
-        }
+    test('renders with customTableAction disabled', () => {
+        const customTableActionComponent = (
+            <AcmDropdown
+                isDisabled={true}
+                tooltip="Disabled"
+                id="create"
+                onSelect={() => null}
+                text="Create"
+                dropdownItems={[
+                    {
+                        id: 'action1',
+                        isDisabled: false,
+                        text: 'Action 1',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                    {
+                        id: 'action2',
+                        isDisabled: false,
+                        text: 'Action 2',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                ]}
+                isKebab={false}
+                isPlain={true}
+                isPrimary={true}
+                tooltipPosition={TooltipPosition.right}
+            />
+        )
         const { container } = render(
-            <Table tableDropdown={tableDropdownData} useTableActions={false} useRowActions={false} />
+            <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />
         )
         expect(container.querySelector('table')).toBeInTheDocument()
         expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
     })
     test('renders with tableDropdown some actions disabled', () => {
-        const tableDropdownData = {
-            id: 'create',
-            isDisabled: false,
-            toggleText: 'Create',
-            disableText: 'Disabled',
-            actions: [
-                {
-                    id: 'action1',
-                    isDisabled: true,
-                    component: 'div',
-                    children: 'Action 1',
-                    disableText: 'Disabled',
-                },
-                {
-                    id: 'action2',
-                    isDisabled: false,
-                    component: 'div',
-                    children: 'Action 2',
-                    disableText: 'Disabled',
-                },
-            ],
-        }
+        const customTableActionComponent = (
+            <AcmDropdown
+                isDisabled={false}
+                tooltip="Disabled"
+                id="create"
+                onSelect={() => null}
+                text="Create"
+                dropdownItems={[
+                    {
+                        id: 'action1',
+                        isDisabled: true,
+                        text: 'Action 1',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                    {
+                        id: 'action2',
+                        isDisabled: false,
+                        text: 'Action 2',
+                        tooltip: 'Disabled',
+                        href: '/action1',
+                        tooltipPosition: TooltipPosition.right,
+                    },
+                ]}
+                isKebab={false}
+                isPlain={true}
+                isPrimary={true}
+                tooltipPosition={TooltipPosition.right}
+            />
+        )
         const { container, getByTestId } = render(
-            <Table tableDropdown={tableDropdownData} useTableActions={false} useRowActions={false} />
+            <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />
         )
         expect(container.querySelector('table')).toBeInTheDocument()
         expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
