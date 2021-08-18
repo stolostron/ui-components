@@ -886,4 +886,94 @@ describe('AcmTable', () => {
         expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
         userEvent.click(getByTestId('create'))
     })
+
+    test('renders with filtering and filters options work correctly', () => {
+        const { container, getByText, getByTestId } = render(
+            <Table
+                filterItems={[
+                    {
+                        label: 'Gender',
+                        id: 'gender',
+                        options: [
+                            { label: 'Male', value: 'male' },
+                            { label: 'Female', value: 'female' },
+                            { label: 'Non-binary', value: 'non-binary' },
+                        ],
+                        tableFilterFn: (selectedValues: string[], item: IExampleData) => {
+                            if (selectedValues.indexOf(item['gender'].toLowerCase()) > -1) {
+                                return true
+                            }
+                            return false
+                        },
+                    },
+                ]}
+            />
+        )
+
+        // Table renders
+        expect(getByText('Filter')).toBeInTheDocument()
+        userEvent.click(getByText('Filter'))
+        expect(getByTestId('male')).toBeInTheDocument()
+
+        // Filtering works
+        userEvent.click(getByTestId('male'))
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(1)
+        userEvent.click(getByTestId('female'))
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(2)
+
+        // Unselect current options
+        userEvent.click(getByTestId('female'))
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(1)
+        userEvent.click(getByTestId('male'))
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(0)
+    })
+
+    test('renders with filtering and successfully deletes selected filters', () => {
+        const { container, getAllByText, getByText, getByTestId, getAllByLabelText, getByLabelText } = render(
+            <Table
+                filterItems={[
+                    {
+                        label: 'Gender',
+                        id: 'gender',
+                        options: [
+                            { label: 'Male', value: 'male' },
+                            { label: 'Female', value: 'female' },
+                            { label: 'Non-binary', value: 'non-binary' },
+                        ],
+                        tableFilterFn: (selectedValues: string[], item: IExampleData) => {
+                            if (selectedValues.indexOf(item['gender'].toLowerCase()) > -1) {
+                                return true
+                            }
+                            return false
+                        },
+                    },
+                ]}
+            />
+        )
+
+        // Test deleting chip group
+        expect(getByText('Filter')).toBeInTheDocument()
+        userEvent.click(getByText('Filter'))
+        userEvent.click(getByTestId('male'))
+        userEvent.click(getByTestId('female'))
+        userEvent.click(getByLabelText('Close chip group'))
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(0)
+
+        // test deleting single chip
+        expect(getByText('Filter')).toBeInTheDocument()
+        userEvent.click(getByText('Filter'))
+        userEvent.click(getByTestId('male'))
+        userEvent.click(getByTestId('female'))
+        userEvent.click(getAllByLabelText('close')[1])
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(1)
+        userEvent.click(getAllByLabelText('close')[0])
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(0)
+
+        // test deleting all selected filters
+        expect(getByText('Filter')).toBeInTheDocument()
+        userEvent.click(getByText('Filter'))
+        userEvent.click(getByTestId('male'))
+        userEvent.click(getAllByText('Clear all filters')[1])
+        expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(0)
+    })
 })

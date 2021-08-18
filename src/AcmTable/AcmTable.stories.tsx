@@ -229,6 +229,47 @@ function TableGroupedStory(args: Record<string, unknown>) {
     )
 }
 
+export function TableFiltered(args: Record<string, unknown>) {
+    return (
+        <AcmPage header={<AcmPageHeader title="AcmTable with Filtering" />}>
+            <AcmPageContent id="table">
+                <PageSection>
+                    <TableFilteredStory {...args} />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
+    )
+}
+
+function TableFilteredStory(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
+    return (
+        <AcmTable<IExampleData>
+            items={items}
+            columns={columns}
+            filterItems={[
+                {
+                    label: 'Gender',
+                    id: 'gender',
+                    options: [
+                        { label: 'Male', value: 'male' },
+                        { label: 'Female', value: 'female' },
+                        { label: 'Non-binary', value: 'non-binary' },
+                    ],
+                    tableFilterFn: (selectedValues: string[], item: IExampleData) => {
+                        if (selectedValues.indexOf(item['gender'].toLowerCase()) > -1) {
+                            return true
+                        }
+                        return false
+                    },
+                },
+            ]}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, (items) => setItems(items), items)}
+        />
+    )
+}
+
 export function TableEmpty(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable Empty" />}>
