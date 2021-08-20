@@ -890,7 +890,7 @@ describe('AcmTable', () => {
     test('renders with filtering and filters options work correctly', () => {
         const { container, getByText, getByTestId } = render(
             <Table
-                filterItems={[
+                filters={[
                     {
                         label: 'Gender',
                         id: 'gender',
@@ -931,7 +931,7 @@ describe('AcmTable', () => {
     test('renders with filtering and successfully deletes selected filters', () => {
         const { container, getAllByText, getByText, getByTestId, getAllByLabelText, getByLabelText } = render(
             <Table
-                filterItems={[
+                filters={[
                     {
                         label: 'Gender',
                         id: 'gender',
@@ -941,10 +941,7 @@ describe('AcmTable', () => {
                             { label: 'Non-binary', value: 'non-binary' },
                         ],
                         tableFilterFn: (selectedValues: string[], item: IExampleData) => {
-                            if (selectedValues.indexOf(item['gender'].toLowerCase()) > -1) {
-                                return true
-                            }
-                            return false
+                            return selectedValues.includes(item['gender'].toLowerCase())
                         },
                     },
                 ]}

@@ -247,7 +247,7 @@ function TableFilteredStory(args: Record<string, unknown>) {
         <AcmTable<IExampleData>
             items={items}
             columns={columns}
-            filterItems={[
+            filters={[
                 {
                     label: 'Gender',
                     id: 'gender',
@@ -257,12 +257,20 @@ function TableFilteredStory(args: Record<string, unknown>) {
                         { label: 'Non-binary', value: 'non-binary' },
                     ],
                     tableFilterFn: (selectedValues: string[], item: IExampleData) => {
-                        if (selectedValues.indexOf(item['gender'].toLowerCase()) > -1) {
-                            return true
-                        }
-                        return false
+                        return selectedValues.includes(item['gender'].toLowerCase())
                     },
                 },
+                // {
+                //     label: 'Last name',
+                //     id: 'lastname',
+                //     options: [
+                //         { label: 'A-M', value: 'a-m' },
+                //         { label: 'N-Z', value: 'n-z' },
+                //     ],
+                //     tableFilterFn: (selectedValues: string[], item: IExampleData) => {
+                //         return selectedValues.filter((value) => value[0].search(/[^\w\s]/g) === 0)
+                //     },
+                // },
             ]}
             keyFn={(item: IExampleData) => item.uid.toString()}
             {...commonProperties(args, (items) => setItems(items), items)}
