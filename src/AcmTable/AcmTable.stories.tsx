@@ -260,17 +260,21 @@ function TableFilteredStory(args: Record<string, unknown>) {
                         return selectedValues.includes(item['gender'].toLowerCase())
                     },
                 },
-                // {
-                //     label: 'Last name',
-                //     id: 'lastname',
-                //     options: [
-                //         { label: 'A-M', value: 'a-m' },
-                //         { label: 'N-Z', value: 'n-z' },
-                //     ],
-                //     tableFilterFn: (selectedValues: string[], item: IExampleData) => {
-                //         return selectedValues.filter((value) => value[0].search(/[^\w\s]/g) === 0)
-                //     },
-                // },
+                {
+                    label: 'Last Name',
+                    id: 'name',
+                    options: [
+                        { label: 'Starts with A-H', value: 'a-h' },
+                        { label: 'Starts with I-P', value: 'i-p' },
+                        { label: 'Starts with Q-Z', value: 'q-z' },
+                    ],
+                    tableFilterFn: (selectedValues: string[], item: IExampleData) => {
+                        return selectedValues.some((value) => {
+                            const expr = new RegExp(`^[${value}]`, 'i')
+                            return expr.test(item.last_name)
+                        })
+                    },
+                },
             ]}
             keyFn={(item: IExampleData) => item.uid.toString()}
             {...commonProperties(args, (items) => setItems(items), items)}
