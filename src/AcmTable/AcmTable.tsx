@@ -3,6 +3,7 @@
 
 import { makeStyles } from '@material-ui/styles'
 import {
+    Badge,
     ButtonVariant,
     Dropdown,
     DropdownItem,
@@ -14,14 +15,22 @@ import {
     PaginationVariant,
     PerPageOptions,
     SearchInput,
+    Select,
+    SelectGroup,
+    SelectOption,
+    SelectOptionObject,
+    SelectVariant,
     Spinner,
     Title,
     Toolbar,
+    ToolbarChip,
     ToolbarContent,
+    ToolbarFilter,
     ToolbarGroup,
     ToolbarItem,
     Tooltip,
 } from '@patternfly/react-core'
+import { FilterIcon } from '@patternfly/react-icons'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
 import {
     expandable,
@@ -130,6 +139,24 @@ interface ITableItem<T> {
     [key: string]: unknown
 }
 
+type FilterOptionValueT = string
+type TableFilterOption<FilterOptionValueT> = { label: ReactNode; value: FilterOptionValueT }
+export type TableFilterFn<T> = (selectedValues: string[], item: T) => boolean
+/**
+ * Interface defining required params for table filtering property "filterItems"
+ * @interface
+ * @param {string} label - label is the string displayed in UI
+ * @param {string} id - ID is unique identifier
+ * @param {TableFilterOption<FilterOptionValueT>[]} options - Options is an array to define the exact filter options
+ * @param {TableFilterFn<T>} tableFilterFn - A required function that returns a boolean if the item is a match to the current filters
+ */
+export interface ITableFilter<T> {
+    label: string
+    id: string
+    options: TableFilterOption<FilterOptionValueT>[]
+    tableFilterFn: TableFilterFn<T>
+}
+
 const useStyles = makeStyles({
     tableDiv: {
         display: 'table',
@@ -150,6 +177,16 @@ const useStyles = makeStyles({
                 borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)',
             },
         },
+    },
+    filterLabelMargin: {
+        marginRight: '.5rem',
+    },
+    filterOption: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    filterOptionBadge: {
+        marginLeft: '.5rem',
     },
 })
 
@@ -234,6 +271,7 @@ export interface AcmTableProps<T> {
     autoHidePagination?: boolean
     noBorders?: boolean
     fuseThreshold?: number
+    filters?: ITableFilter<T>[]
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
     const {
@@ -248,6 +286,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         rowActionResolver,
         tableActions = [],
         customTableAction,
+        filters = [],
     } = props
 
     const defaultSort = {
@@ -262,6 +301,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
+    const [toolbarFilterIds, setToolbarFilterIds] = useState<{ [key: string]: string[] }>({})
 
     // State that can come from context or component state (perPage)
     const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
@@ -360,7 +400,26 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }>(() => {
         /* istanbul ignore if */
         if (!items) return { tableItems: [], totalCount: 0 }
-        const tableItems = items.map((item) => {
+        let filteredItems: T[] = items
+        if (Object.keys(toolbarFilterIds).length > 0) {
+            const filterCategories = Object.keys(toolbarFilterIds)
+            filteredItems = items.filter((item: T) => {
+                let isFilterMatch = true
+                // Item must match 1 filter of each category
+                filterCategories.forEach((filter: string) => {
+                    const filterItem: ITableFilter<T> | undefined = filters.find(
+                        (filterItem) => filterItem.id === filter
+                    )
+                    /* istanbul ignore next */
+                    const isMatch = filterItem?.tableFilterFn(toolbarFilterIds[filter], item) ?? true
+                    if (!isMatch) {
+                        isFilterMatch = false
+                    }
+                })
+                return isFilterMatch
+            })
+        }
+        const tableItems = filteredItems.map((item) => {
             const key = keyFn(item)
             const group = (groupFn && groupFn(item)) || undefined
             const subRows = addSubRows?.(item)
@@ -378,7 +437,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             return tableItem
         })
         return { tableItems, totalCount: groupFn ? countGroups(tableItems) : tableItems.length }
-    }, [items, columns, addSubRows, keyFn, groupFn])
+    }, [items, columns, addSubRows, keyFn, groupFn, toolbarFilterIds])
 
     const { filtered, filteredCount } = useMemo<{
         filtered: ITableItem<T>[]
@@ -730,6 +789,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }
 
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
+    const hasFilter = filters && filters.length > 0
     const hasItems = items && items.length > 0 && filtered
     const showToolbar = props.showToolbar !== false ? hasItems : false
     const topToolbarStyle = items ? {} : { paddingBottom: 0 }
@@ -746,8 +806,18 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 </Toolbar>
             )}
             {showToolbar && (
-                <Toolbar>
+                <Toolbar clearAllFilters={() => setToolbarFilterIds({})} collapseListedFiltersBreakpoint={'lg'}>
                     <ToolbarContent>
+                        {hasFilter && (
+                            <ToolbarGroup variant="filter-group">
+                                <TableColumnFilters
+                                    filters={filters}
+                                    items={items}
+                                    toolbarFilterIds={toolbarFilterIds}
+                                    setToolbarFilterIds={setToolbarFilterIds}
+                                />
+                            </ToolbarGroup>
+                        )}
                         {hasSearch && (
                             <ToolbarGroup variant="filter-group">
                                 <ToolbarItem variant="search-filter">
@@ -928,6 +998,158 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 </Fragment>
             )}
         </Fragment>
+    )
+}
+
+function TableColumnFilters<T>(props: {
+    filters: ITableFilter<T>[]
+    toolbarFilterIds: { [key: string]: string[] }
+    setToolbarFilterIds: React.Dispatch<
+        React.SetStateAction<{
+            [key: string]: string[]
+        }>
+    >
+    items?: T[]
+}) {
+    const [isOpen, setIsOpen] = useState(false)
+    const classes = useStyles()
+    const { filters, toolbarFilterIds, setToolbarFilterIds, items } = props
+
+    const onFilterSelect = useCallback(
+        (selection: string | SelectOptionObject) => {
+            /* istanbul ignore if */
+            if (typeof selection !== 'string') {
+                /* istanbul ignore next */
+                throw new Error('Filter select error: Incorrect selection type')
+            }
+            let filterId = ''
+            for (const filter of filters) {
+                /* istanbul ignore next */
+                if (filter.options.find((option) => option.value === selection)) {
+                    filterId = filter.id
+                    break
+                }
+            }
+            setToolbarFilterIds((toolbarFilterIds) => {
+                const selectedFilterValues = toolbarFilterIds[filterId]
+                /* istanbul ignore next */
+                const isCurrentlySelected = selectedFilterValues?.includes(selection)
+                const updatedFilters = { ...toolbarFilterIds }
+                if (isCurrentlySelected) {
+                    if (selectedFilterValues.length === 1) {
+                        delete updatedFilters[filterId]
+                    } else {
+                        updatedFilters[filterId] = updatedFilters[filterId].filter(
+                            (filterValue) => filterValue !== selection
+                        )
+                    }
+                } else {
+                    updatedFilters[filterId] = [...(updatedFilters[filterId] ?? []), selection]
+                }
+                return updatedFilters
+            })
+        },
+        [filters]
+    )
+
+    const onDelete = useCallback((filter: string, id: ToolbarChip) => {
+        setToolbarFilterIds((toolbarFilterIds) => {
+            const updatedFilters = { ...toolbarFilterIds }
+            if (updatedFilters[filter].length === 1) {
+                delete updatedFilters[filter]
+            } else {
+                updatedFilters[filter] = updatedFilters[filter].filter((f: string) => f !== id.key)
+            }
+            return updatedFilters
+        })
+    }, [])
+
+    const onDeleteGroup = useCallback((filter: string) => {
+        setToolbarFilterIds((toolbarFilterIds) => {
+            const updatedFilters = { ...toolbarFilterIds }
+            delete updatedFilters[filter]
+            return updatedFilters
+        })
+    }, [])
+
+    const FilterSelectGroups = useMemo(
+        () =>
+            filters.map((filter) => (
+                <SelectGroup key={filter.id} label={filter.label}>
+                    {filter.options.map((option) => (
+                        <SelectOption
+                            key={option.value}
+                            inputId={option.value}
+                            value={option.value}
+                            isChecked={
+                                /* istanbul ignore next */
+                                toolbarFilterIds[filter.id]?.indexOf(option.value) > -1 ?? false
+                            }
+                        >
+                            <div className={classes.filterOption}>
+                                {option.label}
+                                <Badge className={classes.filterOptionBadge} key={option.value} isRead>
+                                    {
+                                        /* istanbul ignore next */
+                                        items?.filter((item) => filter.tableFilterFn([option.value], item)).length
+                                    }
+                                </Badge>
+                            </div>
+                        </SelectOption>
+                    ))}
+                </SelectGroup>
+            )),
+        [filters, items, toolbarFilterIds]
+    )
+    return (
+        <ToolbarItem>
+            {filters.reduce(
+                (acc, current) => (
+                    <ToolbarFilter
+                        key={'acm-table-filter-key'}
+                        chips={current.options
+                            .filter((option: TableFilterOption<string>) => {
+                                const currentCategorySelected = toolbarFilterIds[current.id] ?? []
+                                return currentCategorySelected.includes(option.value)
+                            })
+                            .map<ToolbarChip>((option: TableFilterOption<string>) => {
+                                return { key: option.value, node: option.label }
+                            })}
+                        deleteChip={(_category, chip) => {
+                            chip = chip as ToolbarChip
+                            onDelete(current.id, chip)
+                        }}
+                        deleteChipGroup={() => onDeleteGroup(current.id)}
+                        categoryName={current.label}
+                    >
+                        {acc}
+                    </ToolbarFilter>
+                ),
+                <Select
+                    key={'acm-table-filter-select-key'}
+                    variant={SelectVariant.checkbox}
+                    aria-label={'acm-table-filter-select-key'}
+                    onToggle={() => setIsOpen(!isOpen)}
+                    onSelect={(
+                        _event: React.MouseEvent<Element, MouseEvent> | React.ChangeEvent<Element>,
+                        selection: string | SelectOptionObject
+                    ) => onFilterSelect(selection)}
+                    selections={Object.keys(toolbarFilterIds).reduce(
+                        (acc: string[], val: string) => acc.concat(toolbarFilterIds[val]),
+                        []
+                    )}
+                    isOpen={isOpen}
+                    placeholderText={
+                        <div>
+                            <FilterIcon className={classes.filterLabelMargin} />
+                            {'Filter'}
+                        </div>
+                    }
+                >
+                    {FilterSelectGroups}
+                </Select>
+            )}
+        </ToolbarItem>
     )
 }
 

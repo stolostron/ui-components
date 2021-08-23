@@ -229,6 +229,59 @@ function TableGroupedStory(args: Record<string, unknown>) {
     )
 }
 
+export function TableFiltered(args: Record<string, unknown>) {
+    return (
+        <AcmPage header={<AcmPageHeader title="AcmTable with Filtering" />}>
+            <AcmPageContent id="table">
+                <PageSection>
+                    <TableFilteredStory {...args} />
+                </PageSection>
+            </AcmPageContent>
+        </AcmPage>
+    )
+}
+
+function TableFilteredStory(args: Record<string, unknown>) {
+    const [items, setItems] = useState<IExampleData[]>(exampleData.slice(0, 105))
+    return (
+        <AcmTable<IExampleData>
+            items={items}
+            columns={columns}
+            filters={[
+                {
+                    label: 'Gender',
+                    id: 'gender',
+                    options: [
+                        { label: 'Male', value: 'male' },
+                        { label: 'Female', value: 'female' },
+                        { label: 'Non-binary', value: 'non-binary' },
+                    ],
+                    tableFilterFn: (selectedValues: string[], item: IExampleData) => {
+                        return selectedValues.includes(item['gender'].toLowerCase())
+                    },
+                },
+                {
+                    label: 'Last Name',
+                    id: 'name',
+                    options: [
+                        { label: 'Starts with A-H', value: 'a-h' },
+                        { label: 'Starts with I-P', value: 'i-p' },
+                        { label: 'Starts with Q-Z', value: 'q-z' },
+                    ],
+                    tableFilterFn: (selectedValues: string[], item: IExampleData) => {
+                        return selectedValues.some((value) => {
+                            const expr = new RegExp(`^[${value}]`, 'i')
+                            return expr.test(item.last_name)
+                        })
+                    },
+                },
+            ]}
+            keyFn={(item: IExampleData) => item.uid.toString()}
+            {...commonProperties(args, (items) => setItems(items), items)}
+        />
+    )
+}
+
 export function TableEmpty(args: Record<string, unknown>) {
     return (
         <AcmPage header={<AcmPageHeader title="AcmTable Empty" />}>
