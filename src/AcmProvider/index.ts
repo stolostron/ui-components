@@ -18,6 +18,7 @@ export enum Provider {
     ibmpower = 'ibmpower',
     ibmz = 'ibmz',
     baremetal = 'bmc',
+    hybrid = 'hybrid',
     other = 'other',
 }
 
@@ -33,6 +34,7 @@ export const ProviderShortTextMap = {
     [Provider.ibmz]: 'IBM Z',
     [Provider.baremetal]: 'Bare metal',
     [Provider.vmware]: 'VMware',
+    [Provider.hybrid]: 'Hybrid',
     [Provider.other]: 'Other',
 }
 
@@ -48,6 +50,7 @@ export const ProviderLongTextMap = {
     [Provider.ibmz]: 'IBM Z',
     [Provider.baremetal]: 'Bare Metal',
     [Provider.vmware]: 'VMware vSphere',
+    [Provider.hybrid]: 'Hybrid',
     [Provider.other]: 'Other',
 }
 
@@ -63,5 +66,6 @@ export const ProviderIconMap = {
     [Provider.ibmz]: AcmIconVariant.ibmlogo,
     [Provider.baremetal]: AcmIconVariant.baremetal,
     [Provider.vmware]: AcmIconVariant.vmware,
+    [Provider.hybrid]: AcmIconVariant.hybrid,
     [Provider.other]: AcmIconVariant.cloud,
 }

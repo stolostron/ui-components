@@ -335,6 +335,7 @@ export enum AcmRoute {
     Applications = '/multicloud/applications',
     Credentials = '/multicloud/credentials',
     Governance = '/multicloud/policies',
+    InfraEnvironments = '/multicloud/infra-environments',
     VisualWebTerminal = '/kui',
     Overview = '/overview',
     Search = '/search',
@@ -372,6 +373,7 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
             case AcmRoute.BareMetalAssets:
             case AcmRoute.Automation:
             case AcmRoute.Credentials:
+            case AcmRoute.InfraEnvironments:
                 return true
         }
         return false
@@ -465,6 +467,13 @@ function NavExpandableList(props: { route: AcmRoute; showSwitcher: boolean; post
                     </NavItem>
                     <NavItem isActive={route === AcmRoute.Automation} to={AcmRoute.Automation}>
                         {isConsoleRoute ? <Link to={AcmRoute.Automation}>Automation</Link> : 'Automation'}
+                    </NavItem>
+                    <NavItem isActive={route === AcmRoute.InfraEnvironments} to={AcmRoute.InfraEnvironments}>
+                        {isConsoleRoute ? (
+                            <Link to={AcmRoute.InfraEnvironments}>Infrastructure environments</Link>
+                        ) : (
+                            'Infrastructure environments'
+                        )}
                     </NavItem>
                 </NavExpandable>
                 <NavItem isActive={route === AcmRoute.Applications} to={AcmRoute.Applications}>

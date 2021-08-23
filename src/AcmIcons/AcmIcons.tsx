@@ -19,6 +19,7 @@ import OCPIcon from './OCPIcon'
 import RedHatIcon from './RedHatIcon'
 import VMWareIcon from './VMWareIcon'
 import IBMLogoIcon from './IBMLogoIcon'
+import HybridIcon from './HybridIcon'
 
 export enum AcmIconVariant {
     template = 'template',
@@ -38,6 +39,7 @@ export enum AcmIconVariant {
     openCurrentTab = 'opencurrenttab',
     openNewTab = 'opennewtab',
     ansible = 'ansible',
+    hybrid = 'hybrid',
 }
 
 // https://www.patternfly.org/v4/guidelines/icons
@@ -78,6 +80,8 @@ export function AcmIcon(props: { icon: AcmIconVariant } & SVGIconProps) {
             return <AnsibleTowerIcon {...props} color="#EE0000" />
         case AcmIconVariant.ibmlogo:
             return <IBMLogoIcon {...props} />
+        case AcmIconVariant.hybrid:
+            return <HybridIcon {...props} />
         /* istanbul ignore next */
         default:
             return <Fragment />
