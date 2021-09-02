@@ -1,13 +1,13 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { ToggleGroup, ToggleGroupItem, TooltipPosition } from '@patternfly/react-core'
+import { ToggleGroup, ToggleGroupItem, ButtonVariant } from '@patternfly/react-core'
 import { fitContent, IRow, SortByDirection, TableGridBreakpoint } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { configureAxe } from 'jest-axe'
 import React, { useState } from 'react'
 import { AcmTable, AcmTablePaginationContextProvider, AcmTableProps } from './AcmTable'
-import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
+// import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 import { exampleData } from './AcmTable.stories'
 const axe = configureAxe({
     rules: {
@@ -30,6 +30,8 @@ describe('AcmTable', () => {
     const bulkDeleteAction = jest.fn()
     const deleteAction = jest.fn()
     const sortFunction = jest.fn()
+    const primaryTableActionFunction = jest.fn()
+    const secondaryTableActionFunction = jest.fn()
     const testItems = exampleData.slice(0, 105)
     const defaultSortedItems = exampleData.slice(0, 105).sort((a, b) => a.firstName.localeCompare(b.firstName))
     const placeholderString = 'Search'
@@ -38,9 +40,7 @@ describe('AcmTable', () => {
             noBorders?: boolean
             useTableActions?: boolean
             useRowActions?: boolean
-            useBulkActions?: boolean
             useExtraToolbarControls?: boolean
-            useCustomTableAction?: boolean
             searchPlaceholder?: string
             useSearch?: boolean
             transforms?: boolean
@@ -50,12 +50,10 @@ describe('AcmTable', () => {
         } & Partial<AcmTableProps<IExampleData>>
     ) => {
         const {
-            useTableActions = true,
+            useTableActions = false,
             useRowActions = true,
-            useBulkActions = false,
             useExtraToolbarControls = false,
             useSearch = true,
-            useCustomTableAction = false,
         } = props
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
@@ -105,9 +103,57 @@ describe('AcmTable', () => {
                     useTableActions
                         ? [
                               {
-                                  id: 'create',
-                                  title: 'Create address',
-                                  click: createAction,
+                                  id: 'primary-table-button',
+                                  title: 'Primary action',
+                                  click: () => primaryTableActionFunction(),
+                                  isDisabled: false,
+                                  variant: ButtonVariant.primary,
+                              },
+                              {
+                                  id: 'secondary-table-button',
+                                  title: 'Secondary action',
+                                  click: () => secondaryTableActionFunction(),
+                                  variant: ButtonVariant.secondary,
+                              },
+                              {
+                                  id: 'status-group',
+                                  title: 'Status',
+                                  actions: [
+                                      {
+                                          id: 'status-1',
+                                          title: 'Status 1',
+                                          // eslint-disable-next-line no-console
+                                          click: (it: IExampleData[]) => console.log('Status 1 items: ', it),
+                                          variant: 'dropdown-action',
+                                      },
+                                      {
+                                          id: 'status-2',
+                                          title: 'Status 2',
+                                          // eslint-disable-next-line no-console
+                                          click: (it: IExampleData[]) => console.log('Status 2 items: ', it),
+                                          variant: 'dropdown-action',
+                                      },
+                                  ],
+                                  variant: 'action-group',
+                              },
+                              {
+                                  id: 'separator-1',
+                                  variant: 'action-seperator',
+                              },
+                              {
+                                  id: 'delete',
+                                  title: 'Delete',
+                                  click: (it: IExampleData[]) => {
+                                      setItems(
+                                          items
+                                              ? items.filter(
+                                                    (i: { uid: number }) => !it.find((item) => item.uid === i.uid)
+                                                )
+                                              : []
+                                      )
+                                      bulkDeleteAction(it)
+                                  },
+                                  variant: 'bulk-action',
                               },
                           ]
                         : undefined
@@ -155,20 +201,20 @@ describe('AcmTable', () => {
                           ]
                         : undefined
                 }
-                bulkActions={
-                    useBulkActions
-                        ? [
-                              {
-                                  id: 'delete',
-                                  title: 'Delete items',
-                                  click: (items: IExampleData[]) => {
-                                      setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
-                                      bulkDeleteAction(items)
-                                  },
-                              },
-                          ]
-                        : undefined
-                }
+                // bulkActions={
+                //     useBulkActions
+                //         ? [
+                //               {
+                //                   id: 'delete',
+                //                   title: 'Delete items',
+                //                   click: (items: IExampleData[]) => {
+                //                       setItems(items.filter((i) => !items.find((item) => item.uid === i.uid)))
+                //                       bulkDeleteAction(items)
+                //                   },
+                //               },
+                //           ]
+                //         : undefined
+                // }
                 extraToolbarControls={
                     useExtraToolbarControls ? (
                         <ToggleGroup>
@@ -177,39 +223,39 @@ describe('AcmTable', () => {
                         </ToggleGroup>
                     ) : undefined
                 }
-                customTableAction={
-                    useCustomTableAction ? (
-                        <AcmDropdown
-                            isDisabled={false}
-                            tooltip="Disabled"
-                            id="create"
-                            onSelect={() => null}
-                            text="Create"
-                            dropdownItems={[
-                                {
-                                    id: 'action1',
-                                    isDisabled: false,
-                                    text: 'Action 1',
-                                    tooltip: 'Disabled',
-                                    href: '/action1',
-                                    tooltipPosition: TooltipPosition.right,
-                                },
-                                {
-                                    id: 'action2',
-                                    isDisabled: false,
-                                    text: 'Action 2',
-                                    tooltip: 'Disabled',
-                                    href: '/action1',
-                                    tooltipPosition: TooltipPosition.right,
-                                },
-                            ]}
-                            isKebab={false}
-                            isPlain={true}
-                            isPrimary={true}
-                            tooltipPosition={TooltipPosition.right}
-                        />
-                    ) : undefined
-                }
+                // customTableAction={
+                //     useCustomTableAction ? (
+                //         <AcmDropdown
+                //             isDisabled={false}
+                //             tooltip="Disabled"
+                //             id="create"
+                //             onSelect={() => null}
+                //             text="Create"
+                //             dropdownItems={[
+                //                 {
+                //                     id: 'action1',
+                //                     isDisabled: false,
+                //                     text: 'Action 1',
+                //                     tooltip: 'Disabled',
+                //                     href: '/action1',
+                //                     tooltipPosition: TooltipPosition.right,
+                //                 },
+                //                 {
+                //                     id: 'action2',
+                //                     isDisabled: false,
+                //                     text: 'Action 2',
+                //                     tooltip: 'Disabled',
+                //                     href: '/action1',
+                //                     tooltipPosition: TooltipPosition.right,
+                //                 },
+                //             ]}
+                //             isKebab={false}
+                //             isPlain={true}
+                //             isPrimary={true}
+                //             tooltipPosition={TooltipPosition.right}
+                //         />
+                //     ) : undefined
+                // }
                 {...props}
             />
         )
@@ -347,18 +393,9 @@ describe('AcmTable', () => {
         )
         expect(getByText('1 selected')).toBeInTheDocument()
     })
-    test('can support table actions', () => {
-        const { getByText } = render(<Table />)
-        expect(getByText('Create address')).toBeVisible()
-        expect(getByText('Create address')).toBeInstanceOf(HTMLButtonElement)
-        userEvent.click(getByText('Create address'))
-        expect(createAction).toHaveBeenCalled()
-    })
 
-    test('can support bulk table actions with single selection', () => {
-        const { getByText, getAllByRole, queryAllByText } = render(
-            <Table useBulkActions={true} useTableActions={false} />
-        )
+    test('can support table actions with single selection', () => {
+        const { getByText, getAllByRole, queryAllByText } = render(<Table useTableActions={true} />)
         userEvent.click(getAllByRole('checkbox')[1])
         expect(getByText('1 selected')).toBeInTheDocument()
         userEvent.click(getAllByRole('checkbox')[1])
@@ -366,14 +403,12 @@ describe('AcmTable', () => {
         userEvent.click(getAllByRole('checkbox')[1])
         expect(getByText('1 selected')).toBeInTheDocument()
         getByText('Actions').click()
-        userEvent.click(getByText('Delete items'))
+        userEvent.click(getByText('Delete'))
         expect(bulkDeleteAction).toHaveBeenCalledWith(defaultSortedItems.slice(0, 1))
     })
 
-    test('can support bulk table actions with multiple selection', () => {
-        const { getByText, getAllByRole, queryAllByText } = render(
-            <Table useBulkActions={true} useTableActions={false} />
-        )
+    test('can support table actions with multiple selections', () => {
+        const { getByText, getAllByRole, queryAllByText } = render(<Table useTableActions={true} />)
         userEvent.click(getAllByRole('checkbox')[0])
         expect(getByText('105 selected')).toBeInTheDocument()
         userEvent.click(getAllByRole('checkbox')[1])
@@ -386,12 +421,68 @@ describe('AcmTable', () => {
         userEvent.click(getAllByRole('checkbox')[2])
         expect(getByText('2 selected')).toBeInTheDocument()
         getByText('Actions').click()
-        userEvent.click(getByText('Delete items'))
+        userEvent.click(getByText('Delete'))
         // First arg to bulkDeleteAction is an array with the items in any order
         expect(bulkDeleteAction.mock.calls[0][0]).toHaveLength(2)
         expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[0])
         expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[1])
     })
+
+    test('can support table button actions', () => {
+        const { getByText } = render(<Table useTableActions={true} />)
+        expect(getByText('Primary action')).toBeInTheDocument()
+        expect(getByText('Secondary action')).toBeInTheDocument()
+        userEvent.click(getByText('Primary action'))
+        expect(primaryTableActionFunction).toHaveBeenCalled()
+        userEvent.click(getByText('Secondary action'))
+        expect(secondaryTableActionFunction).toHaveBeenCalled()
+    })
+
+    // test('can support table actions', () => {
+    //     const { getByText } = render(<Table />)
+    //     expect(getByText('Create address')).toBeVisible()
+    //     expect(getByText('Create address')).toBeInstanceOf(HTMLButtonElement)
+    //     userEvent.click(getByText('Create address'))
+    //     expect(createAction).toHaveBeenCalled()
+    // })
+
+    // test('can support bulk table actions with single selection', () => {
+    //     const { getByText, getAllByRole, queryAllByText } = render(
+    //         <Table useBulkActions={true} useTableActions={false} />
+    //     )
+    //     userEvent.click(getAllByRole('checkbox')[1])
+    //     expect(getByText('1 selected')).toBeInTheDocument()
+    //     userEvent.click(getAllByRole('checkbox')[1])
+    //     expect(queryAllByText('1 selected')).toHaveLength(0)
+    //     userEvent.click(getAllByRole('checkbox')[1])
+    //     expect(getByText('1 selected')).toBeInTheDocument()
+    //     getByText('Actions').click()
+    //     userEvent.click(getByText('Delete items'))
+    //     expect(bulkDeleteAction).toHaveBeenCalledWith(defaultSortedItems.slice(0, 1))
+    // })
+
+    // test('can support bulk table actions with multiple selection', () => {
+    //     const { getByText, getAllByRole, queryAllByText } = render(
+    //         <Table useBulkActions={true} useTableActions={false} />
+    //     )
+    //     userEvent.click(getAllByRole('checkbox')[0])
+    //     expect(getByText('105 selected')).toBeInTheDocument()
+    //     userEvent.click(getAllByRole('checkbox')[1])
+    //     expect(getByText('104 selected')).toBeInTheDocument()
+    //     userEvent.click(getAllByRole('checkbox')[0])
+    //     expect(getByText('105 selected')).toBeInTheDocument()
+    //     userEvent.click(getAllByRole('checkbox')[0])
+    //     expect(queryAllByText('selected')).toHaveLength(0)
+    //     userEvent.click(getAllByRole('checkbox')[1])
+    //     userEvent.click(getAllByRole('checkbox')[2])
+    //     expect(getByText('2 selected')).toBeInTheDocument()
+    //     getByText('Actions').click()
+    //     userEvent.click(getByText('Delete items'))
+    //     // First arg to bulkDeleteAction is an array with the items in any order
+    //     expect(bulkDeleteAction.mock.calls[0][0]).toHaveLength(2)
+    //     expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[0])
+    //     expect(bulkDeleteAction.mock.calls[0][0]).toContain(defaultSortedItems[1])
+    // })
 
     test('can support table row actions', () => {
         const { getAllByLabelText, getByRole, getByText } = render(<Table />)
@@ -491,8 +582,8 @@ describe('AcmTable', () => {
         expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
 
-    const sortTest = (useBulkActions: boolean) => {
-        const { getByText, container } = render(<Table useBulkActions={useBulkActions} />)
+    const sortTest = () => {
+        const { getByText, container } = render(<Table />)
 
         // sort by string
         expect(container.querySelector('tbody tr:first-of-type [data-label="First Name"]')).toHaveTextContent('Abran')
@@ -512,11 +603,11 @@ describe('AcmTable', () => {
     }
 
     test('can be sorted', () => {
-        sortTest(false)
+        sortTest()
     })
-    test('can be sorted with bulk actions', () => {
-        sortTest(true)
-    })
+    // test('can be sorted with bulk actions', () => {
+    //     sortTest(true)
+    // })
     test('can be sorted by initialSort property', () => {
         // initially sort by UID
         const { getByText, container } = render(<Table initialSort={{ direction: 'asc', index: 5 }} />)
@@ -801,91 +892,91 @@ describe('AcmTable', () => {
         )
         userEvent.click(getByTestId('expandable-toggle0'))
     })
-    test('renders with customTableAction', () => {
-        const { container, getByTestId } = render(
-            <Table useCustomTableAction={true} useTableActions={false} useRowActions={false} />
-        )
-        expect(container.querySelector('table')).toBeInTheDocument()
-        expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
-        userEvent.click(getByTestId('create'))
-    })
-    test('renders with customTableAction disabled', () => {
-        const customTableActionComponent = (
-            <AcmDropdown
-                isDisabled={true}
-                tooltip="Disabled"
-                id="create"
-                onSelect={() => null}
-                text="Create"
-                dropdownItems={[
-                    {
-                        id: 'action1',
-                        isDisabled: false,
-                        text: 'Action 1',
-                        tooltip: 'Disabled',
-                        href: '/action1',
-                        tooltipPosition: TooltipPosition.right,
-                    },
-                    {
-                        id: 'action2',
-                        isDisabled: false,
-                        text: 'Action 2',
-                        tooltip: 'Disabled',
-                        href: '/action1',
-                        tooltipPosition: TooltipPosition.right,
-                    },
-                ]}
-                isKebab={false}
-                isPlain={true}
-                isPrimary={true}
-                tooltipPosition={TooltipPosition.right}
-            />
-        )
-        const { container } = render(
-            <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />
-        )
-        expect(container.querySelector('table')).toBeInTheDocument()
-        expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
-    })
-    test('renders with tableDropdown some actions disabled', () => {
-        const customTableActionComponent = (
-            <AcmDropdown
-                isDisabled={false}
-                tooltip="Disabled"
-                id="create"
-                onSelect={() => null}
-                text="Create"
-                dropdownItems={[
-                    {
-                        id: 'action1',
-                        isDisabled: true,
-                        text: 'Action 1',
-                        tooltip: 'Disabled',
-                        href: '/action1',
-                        tooltipPosition: TooltipPosition.right,
-                    },
-                    {
-                        id: 'action2',
-                        isDisabled: false,
-                        text: 'Action 2',
-                        tooltip: 'Disabled',
-                        href: '/action1',
-                        tooltipPosition: TooltipPosition.right,
-                    },
-                ]}
-                isKebab={false}
-                isPlain={true}
-                isPrimary={true}
-                tooltipPosition={TooltipPosition.right}
-            />
-        )
-        const { container, getByTestId } = render(
-            <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />
-        )
-        expect(container.querySelector('table')).toBeInTheDocument()
-        expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
-        userEvent.click(getByTestId('create'))
-    })
+    // test('renders with customTableAction', () => {
+    //     const { container, getByTestId } = render(
+    //         <Table useCustomTableAction={true} useTableActions={false} useRowActions={false} />
+    //     )
+    //     expect(container.querySelector('table')).toBeInTheDocument()
+    //     expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
+    //     userEvent.click(getByTestId('create'))
+    // })
+    // test('renders with customTableAction disabled', () => {
+    //     const customTableActionComponent = (
+    //         <AcmDropdown
+    //             isDisabled={true}
+    //             tooltip="Disabled"
+    //             id="create"
+    //             onSelect={() => null}
+    //             text="Create"
+    //             dropdownItems={[
+    //                 {
+    //                     id: 'action1',
+    //                     isDisabled: false,
+    //                     text: 'Action 1',
+    //                     tooltip: 'Disabled',
+    //                     href: '/action1',
+    //                     tooltipPosition: TooltipPosition.right,
+    //                 },
+    //                 {
+    //                     id: 'action2',
+    //                     isDisabled: false,
+    //                     text: 'Action 2',
+    //                     tooltip: 'Disabled',
+    //                     href: '/action1',
+    //                     tooltipPosition: TooltipPosition.right,
+    //                 },
+    //             ]}
+    //             isKebab={false}
+    //             isPlain={true}
+    //             isPrimary={true}
+    //             tooltipPosition={TooltipPosition.right}
+    //         />
+    //     )
+    //     const { container } = render(
+    //         <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />
+    //     )
+    //     expect(container.querySelector('table')).toBeInTheDocument()
+    //     expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
+    // })
+    // test('renders with tableDropdown some actions disabled', () => {
+    //     const customTableActionComponent = (
+    //         <AcmDropdown
+    //             isDisabled={false}
+    //             tooltip="Disabled"
+    //             id="create"
+    //             onSelect={() => null}
+    //             text="Create"
+    //             dropdownItems={[
+    //                 {
+    //                     id: 'action1',
+    //                     isDisabled: true,
+    //                     text: 'Action 1',
+    //                     tooltip: 'Disabled',
+    //                     href: '/action1',
+    //                     tooltipPosition: TooltipPosition.right,
+    //                 },
+    //                 {
+    //                     id: 'action2',
+    //                     isDisabled: false,
+    //                     text: 'Action 2',
+    //                     tooltip: 'Disabled',
+    //                     href: '/action1',
+    //                     tooltipPosition: TooltipPosition.right,
+    //                 },
+    //             ]}
+    //             isKebab={false}
+    //             isPlain={true}
+    //             isPrimary={true}
+    //             tooltipPosition={TooltipPosition.right}
+    //         />
+    //     )
+    //     const { container, getByTestId } = render(
+    //         <Table customTableAction={customTableActionComponent} useTableActions={false} useRowActions={false} />
+    //     )
+    //     expect(container.querySelector('table')).toBeInTheDocument()
+    //     expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
+    //     userEvent.click(getByTestId('create'))
+    // })
 
     test('renders with filtering and filters options work correctly', () => {
         const { container, getByText, getByTestId } = render(

@@ -9,7 +9,7 @@ import {
     TextVariants,
     ToggleGroup,
     ToggleGroupItem,
-    TooltipPosition,
+    // TooltipPosition,
 } from '@patternfly/react-core'
 import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
@@ -17,8 +17,8 @@ import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { Provider } from '../AcmProvider'
 import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
-import { AcmTable, IAcmTableColumn } from '../AcmTable/AcmTable'
-import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
+import { AcmTable, IAcmTableColumn, IAcmTableAction } from '../AcmTable/AcmTable'
+// import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 
 interface IExampleData {
     uid: number
@@ -43,9 +43,7 @@ export default {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: false },
-        'Include bulkActions': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
-        'Include customTableAction': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
         gridBreakPoint: {
             options: ['dynamic', ...Object.values(TableGridBreakpoint)],
@@ -64,10 +62,8 @@ export default {
         groupFn: hidden,
         groupSummaryFn: hidden,
         tableActions: hidden,
-        customTableAction: hidden,
         rowActions: hidden,
         rowActionResolver: hidden,
-        bulkActions: hidden,
         extraToolbarControls: hidden,
         emptyState: hidden,
         onSelect: hidden,
@@ -341,23 +337,58 @@ function commonProperties(
         noBorders: args.noBorders as boolean,
         gridBreakPoint: args.gridBreakPoint === 'dynamic' ? undefined : (args.gridBreakPoint as TableGridBreakpoint),
         tableActions: args['Include tableActions']
-            ? [
+            ? ([
                   {
-                      id: 'create',
-                      title: 'Create',
-                      click: () => {
-                          alert('Not implemented')
-                      },
+                      id: 'primary-table-button',
+                      title: 'Primary action',
+                      // eslint-disable-next-line no-console
+                      click: () => console.log('Primary action'),
+                      isDisabled: false,
+                      variant: ButtonVariant.primary,
                   },
                   {
-                      id: 'import',
-                      title: 'Import',
-                      click: () => {
-                          alert('Not implemented')
-                      },
+                      id: 'secondary-table-button',
+                      title: 'Secondary action',
+                      // eslint-disable-next-line no-console
+                      click: () => console.log('Secondary action'),
                       variant: ButtonVariant.secondary,
                   },
-              ]
+                  {
+                      id: 'status-group',
+                      title: 'Status',
+                      actions: [
+                          {
+                              id: 'status-1',
+                              title: 'Status 1',
+                              // eslint-disable-next-line no-console
+                              click: (it: IExampleData[]) => console.log('Status 1 items: ', it),
+                              variant: 'dropdown-action',
+                          },
+                          {
+                              id: 'status-2',
+                              title: 'Status 2',
+                              // eslint-disable-next-line no-console
+                              click: (it: IExampleData[]) => console.log('Status 2 items: ', it),
+                              variant: 'dropdown-action',
+                          },
+                      ],
+                      variant: 'action-group',
+                  },
+                  {
+                      id: 'separator-1',
+                      variant: 'action-seperator',
+                  },
+                  {
+                      id: 'delete',
+                      title: 'Delete',
+                      click: (it: IExampleData[]) => {
+                          setItems(
+                              items ? items.filter((i: { uid: number }) => !it.find((item) => item.uid === i.uid)) : []
+                          )
+                      },
+                      variant: 'bulk-action',
+                  },
+              ] as IAcmTableAction<IExampleData>[])
             : undefined,
         rowActions: args['Include rowActions']
             ? [
@@ -395,65 +426,11 @@ function commonProperties(
                   }
               }
             : undefined,
-        bulkActions: args['Include bulkActions']
-            ? [
-                  {
-                      id: 'delete',
-                      title: 'Delete',
-                      click: (it: IExampleData[]) => {
-                          setItems(
-                              items ? items.filter((i: { uid: number }) => !it.find((item) => item.uid === i.uid)) : []
-                          )
-                      },
-                  },
-                  {
-                      id: 'action2',
-                      title: 'Action 2',
-                      click: () => null,
-                  },
-                  {
-                      id: 'action3',
-                      title: 'Action 3',
-                      click: () => null,
-                  },
-              ]
-            : undefined,
         extraToolbarControls: args['Include extraToolbarControls'] ? (
             <ToggleGroup>
                 <ToggleGroupItem isSelected={true} text="View 1" />
                 <ToggleGroupItem text="View 2" />
             </ToggleGroup>
-        ) : undefined,
-        customTableAction: args['Include customTableAction'] ? (
-            <AcmDropdown
-                isDisabled={false}
-                tooltip="Disabled"
-                id="create"
-                onSelect={() => null}
-                text="Create"
-                dropdownItems={[
-                    {
-                        id: 'action1',
-                        isDisabled: false,
-                        text: 'Action 1',
-                        tooltip: 'Disabled',
-                        href: '/action1',
-                        tooltipPosition: TooltipPosition.right,
-                    },
-                    {
-                        id: 'action2',
-                        isDisabled: false,
-                        text: 'Action 2',
-                        tooltip: 'Disabled',
-                        href: '/action1',
-                        tooltipPosition: TooltipPosition.right,
-                    },
-                ]}
-                isKebab={false}
-                isPlain={true}
-                isPrimary={true}
-                tooltipPosition={TooltipPosition.right}
-            />
         ) : undefined,
     }
 }
