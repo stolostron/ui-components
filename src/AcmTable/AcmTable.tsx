@@ -113,6 +113,9 @@ export interface IAcmRowAction<T> {
     click: (item: T) => void
 }
 
+/**
+ * Type for table primary and secondary buttons.
+ */
 export interface IAcmTableButtonAction {
     id: string
     title: string | React.ReactNode
@@ -122,6 +125,9 @@ export interface IAcmTableButtonAction {
     variant: ButtonVariant.primary | ButtonVariant.secondary
 }
 
+/**
+ * Type for table action
+ */
 export interface IAcmTableDropdownAction<T> {
     id: string
     title: string | React.ReactNode
@@ -131,6 +137,9 @@ export interface IAcmTableDropdownAction<T> {
     variant: 'dropdown-action'
 }
 
+/**
+ * Type for bulk actions on table items
+ */
 export interface IAcmTableBulkAction<T> {
     id: string
     title: string | React.ReactNode
@@ -140,11 +149,17 @@ export interface IAcmTableBulkAction<T> {
     variant: 'bulk-action'
 }
 
+/**
+ * Type for separator line in action dropdown
+ */
 export interface IAcmTableActionSeperator {
     id: string
     variant: 'action-seperator'
 }
 
+/**
+ * Type for table action dropdown options group
+ */
 export interface IAcmTableActionGroup<T> {
     id: string
     title: string | React.ReactNode
