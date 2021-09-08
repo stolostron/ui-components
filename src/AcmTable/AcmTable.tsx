@@ -232,9 +232,6 @@ const useStyles = makeStyles({
     filterOptionBadge: {
         marginLeft: '.5rem',
     },
-    actionDropdownGroupMargin: {
-        marginLeft: '.5rem',
-    },
 })
 
 function countGroups(items: ITableItem<unknown>[]): number {
@@ -1163,7 +1160,7 @@ function TableActions<T>(props: {
     const { actions, selections = {}, items = [], keyFn } = props
     return (
         <ToolbarGroup>
-            {tableActionsButtons(actions)}
+            {TableActionsButtons(actions)}
             {actions.filter(
                 (action: IAcmTableAction<T>) =>
                     action.variant !== ButtonVariant.primary && action.variant !== ButtonVariant.secondary
@@ -1174,7 +1171,7 @@ function TableActions<T>(props: {
     )
 }
 
-function tableActionsButtons<T>(actions: IAcmTableAction<T>[]) {
+function TableActionsButtons<T>(actions: IAcmTableAction<T>[]) {
     return actions.map((action: IAcmTableAction<T>) => {
         switch (action.variant) {
             case ButtonVariant.primary:
@@ -1209,8 +1206,7 @@ function TableActionsDropdown<T>(props: {
     /* istanbul ignore next */
     const { actions, selections = {}, items = [], keyFn } = props
     const [open, setOpen] = useState(false)
-    const classes = useStyles()
-    function dropdownItems(
+    function DropdownItems(
         actions: IAcmTableAction<T>[] | IAcmTableBulkAction<T>[],
         selections: { [uid: string]: boolean },
         items: T[],
@@ -1236,9 +1232,7 @@ function TableActionsDropdown<T>(props: {
                 case 'action-group':
                     return (
                         <DropdownGroup id={action.id} key={action.id} label={action.title}>
-                            <div className={classes.actionDropdownGroupMargin}>
-                                {dropdownItems(action.actions, selections, items, keyFn)}
-                            </div>
+                            {DropdownItems(action.actions, selections, items, keyFn)}
                         </DropdownGroup>
                     )
                 default:
@@ -1263,7 +1257,7 @@ function TableActionsDropdown<T>(props: {
                 </DropdownToggle>
             }
             isOpen={open}
-            dropdownItems={dropdownItems(actions, selections, items, keyFn)}
+            dropdownItems={DropdownItems(actions, selections, items, keyFn)}
         />
     )
 }
