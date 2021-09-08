@@ -16,7 +16,7 @@ import { AcmInlineStatus, StatusType } from '../AcmInlineStatus/AcmInlineStatus'
 import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { Provider } from '../AcmProvider'
 import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
-import { AcmTable, IAcmTableColumn, IAcmTableAction } from '../AcmTable/AcmTable'
+import { AcmTable, IAcmTableColumn, IAcmTableAction, IAcmTableButtonAction } from '../AcmTable/AcmTable'
 
 interface IExampleData {
     uid: number
@@ -334,7 +334,7 @@ function commonProperties(
         searchPlaceholder: args.searchPlaceholder as string,
         noBorders: args.noBorders as boolean,
         gridBreakPoint: args.gridBreakPoint === 'dynamic' ? undefined : (args.gridBreakPoint as TableGridBreakpoint),
-        tableActions: args['Include tableActions']
+        tableActionButtons: args['Include tableActions']
             ? ([
                   {
                       id: 'primary-table-button',
@@ -351,6 +351,10 @@ function commonProperties(
                       click: () => console.log('Secondary action'),
                       variant: ButtonVariant.secondary,
                   },
+              ] as IAcmTableButtonAction[])
+            : undefined,
+        tableActions: args['Include tableActions']
+            ? ([
                   {
                       id: 'status-group',
                       title: 'Status',
