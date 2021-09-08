@@ -6,6 +6,8 @@ import {
     Badge,
     ButtonVariant,
     Dropdown,
+    DropdownGroup,
+    DropdownSeparator,
     DropdownItem,
     DropdownToggle,
     EmptyState,
@@ -96,16 +98,6 @@ export interface IAcmTableColumn<T> {
 }
 
 /* istanbul ignore next */
-export interface IAcmTableAction {
-    id: string
-    title: string | React.ReactNode
-    click: () => void
-    isDisabled?: boolean | undefined
-    tooltip?: string | React.ReactNode
-    variant?: ButtonVariant
-}
-
-/* istanbul ignore next */
 export interface IAcmRowAction<T> {
     /** Action identifier */
     id: string
@@ -121,14 +113,66 @@ export interface IAcmRowAction<T> {
     click: (item: T) => void
 }
 
-/* istanbul ignore next */
+/**
+ * Type for table primary and secondary buttons.
+ */
+export interface IAcmTableButtonAction {
+    id: string
+    title: string | React.ReactNode
+    click: () => void
+    isDisabled?: boolean | undefined
+    tooltip?: string | React.ReactNode
+    variant: ButtonVariant.primary | ButtonVariant.secondary
+}
+
+/**
+ * Type for table action
+ */
+export interface IAcmTableDropdownAction<T> {
+    id: string
+    title: string | React.ReactNode
+    click: (items: T[]) => void
+    isDisabled?: boolean
+    tooltip?: string | React.ReactNode
+    variant: 'dropdown-action'
+}
+
+/**
+ * Type for bulk actions on table items
+ */
 export interface IAcmTableBulkAction<T> {
     id: string
     title: string | React.ReactNode
     click: (items: T[]) => void
     isDisabled?: boolean
     tooltip?: string | React.ReactNode
+    variant: 'bulk-action'
 }
+
+/**
+ * Type for separator line in action dropdown
+ */
+export interface IAcmTableActionSeperator {
+    id: string
+    variant: 'action-seperator'
+}
+
+/**
+ * Type for table action dropdown options group
+ */
+export interface IAcmTableActionGroup<T> {
+    id: string
+    title: string | React.ReactNode
+    actions: IAcmTableBulkAction<T>[] | IAcmTableDropdownAction<T>[]
+    variant: 'action-group'
+}
+
+export type IAcmTableAction<T> =
+    | IAcmTableButtonAction
+    | IAcmTableDropdownAction<T>
+    | IAcmTableBulkAction<T>
+    | IAcmTableActionSeperator
+    | IAcmTableActionGroup<T>
 
 interface ITableItem<T> {
     item: T
@@ -249,11 +293,9 @@ export interface AcmTableProps<T> {
     keyFn: (item: T) => string
     groupFn?: (item: T) => string | null
     groupSummaryFn?: (items: T[]) => IRow
-    tableActions?: IAcmTableAction[]
-    customTableAction?: ReactNode
+    tableActions?: IAcmTableAction<T>[]
     rowActions?: IAcmRowAction<T>[]
     rowActionResolver?: (item: T) => IAcmRowAction<T>[]
-    bulkActions?: IAcmTableBulkAction<T>[]
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
@@ -281,11 +323,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         keyFn,
         groupFn,
         groupSummaryFn,
-        bulkActions = [],
+        tableActions = [],
         rowActions = [],
         rowActionResolver,
-        tableActions = [],
-        customTableAction,
         filters = [],
     } = props
 
@@ -297,7 +337,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     // State that is only stored in the component state
     const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
-    const [actionsOpen, setActionsOpen] = useState(false)
     const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
@@ -599,7 +638,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // sort state always contains the data index
     // adjustedSort and the updateSort callback compensate for header display index used in PF
     /* istanbul ignore next */
-    const hasSelectionColumn = bulkActions?.length || !!props.onSelect
+    const hasSelectionColumn =
+        tableActions?.some((action) => action.variant === 'action-group' || action.variant === 'bulk-action') ||
+        !!props.onSelect
     const adjustedSortIndexOffset = (hasSelectionColumn ? 1 : 0) + (onCollapse ? 1 : 0)
     const adjustedSort =
         sort && sort.index !== undefined && sort.index !== null && sort.direction && filtered.length > 0
@@ -765,12 +806,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // Parse static actions
     const actions = parseRowAction(rowActions)
 
-    const renderCustomTableAction = (customTableAction: ReactNode) => {
-        return customTableAction
-    }
-
-    const renderCustomTableActionResults = customTableAction && renderCustomTableAction(customTableAction)
-
     // Wrap provided action resolver
     let actionResolver: IActionsResolver | undefined
     if (rowActionResolver) {
@@ -833,52 +868,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                             </ToolbarGroup>
                         )}
                         {tableActions.length > 0 && (
-                            <ToolbarGroup variant="button-group">
-                                {tableActions.map((action) => (
-                                    <ToolbarItem key={action.id}>
-                                        <AcmButton
-                                            onClick={action.click}
-                                            isDisabled={action.isDisabled}
-                                            tooltip={action.tooltip}
-                                            variant={action.variant || ButtonVariant.primary}
-                                        >
-                                            {action.title}
-                                        </AcmButton>
-                                    </ToolbarItem>
-                                ))}
-                            </ToolbarGroup>
-                        )}
-                        {renderCustomTableActionResults}
-                        {Object.keys(selected).length > 0 && bulkActions.length > 0 && (
-                            <ToolbarGroup variant="button-group">
-                                <ToolbarItem>
-                                    <Dropdown
-                                        // onSelect={this.onSelect}
-                                        toggle={
-                                            <DropdownToggle
-                                                id="toggle-id"
-                                                onToggle={() => setActionsOpen(!actionsOpen)}
-                                                toggleIndicator={CaretDownIcon}
-                                            >
-                                                Actions
-                                            </DropdownToggle>
-                                        }
-                                        isOpen={actionsOpen}
-                                        dropdownItems={bulkActions.map((action) => (
-                                            <DropdownItem
-                                                key={action.id}
-                                                onClick={() =>
-                                                    action.click(items!.filter((item) => selected[keyFn(item)]))
-                                                }
-                                                isDisabled={action.isDisabled || Object.keys(selected).length === 0}
-                                                tooltip={action.tooltip}
-                                            >
-                                                {action.title}
-                                            </DropdownItem>
-                                        ))}
-                                    />
-                                </ToolbarItem>
-                            </ToolbarGroup>
+                            <TableActions actions={tableActions} selections={selected} items={items} keyFn={keyFn} />
                         )}
                         {Object.keys(selected).length > 0 && (
                             <ToolbarGroup variant="button-group">
@@ -958,7 +948,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 onSort={(_event, index, direction) => updateSort({ index, direction })}
                                 onSelect={
                                     /* istanbul ignore next */
-                                    rows.length && (bulkActions?.length || !!props.onSelect) ? onSelect : undefined
+                                    rows.length &&
+                                    (tableActions?.some(
+                                        (action) =>
+                                            action.variant === 'action-group' || action.variant === 'bulk-action'
+                                    ) ||
+                                        !!props.onSelect)
+                                        ? onSelect
+                                        : undefined
                                 }
                                 onCollapse={onCollapse}
                                 borders={!props.noBorders}
@@ -1150,6 +1147,118 @@ function TableColumnFilters<T>(props: {
                 </Select>
             )}
         </ToolbarItem>
+    )
+}
+
+function TableActions<T>(props: {
+    actions: IAcmTableAction<T>[]
+    selections: { [uid: string]: boolean }
+    items: T[] | undefined
+    keyFn: (item: T) => string
+}) {
+    /* istanbul ignore next */
+    const { actions, selections = {}, items = [], keyFn } = props
+    return (
+        <ToolbarGroup>
+            {TableActionsButtons(actions)}
+            {actions.filter(
+                (action: IAcmTableAction<T>) =>
+                    action.variant !== ButtonVariant.primary && action.variant !== ButtonVariant.secondary
+            ).length > 0 && (
+                <TableActionsDropdown actions={actions} selections={selections} items={items} keyFn={keyFn} />
+            )}
+        </ToolbarGroup>
+    )
+}
+
+function TableActionsButtons<T>(actions: IAcmTableAction<T>[]) {
+    return actions.map((action: IAcmTableAction<T>) => {
+        switch (action.variant) {
+            case ButtonVariant.primary:
+            case ButtonVariant.secondary:
+                return (
+                    <ToolbarItem key={`${action.id}-toolbar-item`}>
+                        <AcmButton
+                            id={action.id}
+                            key={action.id}
+                            onClick={action.click}
+                            isDisabled={action.isDisabled}
+                            tooltip={action.tooltip}
+                            variant={action.variant}
+                        >
+                            {action.title}
+                        </AcmButton>
+                    </ToolbarItem>
+                )
+            default:
+                return <Fragment />
+        }
+    })
+}
+
+function TableActionsDropdown<T>(props: {
+    actions: IAcmTableAction<T>[] | IAcmTableBulkAction<T>[]
+    selections: { [uid: string]: boolean }
+    items: T[] | undefined
+    keyFn: (item: T) => string
+    // showTableButtons?: boolean
+}) {
+    /* istanbul ignore next */
+    const { actions, selections = {}, items = [], keyFn } = props
+    const [open, setOpen] = useState(false)
+    function DropdownItems(
+        actions: IAcmTableAction<T>[] | IAcmTableBulkAction<T>[],
+        selections: { [uid: string]: boolean },
+        items: T[],
+        keyFn: (item: T) => string
+    ) {
+        return actions.map((action: IAcmTableAction<T> | IAcmTableBulkAction<T>) => {
+            switch (action.variant) {
+                case 'dropdown-action':
+                case 'bulk-action':
+                    return (
+                        <DropdownItem
+                            id={action.id}
+                            key={action.id}
+                            onClick={() => action.click(items!.filter((item) => selections[keyFn(item)]))}
+                            isDisabled={action.isDisabled || (selections && Object.keys(selections).length === 0)}
+                            tooltip={action.tooltip}
+                        >
+                            {action.title}
+                        </DropdownItem>
+                    )
+                case 'action-seperator':
+                    return <DropdownSeparator id={action.id} key={action.id} />
+                case 'action-group':
+                    return (
+                        <DropdownGroup id={action.id} key={action.id} label={action.title}>
+                            {DropdownItems(action.actions, selections, items, keyFn)}
+                        </DropdownGroup>
+                    )
+                default:
+                    // if (showTableButtons) {
+                    //     // TODO
+                    // }
+                    return <Fragment />
+            }
+        })
+    }
+
+    return (
+        <Dropdown
+            toggle={
+                <DropdownToggle
+                    id="toggle-id"
+                    onToggle={() => setOpen(!open)}
+                    toggleIndicator={CaretDownIcon}
+                    isPrimary={Object.keys(selections).length > 0}
+                >
+                    Actions
+                </DropdownToggle>
+            }
+            isOpen={open}
+            dropdownItems={DropdownItems(actions, selections, items, keyFn)}
+        />
     )
 }
 
