@@ -98,7 +98,7 @@ describe('AcmTable', () => {
                     },
                 ]}
                 keyFn={(item: IExampleData) => item.uid.toString()}
-                tableActions={
+                tableActionButtons={
                     useTableActions
                         ? [
                               {
@@ -114,6 +114,12 @@ describe('AcmTable', () => {
                                   click: () => secondaryTableActionFunction(),
                                   variant: ButtonVariant.secondary,
                               },
+                          ]
+                        : undefined
+                }
+                tableActions={
+                    useTableActions
+                        ? [
                               {
                                   id: 'status-group',
                                   title: 'Status',
@@ -358,18 +364,39 @@ describe('AcmTable', () => {
     })
 
     test('can support table actions with multiple selections', () => {
-        const { getByText, getAllByRole, queryAllByText } = render(<Table useTableActions={true} />)
-        userEvent.click(getAllByRole('checkbox')[0])
+        const { getByLabelText, getByText, getAllByRole, queryAllByText, container } = render(
+            <Table useTableActions={true} />
+        )
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[1]) // Select page
+        expect(getByText('10 selected')).toBeInTheDocument()
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[2]) // Select all
         expect(getByText('105 selected')).toBeInTheDocument()
-        userEvent.click(getAllByRole('checkbox')[1])
-        expect(getByText('104 selected')).toBeInTheDocument()
-        userEvent.click(getAllByRole('checkbox')[0])
+
+        userEvent.click(getByLabelText('Select'))
+        userEvent.click(container.querySelectorAll('.pf-c-dropdown__menu-item')[0]) // Select None
+        expect(queryAllByText('105 selected')).toHaveLength(0)
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
         expect(getByText('105 selected')).toBeInTheDocument()
-        userEvent.click(getAllByRole('checkbox')[0])
-        expect(queryAllByText('selected')).toHaveLength(0)
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select none by checkbox
+        expect(queryAllByText('105 selected')).toHaveLength(0)
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select all by checkbox
+        expect(getByText('105 selected')).toBeInTheDocument()
+
+        userEvent.click(getAllByRole('checkbox')[0]) // Select none by checkbox
         userEvent.click(getAllByRole('checkbox')[1])
         userEvent.click(getAllByRole('checkbox')[2])
         expect(getByText('2 selected')).toBeInTheDocument()
+
+        getByText('Actions').click()
+        userEvent.click(getByText('Status 1'))
+
         getByText('Actions').click()
         userEvent.click(getByText('Delete'))
         // First arg to bulkDeleteAction is an array with the items in any order

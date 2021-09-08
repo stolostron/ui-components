@@ -31,6 +31,7 @@ import {
     ToolbarGroup,
     ToolbarItem,
     Tooltip,
+    DropdownToggleCheckbox,
 } from '@patternfly/react-core'
 import { FilterIcon } from '@patternfly/react-icons'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
@@ -168,7 +169,6 @@ export interface IAcmTableActionGroup<T> {
 }
 
 export type IAcmTableAction<T> =
-    | IAcmTableButtonAction
     | IAcmTableDropdownAction<T>
     | IAcmTableBulkAction<T>
     | IAcmTableActionSeperator
@@ -293,6 +293,7 @@ export interface AcmTableProps<T> {
     keyFn: (item: T) => string
     groupFn?: (item: T) => string | null
     groupSummaryFn?: (items: T[]) => IRow
+    tableActionButtons?: IAcmTableButtonAction[]
     tableActions?: IAcmTableAction<T>[]
     rowActions?: IAcmRowAction<T>[]
     rowActionResolver?: (item: T) => IAcmRowAction<T>[]
@@ -700,38 +701,16 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     const onSelect = useCallback(
         (_event: FormEvent, isSelected: boolean, rowId: number) => {
-            if (rowId === -1) {
-                let allSelected = true
-                for (const row of rows) {
-                    if (!row.selected && row.parent === undefined) {
-                        allSelected = false
-                        break
-                    }
-                }
-                const newSelected: { [uid: string]: boolean } = {}
-                /* istanbul ignore else */
-                if (!allSelected) {
-                    for (const tableItem of filtered) {
-                        newSelected[tableItem.key] = true
-                    }
-                }
-                setSelected(newSelected)
-                /* istanbul ignore next */
-                if (props.onSelect && items) {
-                    props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
-                }
+            const newSelected = { ...selected }
+            if (isSelected) {
+                newSelected[rows[rowId].props.key] = true
             } else {
-                const newSelected = { ...selected }
-                if (isSelected) {
-                    newSelected[rows[rowId].props.key] = true
-                } else {
-                    delete newSelected[rows[rowId].props.key]
-                }
-                setSelected(newSelected)
-                /* istanbul ignore next */
-                if (props.onSelect && items) {
-                    props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
-                }
+                delete newSelected[rows[rowId].props.key]
+            }
+            setSelected(newSelected)
+            /* istanbul ignore next */
+            if (props.onSelect && items) {
+                props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
             }
         },
         [filtered, rows, keyFn]
@@ -832,7 +811,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     return (
         <Fragment>
             {props.extraToolbarControls && (
-                <Toolbar style={topToolbarStyle}>
+                <Toolbar style={topToolbarStyle} inset={{ default: 'insetMd', xl: 'insetLg' }}>
                     <ToolbarContent>
                         <ToolbarGroup alignment={{ default: 'alignRight' }}>
                             <ToolbarItem>{props.extraToolbarControls}</ToolbarItem>
@@ -841,39 +820,82 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 </Toolbar>
             )}
             {showToolbar && (
-                <Toolbar clearAllFilters={() => setToolbarFilterIds({})} collapseListedFiltersBreakpoint={'lg'}>
+                <Toolbar
+                    clearAllFilters={() => setToolbarFilterIds({})}
+                    collapseListedFiltersBreakpoint={'lg'}
+                    inset={{
+                        default: hasSelectionColumn ? 'insetSm' : 'insetMd',
+                        xl: hasSelectionColumn ? 'insetMd' : 'insetLg',
+                    }}
+                >
                     <ToolbarContent>
-                        {hasFilter && (
-                            <ToolbarGroup variant="filter-group">
-                                <TableColumnFilters
-                                    filters={filters}
-                                    items={items}
-                                    toolbarFilterIds={toolbarFilterIds}
-                                    setToolbarFilterIds={setToolbarFilterIds}
+                        {hasSelectionColumn && (
+                            <ToolbarItem>
+                                <TableSelectionDropdown
+                                    itemCount={itemCount}
+                                    selectedCount={Object.keys(selected).length}
+                                    perPage={perPage}
+                                    onSelectNone={() => {
+                                        const newSelected: { [uid: string]: boolean } = {}
+                                        setSelected(newSelected)
+                                    }}
+                                    onSelectPage={() => {
+                                        const newSelected: { [uid: string]: boolean } = {}
+                                        for (const tableItem of paged) {
+                                            newSelected[tableItem.key] = true
+                                        }
+                                        setSelected(newSelected)
+                                        /* istanbul ignore next */
+                                        if (props.onSelect && items) {
+                                            props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
+                                        }
+                                    }}
+                                    onSelectAll={() => {
+                                        const newSelected: { [uid: string]: boolean } = {}
+                                        for (const tableItem of filtered) {
+                                            newSelected[tableItem.key] = true
+                                        }
+                                        setSelected(newSelected)
+                                        /* istanbul ignore next */
+                                        if (props.onSelect && items) {
+                                            props.onSelect(items.filter((item) => newSelected[keyFn(item)]))
+                                        }
+                                    }}
                                 />
+                            </ToolbarItem>
+                        )}
+                        {(hasFilter || hasSearch) && (
+                            <ToolbarGroup variant="filter-group">
+                                {hasSearch && (
+                                    <ToolbarItem variant="search-filter">
+                                        <SearchInput
+                                            placeholder={searchPlaceholder}
+                                            value={search}
+                                            onChange={updateSearch}
+                                            onClear={() => updateSearch('')}
+                                            resultsCount={`${filteredCount} / ${totalCount}`}
+                                            style={{ flexGrow: 1 }}
+                                        />
+                                    </ToolbarItem>
+                                )}
+                                {hasFilter && (
+                                    <TableColumnFilters
+                                        filters={filters}
+                                        items={items}
+                                        toolbarFilterIds={toolbarFilterIds}
+                                        setToolbarFilterIds={setToolbarFilterIds}
+                                    />
+                                )}
                             </ToolbarGroup>
                         )}
-                        {hasSearch && (
-                            <ToolbarGroup variant="filter-group">
-                                <ToolbarItem variant="search-filter">
-                                    <SearchInput
-                                        placeholder={searchPlaceholder}
-                                        value={search}
-                                        onChange={updateSearch}
-                                        onClear={() => updateSearch('')}
-                                        resultsCount={`${filteredCount} / ${totalCount}`}
-                                        style={{ flexGrow: 1 }}
-                                    />
-                                </ToolbarItem>
-                            </ToolbarGroup>
+                        {props.tableActionButtons && props.tableActionButtons.length > 0 && (
+                            <TableActionsButtons
+                                actions={props.tableActionButtons}
+                                hasSelections={Object.keys(selected).length > 0}
+                            />
                         )}
                         {tableActions.length > 0 && (
                             <TableActions actions={tableActions} selections={selected} items={items} keyFn={keyFn} />
-                        )}
-                        {Object.keys(selected).length > 0 && (
-                            <ToolbarGroup variant="button-group">
-                                <ToolbarItem>{`${Object.keys(selected).length} selected`}</ToolbarItem>
-                            </ToolbarGroup>
                         )}
                         {(!props.autoHidePagination || filtered.length > perPage) && (
                             <ToolbarItem variant="pagination">
@@ -957,6 +979,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                         ? onSelect
                                         : undefined
                                 }
+                                canSelectAll={false}
                                 onCollapse={onCollapse}
                                 borders={!props.noBorders}
                                 variant={TableVariant.compact}
@@ -1156,26 +1179,18 @@ function TableActions<T>(props: {
     items: T[] | undefined
     keyFn: (item: T) => string
 }) {
-    /* istanbul ignore next */
-    const { actions, selections = {}, items = [], keyFn } = props
-    return (
-        <ToolbarGroup>
-            {TableActionsButtons(actions)}
-            {actions.filter(
-                (action: IAcmTableAction<T>) =>
-                    action.variant !== ButtonVariant.primary && action.variant !== ButtonVariant.secondary
-            ).length > 0 && (
-                <TableActionsDropdown actions={actions} selections={selections} items={items} keyFn={keyFn} />
-            )}
-        </ToolbarGroup>
-    )
+    const { actions, selections, items, keyFn } = props
+    /* istanbul ignore if */
+    if (actions.length === 0) return <Fragment />
+    return <TableActionsDropdown actions={actions} selections={selections} items={items} keyFn={keyFn} />
 }
 
-function TableActionsButtons<T>(actions: IAcmTableAction<T>[]) {
-    return actions.map((action: IAcmTableAction<T>) => {
-        switch (action.variant) {
-            case ButtonVariant.primary:
-            case ButtonVariant.secondary:
+function TableActionsButtons(props: { actions: IAcmTableButtonAction[]; hasSelections?: boolean }) {
+    return (
+        <ToolbarGroup variant="button-group">
+            {props.actions.map((action) => {
+                /* istanbul ignore next */
+                const variant = props.hasSelections ? 'secondary' : action.variant
                 return (
                     <ToolbarItem key={`${action.id}-toolbar-item`}>
                         <AcmButton
@@ -1184,16 +1199,15 @@ function TableActionsButtons<T>(actions: IAcmTableAction<T>[]) {
                             onClick={action.click}
                             isDisabled={action.isDisabled}
                             tooltip={action.tooltip}
-                            variant={action.variant}
+                            variant={variant}
                         >
                             {action.title}
                         </AcmButton>
                     </ToolbarItem>
                 )
-            default:
-                return <Fragment />
-        }
-    })
+            })}
+        </ToolbarGroup>
+    )
 }
 
 function TableActionsDropdown<T>(props: {
@@ -1215,12 +1229,29 @@ function TableActionsDropdown<T>(props: {
         return actions.map((action: IAcmTableAction<T> | IAcmTableBulkAction<T>) => {
             switch (action.variant) {
                 case 'dropdown-action':
+                    return (
+                        <DropdownItem
+                            id={action.id}
+                            key={action.id}
+                            onClick={() => {
+                                setOpen(false)
+                                action.click(items!.filter((item) => selections[keyFn(item)]))
+                            }}
+                            isDisabled={action.isDisabled}
+                            tooltip={action.tooltip}
+                        >
+                            {action.title}
+                        </DropdownItem>
+                    )
                 case 'bulk-action':
                     return (
                         <DropdownItem
                             id={action.id}
                             key={action.id}
-                            onClick={() => action.click(items!.filter((item) => selections[keyFn(item)]))}
+                            onClick={() => {
+                                setOpen(false)
+                                action.click(items!.filter((item) => selections[keyFn(item)]))
+                            }}
                             isDisabled={action.isDisabled || (selections && Object.keys(selections).length === 0)}
                             tooltip={action.tooltip}
                         >
@@ -1235,10 +1266,8 @@ function TableActionsDropdown<T>(props: {
                             {DropdownItems(action.actions, selections, items, keyFn)}
                         </DropdownGroup>
                     )
+                /* istanbul ignore next */
                 default:
-                    // if (showTableButtons) {
-                    //     // TODO
-                    // }
                     return <Fragment />
             }
         })
@@ -1310,4 +1339,97 @@ export function compareNumbers(a: number | undefined | null, b: number | undefin
     if (a == undefined) return 1
     if (b == undefined) return -1
     return a < b ? -1 : a > b ? 1 : 0
+}
+
+export interface TableSelectionDropdownProps {
+    itemCount: number
+    selectedCount: number
+    perPage: number
+    onSelectNone: () => void
+    onSelectPage: () => void
+    onSelectAll: () => void
+}
+
+export function TableSelectionDropdown(props: TableSelectionDropdownProps) {
+    const [isOpen, setIsOpen] = useState(false)
+
+    const onToggleCheckbox = useCallback(() => {
+        if (props.selectedCount > 0) props.onSelectNone()
+        else props.onSelectAll()
+    }, [props.selectedCount, props.onSelectNone, props.onSelectAll])
+
+    const toggleText = useMemo(() => {
+        return props.selectedCount > 0 ? `${props.selectedCount} selected` : ''
+    }, [props.selectedCount, props.selectedCount])
+
+    const toggle = useMemo(() => {
+        return (
+            <DropdownToggle
+                splitButtonItems={[
+                    <DropdownToggleCheckbox
+                        id="select-all"
+                        key="select-all"
+                        aria-label="Select all"
+                        isChecked={props.selectedCount > 0}
+                        onChange={onToggleCheckbox}
+                    >
+                        {toggleText}
+                    </DropdownToggleCheckbox>,
+                ]}
+                onToggle={(isOpen) => setIsOpen(isOpen)}
+            />
+        )
+    }, [props.selectedCount, toggleText])
+
+    const selectNoneDropdownItem = useMemo(() => {
+        return (
+            <DropdownItem
+                id="select-none"
+                key="select-none"
+                onClick={() => {
+                    props.onSelectNone()
+                    setIsOpen(false)
+                }}
+            >
+                Select none
+            </DropdownItem>
+        )
+    }, [props.onSelectNone])
+
+    const selectPageDropdownItem = useMemo(() => {
+        return (
+            <DropdownItem
+                id="select-page"
+                key="select-page"
+                onClick={() => {
+                    props.onSelectPage()
+                    setIsOpen(false)
+                }}
+            >
+                {`Select ${Math.min(props.perPage, props.itemCount)} page items`}
+            </DropdownItem>
+        )
+    }, [props.onSelectPage, props.perPage, props.itemCount])
+
+    const selectAllDropdownItem = useMemo(() => {
+        return (
+            <DropdownItem
+                id="select-all"
+                key="select-all"
+                onClick={() => {
+                    props.onSelectAll()
+                    setIsOpen(false)
+                }}
+            >
+                {`Select all ${props.itemCount} items`}
+            </DropdownItem>
+        )
+    }, [props.onSelectAll, props.itemCount])
+
+    const dropdownItems = useMemo(
+        () => [selectNoneDropdownItem, selectPageDropdownItem, selectAllDropdownItem],
+        [selectNoneDropdownItem, selectPageDropdownItem, selectAllDropdownItem]
+    )
+
+    return <Dropdown isOpen={isOpen} toggle={toggle} dropdownItems={dropdownItems} />
 }
