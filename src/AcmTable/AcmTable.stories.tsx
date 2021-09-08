@@ -9,7 +9,6 @@ import {
     TextVariants,
     ToggleGroup,
     ToggleGroupItem,
-    // TooltipPosition,
 } from '@patternfly/react-core'
 import { fitContent, TableGridBreakpoint, truncate } from '@patternfly/react-table'
 import React, { useState } from 'react'
@@ -18,7 +17,6 @@ import { AcmPage, AcmPageContent, AcmPageHeader } from '../AcmPage/AcmPage'
 import { Provider } from '../AcmProvider'
 import { AcmInlineProvider } from '../AcmProvider/AcmInlineProvider/AcmInlineProvider'
 import { AcmTable, IAcmTableColumn, IAcmTableAction } from '../AcmTable/AcmTable'
-// import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 
 interface IExampleData {
     uid: number
