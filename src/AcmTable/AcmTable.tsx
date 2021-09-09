@@ -199,6 +199,7 @@ export interface ITableFilter<T> {
     id: string
     options: TableFilterOption<FilterOptionValueT>[]
     tableFilterFn: TableFilterFn<T>
+    showEmptyOptions?: boolean
 }
 
 const useStyles = makeStyles({
@@ -1099,9 +1100,13 @@ function TableColumnFilters<T>(props: {
             for (const option of filter.options) {
                 /* istanbul ignore next */
                 const count = items?.filter((item) => filter.tableFilterFn([option.value], item)).length
-                /* istanbul ignore else */
-                if (count !== undefined && count > 0) {
-                    options.push({ option, count })
+                /* istanbul ignore next */
+                if (filter.showEmptyOptions) {
+                    options.push({ option, count: count ?? 0 })
+                } else {
+                    if (count !== undefined && count > 0) {
+                        options.push({ option, count })
+                    }
                 }
             }
             /* istanbul ignore else */
