@@ -199,6 +199,7 @@ export interface ITableFilter<T> {
     id: string
     options: TableFilterOption<FilterOptionValueT>[]
     tableFilterFn: TableFilterFn<T>
+    showEmptyOptions?: boolean
 }
 
 const useStyles = makeStyles({
@@ -823,10 +824,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 <Toolbar
                     clearAllFilters={() => setToolbarFilterIds({})}
                     collapseListedFiltersBreakpoint={'lg'}
-                    inset={{
-                        default: hasSelectionColumn ? 'insetSm' : 'insetMd',
-                        xl: hasSelectionColumn ? 'insetMd' : 'insetLg',
-                    }}
+                    inset={{ default: 'insetMd', xl: 'insetLg' }}
                 >
                     <ToolbarContent>
                         {hasSelectionColumn && (
@@ -1092,35 +1090,55 @@ function TableColumnFilters<T>(props: {
         })
     }, [])
 
-    const FilterSelectGroups = useMemo(
-        () =>
-            filters.map((filter) => (
-                <SelectGroup key={filter.id} label={filter.label}>
-                    {filter.options.map((option) => (
-                        <SelectOption
-                            key={option.value}
-                            inputId={option.value}
-                            value={option.value}
-                            isChecked={
-                                /* istanbul ignore next */
-                                toolbarFilterIds[filter.id]?.indexOf(option.value) > -1 ?? false
-                            }
-                        >
-                            <div className={classes.filterOption}>
-                                {option.label}
-                                <Badge className={classes.filterOptionBadge} key={option.value} isRead>
-                                    {
-                                        /* istanbul ignore next */
-                                        items?.filter((item) => filter.tableFilterFn([option.value], item)).length
-                                    }
-                                </Badge>
-                            </div>
-                        </SelectOption>
-                    ))}
-                </SelectGroup>
-            )),
-        [filters, items, toolbarFilterIds]
-    )
+    const FilterSelectGroups = useMemo(() => {
+        const validFilters: {
+            filter: ITableFilter<T>
+            options: { option: TableFilterOption<string>; count: number }[]
+        }[] = []
+        for (const filter of filters) {
+            const options: { option: TableFilterOption<string>; count: number }[] = []
+            for (const option of filter.options) {
+                /* istanbul ignore next */
+                const count = items?.filter((item) => filter.tableFilterFn([option.value], item)).length
+                /* istanbul ignore next */
+                if (filter.showEmptyOptions) {
+                    options.push({ option, count: count ?? 0 })
+                } else {
+                    if (count !== undefined && count > 0) {
+                        options.push({ option, count })
+                    }
+                }
+            }
+            /* istanbul ignore else */
+            if (options.length) {
+                validFilters.push({ filter, options })
+            }
+        }
+
+        return validFilters.map((filter) => (
+            <SelectGroup key={filter.filter.id} label={filter.filter.label}>
+                {filter.options.map((option) => (
+                    <SelectOption
+                        key={option.option.value}
+                        inputId={option.option.value}
+                        value={option.option.value}
+                        isChecked={
+                            /* istanbul ignore next */
+                            toolbarFilterIds[filter.filter.id]?.indexOf(option.option.value) > -1 ?? false
+                        }
+                    >
+                        <div className={classes.filterOption}>
+                            {option.option.label}
+                            <Badge className={classes.filterOptionBadge} key={option.option.value} isRead>
+                                {option.count}
+                            </Badge>
+                        </div>
+                    </SelectOption>
+                ))}
+            </SelectGroup>
+        ))
+    }, [filters, items, toolbarFilterIds])
+
     return (
         <ToolbarItem>
             {filters.reduce(
