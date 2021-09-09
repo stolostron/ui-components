@@ -8,6 +8,7 @@ export function AcmLabels(props: {
     labels?: string[] | Record<string, string>
     collapse?: string[]
     style?: CSSProperties
+    emptyText?: string
     collapsedText?: string
     expandedText?: string
     color?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
@@ -48,7 +49,9 @@ export function AcmLabels(props: {
         <LabelGroup
             style={props.style}
             numLabels={labels.length}
-            collapsedText={props.collapsedText}
+            collapsedText={
+                hidden.length > 0 && labels.length === 0 && props.emptyText ? props.emptyText : props.collapsedText
+            }
             expandedText={props.expandedText}
         >
             {labels.map((label) => (
