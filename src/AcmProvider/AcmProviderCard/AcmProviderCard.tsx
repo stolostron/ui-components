@@ -109,7 +109,7 @@ export function AcmProviderCard(props: ProviderCardProps) {
                             {props.clusterCount}
                         </Text>
                         <Text component={TextVariants.p} className={classes.clusterText}>
-                            Cluster
+                            {props.clusterCount === 1 ? 'Cluster' : 'Clusters'}
                         </Text>
                     </CardFooter>
                 </StackItem>

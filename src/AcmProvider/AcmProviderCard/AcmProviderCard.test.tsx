@@ -32,7 +32,7 @@ describe('AcmProviderCard', () => {
 
     test('renders and can be interacted with', () => {
         const ProviderCard = () => <AcmProviderCard provider={Provider.aws} onClick={onClick} clusterCount={5} />
-        const { getByTestId } = render(<ProviderCard />)
+        const { getByTestId, getByText } = render(<ProviderCard />)
         expect(getByTestId('aws-provider-card')).toBeInTheDocument()
         userEvent.tab()
         expect(getByTestId('aws-provider-card')).toHaveFocus()
@@ -45,14 +45,15 @@ describe('AcmProviderCard', () => {
         userEvent.click(getByTestId('aws-provider-card'))
         expect(onClick).toHaveBeenCalled()
         expect(onClick).toBeCalledWith('aws')
+        expect(getByText('Clusters')).toBeInstanceOf(HTMLParagraphElement)
     })
     test('can render a danger state', () => {
-        const ProviderCard = () => <AcmProviderCard danger provider={Provider.aws} onClick={onClick} clusterCount={5} />
+        const ProviderCard = () => <AcmProviderCard danger provider={Provider.aws} onClick={onClick} clusterCount={1} />
         const { container } = render(<ProviderCard />)
         expect(container.querySelector('#aws-provider-card .danger-icon')).toBeTruthy()
     })
     test('has zero accessibility defects', async () => {
-        const ProviderCard = () => <AcmProviderCard danger provider={Provider.aws} onClick={onClick} clusterCount={5} />
+        const ProviderCard = () => <AcmProviderCard danger provider={Provider.aws} onClick={onClick} clusterCount={0} />
         const { container } = render(<ProviderCard />)
         expect(await axe(container)).toHaveNoViolations()
     })
