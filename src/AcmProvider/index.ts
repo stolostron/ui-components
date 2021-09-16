@@ -48,7 +48,7 @@ export const ProviderLongTextMap = {
     [Provider.ibm]: 'IBM Cloud',
     [Provider.ibmpower]: 'IBM Power',
     [Provider.ibmz]: 'IBM Z',
-    [Provider.baremetal]: 'Bare Metal',
+    [Provider.baremetal]: 'Bare metal',
     [Provider.vmware]: 'VMware vSphere',
     [Provider.hybrid]: 'Hybrid',
     [Provider.other]: 'Other',
