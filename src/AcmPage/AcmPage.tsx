@@ -6,6 +6,7 @@ import {
     Button,
     Card,
     CardBody,
+    Label,
     Page,
     PageSection,
     PageSectionVariants,
@@ -48,6 +49,8 @@ export function AcmPage(props: { header: ReactNode; children: ReactNode; hasDraw
 export interface AcmPageHeaderProps {
     title: string
     titleTooltip?: string | React.ReactNode
+    label?: string | React.ReactNode
+    labelColor?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
     description?: string | React.ReactNode
     breadcrumb?: { text: string; to?: string }[]
     navigation?: React.ReactNode
@@ -101,6 +104,11 @@ export function AcmPageHeader(props: AcmPageHeaderProps) {
                                                     </Title>
                                                 </TextContent>
                                             </SplitItem>
+                                            {props.label && props.labelColor && (
+                                                <SplitItem>
+                                                    <Label color={props.labelColor}>{props.label}</Label>
+                                                </SplitItem>
+                                            )}
                                             {props.switches && (
                                                 <SplitItem>
                                                     <span

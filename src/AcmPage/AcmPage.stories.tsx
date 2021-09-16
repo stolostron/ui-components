@@ -44,6 +44,8 @@ export default meta
 export const Page = (args: {
     showBreadcrumb: boolean
     title: string
+    label: string
+    labelColor: string
     showTooltip: boolean
     description: string
     showNavigation: boolean
@@ -70,6 +72,8 @@ export const Page = (args: {
                                 </>
                             )
                         }
+                        label={args.label}
+                        labelColor={args.labelColor}
                         description={args.description}
                         switches={args.showSwitch && <Switch label="YAML on" labelOff="YAML off" />}
                         controls={
@@ -190,6 +194,8 @@ export const Page = (args: {
 Page.args = {
     title: 'AcmPage',
     showTooltip: true,
+    label: 'Technology Preview',
+    labelColor: 'orange',
     description: 'AcmPage is used with AcmPageHeader and AcmPageContent to consistently layout the page.',
     showBreadcrumb: true,
     showNavigation: true,
