@@ -129,9 +129,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
                     >
                         <DropdownItem {...item} onClick={() => onSelect(item.id)}>
                             {item.text}
-                            {item.label && item.labelColor && (
-                                <Label color={item.labelColor}>{item.label}</Label>
-                            )}
+                            {item.label && item.labelColor && <Label color={item.labelColor}>{item.label}</Label>}
                         </DropdownItem>
                     </TooltipWrapper>
                 ))}
