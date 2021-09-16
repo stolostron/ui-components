@@ -294,6 +294,7 @@ export interface AcmTableProps<T> {
     keyFn: (item: T) => string
     groupFn?: (item: T) => string | null
     groupSummaryFn?: (items: T[]) => IRow
+    customTableAction?: ReactNode
     tableActionButtons?: IAcmTableButtonAction[]
     tableActions?: IAcmTableAction<T>[]
     rowActions?: IAcmRowAction<T>[]
@@ -328,6 +329,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         tableActions = [],
         rowActions = [],
         rowActionResolver,
+        customTableAction,
         filters = [],
     } = props
 
@@ -786,6 +788,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // Parse static actions
     const actions = parseRowAction(rowActions)
 
+    const renderCustomTableAction = (customTableAction: ReactNode) => {
+        return customTableAction
+    }
+
+    const renderCustomTableActionResults = customTableAction && renderCustomTableAction(customTableAction)
+
     // Wrap provided action resolver
     let actionResolver: IActionsResolver | undefined
     if (rowActionResolver) {
@@ -895,6 +903,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         {tableActions.length > 0 && (
                             <TableActions actions={tableActions} selections={selected} items={items} keyFn={keyFn} />
                         )}
+                        {renderCustomTableActionResults}
                         {(!props.autoHidePagination || filtered.length > perPage) && (
                             <ToolbarItem variant="pagination">
                                 <Pagination
