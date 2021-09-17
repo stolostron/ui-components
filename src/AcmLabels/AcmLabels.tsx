@@ -62,11 +62,31 @@ export function AcmLabels(props: {
                     </Tooltip>
                 ))}
             {hidden.length > 0 && showMore ? (
-                <span className="acm-label-button" tabIndex={1} onClick={() => setShowMore(!showMore)}>
+                <span
+                    className="acm-label-button"
+                    tabIndex={1}
+                    onClick={() => setShowMore(!showMore)}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            setShowMore(!showMore)
+                            e.preventDefault()
+                        }
+                    }}
+                >
                     {expandedText}
                 </span>
             ) : (
-                <span className="acm-label-button" tabIndex={1} onClick={() => setShowMore(!showMore)}>
+                <span
+                    className="acm-label-button"
+                    tabIndex={1}
+                    onClick={() => setShowMore(!showMore)}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            setShowMore(!showMore)
+                            e.preventDefault()
+                        }
+                    }}
+                >
                     {collapsedText}
                 </span>
             )}
