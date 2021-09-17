@@ -23,7 +23,7 @@ export const Dropdown = (args) => {
         { id: 'other-config', text: 'Other config', isDisabled: true, tooltip: 'Forbidden' },
         { id: 'launch-out', text: 'Launch page', icon: <ExternalLinkAltIcon /> },
         { id: 'link item', text: 'Link item', href: 'www.google.com', component: 'a' },
-        { id: 'new-feature', text: 'New feature', label: 'Technology Preview', labelColor: 'blue' },
+        { id: 'new-feature', text: 'New feature', label: 'Technology Preview', labelColor: 'orange' },
     ]
     const onSelect = (id: string) => alert(`clicked: ${id}`)
     return (

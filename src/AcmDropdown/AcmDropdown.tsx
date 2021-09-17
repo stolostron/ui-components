@@ -13,7 +13,6 @@ import {
 } from '@patternfly/react-core'
 import { makeStyles } from '@material-ui/styles'
 import { TooltipWrapper } from '../utils'
-import './AcmDropdown.css'
 
 // TODO this dropdown is not accessible when the dropdown items are wrapped by the Tooltip component
 
@@ -96,6 +95,9 @@ const useStyles = makeStyles({
             },
         },
     },
+    label: {
+        marginLeft: '8px',
+    },
 })
 
 export function AcmDropdown(props: AcmDropdownProps) {
@@ -129,7 +131,11 @@ export function AcmDropdown(props: AcmDropdownProps) {
                     >
                         <DropdownItem {...item} onClick={() => onSelect(item.id)}>
                             {item.text}
-                            {item.label && item.labelColor && <Label color={item.labelColor}>{item.label}</Label>}
+                            {item.label && item.labelColor && (
+                                <Label className={classes.label} color={item.labelColor}>
+                                    {item.label}
+                                </Label>
+                            )}
                         </DropdownItem>
                     </TooltipWrapper>
                 ))}
