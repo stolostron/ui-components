@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { Tooltip } from '@patternfly/react-core'
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import './AcmLabels.css'
 
 export function AcmLabels(props: {
@@ -42,10 +42,22 @@ export function AcmLabels(props: {
     if (props.labels === undefined) return <Fragment></Fragment>
 
     const [showMore, setShowMore] = useState(false)
+
     /* istanbul ignore next */
     const collapsedText = props.collapsedText ?? `${hidden.length} more`
+
     /* istanbul ignore next */
     const expandedText = props.expandedText ?? 'Show less'
+
+    const onClick = useCallback(() => setShowMore((showMore) => !showMore), [])
+
+    /* istanbul ignore next */
+    const onKeyPress = useCallback((e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            setShowMore(!showMore)
+            e.preventDefault()
+        }
+    }, [])
 
     return (
         <span className="acm-labels">
@@ -62,31 +74,11 @@ export function AcmLabels(props: {
                     </Tooltip>
                 ))}
             {hidden.length > 0 && showMore ? (
-                <span
-                    className="acm-label-button"
-                    tabIndex={1}
-                    onClick={() => setShowMore(!showMore)}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            setShowMore(!showMore)
-                            e.preventDefault()
-                        }
-                    }}
-                >
+                <span className="acm-label-button" tabIndex={0} onClick={onClick} onKeyPress={onKeyPress}>
                     {expandedText}
                 </span>
             ) : (
-                <span
-                    className="acm-label-button"
-                    tabIndex={1}
-                    onClick={() => setShowMore(!showMore)}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            setShowMore(!showMore)
-                            e.preventDefault()
-                        }
-                    }}
-                >
+                <span className="acm-label-button" tabIndex={0} onClick={onClick} onKeyPress={onKeyPress}>
                     {collapsedText}
                 </span>
             )}
