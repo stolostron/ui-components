@@ -41,3 +41,7 @@
 .acm-label-button:hover {
     border-color: var(--pf-global--palette--black-300);
 }
+
+.acm-label-button:focus {
+    border-color: var(--pf-global--palette--blue-400);
+}
