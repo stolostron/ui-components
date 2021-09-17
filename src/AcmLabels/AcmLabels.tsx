@@ -1,17 +1,14 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { CSSProperties } from '@material-ui/styles'
-import { Label, LabelGroup } from '@patternfly/react-core'
-import React, { Fragment, useMemo } from 'react'
+import { Tooltip } from '@patternfly/react-core'
+import React, { Fragment, useMemo, useState } from 'react'
+import './AcmLabels.css'
 
 export function AcmLabels(props: {
     labels?: string[] | Record<string, string>
     collapse?: string[]
-    style?: CSSProperties
     collapsedText?: string
     expandedText?: string
-    color?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
-    variant?: 'outline' | 'filled'
 }) {
     const labelsRecord: Record<string, string> = useMemo(() => {
         if (props.labels === undefined) return {}
@@ -44,23 +41,35 @@ export function AcmLabels(props: {
 
     if (props.labels === undefined) return <Fragment></Fragment>
 
+    const [showMore, setShowMore] = useState(false)
+    /* istanbul ignore next */
+    const collapsedText = props.collapsedText ?? `${hidden.length} more`
+    /* istanbul ignore next */
+    const expandedText = props.expandedText ?? 'Show less'
+
     return (
-        <LabelGroup
-            style={props.style}
-            numLabels={labels.length}
-            collapsedText={props.collapsedText}
-            expandedText={props.expandedText}
-        >
+        <span className="acm-labels">
             {labels.map((label) => (
-                <Label key={label} title={label} variant={props.variant} color={props.color}>
-                    {label}
-                </Label>
+                <Tooltip key={label} content={label}>
+                    <span className="acm-label">{label}</span>
+                </Tooltip>
             ))}
-            {hidden.map((label) => (
-                <Label key={label} title={label} variant={props.variant} color={props.color}>
-                    {label}
-                </Label>
-            ))}
-        </LabelGroup>
+            {hidden.length > 0 &&
+                showMore &&
+                hidden.map((label) => (
+                    <Tooltip key={label} content={label}>
+                        <span className="acm-label">{label}</span>
+                    </Tooltip>
+                ))}
+            {hidden.length > 0 && showMore ? (
+                <span className="acm-label-button" onClick={() => setShowMore(!showMore)}>
+                    {expandedText}
+                </span>
+            ) : (
+                <span className="acm-label-button" onClick={() => setShowMore(!showMore)}>
+                    {collapsedText}
+                </span>
+            )}
+        </span>
     )
 }
