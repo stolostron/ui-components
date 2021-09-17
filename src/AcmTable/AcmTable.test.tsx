@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { ToggleGroup, ToggleGroupItem, ButtonVariant } from '@patternfly/react-core'
+import { ToggleGroup, ToggleGroupItem, ButtonVariant, TooltipPosition } from '@patternfly/react-core'
 import { fitContent, IRow, SortByDirection, TableGridBreakpoint } from '@patternfly/react-table'
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -8,6 +8,7 @@ import { configureAxe } from 'jest-axe'
 import React, { useState } from 'react'
 import { AcmTable, AcmTablePaginationContextProvider, AcmTableProps } from './AcmTable'
 import { exampleData } from './AcmTable.stories'
+import { AcmDropdown } from '../AcmDropdown/AcmDropdown'
 const axe = configureAxe({
     rules: {
         'scope-attr-valid': { enabled: false },
@@ -46,6 +47,7 @@ describe('AcmTable', () => {
             groupFn?: (item: IExampleData) => string | null
             groupSummaryFn?: (items: IExampleData[]) => IRow
             gridBreakPoint?: TableGridBreakpoint
+            useCustomTableAction?: boolean
         } & Partial<AcmTableProps<IExampleData>>
     ) => {
         const {
@@ -53,6 +55,7 @@ describe('AcmTable', () => {
             useRowActions = true,
             useExtraToolbarControls = false,
             useSearch = true,
+            useCustomTableAction = false,
         } = props
         const [items, setItems] = useState<IExampleData[]>(testItems)
         return (
@@ -210,6 +213,39 @@ describe('AcmTable', () => {
                             <ToggleGroupItem isSelected={true} text="View 1" />
                             <ToggleGroupItem text="View 2" />
                         </ToggleGroup>
+                    ) : undefined
+                }
+                customTableAction={
+                    useCustomTableAction ? (
+                        <AcmDropdown
+                            isDisabled={false}
+                            tooltip="Disabled"
+                            id="create"
+                            onSelect={() => null}
+                            text="Create"
+                            dropdownItems={[
+                                {
+                                    id: 'action1',
+                                    isDisabled: false,
+                                    text: 'Action 1',
+                                    tooltip: 'Disabled',
+                                    href: '/action1',
+                                    tooltipPosition: TooltipPosition.right,
+                                },
+                                {
+                                    id: 'action2',
+                                    isDisabled: false,
+                                    text: 'Action 2',
+                                    tooltip: 'Disabled',
+                                    href: '/action1',
+                                    tooltipPosition: TooltipPosition.right,
+                                },
+                            ]}
+                            isKebab={false}
+                            isPlain={true}
+                            isPrimary={true}
+                            tooltipPosition={TooltipPosition.right}
+                        />
                     ) : undefined
                 }
                 {...props}
@@ -906,5 +942,14 @@ describe('AcmTable', () => {
         userEvent.click(getByTestId('male'))
         userEvent.click(getAllByText('Clear all filters')[1])
         expect(container.querySelectorAll('.pf-c-chip-group__list-item')).toHaveLength(0)
+    })
+
+    test('renders with customTableAction', () => {
+        const { container, getByTestId } = render(
+            <Table useCustomTableAction={true} useTableActions={false} useRowActions={false} />
+        )
+        expect(container.querySelector('table')).toBeInTheDocument()
+        expect(container.querySelector('div .pf-c-dropdown__toggle')).toBeInTheDocument()
+        userEvent.click(getByTestId('create'))
     })
 })
