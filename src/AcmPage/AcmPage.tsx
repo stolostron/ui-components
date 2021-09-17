@@ -7,6 +7,7 @@ import {
     Card,
     CardBody,
     Label,
+    LabelProps,
     Page,
     PageSection,
     PageSectionVariants,
@@ -50,7 +51,7 @@ export interface AcmPageHeaderProps {
     title: string
     titleTooltip?: string | React.ReactNode
     label?: string | React.ReactNode
-    labelColor?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
+    labelColor?: LabelProps['color']
     description?: string | React.ReactNode
     breadcrumb?: { text: string; to?: string }[]
     navigation?: React.ReactNode

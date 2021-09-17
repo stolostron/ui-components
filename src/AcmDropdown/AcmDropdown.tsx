@@ -8,6 +8,7 @@ import {
     DropdownPosition,
     KebabToggle,
     Label,
+    LabelProps,
     DropdownProps,
     TooltipPosition,
 } from '@patternfly/react-core'
@@ -43,6 +44,8 @@ export type AcmDropdownItems = {
     href?: string
     icon?: React.ReactNode
     tooltipPosition?: TooltipPosition
+    label: string | React.ReactNode
+    labelColor: LabelProps['color']
 }
 
 const useStyles = makeStyles({
