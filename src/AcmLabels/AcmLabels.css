@@ -37,3 +37,7 @@
     overflow-x: clip;
     cursor: pointer;
 }
+
+.acm-label-button:hover {
+    border-color: var(--pf-global--palette--black-300);
+}
