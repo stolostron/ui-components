@@ -7,6 +7,8 @@ import {
     DropdownItem,
     DropdownPosition,
     KebabToggle,
+    Label,
+    LabelProps,
     DropdownProps,
     TooltipPosition,
 } from '@patternfly/react-core'
@@ -31,6 +33,8 @@ export type AcmDropdownProps = Props & {
     isPrimary?: boolean
     onToggle?: (isOpen?: boolean) => void
     tooltipPosition?: TooltipPosition
+    label?: string | React.ReactNode
+    labelColor?: LabelProps['color']
 }
 
 export type AcmDropdownItems = {
@@ -94,6 +98,9 @@ const useStyles = makeStyles({
             },
         },
     },
+    label: {
+        marginLeft: '8px',
+    },
 })
 
 export function AcmDropdown(props: AcmDropdownProps) {
@@ -127,6 +134,11 @@ export function AcmDropdown(props: AcmDropdownProps) {
                     >
                         <DropdownItem {...item} onClick={() => onSelect(item.id)}>
                             {item.text}
+                            {item.label && item.labelColor && (
+                                <Label className={classes.label} color={item.labelColor}>
+                                    {item.label}
+                                </Label>
+                            )}
                         </DropdownItem>
                     </TooltipWrapper>
                 ))}

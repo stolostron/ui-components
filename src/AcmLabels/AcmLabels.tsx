@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { CSSProperties } from '@material-ui/styles'
-import { Label, LabelGroup } from '@patternfly/react-core'
+import { Label, LabelGroup, LabelProps } from '@patternfly/react-core'
 import React, { Fragment, useMemo } from 'react'
 
 export function AcmLabels(props: {
@@ -10,7 +10,7 @@ export function AcmLabels(props: {
     style?: CSSProperties
     collapsedText?: string
     expandedText?: string
-    color?: 'blue' | 'cyan' | 'green' | 'orange' | 'purple' | 'red' | 'grey'
+    color?: LabelProps['color']
     variant?: 'outline' | 'filled'
 }) {
     const labelsRecord: Record<string, string> = useMemo(() => {
