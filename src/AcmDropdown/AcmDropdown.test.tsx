@@ -26,6 +26,7 @@ describe('AcmDropdown', () => {
             { id: 'forbidden', text: 'Other config', isDisabled: true, tooltip: 'Forbidden' },
             { id: 'launch-out', text: 'Launch page', icon: <ExternalLinkAltIcon /> },
             { id: 'link item', text: 'Link item', href: 'www.google.com', component: 'a' },
+            { id: 'new-feature', text: 'New feature', label: 'Technology Preview', labelColor: 'blue' },
         ]
         return (
             <AcmDropdown

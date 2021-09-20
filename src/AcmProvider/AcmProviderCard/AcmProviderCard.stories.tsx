@@ -13,7 +13,7 @@ export const ProviderCard = () => {
     const [filter, setFilter] = useState<Provider | undefined>(undefined)
     const providers = Object.values(Provider).map((provider, i) => ({
         provider,
-        clusterCount: Math.floor(Math.random() * 100 + 1),
+        clusterCount: i <= 1 ? i : Math.floor(Math.random() * 100 + 1),
         danger: i === 0,
         isSelected: provider === filter,
         onClick: (provider: Provider) => {

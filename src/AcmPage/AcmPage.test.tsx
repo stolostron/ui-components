@@ -33,6 +33,8 @@ describe('AcmPageHeader', () => {
                     controls="controls"
                     switches="switches"
                     actions="actions"
+                    label="label"
+                    labelColor="red"
                 />
             </MemoryRouter>
         )

@@ -199,6 +199,7 @@ export interface ITableFilter<T> {
     id: string
     options: TableFilterOption<FilterOptionValueT>[]
     tableFilterFn: TableFilterFn<T>
+    showEmptyOptions?: boolean
 }
 
 const useStyles = makeStyles({
@@ -293,6 +294,7 @@ export interface AcmTableProps<T> {
     keyFn: (item: T) => string
     groupFn?: (item: T) => string | null
     groupSummaryFn?: (items: T[]) => IRow
+    customTableAction?: ReactNode
     tableActionButtons?: IAcmTableButtonAction[]
     tableActions?: IAcmTableAction<T>[]
     rowActions?: IAcmRowAction<T>[]
@@ -327,6 +329,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         tableActions = [],
         rowActions = [],
         rowActionResolver,
+        customTableAction,
         filters = [],
     } = props
 
@@ -785,6 +788,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     // Parse static actions
     const actions = parseRowAction(rowActions)
 
+    const renderCustomTableAction = (customTableAction: ReactNode) => {
+        return customTableAction
+    }
+
+    const renderCustomTableActionResults = customTableAction && renderCustomTableAction(customTableAction)
+
     // Wrap provided action resolver
     let actionResolver: IActionsResolver | undefined
     if (rowActionResolver) {
@@ -823,10 +832,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 <Toolbar
                     clearAllFilters={() => setToolbarFilterIds({})}
                     collapseListedFiltersBreakpoint={'lg'}
-                    inset={{
-                        default: hasSelectionColumn ? 'insetSm' : 'insetMd',
-                        xl: hasSelectionColumn ? 'insetMd' : 'insetLg',
-                    }}
+                    inset={{ default: 'insetMd', xl: 'insetLg' }}
                 >
                     <ToolbarContent>
                         {hasSelectionColumn && (
@@ -897,6 +903,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                         {tableActions.length > 0 && (
                             <TableActions actions={tableActions} selections={selected} items={items} keyFn={keyFn} />
                         )}
+                        {renderCustomTableActionResults}
                         {(!props.autoHidePagination || filtered.length > perPage) && (
                             <ToolbarItem variant="pagination">
                                 <Pagination
@@ -1092,35 +1099,55 @@ function TableColumnFilters<T>(props: {
         })
     }, [])
 
-    const FilterSelectGroups = useMemo(
-        () =>
-            filters.map((filter) => (
-                <SelectGroup key={filter.id} label={filter.label}>
-                    {filter.options.map((option) => (
-                        <SelectOption
-                            key={option.value}
-                            inputId={option.value}
-                            value={option.value}
-                            isChecked={
-                                /* istanbul ignore next */
-                                toolbarFilterIds[filter.id]?.indexOf(option.value) > -1 ?? false
-                            }
-                        >
-                            <div className={classes.filterOption}>
-                                {option.label}
-                                <Badge className={classes.filterOptionBadge} key={option.value} isRead>
-                                    {
-                                        /* istanbul ignore next */
-                                        items?.filter((item) => filter.tableFilterFn([option.value], item)).length
-                                    }
-                                </Badge>
-                            </div>
-                        </SelectOption>
-                    ))}
-                </SelectGroup>
-            )),
-        [filters, items, toolbarFilterIds]
-    )
+    const FilterSelectGroups = useMemo(() => {
+        const validFilters: {
+            filter: ITableFilter<T>
+            options: { option: TableFilterOption<string>; count: number }[]
+        }[] = []
+        for (const filter of filters) {
+            const options: { option: TableFilterOption<string>; count: number }[] = []
+            for (const option of filter.options) {
+                /* istanbul ignore next */
+                const count = items?.filter((item) => filter.tableFilterFn([option.value], item)).length
+                /* istanbul ignore next */
+                if (filter.showEmptyOptions) {
+                    options.push({ option, count: count ?? 0 })
+                } else {
+                    if (count !== undefined && count > 0) {
+                        options.push({ option, count })
+                    }
+                }
+            }
+            /* istanbul ignore else */
+            if (options.length) {
+                validFilters.push({ filter, options })
+            }
+        }
+
+        return validFilters.map((filter) => (
+            <SelectGroup key={filter.filter.id} label={filter.filter.label}>
+                {filter.options.map((option) => (
+                    <SelectOption
+                        key={option.option.value}
+                        inputId={option.option.value}
+                        value={option.option.value}
+                        isChecked={
+                            /* istanbul ignore next */
+                            toolbarFilterIds[filter.filter.id]?.indexOf(option.option.value) > -1 ?? false
+                        }
+                    >
+                        <div className={classes.filterOption}>
+                            {option.option.label}
+                            <Badge className={classes.filterOptionBadge} key={option.option.value} isRead>
+                                {option.count}
+                            </Badge>
+                        </div>
+                    </SelectOption>
+                ))}
+            </SelectGroup>
+        ))
+    }, [filters, items, toolbarFilterIds])
+
     return (
         <ToolbarItem>
             {filters.reduce(
