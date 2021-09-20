@@ -33,6 +33,8 @@ export type AcmDropdownProps = Props & {
     isPrimary?: boolean
     onToggle?: (isOpen?: boolean) => void
     tooltipPosition?: TooltipPosition
+    label?: string | React.ReactNode
+    labelColor?: LabelProps['color']
 }
 
 export type AcmDropdownItems = {
@@ -44,8 +46,6 @@ export type AcmDropdownItems = {
     href?: string
     icon?: React.ReactNode
     tooltipPosition?: TooltipPosition
-    label: string | React.ReactNode
-    labelColor: LabelProps['color']
 }
 
 const useStyles = makeStyles({
