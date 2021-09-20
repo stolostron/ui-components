@@ -9,6 +9,7 @@ export function AcmLabels(props: {
     collapse?: string[]
     collapsedText?: string
     expandedText?: string
+    allCollapsedText?: string
 }) {
     const labelsRecord: Record<string, string> = useMemo(() => {
         if (props.labels === undefined) return {}
@@ -44,7 +45,11 @@ export function AcmLabels(props: {
     const [showMore, setShowMore] = useState(false)
 
     /* istanbul ignore next */
-    const collapsedText = props.collapsedText ?? `${hidden.length} more`
+    let collapsedText = props.collapsedText ?? `${hidden.length} more`
+
+    if (hidden.length > 0 && labels.length === 0 && props.allCollapsedText) {
+        collapsedText = props.allCollapsedText
+    }
 
     /* istanbul ignore next */
     const expandedText = props.expandedText ?? 'Show less'
