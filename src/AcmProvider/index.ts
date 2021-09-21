@@ -34,7 +34,7 @@ export const ProviderShortTextMap = {
     [Provider.ibmz]: 'IBM Z',
     [Provider.baremetal]: 'Bare metal',
     [Provider.vmware]: 'VMware',
-    [Provider.hybrid]: 'Hybrid',
+    [Provider.hybrid]: 'On Premise',
     [Provider.other]: 'Other',
 }
 
@@ -50,7 +50,7 @@ export const ProviderLongTextMap = {
     [Provider.ibmz]: 'IBM Z',
     [Provider.baremetal]: 'Bare metal',
     [Provider.vmware]: 'VMware vSphere',
-    [Provider.hybrid]: 'Hybrid',
+    [Provider.hybrid]: 'On Premise',
     [Provider.other]: 'Other',
 }
 
