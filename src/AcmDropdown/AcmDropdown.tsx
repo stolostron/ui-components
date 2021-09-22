@@ -35,6 +35,7 @@ export type AcmDropdownProps = Props & {
     tooltipPosition?: TooltipPosition
     label?: string | React.ReactNode
     labelColor?: LabelProps['color']
+    dropdownPosition?: DropdownPosition
 }
 
 export type AcmDropdownItems = {
@@ -124,7 +125,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
             <Dropdown
                 className={classes.button}
                 onMouseOver={props.onHover}
-                position={DropdownPosition.right}
+                position={props.dropdownPosition || DropdownPosition.right}
                 dropdownItems={props.dropdownItems.map((item) => (
                     <TooltipWrapper
                         showTooltip={item.isDisabled && !!item.tooltip}
