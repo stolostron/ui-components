@@ -39,6 +39,7 @@ export const Dropdown = (args) => {
                     isKebab={args.isKebab}
                     isPlain={true}
                     isPrimary={true}
+                    dropdownPosition={args.dropdownPosition}
                 />
             </CardBody>
         </Card>
