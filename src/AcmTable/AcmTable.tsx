@@ -7,9 +7,10 @@ import {
     ButtonVariant,
     Dropdown,
     DropdownGroup,
-    DropdownSeparator,
     DropdownItem,
+    DropdownSeparator,
     DropdownToggle,
+    DropdownToggleCheckbox,
     EmptyState,
     EmptyStateIcon,
     PageSection,
@@ -31,7 +32,6 @@ import {
     ToolbarGroup,
     ToolbarItem,
     Tooltip,
-    DropdownToggleCheckbox,
 } from '@patternfly/react-core'
 import { FilterIcon } from '@patternfly/react-icons'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
@@ -56,6 +56,7 @@ import {
     TableVariant,
 } from '@patternfly/react-table'
 import useResizeObserver from '@react-hook/resize-observer'
+import { debounce } from 'debounce'
 import Fuse from 'fuse.js'
 import get from 'get-value'
 import React, {
@@ -674,6 +675,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         [search, sort, preFilterSort, setSort, setSearch, setPage]
     )
 
+    /* istanbul ignore next */
+    const updateSearchWithDebounce = useCallback(
+        process.env.NODE_ENV !== 'test' ? debounce(updateSearch, 500) : updateSearch,
+        [updateSearch]
+    )
+
     const updateSort = useCallback(
         (newSort: ISortBy) => {
             if (filtered.length === 0) {
@@ -877,7 +884,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                         <SearchInput
                                             placeholder={searchPlaceholder}
                                             value={search}
-                                            onChange={updateSearch}
+                                            onChange={updateSearchWithDebounce}
                                             onClear={() => updateSearch('')}
                                             resultsCount={`${filteredCount} / ${totalCount}`}
                                             style={{ flexGrow: 1 }}
