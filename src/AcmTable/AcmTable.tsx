@@ -954,8 +954,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                         header: column.tooltip
                                             ? {
                                                   info: {
-                                                      tooltip: column.tooltip,
-                                                      tooltipProps: { isContentLeftAligned: true },
+                                                      popover: column.tooltip,
                                                   },
                                               }
                                             : {},
