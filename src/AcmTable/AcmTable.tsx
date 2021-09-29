@@ -82,7 +82,7 @@ export interface IAcmTableColumn<T> {
     /** the header of the column */
     header: string
 
-    tooltip?: string
+    tooltip?: ReactNode
 
     /** enables sort either on field name of using sort function */
     sort?: SortFn<T> | string
