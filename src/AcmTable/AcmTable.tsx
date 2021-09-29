@@ -83,7 +83,7 @@ export interface IAcmTableColumn<T> {
     /** the header of the column */
     header: string
 
-    tooltip?: string
+    tooltip?: ReactNode
 
     /** enables sort either on field name of using sort function */
     sort?: SortFn<T> | string
@@ -961,8 +961,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                         header: column.tooltip
                                             ? {
                                                   info: {
-                                                      tooltip: column.tooltip,
-                                                      tooltipProps: { isContentLeftAligned: true },
+                                                      popover: column.tooltip,
                                                   },
                                               }
                                             : {},
