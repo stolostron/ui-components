@@ -1412,7 +1412,7 @@ export function TableSelectionDropdown(props: TableSelectionDropdownProps) {
                 onToggle={(isOpen) => setIsOpen(isOpen)}
             />
         )
-    }, [props.selectedCount, toggleText])
+    }, [props.selectedCount, toggleText, onToggleCheckbox])
 
     const selectNoneDropdownItem = useMemo(() => {
         return (
