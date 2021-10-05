@@ -686,11 +686,11 @@ describe('AcmTable', () => {
         expect(getByLabelText('Reset')).toBeVisible()
         userEvent.click(getByLabelText('Reset'))
         expect(setSearch).toHaveBeenCalled()
-        expect(setPage).toHaveBeenCalled()
         expect(setSort).toHaveBeenCalled()
+        setSort.mockClear()
 
         userEvent.click(getByText('UID'))
-        expect(setSort).toHaveBeenCalledTimes(2)
+        expect(setSort).toHaveBeenCalled()
     })
     test('shows loading', () => {
         const { queryByText } = render(<Table items={undefined} useExtraToolbarControls={true} />)
