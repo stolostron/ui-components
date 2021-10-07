@@ -547,6 +547,25 @@ describe('AcmTable', () => {
 
         // verify sort order set during filter (Last Name) persists
         expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
+
+        // search for '.org'
+        expect(getByPlaceholderText(placeholderString)).toBeInTheDocument()
+        userEvent.type(getByPlaceholderText(placeholderString), '.org')
+        expect(queryByText('8 / 105')).toBeVisible()
+
+        // verify last sort order ignored
+        expect(container.querySelector('tbody tr:first-of-type [data-label="UID"]')).toHaveTextContent('8')
+
+        // change sort during filter (Last Name)
+        userEvent.click(getByText('Last Name'))
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Barnham')
+
+        // clear filter by backspacing
+        userEvent.type(getByPlaceholderText(placeholderString), '{backspace}{backspace}{backspace}{backspace}')
+        expect(queryByText('7 / 105')).toBeNull()
+
+        // verify sort order set during filter (Last Name) persists
+        expect(container.querySelector('tbody tr:first-of-type [data-label="Last Name"]')).toHaveTextContent('Arthur')
     })
 
     const sortTest = () => {
