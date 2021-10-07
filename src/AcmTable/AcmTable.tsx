@@ -576,7 +576,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         let start = (page - 1) * perPage
         let actualPage = page
         if (start >= grouped.length) {
-            actualPage = Math.ceil(grouped.length / perPage)
+            actualPage = Math.max(1, Math.ceil(grouped.length / perPage))
             start = (actualPage - 1) * perPage
             setPage(actualPage)
         }
