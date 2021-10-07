@@ -417,52 +417,19 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
 
     const classes = useStyles()
 
-    const clearSearch = useCallback(
-        () => {
-            setSearch('')
-            setInternalSearch('')
-            setPage(1)
-            if (preFilterSort) {
-                setSort(preFilterSort)
-            }
-        },
-        // setInternalSearch is from state and therefore
-        // guaranteed stable - not needed in dependency list
-        [preFilterSort, setPage, setSort, setSearch]
-    )
-
-    const debouncedUpdateInternalSearch = useCallback(
-        debounce(
-            (search: string, internalSearch: string) => {
-                setInternalSearch(search)
-                setPage(1)
-                if (!search) {
-                    // clearing filtered state; restore previous sorting if applicable
-                    if (preFilterSort) {
-                        setSort(preFilterSort)
-                    }
-                } else if (!internalSearch) {
-                    // entering a filtered state; save sort setting use fuzzy match sort
-                    setPreFilterSort(sort)
-                    setSort(undefined)
-                }
-            },
-            SEARCH_DEBOUNCE_TIME,
-            true
-        ),
-        // setSort/setSearch/setPage can come from props, but setPreFilterSort/setInternalSearch are only from state and therefore
-        // guaranteed stable - not needed in dependency list
-        [sort, preFilterSort, setSort, setSearch, setPage]
+    const setInternalSearchWithDebounce = useCallback(
+        /* istanbul ignore next */
+        process.env.NODE_ENV !== 'test'
+            ? debounce((search: string) => {
+                  setInternalSearch(search)
+              }, SEARCH_DEBOUNCE_TIME)
+            : setInternalSearch,
+        []
     )
 
     useEffect(() => {
-        if (search !== internalSearch) {
-            debouncedUpdateInternalSearch(search, internalSearch)
-        }
-        return () => {
-            debouncedUpdateInternalSearch.clear()
-        }
-    }, [search, internalSearch, debouncedUpdateInternalSearch])
+        setInternalSearchWithDebounce(search)
+    }, [search])
 
     useEffect(() => {
         /* istanbul ignore else */
@@ -705,6 +672,44 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
               }
             : sort
 
+    const clearSearch = useCallback(
+        () => {
+            /* istanbul ignore if */
+            if (process.env.NODE_ENV !== 'test') {
+                ;(setInternalSearchWithDebounce as ReturnType<typeof debounce>).clear()
+            }
+            setSearch('')
+            setInternalSearch('')
+            setPage(1)
+            if (preFilterSort) {
+                setSort(preFilterSort)
+            }
+        },
+        // setInternalSearch is from state and therefore
+        // guaranteed stable - not needed in dependency list
+        [preFilterSort, setPage, setSort, setSearch]
+    )
+
+    const updateSearch = useCallback(
+        (newSearch: string) => {
+            setSearch(newSearch)
+            setPage(1)
+            if (!newSearch) {
+                // clearing filtered state; restore previous sorting if applicable
+                if (preFilterSort) {
+                    setSort(preFilterSort)
+                }
+            } else if (!search) {
+                // entering a filtered state; save sort setting use fuzzy match sort
+                setPreFilterSort(sort)
+                setSort(undefined)
+            }
+        },
+        // setSort/setSearch/setPage can come from props, but setPreFilterSort is only from state and therefore
+        // guaranteed stable - not needed in dependency list
+        [search, sort, preFilterSort, setSort, setSearch, setPage]
+    )
+
     const updateSort = useCallback(
         (newSort: ISortBy) => {
             if (filtered.length === 0) {
@@ -908,9 +913,11 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                         <SearchInput
                                             placeholder={searchPlaceholder}
                                             value={search}
-                                            onChange={setSearch}
+                                            onChange={updateSearch}
                                             onClear={clearSearch}
-                                            resultsCount={`${filteredCount} / ${totalCount}`}
+                                            resultsCount={`${
+                                                search === internalSearch ? filteredCount : '-'
+                                            } / ${totalCount}`}
                                             style={{ flexGrow: 1 }}
                                         />
                                     </ToolbarItem>
