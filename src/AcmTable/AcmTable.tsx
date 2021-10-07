@@ -558,8 +558,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const paged = useMemo<ITableItem<T>[]>(() => {
         let start = (page - 1) * perPage
         let actualPage = page
-        if (start > grouped.length) {
-            actualPage = Math.floor(grouped.length / perPage) + 1
+        if (start >= grouped.length) {
+            actualPage = Math.ceil(grouped.length / perPage)
             start = (actualPage - 1) * perPage
             setPage(actualPage)
         }
