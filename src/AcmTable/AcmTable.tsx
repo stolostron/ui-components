@@ -255,6 +255,8 @@ function OuiaIdRowWrapper(props: RowWrapperProps) {
     return <RowWrapper {...props} ouiaId={get(props, 'row.props.key')} />
 }
 
+const SEARCH_DEBOUNCE_TIME = 500
+
 const DEFAULT_ITEMS_PER_PAGE = 10
 
 const BREAKPOINT_SIZES = [
@@ -340,13 +342,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }
     const initialSort = props.initialSort || defaultSort
 
-    // State that is only stored in the component state
-    const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
-    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
-    const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
-    const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
-    const [toolbarFilterIds, setToolbarFilterIds] = useState<{ [key: string]: string[] }>({})
-
     // State that can come from context or component state (perPage)
     const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
     const { perPage: contextPerPage, setPerPage: contextSetPerPage } = useContext(AcmTablePaginationContext)
@@ -364,6 +359,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [stateSort, stateSetSort] = useState<ISortBy | undefined>(initialSort)
     const sort = props.sort || stateSort
     const setSort = props.setSort || stateSetSort
+
+    // State that is only stored in the component state
+    const [selected, setSelected] = useState<{ [uid: string]: boolean }>({})
+    const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
+    const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
+    const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
+    const [toolbarFilterIds, setToolbarFilterIds] = useState<{ [key: string]: string[] }>({})
+    const [internalSearch, setInternalSearch] = useState(search)
 
     // Dynamic gridBreakPoint
     const [breakpoint, setBreakpoint] = useState<TableGridBreakpoint>(TableGridBreakpoint.none)
@@ -413,6 +416,53 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     })
 
     const classes = useStyles()
+
+    const clearSearch = useCallback(
+        () => {
+            setSearch('')
+            setInternalSearch('')
+            setPage(1)
+            if (preFilterSort) {
+                setSort(preFilterSort)
+            }
+        },
+        // setInternalSearch is from state and therefore
+        // guaranteed stable - not needed in dependency list
+        [preFilterSort, setPage, setSort, setSearch]
+    )
+
+    const debouncedUpdateInternalSearch = useCallback(
+        debounce(
+            (search: string, internalSearch: string) => {
+                setInternalSearch(search)
+                setPage(1)
+                if (!search) {
+                    // clearing filtered state; restore previous sorting if applicable
+                    if (preFilterSort) {
+                        setSort(preFilterSort)
+                    }
+                } else if (!internalSearch) {
+                    // entering a filtered state; save sort setting use fuzzy match sort
+                    setPreFilterSort(sort)
+                    setSort(undefined)
+                }
+            },
+            SEARCH_DEBOUNCE_TIME,
+            true
+        ),
+        // setSort/setSearch/setPage can come from props, but setPreFilterSort/setInternalSearch are only from state and therefore
+        // guaranteed stable - not needed in dependency list
+        [sort, preFilterSort, setSort, setSearch, setPage]
+    )
+
+    useEffect(() => {
+        if (search !== internalSearch) {
+            debouncedUpdateInternalSearch(search, internalSearch)
+        }
+        return () => {
+            debouncedUpdateInternalSearch.clear()
+        }
+    }, [search, internalSearch, debouncedUpdateInternalSearch])
 
     useEffect(() => {
         /* istanbul ignore else */
@@ -491,7 +541,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         if (props.fuseThreshold != undefined) {
             threshold = props.fuseThreshold
         }
-        if (search && search !== '') {
+        if (internalSearch && internalSearch !== '') {
             const fuse = new Fuse(tableItems, {
                 ignoreLocation: true,
                 threshold: threshold,
@@ -500,12 +550,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     .filter((value) => value !== undefined) as string[],
                 // TODO use FuseOptionKeyObject to allow for weights
             })
-            const filtered = fuse.search<ITableItem<T>>(search).map((result) => result.item)
+            const filtered = fuse.search<ITableItem<T>>(internalSearch).map((result) => result.item)
             return { filtered, filteredCount: groupFn ? countGroups(filtered) : filtered.length }
         } else {
             return { filtered: tableItems, filteredCount: totalCount }
         }
-    }, [search, items, tableItems, totalCount, columns, groupFn])
+    }, [internalSearch, items, tableItems, totalCount, columns, groupFn])
 
     const sorted = useMemo<ITableItem<T>[]>(() => {
         if (sort && sort.index !== undefined) {
@@ -655,32 +705,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
               }
             : sort
 
-    const updateSearch = useCallback(
-        (newSearch: string) => {
-            setSearch(newSearch)
-            setPage(1)
-            if (!newSearch) {
-                // clearing filtered state; restore previous sorting if applicable
-                if (preFilterSort) {
-                    setSort(preFilterSort)
-                }
-            } else if (!search) {
-                // entering a filtered state; save sort setting use fuzzy match sort
-                setPreFilterSort(sort)
-                setSort(undefined)
-            }
-        },
-        // setSort/setSearch/setPage can come from props, but setPreFilterSort is only from state and therefore
-        // guaranteed stable - not needed in dependency list
-        [search, sort, preFilterSort, setSort, setSearch, setPage]
-    )
-
-    /* istanbul ignore next */
-    const updateSearchWithDebounce = useCallback(
-        process.env.NODE_ENV !== 'test' ? debounce(updateSearch, 500) : updateSearch,
-        [updateSearch]
-    )
-
     const updateSort = useCallback(
         (newSort: ISortBy) => {
             if (filtered.length === 0) {
@@ -691,12 +715,12 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     direction: newSort && newSort.direction,
                 })
             }
-            if (search) {
+            if (internalSearch) {
                 // sort changed while filtering; forget previous setting
                 setPreFilterSort(undefined)
             }
         },
-        [search, filtered, adjustedSortIndexOffset]
+        [internalSearch, filtered, adjustedSortIndexOffset]
     )
 
     const updatePerPage = useCallback(
@@ -884,8 +908,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                         <SearchInput
                                             placeholder={searchPlaceholder}
                                             value={search}
-                                            onChange={updateSearchWithDebounce}
-                                            onClear={() => updateSearch('')}
+                                            onChange={setSearch}
+                                            onClear={clearSearch}
                                             resultsCount={`${filteredCount} / ${totalCount}`}
                                             style={{ flexGrow: 1 }}
                                         />
@@ -1010,7 +1034,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 message="No results match the filter criteria. Clear filters to show results."
                                 showIcon={false}
                                 action={
-                                    <AcmButton variant="link" onClick={() => updateSearch('')}>
+                                    <AcmButton variant="link" onClick={clearSearch}>
                                         Clear all filters
                                     </AcmButton>
                                 }
