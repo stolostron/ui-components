@@ -427,16 +427,6 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         []
     )
 
-    useEffect(
-        () => () => {
-            /* istanbul ignore if */
-            if (process.env.NODE_ENV !== 'test') {
-                ;(setInternalSearchWithDebounce as ReturnType<typeof debounce>).clear()
-            }
-        },
-        []
-    )
-
     useEffect(() => {
         setInternalSearchWithDebounce(search)
     }, [search])
