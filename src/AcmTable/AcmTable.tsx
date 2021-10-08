@@ -572,16 +572,25 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     }, [sorted, columns, groupFn])
 
-    const paged = useMemo<ITableItem<T>[]>(() => {
-        let start = (page - 1) * perPage
+    const actualPage = useMemo<number>(() => {
+        const start = (page - 1) * perPage
         let actualPage = page
         if (start >= grouped.length) {
             actualPage = Math.max(1, Math.ceil(grouped.length / perPage))
-            start = (actualPage - 1) * perPage
+        }
+        return actualPage
+    }, [grouped, page, perPage])
+
+    useEffect(() => {
+        if (page !== actualPage) {
             setPage(actualPage)
         }
+    }, [page, actualPage])
+
+    const paged = useMemo<ITableItem<T>[]>(() => {
+        const start = (actualPage - 1) * perPage
         return grouped.slice(start, start + perPage)
-    }, [grouped, page, perPage])
+    }, [grouped, actualPage, perPage])
 
     const { rows, addedSubRowCount } = useMemo<{ rows: IRow[]; addedSubRowCount: number }>(() => {
         const newRows: IRow[] = []
