@@ -118,7 +118,7 @@ function AboutDropdown(props: AboutDropdownProps) {
 
     function DocsButton() {
         return (
-            <ApplicationLauncherItem href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.3/">
+            <ApplicationLauncherItem href="https://access.redhat.com/documentation/en-us/red_hat_advanced_cluster_management_for_kubernetes/2.4/">
                 Documentation
             </ApplicationLauncherItem>
         )
