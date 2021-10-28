@@ -59,6 +59,7 @@ import useResizeObserver from '@react-hook/resize-observer'
 import { debounce } from 'debounce'
 import Fuse from 'fuse.js'
 import get from 'get-value'
+import hash from 'object-hash'
 import React, {
     createContext,
     FormEvent,
@@ -462,7 +463,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         /* istanbul ignore if */
         if (!items) return { tableItems: [], totalCount: 0 }
         let filteredItems: T[] = items
-        if (Object.keys(toolbarFilterIds).length > 0) {
+        if (filters.length && Object.keys(toolbarFilterIds).length) {
             const filterCategories = Object.keys(toolbarFilterIds)
             filteredItems = items.filter((item: T) => {
                 let isFilterMatch = true
@@ -498,7 +499,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             return tableItem
         })
         return { tableItems, totalCount: groupFn ? countGroups(tableItems) : tableItems.length }
-    }, [items, columns, addSubRows, keyFn, groupFn, toolbarFilterIds])
+    }, [items, columns, addSubRows, keyFn, groupFn, filters, toolbarFilterIds])
 
     const { filtered, filteredCount } = useMemo<{
         filtered: ITableItem<T>[]
@@ -856,6 +857,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         }
     }
 
+    const filtersHash = useMemo(() => hash(filters), [filters])
+
     const hasSearch = useMemo(() => columns.some((column) => column.search), [columns])
     const hasFilter = filters && filters.length > 0
     const hasItems = items && items.length > 0 && filtered
@@ -875,6 +878,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             )}
             {showToolbar && (
                 <Toolbar
+                    key={filtersHash} // reset state if filters change
                     clearAllFilters={() => setToolbarFilterIds({})}
                     collapseListedFiltersBreakpoint={'lg'}
                     inset={{ default: 'insetMd', xl: 'insetLg' }}
