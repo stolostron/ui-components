@@ -682,23 +682,25 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
               }
             : sort
 
-    const clearSearch = useCallback(
-        () => {
-            /* istanbul ignore if */
-            if (process.env.NODE_ENV !== 'test') {
-                ;(setInternalSearchWithDebounce as ReturnType<typeof debounce>).clear()
-            }
-            setSearch('')
-            setInternalSearch('')
-            setPage(1)
-            if (preFilterSort) {
-                setSort(preFilterSort)
-            }
-        },
-        // setInternalSearch is from state and therefore
-        // guaranteed stable - not needed in dependency list
-        [preFilterSort, setPage, setSort, setSearch]
-    )
+    const clearSearch = useCallback(() => {
+        /* istanbul ignore if */
+        if (process.env.NODE_ENV !== 'test') {
+            ;(setInternalSearchWithDebounce as ReturnType<typeof debounce>).clear()
+        }
+        setSearch('')
+        setInternalSearch('')
+        setPage(1)
+        if (preFilterSort) {
+            setSort(preFilterSort)
+        }
+    }, [preFilterSort, setPage, setSort, setSearch, setInternalSearch])
+
+    const clearFilters = useCallback(() => setToolbarFilterIds({}), [setToolbarFilterIds])
+
+    const clearSearchAndFilters = useCallback(() => {
+        clearSearch()
+        clearFilters()
+    }, [clearSearch, clearFilters])
 
     const updateSearch = useCallback(
         (newSearch: string) => {
@@ -879,7 +881,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             {showToolbar && (
                 <Toolbar
                     key={filtersHash} // reset state if filters change
-                    clearAllFilters={() => setToolbarFilterIds({})}
+                    clearAllFilters={clearSearchAndFilters}
                     collapseListedFiltersBreakpoint={'lg'}
                     inset={{ default: 'insetMd', xl: 'insetLg' }}
                 >
@@ -1054,7 +1056,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                                 message="No results match the filter criteria. Clear filters to show results."
                                 showIcon={false}
                                 action={
-                                    <AcmButton variant="link" onClick={clearSearch}>
+                                    <AcmButton variant="link" onClick={clearSearchAndFilters}>
                                         Clear all filters
                                     </AcmButton>
                                 }
