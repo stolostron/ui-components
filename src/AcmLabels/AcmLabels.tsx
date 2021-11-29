@@ -78,11 +78,12 @@ export function AcmLabels(props: {
                         <span className="acm-label">{label}</span>
                     </Tooltip>
                 ))}
-            {hidden.length > 0 && showMore ? (
+            {hidden.length > 0 && showMore && (
                 <span className="acm-label-button" tabIndex={0} onClick={onClick} onKeyPress={onKeyPress}>
                     {expandedText}
                 </span>
-            ) : (
+            )}
+            {hidden.length > 0 && !showMore && (
                 <span className="acm-label-button" tabIndex={0} onClick={onClick} onKeyPress={onKeyPress}>
                     {collapsedText}
                 </span>
