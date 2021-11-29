@@ -32,13 +32,13 @@ jobs:
                   branch: main
 
         - stage: Patch
-          if: type = push AND branch = /v$.*.*/ AND fork = false
+          if: type = push AND branch =~ /^v\d+\.\d+\.z$/ AND fork = false
           script:
               - set -e # Exit immediately if a command returns a non-zero status.
               - npm test
               - npm run build
               - scripts/create-release.sh patch $TRAVIS_COMMIT_MESSAGE
-              - scripts/publish-package.sh
+              - scripts/publish-package.sh $TRAVIS_BRANCH
 
         - stage: Dependency Upgrade
           if: type = cron AND branch = main

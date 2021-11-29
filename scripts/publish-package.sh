@@ -9,6 +9,10 @@ if [ "$NPM_TOKEN" = "" ]; then
     exit 1
 fi
 
+if [ -n "$1" ]; then
+    TAG="--tag $1"
+fi
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd $DIR/..
 
@@ -22,5 +26,5 @@ echo "  Version: $VERSION"
 echo
 echo registry=http://registry.npmjs.org > .npmrc
 echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} >> .npmrc
-npm publish
+npm publish $TAG
 echo
