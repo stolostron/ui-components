@@ -1,0 +1,20 @@
+name: NPM Check Updates
+on:
+  schedule:
+    - cron: '0 16 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - run: npm install
+    - run: cd frontend && npx ncu --upgrade --doctor --target patch
+    - run: cd frontend && npx ncu --upgrade --doctor --target minor
+    - run: cd frontend && npx ncu --upgrade --doctor --target major
+    - run: cd backend && npx ncu --upgrade --doctor --target patch
+    - run: cd backend && npx ncu --upgrade --doctor --target minor
+    - run: cd backend && npx ncu --upgrade --doctor --target major
+#     - uses: EndBug/add-and-commit@v7
