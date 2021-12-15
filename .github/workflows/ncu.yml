@@ -11,7 +11,7 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
-    - run: npx npm-check-updates --upgrade --doctor --target major --reject ts-loader
+    - run: npx npm-check-updates --upgrade --doctor --target latest --reject ts-loader
     - run: npx npm-check-updates --upgrade --doctor --target minor
     - run: npx npm-check-updates --upgrade --doctor --target patch
-#     - uses: EndBug/add-and-commit@v7
+    - uses: EndBug/add-and-commit@v7
