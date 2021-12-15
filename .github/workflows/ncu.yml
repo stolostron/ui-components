@@ -2,6 +2,10 @@ name: NPM Check Updates
 on:
   schedule:
     - cron: '0 16 * * *'
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        default: 'warning'
 jobs:
   build:
     runs-on: ubuntu-latest
