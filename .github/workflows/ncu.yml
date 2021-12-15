@@ -1,4 +1,4 @@
--name: NPM Check Updates
+name: NPM Check Updates
 on:
   schedule:
     - cron: '0 16 * * *'
