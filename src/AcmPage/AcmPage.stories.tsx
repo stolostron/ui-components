@@ -8,7 +8,6 @@ import {
     DropdownItem,
     DropdownToggle,
     PageSection,
-    PopoverPosition,
     Switch,
 } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
