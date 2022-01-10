@@ -8,6 +8,7 @@ import {
     DropdownItem,
     DropdownToggle,
     PageSection,
+    PopoverPosition,
     Switch,
 } from '@patternfly/react-core'
 import '@patternfly/react-core/dist/styles/base.css'
@@ -72,6 +73,8 @@ export const Page = (args: {
                                 </>
                             )
                         }
+                        popoverPosition="bottom"
+                        popoverAutoWidth={true}
                         label={args.label}
                         labelColor={args.labelColor}
                         description={args.description}
