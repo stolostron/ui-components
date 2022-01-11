@@ -4,12 +4,12 @@
 
 React shared UI component library for open cluster management.
 
-[![Build Status](https://travis-ci.com/open-cluster-management/ui-components.svg?branch=main)](https://travis-ci.com/open-cluster-management/ui-components)
-[![npm version](https://badge.fury.io/js/%40open-cluster-management%2Fui-components.svg)](https://badge.fury.io/js/%40open-cluster-management%2Fui-components)
+[![Build Status](https://travis-ci.com/stolostron/ui-components.svg?branch=main)](https://travis-ci.com/stolostron/ui-components)
+[![npm version](https://badge.fury.io/js/%40stolostron%2Fui-components.svg)](https://badge.fury.io/js/%40stolostron%2Fui-components)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=open-cluster-management_ui-components&metric=coverage&token=64149a11d78bff9de4105c800b8ec2219dae4ea4)](https://sonarcloud.io/dashboard?id=open-cluster-management_ui-components)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=open-cluster-management_ui-components&metric=vulnerabilities&token=64149a11d78bff9de4105c800b8ec2219dae4ea4)](https://sonarcloud.io/dashboard?id=open-cluster-management_ui-components)
 
-[Storybook of Components](https://open-cluster-management.github.io/ui-components/index.html)
+[Storybook of Components](https://stolostron.github.io/ui-components/index.html)
 
 ## Prerequisites
 
