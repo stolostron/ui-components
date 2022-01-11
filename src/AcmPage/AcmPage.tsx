@@ -93,9 +93,15 @@ export function AcmPageHeader(props: AcmPageHeaderProps) {
                                                         {props.title}
                                                         {props.titleTooltip && (
                                                             <Popover
-                                                                hasAutoWidth={props.popoverAutoWidth ?? true}
                                                                 bodyContent={props.titleTooltip}
-                                                                position={props.popoverPosition ?? 'right'}
+                                                                hasAutoWidth={
+                                                                    /* istanbul ignore next */
+                                                                    props.popoverAutoWidth ?? true
+                                                                }
+                                                                position={
+                                                                    /* istanbul ignore next */
+                                                                    props.popoverPosition ?? 'right'
+                                                                }
                                                             >
                                                                 <Button
                                                                     variant="link"
