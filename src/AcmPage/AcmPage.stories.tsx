@@ -72,6 +72,8 @@ export const Page = (args: {
                                 </>
                             )
                         }
+                        popoverPosition="bottom"
+                        popoverAutoWidth={true}
                         label={args.label}
                         labelColor={args.labelColor}
                         description={args.description}

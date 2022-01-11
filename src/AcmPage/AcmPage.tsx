@@ -12,6 +12,7 @@ import {
     PageSection,
     PageSectionVariants,
     Popover,
+    PopoverProps,
     Split,
     SplitItem,
     Stack,
@@ -50,6 +51,8 @@ export function AcmPage(props: { header: ReactNode; children: ReactNode; hasDraw
 export interface AcmPageHeaderProps {
     title: string
     titleTooltip?: string | React.ReactNode
+    popoverPosition?: PopoverProps['position']
+    popoverAutoWidth?: PopoverProps['hasAutoWidth']
     label?: string | React.ReactNode
     labelColor?: LabelProps['color']
     description?: string | React.ReactNode
@@ -89,7 +92,17 @@ export function AcmPageHeader(props: AcmPageHeaderProps) {
                                                     <Title headingLevel="h1">
                                                         {props.title}
                                                         {props.titleTooltip && (
-                                                            <Popover hasAutoWidth bodyContent={props.titleTooltip}>
+                                                            <Popover
+                                                                bodyContent={props.titleTooltip}
+                                                                hasAutoWidth={
+                                                                    /* istanbul ignore next */
+                                                                    props.popoverAutoWidth ?? true
+                                                                }
+                                                                position={
+                                                                    /* istanbul ignore next */
+                                                                    props.popoverPosition ?? 'right'
+                                                                }
+                                                            >
                                                                 <Button
                                                                     variant="link"
                                                                     style={{
