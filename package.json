@@ -1,5 +1,5 @@
 {
-    "name": "@open-cluster-management/ui-components",
+    "name": "@stolostron/ui-components",
     "version": "1.25.3",
     "description": "UI component library for open cluster management",
     "license": "Apache-2.0",
@@ -23,7 +23,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/open-cluster-management/ui-components.git"
+        "url": "git+https://github.com/stolostron/ui-components.git"
     },
     "dependencies": {
         "@material-ui/core": "^4.12.3",
