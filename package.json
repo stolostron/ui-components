@@ -28,8 +28,8 @@
     "dependencies": {
         "@material-ui/core": "^4.12.3",
         "@material-ui/styles": "^4.11.4",
-        "@patternfly/react-charts": "^6.43.0",
-        "@patternfly/react-core": "^4.190.0",
+        "@patternfly/react-charts": "^6.44.6",
+        "@patternfly/react-core": "^4.191.6",
         "@patternfly/react-table": "^4.37.8",
         "@react-hook/resize-observer": "^1.2.5",
         "debounce": "^1.2.1",
@@ -43,8 +43,8 @@
         "react-tag-autocomplete": "6.1.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.16.7",
-        "@babel/preset-env": "^7.16.8",
+        "@babel/core": "^7.16.10",
+        "@babel/preset-env": "^7.16.11",
         "@babel/preset-react": "^7.16.7",
         "@material-ui/styles": "^4.11.4",
         "@storybook/addon-a11y": "^6.4.13",
