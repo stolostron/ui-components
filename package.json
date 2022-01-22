@@ -43,7 +43,7 @@
         "react-tag-autocomplete": "6.1.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.16.10",
+        "@babel/core": "^7.16.12",
         "@babel/preset-env": "^7.16.11",
         "@babel/preset-react": "^7.16.7",
         "@material-ui/styles": "^4.11.4",
