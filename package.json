@@ -28,8 +28,8 @@
     "dependencies": {
         "@material-ui/core": "^4.12.3",
         "@material-ui/styles": "^4.11.4",
-        "@patternfly/react-charts": "^6.45.8",
-        "@patternfly/react-core": "^4.192.8",
+        "@patternfly/react-charts": "^6.45.12",
+        "@patternfly/react-core": "^4.192.12",
         "@patternfly/react-table": "^4.37.8",
         "@react-hook/resize-observer": "^1.2.5",
         "debounce": "^1.2.1",
