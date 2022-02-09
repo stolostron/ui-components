@@ -15,8 +15,6 @@ import {
 import { makeStyles } from '@material-ui/styles'
 import { TooltipWrapper } from '../utils'
 
-// TODO this dropdown is not accessible when the dropdown items are wrapped by the Tooltip component
-
 type Props = Omit<DropdownProps, 'toggle' | 'onSelect'>
 
 export type AcmDropdownProps = Props & {
@@ -42,6 +40,7 @@ export type AcmDropdownItems = {
     id: string
     component?: string | React.ReactNode
     isDisabled?: boolean
+    isAriaDisabled?: boolean
     tooltip?: string | React.ReactNode
     text: string | React.ReactNode
     href?: string
@@ -127,21 +126,14 @@ export function AcmDropdown(props: AcmDropdownProps) {
                 onMouseOver={props.onHover}
                 position={props.dropdownPosition || DropdownPosition.right}
                 dropdownItems={props.dropdownItems.map((item) => (
-                    <TooltipWrapper
-                        showTooltip={item.isDisabled && !!item.tooltip}
-                        tooltip={item.tooltip}
-                        key={item.id}
-                        tooltipPosition={item.tooltipPosition}
-                    >
-                        <DropdownItem {...item} onClick={() => onSelect(item.id)}>
-                            {item.text}
-                            {item.label && item.labelColor && (
-                                <Label className={classes.label} color={item.labelColor}>
-                                    {item.label}
-                                </Label>
-                            )}
-                        </DropdownItem>
-                    </TooltipWrapper>
+                    <DropdownItem key={item.id} {...item} onClick={() => onSelect(item.id)}>
+                        {item.text}
+                        {item.label && item.labelColor && (
+                            <Label className={classes.label} color={item.labelColor}>
+                                {item.label}
+                            </Label>
+                        )}
+                    </DropdownItem>
                 ))}
                 toggle={
                     props.isKebab ? (
