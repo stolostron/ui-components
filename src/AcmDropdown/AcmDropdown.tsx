@@ -39,6 +39,9 @@ export type AcmDropdownProps = Props & {
 export type AcmDropdownItems = {
     id: string
     component?: string | React.ReactNode
+    /**
+     * @deprecated Use isAriaDisabled for accessibility
+     */
     isDisabled?: boolean
     isAriaDisabled?: boolean
     tooltip?: string | React.ReactNode
@@ -46,6 +49,8 @@ export type AcmDropdownItems = {
     href?: string
     icon?: React.ReactNode
     tooltipPosition?: TooltipPosition
+    label?: string
+    labelColor?: string
 }
 
 const useStyles = makeStyles({
