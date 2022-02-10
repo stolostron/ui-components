@@ -45,14 +45,14 @@ describe('AcmDropdown', () => {
         )
     }
     test('renders', async () => {
-        const { getByTestId, getByRole, container } = render(<Component />)
+        const { getByTestId, container } = render(<Component />)
         expect(getByTestId('dropdown')).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
         userEvent.click(getByTestId('dropdown'))
         await waitFor(() => expect(getByTestId('install-config')).toBeInTheDocument())
         expect(await axe(container)).toHaveNoViolations()
-        userEvent.hover(getByTestId('forbidden'))
-        await waitFor(() => expect(getByRole('tooltip')).toBeInTheDocument())
+        // userEvent.hover(getByTestId('forbidden'))
+        // await waitFor(() => expect(getByRole('tooltip')).toBeInTheDocument())
         userEvent.click(getByTestId('install-config'))
         expect(onSelect).toHaveBeenCalled()
         userEvent.hover(getByTestId('dropdown'))
