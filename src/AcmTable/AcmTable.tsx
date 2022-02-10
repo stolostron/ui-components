@@ -105,7 +105,7 @@ export interface IAcmRowAction<T> {
     /** Action identifier */
     id: string
     /** Display a tooltip for this action */
-    tooltip?: string
+    tooltip?: string | ((item: T) => void)
     /** Inject a separator horizontal rule immediately before an action */
     addSeparator?: boolean
     /** Display an action as being disabled */
