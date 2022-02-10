@@ -126,7 +126,12 @@ export function AcmDropdown(props: AcmDropdownProps) {
                 onMouseOver={props.onHover}
                 position={props.dropdownPosition || DropdownPosition.right}
                 dropdownItems={props.dropdownItems.map((item) => (
-                    <DropdownItem key={item.id} {...item} onClick={() => onSelect(item.id)}>
+                    <DropdownItem
+                        key={item.id}
+                        {...item}
+                        tooltipProps={{ position: item.tooltipPosition }}
+                        onClick={() => onSelect(item.id)}
+                    >
                         {item.text}
                         {item.label && item.labelColor && (
                             <Label className={classes.label} color={item.labelColor}>
