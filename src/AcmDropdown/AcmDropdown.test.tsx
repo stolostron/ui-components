@@ -23,7 +23,7 @@ describe('AcmDropdown', () => {
         const dropdownItems: AcmDropdownItems[] = [
             { id: 'install-config', text: 'Install config' },
             { id: 'kubeconfig', text: 'Kubeconfig' },
-            { id: 'forbidden', text: 'Other config', isDisabled: true, tooltip: 'Forbidden' },
+            { id: 'forbidden', text: 'Other config', isAriaDisabled: true, tooltip: 'Forbidden' },
             { id: 'launch-out', text: 'Launch page', icon: <ExternalLinkAltIcon /> },
             { id: 'link item', text: 'Link item', href: 'www.google.com', component: 'a' },
             { id: 'new-feature', text: 'New feature', label: 'Technology Preview', labelColor: 'blue' },
