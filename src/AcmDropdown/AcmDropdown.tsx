@@ -116,11 +116,7 @@ export function AcmDropdown(props: AcmDropdownProps) {
     }
 
     return (
-        <TooltipWrapper
-            showTooltip={props.isDisabled && !!props.tooltip}
-            tooltip={props.tooltip}
-            tooltipPosition={props.tooltipPosition}
-        >
+        <TooltipWrapper showTooltip={!!props.tooltip} tooltip={props.tooltip} tooltipPosition={props.tooltipPosition}>
             <Dropdown
                 className={classes.button}
                 onMouseOver={props.onHover}
