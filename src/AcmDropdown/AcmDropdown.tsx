@@ -124,8 +124,8 @@ export function AcmDropdown(props: AcmDropdownProps) {
                 dropdownItems={props.dropdownItems.map((item) => (
                     <DropdownItem
                         key={item.id}
-                        {...item}
                         tooltipProps={{ position: item.tooltipPosition }}
+                        {...item}
                         onClick={() => onSelect(item.id)}
                     >
                         {item.text}
