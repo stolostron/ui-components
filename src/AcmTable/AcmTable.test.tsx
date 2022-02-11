@@ -178,7 +178,7 @@ describe('AcmTable', () => {
                               {
                                   id: 'deletedisabled',
                                   title: 'Disabled delete item',
-                                  isAriaDisabled: true,
+                                  isDisabled: true,
                                   tooltip: 'This button is disabled',
                                   click: (item: IExampleData) => {
                                       deleteAction(item)
@@ -188,7 +188,7 @@ describe('AcmTable', () => {
                               {
                                   id: 'deletetooltipped',
                                   title: 'Tooltipped delete item',
-                                  isAriaDisabled: false,
+                                  isDisabled: false,
                                   tooltip: 'This button is not disabled',
                                   click: (item: IExampleData) => {
                                       deleteAction(item)
@@ -198,7 +198,7 @@ describe('AcmTable', () => {
                               {
                                   id: 'disablednotooltip',
                                   title: 'Disabled item',
-                                  isAriaDisabled: true,
+                                  isDisabled: true,
                                   click: (item: IExampleData) => {
                                       deleteAction(item)
                                       setItems(items.filter((i) => i.uid !== item.uid))

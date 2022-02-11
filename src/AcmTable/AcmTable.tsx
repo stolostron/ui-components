@@ -785,15 +785,15 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 actions.push({
                     title: (
                         <DropdownItem
-                            isAriaDisabled={action.isAriaDisabled}
+                            isAriaDisabled={action.isDisabled}
                             tooltip={action.tooltip}
                             tooltipProps={action.tooltipProps}
-                            style={{ padding: 0, cursor: action.isAriaDisabled ? 'not-allowed' : 'pointer' }}
+                            style={{ padding: 0, cursor: action.isDisabled ? 'not-allowed' : 'pointer' }}
                         >
                             {action.title}
                         </DropdownItem>
                     ),
-                    onClick: action.isAriaDisabled
+                    onClick: action.isDisabled
                         ? undefined
                         : (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
                               if (groupFn || addSubRows) {
@@ -812,7 +812,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 // Add generic row action
                 actions.push({
                     title: action.title,
-                    isAriaDisabled: action.isAriaDisabled ? true : false,
+                    isAriaDisabled: action.isDisabled ? true : false,
                     onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
                         if (groupFn || addSubRows) {
                             const tableItem =

@@ -410,7 +410,7 @@ function commonProperties(
                           {
                               id: 'topAction',
                               title: 'Top action!',
-                              isAriaDisabled: true,
+                              isDisabled: true,
                               tooltip: 'Tooltip for row action item',
                               tooltipProps: { position: 'left' },
                               click: () => {
