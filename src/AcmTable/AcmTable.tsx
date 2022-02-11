@@ -106,11 +106,11 @@ export interface IAcmRowAction<T> {
     /** Display a tooltip for this action */
     tooltip?: string | ((item: T) => void)
     /** Additional tooltip props forwarded to tooltip component */
-    tooltipProps: React.ReactNode
+    tooltipProps?: React.ReactNode
     /** Inject a separator horizontal rule immediately before an action */
     addSeparator?: boolean
     /** Display an action as being ariaDisabled */
-    isAriaDisabled: boolean
+    isAriaDisabled?: boolean
     /** Display an action as being disabled */
     isDisabled?: boolean
     /** Visible text for action */
