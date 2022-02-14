@@ -19,7 +19,9 @@ type AcmLogWindowProps = {
 
 const useStyles = makeStyles({
     containerSelect: {
-        width: '33%',
+        width: 'auto',
+        'min-width': 'min-content',
+        'max-width': 'max-content',
     },
     logWindow: {
         color: 'var(--pf-global--palette--black-150)',
