@@ -79,4 +79,19 @@ describe('AcmDrawer', () => {
             await waitFor(() => expect(screen.queryByText('Drawer title')).toBeNull())
         })
     })
+
+    test('render inline resizable disableHeader drawerPanelNoPadding', () => {
+        render(
+            <AcmDrawer
+                title="Drawer"
+                onCloseClick={onCloseClick}
+                isExpanded={true}
+                isInline={true}
+                isResizable={true}
+                disableDrawerHead={true}
+                drawerPanelBodyHasNoPadding={true}
+            />
+        )
+        expect(screen.queryByText('Drawer')).toBeNull()
+    })
 })

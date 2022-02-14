@@ -42,11 +42,15 @@ export function AcmDrawerProvider(props: { children: React.ReactNode | React.Rea
 
 export type AcmDrawerProps = {
     isExpanded?: boolean
+    isInline?: boolean
     onCloseClick?: () => void
     title?: string | React.ReactNode
     children?: React.ReactNode | React.ReactNode[]
     panelContent?: React.ReactNode | React.ReactNode[]
     panelContentProps?: DrawerPanelContentProps
+    isResizable?: boolean
+    disableDrawerHead?: boolean
+    drawerPanelBodyHasNoPadding?: boolean
 }
 
 export function AcmDrawer(props: AcmDrawerProps) {
@@ -56,6 +60,8 @@ export function AcmDrawer(props: AcmDrawerProps) {
     /* istanbul ignore next */
     const isExpanded = props?.isExpanded ?? drawerContext?.isExpanded
     /* istanbul ignore next */
+    const isInline = props?.isInline ?? drawerContext?.isInline
+    /* istanbul ignore next */
     const onCloseClick = props?.onCloseClick ?? drawerContext?.onCloseClick
     /* istanbul ignore next */
     const title = props?.title ?? drawerContext?.title
@@ -63,9 +69,19 @@ export function AcmDrawer(props: AcmDrawerProps) {
     const panelContent = props?.panelContent ?? drawerContext?.panelContent
     /* istanbul ignore next */
     const panelContentProps = props?.panelContentProps ?? drawerContext?.panelContentProps ?? {}
+    /* istanbul ignore next */
+    const isResizable = props?.isResizable ?? drawerContext?.isResizable
+    /* istanbul ignore next */
+    const disableDrawerHead = props?.disableDrawerHead ?? drawerContext?.disableDrawerHead
+    /* istanbul ignore next */
+    const drawerPanelBodyHasNoPadding = props?.drawerPanelBodyHasNoPadding ?? drawerContext?.drawerPanelBodyHasNoPadding
 
     return (
-        <Drawer isExpanded={isExpanded} onExpand={/* istanbul ignore next */ () => drawerRef?.current?.focus()}>
+        <Drawer
+            isExpanded={isExpanded}
+            isInline={isInline}
+            onExpand={/* istanbul ignore next */ () => drawerRef?.current?.focus()}
+        >
             <DrawerContent
                 style={{ backgroundColor: 'unset' }}
                 panelContent={
@@ -77,6 +93,9 @@ export function AcmDrawer(props: AcmDrawerProps) {
                             panelContentProps={panelContentProps}
                             title={title}
                             drawerRef={drawerRef}
+                            isResizable={isResizable}
+                            disableDrawerHead={disableDrawerHead}
+                            drawerPanelBodyHasNoPadding={drawerPanelBodyHasNoPadding}
                         />
                     </AcmAlertProvider>
                 }
@@ -96,16 +115,25 @@ function AcmDrawerPanelContent(props: AcmDrawerProps & { drawerRef: React.RefObj
     }, [props.isExpanded])
 
     return (
-        <DrawerPanelContent {...props.panelContentProps}>
-            <DrawerHead>
-                <div ref={props.drawerRef} tabIndex={0} style={{ fontSize: '24px', outline: 'none' }}>
-                    {props.title}
-                </div>
-                <DrawerActions>
-                    <DrawerCloseButton onClick={props.onCloseClick} />
-                </DrawerActions>
-            </DrawerHead>
-            <DrawerPanelBody>{props.panelContent}</DrawerPanelBody>
+        <DrawerPanelContent isResizable={props.isResizable} {...props.panelContentProps}>
+            {!props.disableDrawerHead && (
+                <DrawerHead>
+                    <div ref={props.drawerRef} tabIndex={0} style={{ fontSize: '24px', outline: 'none' }}>
+                        {props.title}
+                    </div>
+                    <DrawerActions>
+                        <DrawerCloseButton onClick={props.onCloseClick} />
+                    </DrawerActions>
+                </DrawerHead>
+            )}
+            <DrawerPanelBody hasNoPadding={props.drawerPanelBodyHasNoPadding}>
+                {props.disableDrawerHead && (
+                    <DrawerActions>
+                        <DrawerCloseButton onClick={props.onCloseClick} />
+                    </DrawerActions>
+                )}
+                {props.panelContent}
+            </DrawerPanelBody>
         </DrawerPanelContent>
     )
 }
