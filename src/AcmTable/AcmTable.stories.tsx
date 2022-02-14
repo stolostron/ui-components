@@ -39,8 +39,8 @@ export default {
     excludeStories: ['TableStory', 'exampleData', 'exampleSubData'],
     argTypes: {
         'Include tableActions': { control: { type: 'boolean' }, defaultValue: true },
-        'Include rowActions': { control: { type: 'boolean' }, defaultValue: true },
-        'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: false },
+        'Include rowActions': { control: { type: 'boolean' }, defaultValue: false },
+        'Include rowActionResolver': { control: { type: 'boolean' }, defaultValue: true },
         'Include extraToolbarControls': { control: { type: 'boolean' }, defaultValue: true },
         'Use groupSummaryFn': { control: { type: 'boolean' }, defaultValue: false },
         gridBreakPoint: {
@@ -410,6 +410,9 @@ function commonProperties(
                           {
                               id: 'topAction',
                               title: 'Top action!',
+                              isDisabled: true,
+                              tooltip: 'Tooltip for row action item',
+                              tooltipProps: { position: 'left' },
                               click: () => {
                                   alert('Not implemented')
                               },

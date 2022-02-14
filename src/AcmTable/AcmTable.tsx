@@ -31,7 +31,6 @@ import {
     ToolbarFilter,
     ToolbarGroup,
     ToolbarItem,
-    Tooltip,
 } from '@patternfly/react-core'
 import { FilterIcon } from '@patternfly/react-icons'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
@@ -105,9 +104,13 @@ export interface IAcmRowAction<T> {
     /** Action identifier */
     id: string
     /** Display a tooltip for this action */
-    tooltip?: string
+    tooltip?: string | ((item: T) => void)
+    /** Additional tooltip props forwarded to tooltip component */
+    tooltipProps?: React.ReactNode
     /** Inject a separator horizontal rule immediately before an action */
     addSeparator?: boolean
+    /** Display an action as being ariaDisabled */
+    isAriaDisabled?: boolean
     /** Display an action as being disabled */
     isDisabled?: boolean
     /** Visible text for action */
@@ -781,20 +784,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             if (action.tooltip) {
                 actions.push({
                     title: (
-                        <Tooltip content={action.tooltip} zIndex={10001} position={'left'}>
-                            <AcmButton
-                                isDisabled={action.isDisabled}
-                                variant={ButtonVariant.plain}
-                                isInline={true}
-                                className={'tooltiped-action-wrapper'}
-                                style={{
-                                    padding: 0,
-                                    cursor: action.isDisabled ? 'not-allowed' : 'pointer',
-                                }}
-                            >
-                                {action.title}
-                            </AcmButton>
-                        </Tooltip>
+                        <DropdownItem
+                            isAriaDisabled={action.isDisabled}
+                            tooltip={action.tooltip}
+                            tooltipProps={action.tooltipProps}
+                            style={{ padding: 0, cursor: action.isDisabled ? 'not-allowed' : 'pointer' }}
+                        >
+                            {action.title}
+                        </DropdownItem>
                     ),
                     onClick: action.isDisabled
                         ? undefined
@@ -815,7 +812,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                 // Add generic row action
                 actions.push({
                     title: action.title,
-                    isDisabled: action.isDisabled ? true : false,
+                    isAriaDisabled: action.isDisabled ? true : false,
                     onClick: (_event: React.MouseEvent, rowId: number, rowData: IRowData) => {
                         if (groupFn || addSubRows) {
                             const tableItem =
