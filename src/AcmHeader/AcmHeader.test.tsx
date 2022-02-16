@@ -2,7 +2,7 @@
 
 /* istanbul ignore file */
 import { render } from '@testing-library/react'
-import 'isomorphic-fetch'
+import 'cross-fetch/polyfill'
 import { axe } from 'jest-axe'
 import nock from 'nock'
 import React from 'react'
