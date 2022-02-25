@@ -311,6 +311,8 @@ export interface AcmTableProps<T> {
     onSelect?: (items: T[]) => void
     page?: number
     setPage?: (page: number) => void
+    perPage?: number
+    initialSearch?: string
     search?: string
     setSearch?: (search: string) => void
     searchPlaceholder?: string
@@ -323,6 +325,7 @@ export interface AcmTableProps<T> {
     autoHidePagination?: boolean
     noBorders?: boolean
     fuseThreshold?: number
+    initialFilters?: { [key: string]: string[] }
     filters?: ITableFilter<T>[]
 }
 export function AcmTable<T>(props: AcmTableProps<T>) {
@@ -345,18 +348,19 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         direction: SortByDirection.asc,
     }
     const initialSort = props.initialSort || defaultSort
+    const initialSearch = props.initialSearch || ''
 
     // State that can come from context or component state (perPage)
     const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
     const { perPage: contextPerPage, setPerPage: contextSetPerPage } = useContext(AcmTablePaginationContext)
-    const perPage = contextPerPage || statePerPage
+    const perPage = props.perPage || contextPerPage || statePerPage
     const setPerPage = contextSetPerPage || stateSetPerPage
 
     // State that can be controlled from component props or uncontrolled from component state (page, search, sort)
     const [statePage, stateSetPage] = useState(1)
     const page = props.page || statePage
     const setPage = props.setPage || stateSetPage
-    const [stateSearch, stateSetSearch] = useState('')
+    const [stateSearch, stateSetSearch] = useState(initialSearch)
     const search = props.search || stateSearch
     const setSearch = props.setSearch || stateSetSearch
     const searchPlaceholder = props.searchPlaceholder || 'Search'
@@ -369,7 +373,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
-    const [toolbarFilterIds, setToolbarFilterIds] = useState<{ [key: string]: string[] }>({})
+    const [toolbarFilterIds, setToolbarFilterIds] = useState<{ [key: string]: string[] }>(props.initialFilters ?? {})
     const [internalSearch, setInternalSearch] = useState(search)
 
     // Dynamic gridBreakPoint
