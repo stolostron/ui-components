@@ -309,6 +309,7 @@ export interface AcmTableProps<T> {
     extraToolbarControls?: ReactNode
     emptyState?: ReactNode
     onSelect?: (items: T[]) => void
+    initialPage?: number
     page?: number
     setPage?: (page: number) => void
     initialPerPage?: number
@@ -358,7 +359,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const setPerPage = contextSetPerPage || stateSetPerPage
 
     // State that can be controlled from component props or uncontrolled from component state (page, search, sort)
-    const [statePage, stateSetPage] = useState(1)
+    const [statePage, stateSetPage] = useState(props.initialPage || 1)
     const page = props.page || statePage
     const setPage = props.setPage || stateSetPage
     const [stateSearch, stateSetSearch] = useState(initialSearch)
