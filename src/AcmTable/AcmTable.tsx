@@ -349,6 +349,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }
     const initialSort = props.initialSort || defaultSort
     const initialSearch = props.initialSearch || ''
+    const initialFilters = props.initialFilters || {}
 
     // State that can come from context or component state (perPage)
     const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
@@ -373,7 +374,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [preFilterSort, setPreFilterSort] = useState<ISortBy | undefined>(initialSort)
     const [expanded, setExpanded] = useState<{ [uid: string]: boolean }>({})
     const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({})
-    const [toolbarFilterIds, setToolbarFilterIds] = useState<{ [key: string]: string[] }>(props.initialFilters ?? {})
+    const [toolbarFilterIds, setToolbarFilterIds] = useState<{ [key: string]: string[] }>(initialFilters)
     const [internalSearch, setInternalSearch] = useState(search)
 
     // Dynamic gridBreakPoint
