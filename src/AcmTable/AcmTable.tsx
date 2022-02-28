@@ -311,7 +311,7 @@ export interface AcmTableProps<T> {
     onSelect?: (items: T[]) => void
     page?: number
     setPage?: (page: number) => void
-    perPage?: number
+    initialPerPage?: number
     initialSearch?: string
     search?: string
     setSearch?: (search: string) => void
@@ -352,9 +352,9 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const initialFilters = props.initialFilters || {}
 
     // State that can come from context or component state (perPage)
-    const [statePerPage, stateSetPerPage] = useState(DEFAULT_ITEMS_PER_PAGE)
+    const [statePerPage, stateSetPerPage] = useState(props.initialPerPage ?? DEFAULT_ITEMS_PER_PAGE)
     const { perPage: contextPerPage, setPerPage: contextSetPerPage } = useContext(AcmTablePaginationContext)
-    const perPage = props.perPage || contextPerPage || statePerPage
+    const perPage = contextPerPage || statePerPage
     const setPerPage = contextSetPerPage || stateSetPerPage
 
     // State that can be controlled from component props or uncontrolled from component state (page, search, sort)
