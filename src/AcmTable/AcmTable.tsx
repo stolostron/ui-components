@@ -30,7 +30,7 @@ import {
     ToolbarContent,
     ToolbarFilter,
     ToolbarGroup,
-    ToolbarItem,
+    ToolbarItem
 } from '@patternfly/react-core'
 import { FilterIcon } from '@patternfly/react-icons'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
@@ -52,7 +52,7 @@ import {
     TableBody,
     TableGridBreakpoint,
     TableHeader,
-    TableVariant,
+    TableVariant
 } from '@patternfly/react-table'
 import useResizeObserver from '@react-hook/resize-observer'
 import { debounce } from 'debounce'
@@ -69,7 +69,7 @@ import React, {
     useEffect,
     useLayoutEffect,
     useMemo,
-    useState,
+    useState
 } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
@@ -352,7 +352,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const initialFilters = props.initialFilters || {}
 
     // State that can come from context or component state (perPage)
-    const [statePerPage, stateSetPerPage] = useState(props.initialPerPage ?? DEFAULT_ITEMS_PER_PAGE)
+    const [statePerPage, stateSetPerPage] = useState(props.initialPerPage || DEFAULT_ITEMS_PER_PAGE)
     const { perPage: contextPerPage, setPerPage: contextSetPerPage } = useContext(AcmTablePaginationContext)
     const perPage = contextPerPage || statePerPage
     const setPerPage = contextSetPerPage || stateSetPerPage
