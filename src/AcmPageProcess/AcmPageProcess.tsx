@@ -5,7 +5,7 @@ import { EmptyState, EmptyStateBody, EmptyStateSecondaryActions, Title } from '@
 import { makeStyles } from '@material-ui/styles'
 import { AcmPageCard } from '../AcmPage/AcmPage'
 import { AcmLoadingPage } from '../AcmLoadingPage/AcmLoadingPage'
-import DestroyedImage from '../assets/resource-destroyed.svg'
+import DestroyedImage from '../assets/resource-destroyed.png'
 
 const useStyles = makeStyles({
     container: {
