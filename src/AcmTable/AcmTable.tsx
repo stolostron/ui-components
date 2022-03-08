@@ -663,13 +663,17 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
         if (groupFn && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
-                const rowKey = rows[rowIndex].props.group.toString()
-                setOpenGroups({ ...openGroups, [rowKey]: isOpen })
+                if (rows[rowIndex]) {
+                    const rowKey = rows[rowIndex].props.group.toString()
+                    setOpenGroups({ ...openGroups, [rowKey]: isOpen })
+                }
             }
         } else if (addSubRows && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
-                const rowKey = rows[rowIndex].props.key.toString()
-                setExpanded({ ...expanded, [rowKey]: isOpen })
+                if (rows[rowIndex]) {
+                    const rowKey = rows[rowIndex].props.key.toString()
+                    setExpanded({ ...expanded, [rowKey]: isOpen })
+                }
             }
         }
         return undefined
