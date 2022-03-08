@@ -30,7 +30,7 @@ import {
     ToolbarContent,
     ToolbarFilter,
     ToolbarGroup,
-    ToolbarItem,
+    ToolbarItem
 } from '@patternfly/react-core'
 import { FilterIcon } from '@patternfly/react-icons'
 import CaretDownIcon from '@patternfly/react-icons/dist/js/icons/caret-down-icon'
@@ -52,7 +52,7 @@ import {
     TableBody,
     TableGridBreakpoint,
     TableHeader,
-    TableVariant,
+    TableVariant
 } from '@patternfly/react-table'
 import useResizeObserver from '@react-hook/resize-observer'
 import { debounce } from 'debounce'
@@ -69,7 +69,7 @@ import React, {
     useEffect,
     useLayoutEffect,
     useMemo,
-    useState,
+    useState
 } from 'react'
 import { AcmButton } from '../AcmButton/AcmButton'
 import { AcmEmptyState } from '../AcmEmptyState/AcmEmptyState'
@@ -670,7 +670,20 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
         } else if (addSubRows && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
-                if (rows[rowIndex]) {
+                /* istanbul ignore next */
+                if (!rows[rowIndex] && isOpen) {
+                    // Expand all
+                    let tempExpanded = {}
+                    rows.forEach((_, idx) => {
+                        const rowKey = rows[idx]?.props?.key.toString()
+                        tempExpanded = rowKey ? { ...tempExpanded, [rowKey]: true } : tempExpanded
+                    })
+                    setExpanded(tempExpanded)
+                } else if (!rows[rowIndex] && !isOpen) {
+                    // Collapse all
+                    setExpanded({})
+                } else if (rows[rowIndex]) {
+                    // Expand/collpase single row
                     const rowKey = rows[rowIndex].props.key.toString()
                     setExpanded({ ...expanded, [rowKey]: isOpen })
                 }
