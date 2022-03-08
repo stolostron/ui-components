@@ -663,13 +663,43 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
         if (groupFn && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
-                const rowKey = rows[rowIndex].props.group.toString()
-                setOpenGroups({ ...openGroups, [rowKey]: isOpen })
+                /* istanbul ignore next */
+                if (!rows[rowIndex] && isOpen) {
+                    // Open all
+                    let tempOpenGrouops = {}
+                    rows.forEach((_, idx) => {
+                        const rowKey = rows[idx]?.props?.group.toString()
+                        tempOpenGrouops = rowKey ? { ...tempOpenGrouops, [rowKey]: true } : tempOpenGrouops
+                    })
+                    setOpenGroups(tempOpenGrouops)
+                } else if (!rows[rowIndex] && !isOpen) {
+                    // Close all
+                    setOpenGroups({})
+                } else if (rows[rowIndex]) {
+                    // Open/close single row
+                    const rowKey = rows[rowIndex].props.group.toString()
+                    setOpenGroups({ ...expanded, [rowKey]: isOpen })
+                }
             }
         } else if (addSubRows && addedSubRowCount) {
             return (_event, rowIndex, isOpen) => {
-                const rowKey = rows[rowIndex].props.key.toString()
-                setExpanded({ ...expanded, [rowKey]: isOpen })
+                /* istanbul ignore next */
+                if (!rows[rowIndex] && isOpen) {
+                    // Expand all
+                    let tempExpanded = {}
+                    rows.forEach((_, idx) => {
+                        const rowKey = rows[idx]?.props?.key.toString()
+                        tempExpanded = rowKey ? { ...tempExpanded, [rowKey]: true } : tempExpanded
+                    })
+                    setExpanded(tempExpanded)
+                } else if (!rows[rowIndex] && !isOpen) {
+                    // Collapse all
+                    setExpanded({})
+                } else if (rows[rowIndex]) {
+                    // Expand/collpase single row
+                    const rowKey = rows[rowIndex].props.key.toString()
+                    setExpanded({ ...expanded, [rowKey]: isOpen })
+                }
             }
         }
         return undefined
