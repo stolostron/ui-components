@@ -10,6 +10,7 @@ import {
     MinusCircleIcon,
     UnknownIcon,
     ResourcesEmptyIcon,
+    RunningIcon,
     FileAltIcon,
 } from '@patternfly/react-icons'
 import React from 'react'
@@ -42,6 +43,7 @@ export enum StatusType {
     'sleep' = 'sleep',
     'empty' = 'empty',
     'draft' = 'draft',
+    'running' = 'running',
 }
 
 export function AcmInlineStatus(props: { type: StatusType; status: string | React.ReactNode; popover?: PopoverProps }) {
@@ -89,6 +91,8 @@ function StatusIcon(props: { type: StatusType }) {
             return <ResourcesEmptyIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
         case StatusType.draft:
             return <FileAltIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />
+        case StatusType.running:
+            return <RunningIcon className={classes.iconMargin} color="var(--pf-global--success-color--100)" />
         case 'unknown':
         default:
             return <UnknownIcon className={classes.iconMargin} color="var(--pf-global--disabled-color--100)" />

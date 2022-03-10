@@ -464,7 +464,7 @@ function getProviderForItem(item: IExampleData) {
 
 function getAcmInlineStatusForItem(item: IExampleData) {
     const chr = item.last_name.charCodeAt(0)
-    switch (chr % 5) {
+    switch (chr % 6) {
         case 0:
             return <AcmInlineStatus type={StatusType.healthy} status="Healthy" />
         case 1:
@@ -473,6 +473,8 @@ function getAcmInlineStatusForItem(item: IExampleData) {
             return <AcmInlineStatus type={StatusType.warning} status="Warning" />
         case 3:
             return <AcmInlineStatus type={StatusType.danger} status="Danger" />
+        case 4:
+            return <AcmInlineStatus type={StatusType.running} status="Running" />
         default:
             return <AcmInlineStatus type={StatusType.progress} status="Progressing" />
     }
