@@ -10,6 +10,7 @@ describe('AcmInlineStatusGroup', () => {
         const { getByText, getAllByRole, container } = render(
             <AcmInlineStatusGroup
                 healthy={3}
+                running={8}
                 warning={2}
                 danger={1}
                 progress={4}
@@ -28,6 +29,7 @@ describe('AcmInlineStatusGroup', () => {
         expect(getByText(5)).toBeInTheDocument()
         expect(getByText(6)).toBeInTheDocument()
         expect(getByText(7)).toBeInTheDocument()
+        expect(getByText(8)).toBeInTheDocument()
         expect(getByText(0)).toBeInTheDocument()
         expect(await axe(container)).toHaveNoViolations()
     })

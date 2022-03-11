@@ -10,6 +10,7 @@ export default {
     argTypes: {
         showZeroes: { type: 'boolean' },
         healthy: { type: 'number' },
+        running: { type: 'number' },
         warning: { type: 'number' },
         danger: { type: 'number' },
         progress: { type: 'number' },
@@ -32,6 +33,7 @@ export const InlineStatusGroup = (args) => {
 InlineStatusGroup.args = {
     showZeroes: true,
     healthy: 3,
+    running: 8,
     warning: 2,
     danger: 1,
     progress: 4,
