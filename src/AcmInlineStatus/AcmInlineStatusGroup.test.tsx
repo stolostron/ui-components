@@ -21,7 +21,7 @@ describe('AcmInlineStatusGroup', () => {
                 showZeroes
             />
         )
-        expect(getAllByRole('listitem').length).toEqual(8)
+        expect(getAllByRole('listitem').length).toEqual(9)
         expect(getByText(1)).toBeInTheDocument()
         expect(getByText(2)).toBeInTheDocument()
         expect(getByText(3)).toBeInTheDocument()
