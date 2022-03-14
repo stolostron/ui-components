@@ -10,11 +10,13 @@ import {
     UnknownIcon,
     InProgressIcon,
     AsleepIcon,
+    RunningIcon,
 } from '@patternfly/react-icons'
 import { BrokenLinkIcon } from '../AcmIcons/BrokenLinkIcon'
 
 type AcmInlineStatusGroupProps = {
     healthy?: number
+    running?: number
     warning?: number
     progress?: number
     danger?: number
@@ -40,6 +42,11 @@ export function AcmInlineStatusGroup(props: AcmInlineStatusGroupProps) {
             {show(props.healthy) && (
                 <Label color="green" icon={<CheckCircleIcon />}>
                     {props.healthy}
+                </Label>
+            )}
+            {show(props.running) && (
+                <Label color="green" icon={<RunningIcon />}>
+                    {props.running}
                 </Label>
             )}
             {show(props.progress) && (
