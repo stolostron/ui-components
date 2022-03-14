@@ -138,7 +138,7 @@ export interface IAcmTableDropdownAction<T> {
     id: string
     title: string | React.ReactNode
     click: (items: T[]) => void
-    isDisabled?: boolean
+    isDisabled?: ((items: T[]) => boolean) | boolean
     tooltip?: string | React.ReactNode
     variant: 'dropdown-action'
 }
@@ -150,7 +150,7 @@ export interface IAcmTableBulkAction<T> {
     id: string
     title: string | React.ReactNode
     click: (items: T[]) => void
-    isDisabled?: boolean
+    isDisabled?: ((items: T[]) => boolean) | boolean
     tooltip?: string | React.ReactNode
     variant: 'bulk-action'
 }
@@ -1349,7 +1349,9 @@ function TableActionsDropdown<T>(props: {
                                 setOpen(false)
                                 action.click(items!.filter((item) => selections[keyFn(item)]))
                             }}
-                            isDisabled={action.isDisabled}
+                            isDisabled={
+                                typeof action.isDisabled === 'boolean' ? action.isDisabled : action.isDisabled?.(items)
+                            }
                             tooltip={action.tooltip}
                         >
                             {action.title}
@@ -1364,7 +1366,12 @@ function TableActionsDropdown<T>(props: {
                                 setOpen(false)
                                 action.click(items!.filter((item) => selections[keyFn(item)]))
                             }}
-                            isDisabled={action.isDisabled || (selections && Object.keys(selections).length === 0)}
+                            isDisabled={
+                                (typeof action.isDisabled === 'boolean'
+                                    ? action.isDisabled
+                                    : action.isDisabled?.(items)) ||
+                                (selections && Object.keys(selections).length === 0)
+                            }
                             tooltip={action.tooltip}
                         >
                             {action.title}
