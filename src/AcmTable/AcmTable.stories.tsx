@@ -457,6 +457,8 @@ function getProviderForItem(item: IExampleData) {
             return Provider.other
         case 6:
             return Provider.openstack
+        case 7:
+            return Provider.alibaba
         default:
             return Provider.vmware
     }
