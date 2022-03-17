@@ -25,7 +25,7 @@ export enum Provider {
 
 export const ProviderShortTextMap = {
     [Provider.redhatcloud]: 'OCM',
-    [Provider.redhatvirtualization]: 'RHV',
+    [Provider.redhatvirtualization]: 'Red Hat Virtualization',
     [Provider.ansible]: 'ANS',
     [Provider.openstack]: 'OpenStack',
     [Provider.aws]: 'Amazon',
