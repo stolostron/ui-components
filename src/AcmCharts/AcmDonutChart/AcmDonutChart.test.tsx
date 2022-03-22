@@ -1,8 +1,10 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
 import { render } from '@testing-library/react'
+import { createBrowserHistory } from 'history'
 import { axe } from 'jest-axe'
+import React from 'react'
+import { Router } from 'react-router-dom'
 import { AcmDonutChart } from './AcmDonutChart'
 
 const complianceData = [
@@ -22,11 +24,13 @@ const podData = [
 describe('AcmDonutChart', () => {
     test('renders', () => {
         const { getByRole, getByTestId } = render(
-            <AcmDonutChart
-                title="Cluster compliance"
-                description="Overview of policy compliance status"
-                data={complianceData}
-            />
+            <Router history={createBrowserHistory()}>
+                <AcmDonutChart
+                    title="Cluster compliance"
+                    description="Overview of policy compliance status"
+                    data={complianceData}
+                />
+            </Router>
         )
         expect(getByTestId('cluster-compliance-chart')).toBeInTheDocument()
         expect(getByRole('link')).toBeInTheDocument()
@@ -34,14 +38,18 @@ describe('AcmDonutChart', () => {
 
     test('renders skeleton', () => {
         const { queryByText } = render(
-            <AcmDonutChart loading={true} title="Cluster compliance" description="Policy compliance" data={[]} />
+            <Router history={createBrowserHistory()}>
+                <AcmDonutChart loading={true} title="Cluster compliance" description="Policy compliance" data={[]} />
+            </Router>
         )
         expect(queryByText('Cluster compliance')).toBeInTheDocument()
     })
 
     test('renders with zero values state', () => {
         const { queryByRole, getByText } = render(
-            <AcmDonutChart title="Some title" description="Some description" data={zeroData} />
+            <Router history={createBrowserHistory()}>
+                <AcmDonutChart title="Some title" description="Some description" data={zeroData} />
+            </Router>
         )
         expect(getByText('0%')).toBeInTheDocument()
         expect(getByText('0 Key1')).toBeInTheDocument()
@@ -51,22 +59,26 @@ describe('AcmDonutChart', () => {
 
     test('has zero accessibility defects', async () => {
         const { container } = render(
-            <AcmDonutChart title="Pods" description="Overview of pod count and status" data={podData} />
+            <Router history={createBrowserHistory()}>
+                <AcmDonutChart title="Pods" description="Overview of pod count and status" data={podData} />
+            </Router>
         )
         expect(await axe(container)).toHaveNoViolations()
     })
 
     test('alternate donut title text', async () => {
         const { queryByText } = render(
-            <AcmDonutChart
-                title="Pods"
-                description="Overview of pod count and status"
-                data={podData}
-                donutLabel={{
-                    title: '100',
-                    subTitle: 'total pods',
-                }}
-            />
+            <Router history={createBrowserHistory()}>
+                <AcmDonutChart
+                    title="Pods"
+                    description="Overview of pod count and status"
+                    data={podData}
+                    donutLabel={{
+                        title: '100',
+                        subTitle: 'total pods',
+                    }}
+                />
+            </Router>
         )
         expect(queryByText('total pods')).toBeInTheDocument()
     })
