@@ -1,9 +1,10 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import { Card, CardTitle, Badge, Skeleton } from '@patternfly/react-core'
-import { ChartDonut, ChartLabel, ChartLegend } from '@patternfly/react-charts'
 import { makeStyles } from '@material-ui/styles'
+import { ChartDonut, ChartLabel, ChartLegend } from '@patternfly/react-charts'
+import { Badge, Card, CardTitle, Skeleton } from '@patternfly/react-core'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { useViewport } from '../AcmChartGroup'
 
 type StyleProps = {
@@ -64,9 +65,9 @@ const LegendLabel = ({ ...props }: { datum?: Data }) => {
     /*istanbul ignore next */
     const link = props.datum?.link
     return link ? (
-        <a href={link}>
+        <Link to={link}>
             <ChartLabel {...props} />
-        </a>
+        </Link>
     ) : (
         <ChartLabel {...props} />
     )
