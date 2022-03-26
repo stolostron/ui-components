@@ -1,6 +1,6 @@
 {
     "name": "@stolostron/ui-components",
-    "version": "1.57.0",
+    "version": "1.58.0",
     "description": "UI component library for open cluster management",
     "license": "Apache-2.0",
     "main": "lib/index.js",
