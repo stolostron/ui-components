@@ -20,6 +20,7 @@ import RedHatIcon from './RedHatIcon'
 import VMWareIcon from './VMWareIcon'
 import IBMLogoIcon from './IBMLogoIcon'
 import HybridIcon from './HybridIcon'
+import AlibabaIcon from './AlibabaIcon'
 
 export enum AcmIconVariant {
     template = 'template',
@@ -40,6 +41,7 @@ export enum AcmIconVariant {
     openNewTab = 'opennewtab',
     ansible = 'ansible',
     hybrid = 'hybrid',
+    alibaba = 'alibaba',
 }
 
 // https://www.patternfly.org/v4/guidelines/icons
@@ -82,6 +84,8 @@ export function AcmIcon(props: { icon: AcmIconVariant } & SVGIconProps) {
             return <IBMLogoIcon {...props} />
         case AcmIconVariant.hybrid:
             return <HybridIcon {...props} />
+        case AcmIconVariant.alibaba:
+            return <AlibabaIcon {...props} />
         /* istanbul ignore next */
         default:
             return <Fragment />
