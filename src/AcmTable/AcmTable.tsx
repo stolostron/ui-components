@@ -658,7 +658,7 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
             }
         })
         return { rows: newRows, addedSubRowCount }
-    }, [selected, paged, columns, expanded, openGroups, keyFn])
+    }, [JSON.stringify(selected), paged, columns, expanded, openGroups, keyFn])
 
     const onCollapse = useMemo<((_event: unknown, rowIndex: number, isOpen: boolean) => void) | undefined>(() => {
         if (groupFn && addedSubRowCount) {
