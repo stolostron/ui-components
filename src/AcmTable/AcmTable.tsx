@@ -458,13 +458,14 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
         setSelected((selected) => {
             const newSelected = (items ?? []).reduce((newSelected, item) => {
                 const itemKey = keyFn(item)
+                /* istanbul ignore if */
                 if (selected[itemKey]) {
                     newSelected[itemKey] = true
                 }
                 return newSelected
             }, {} as { [uid: string]: boolean })
             if (Object.keys(newSelected).length !== Object.keys(selected).length) {
-                // Only update the selected object to the new object if it changed
+                // Only update the selected object to the newSelected object if it changed
                 selected = newSelected
             }
             return selected
