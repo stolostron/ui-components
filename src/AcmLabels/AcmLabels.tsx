@@ -1,7 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { Tooltip } from '@patternfly/react-core'
-import React, { Fragment, useCallback, useMemo, useState } from 'react'
+import React, { Fragment, KeyboardEvent, useCallback, useMemo, useState } from 'react'
 import './AcmLabels.css'
 
 export function AcmLabels(props: {
@@ -57,7 +57,7 @@ export function AcmLabels(props: {
     const onClick = useCallback(() => setShowMore((showMore) => !showMore), [])
 
     /* istanbul ignore next */
-    const onKeyPress = useCallback((e) => {
+    const onKeyPress = useCallback((e: KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
             setShowMore(!showMore)
             e.preventDefault()

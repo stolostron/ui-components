@@ -104,9 +104,9 @@ export interface IAcmRowAction<T> {
     /** Action identifier */
     id: string
     /** Display a tooltip for this action */
-    tooltip?: string | ((item: T) => void)
+    tooltip?: string | ((item: T) => string)
     /** Additional tooltip props forwarded to tooltip component */
-    tooltipProps?: React.ReactNode
+    tooltipProps?: ReactNode
     /** Inject a separator horizontal rule immediately before an action */
     addSeparator?: boolean
     /** Display an action as being ariaDisabled */
@@ -114,7 +114,7 @@ export interface IAcmRowAction<T> {
     /** Display an action as being disabled */
     isDisabled?: boolean
     /** Visible text for action */
-    title: string | React.ReactNode
+    title: string | ReactNode
     /** Function for onClick() action */
     click: (item: T) => void
 }
@@ -383,8 +383,8 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     const [exactBreakpoint, setExactBreakpoint] = useState<number | undefined>()
     const [outerDiv, setOuterDiv] = useState<HTMLDivElement | null>(null)
     const [tableDiv, setTableDiv] = useState<HTMLDivElement | null>(null)
-    const outerDivRef = useCallback((elem) => setOuterDiv(elem), [])
-    const tableDivRef = useCallback((elem) => setTableDiv(elem), [])
+    const outerDivRef = useCallback((elem: HTMLDivElement) => setOuterDiv(elem), [])
+    const tableDivRef = useCallback((elem: HTMLDivElement) => setTableDiv(elem), [])
 
     /* istanbul ignore next */
     const updateBreakpoint = (width: number, tableWidth: number) => {
@@ -829,7 +829,10 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
                     title: (
                         <DropdownItem
                             isAriaDisabled={action.isDisabled}
-                            tooltip={action.tooltip}
+                            tooltip={
+                                /* istanbul ignore next */
+                                typeof action.tooltip !== 'function' ? action.tooltip : undefined
+                            }
                             tooltipProps={action.tooltipProps}
                             style={{ padding: 0, cursor: action.isDisabled ? 'not-allowed' : 'pointer' }}
                         >
