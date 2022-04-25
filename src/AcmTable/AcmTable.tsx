@@ -455,14 +455,20 @@ export function AcmTable<T>(props: AcmTableProps<T>) {
     }, [props.initialSelectedItems])
 
     useLayoutEffect(() => {
-        const newSelected: { [uid: string]: boolean } = {}
-        /* istanbul ignore next */
-        Object.keys(selected)
-            .filter((key) => props.items?.find((item) => keyFn(item) === key))
-            .forEach((key) => {
-                newSelected[key] = selected[key]
-            })
-        setSelected(newSelected)
+        setSelected((selected) => {
+            const newSelected = (items ?? []).reduce((newSelected, item) => {
+                const itemKey = keyFn(item)
+                if (selected[itemKey]) {
+                    newSelected[itemKey] = true
+                }
+                return newSelected
+            }, {} as { [uid: string]: boolean })
+            if (Object.keys(newSelected).length !== Object.keys(selected).length) {
+                // Only update the selected object to the new object if it changed
+                selected = newSelected
+            }
+            return selected
+        })
     }, [items])
 
     const { tableItems, totalCount } = useMemo<{
