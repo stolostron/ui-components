@@ -2,17 +2,6 @@
 
 import React, { useState } from 'react'
 import { Card, CardBody, CardExpandableContent, CardHeader, CardTitle } from '@patternfly/react-core'
-import { makeStyles } from '@material-ui/styles'
-
-const useStyles = makeStyles({
-    header: { 'border-bottom': '1px solid rgba(0,0,0,0.1)', cursor: 'pointer' },
-    body: {
-        padding: '32px 24px',
-        '& > .pf-c-card__body': {
-            padding: '0px',
-        },
-    },
-})
 
 const onToggle = (acmCardID: string, open: boolean, setOpen: (open: boolean) => void) => {
     setOpen(!open)
@@ -33,11 +22,9 @@ export function AcmExpandableCard(props: {
     localStorage.getItem(acmCardID) ?? localStorage.setItem(acmCardID, 'show')
 
     const [open, setOpen] = useState<boolean>(localStorage.getItem(acmCardID) === 'show')
-    const classes = useStyles()
     return (
         <Card id={props.id} className={props.className} isExpanded={open}>
             <CardHeader
-                className={classes.header}
                 onExpand={() => onToggle(acmCardID, open, setOpen)}
                 onClick={() => onToggle(acmCardID, open, setOpen)}
                 toggleButtonProps={{
@@ -48,7 +35,7 @@ export function AcmExpandableCard(props: {
             >
                 <CardTitle>{props.title}</CardTitle>
             </CardHeader>
-            <CardExpandableContent className={classes.body}>
+            <CardExpandableContent>
                 <CardBody>{props.children}</CardBody>
             </CardExpandableContent>
         </Card>
