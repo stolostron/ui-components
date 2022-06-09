@@ -55,12 +55,12 @@ export function AcmLabels(props: {
         <LabelGroup numLabels={labels.length} expandedText={expandedText} collapsedText={collapsedText}>
             {labels.map((label) => (
                 <Label key={label}>
-                    <Truncate content={label} />
+                    <Truncate content={label} style={{ minWidth: 0 }} />
                 </Label>
             ))}
             {hidden.map((label) => (
                 <Label key={label}>
-                    <Truncate content={label} />
+                    <Truncate content={label} style={{ minWidth: 0 }} />
                 </Label>
             ))}
         </LabelGroup>
