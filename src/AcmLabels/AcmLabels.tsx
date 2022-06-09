@@ -39,10 +39,20 @@ export function AcmLabels(props: {
             .map((key: string) => (labelsRecord[key] ? `${key}=${labelsRecord[key]}` : `${key}`))
     }, [labelsRecord, props.collapse])
 
-    if (props.labels === undefined) return <Fragment></Fragment>
+    /* istanbul ignore next */
+    let collapsedText = props.collapsedText ?? `${hidden.length} more`
+
+    if (hidden.length > 0 && labels.length === 0 && props.allCollapsedText) {
+        collapsedText = props.allCollapsedText
+    }
+
+    /* istanbul ignore next */
+    const expandedText = props.expandedText ?? 'Show less'
+
+    if (props.labels === undefined) return <Fragment />
 
     return (
-        <LabelGroup numLabels={labels.length}>
+        <LabelGroup numLabels={labels.length} expandedText={expandedText} collapsedText={collapsedText}>
             {labels.map((label) => (
                 <Label key={label}>
                     <Truncate content={label} />
