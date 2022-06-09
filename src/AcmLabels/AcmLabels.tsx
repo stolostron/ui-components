@@ -1,8 +1,7 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { Tooltip } from '@patternfly/react-core'
-import React, { Fragment, useCallback, useMemo, useState } from 'react'
-import './AcmLabels.css'
+import { Label, LabelGroup, Truncate } from '@patternfly/react-core'
+import React, { Fragment, useMemo } from 'react'
 
 export function AcmLabels(props: {
     labels?: string[] | Record<string, string>
@@ -40,10 +39,6 @@ export function AcmLabels(props: {
             .map((key: string) => (labelsRecord[key] ? `${key}=${labelsRecord[key]}` : `${key}`))
     }, [labelsRecord, props.collapse])
 
-    if (props.labels === undefined) return <Fragment></Fragment>
-
-    const [showMore, setShowMore] = useState(false)
-
     /* istanbul ignore next */
     let collapsedText = props.collapsedText ?? `${hidden.length} more`
 
@@ -54,40 +49,20 @@ export function AcmLabels(props: {
     /* istanbul ignore next */
     const expandedText = props.expandedText ?? 'Show less'
 
-    const onClick = useCallback(() => setShowMore((showMore) => !showMore), [])
-
-    /* istanbul ignore next */
-    const onKeyPress = useCallback((e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            setShowMore(!showMore)
-            e.preventDefault()
-        }
-    }, [])
+    if (props.labels === undefined) return <Fragment />
 
     return (
-        <span className="acm-labels">
+        <LabelGroup numLabels={labels.length} expandedText={expandedText} collapsedText={collapsedText}>
             {labels.map((label) => (
-                <Tooltip key={label} content={label}>
-                    <span className="acm-label">{label}</span>
-                </Tooltip>
+                <Label key={label}>
+                    <Truncate content={label} style={{ minWidth: 0 }} />
+                </Label>
             ))}
-            {hidden.length > 0 &&
-                showMore &&
-                hidden.map((label) => (
-                    <Tooltip key={label} content={label}>
-                        <span className="acm-label">{label}</span>
-                    </Tooltip>
-                ))}
-            {hidden.length > 0 && showMore && (
-                <span className="acm-label-button" tabIndex={0} onClick={onClick} onKeyPress={onKeyPress}>
-                    {expandedText}
-                </span>
-            )}
-            {hidden.length > 0 && !showMore && (
-                <span className="acm-label-button" tabIndex={0} onClick={onClick} onKeyPress={onKeyPress}>
-                    {collapsedText}
-                </span>
-            )}
-        </span>
+            {hidden.map((label) => (
+                <Label key={label}>
+                    <Truncate content={label} style={{ minWidth: 0 }} />
+                </Label>
+            ))}
+        </LabelGroup>
     )
 }
