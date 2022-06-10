@@ -1,7 +1,21 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
 import { makeStyles } from '@material-ui/styles'
-import { Card, CardActions, CardActionsProps, CardBody, CardFooter, CardHeader, CardHeaderMain, CardProps, CardTitle, Dropdown, DropdownItem, KebabToggle, Skeleton } from '@patternfly/react-core'
+import {
+    Card,
+    CardActions,
+    CardActionsProps,
+    CardBody,
+    CardFooter,
+    CardHeader,
+    CardHeaderMain,
+    CardProps,
+    CardTitle,
+    Dropdown,
+    DropdownItem,
+    KebabToggle,
+    Skeleton,
+} from '@patternfly/react-core'
 import React, { ReactNode, useState } from 'react'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 
