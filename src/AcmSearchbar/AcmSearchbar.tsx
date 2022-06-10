@@ -46,6 +46,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
         <div className={'searchbar-container'}>
             <ReactTags
                 ref={reactTags}
+                ariaLabelText={'search-bar'}
                 placeholderText={''}
                 tags={searchbarTags}
                 suggestions={
