@@ -1,23 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React, { ReactNode, useState } from 'react'
-import {
-    Card,
-    CardHeader,
-    CardHeaderMain,
-    CardActions,
-    CardTitle,
-    CardBody,
-    CardFooter,
-    CardProps,
-    Dropdown,
-    DropdownItem,
-    KebabToggle,
-    Skeleton,
-    CardActionsProps,
-} from '@patternfly/react-core'
-import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 import { makeStyles } from '@material-ui/styles'
+import { Card, CardActions, CardActionsProps, CardBody, CardFooter, CardHeader, CardHeaderMain, CardProps, CardTitle, Dropdown, DropdownItem, KebabToggle, Skeleton } from '@patternfly/react-core'
+import React, { ReactNode, useState } from 'react'
+import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
 
 type CardHeaderActions = {
     text: string
@@ -87,7 +73,6 @@ const useStyles = makeStyles({
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
         lineHeight: '1.4',
-        color: 'var(--pf-global--palette--black-700)',
         overflowWrap: 'anywhere',
         display: '-webkit-box',
         '-webkit-line-clamp': '4',

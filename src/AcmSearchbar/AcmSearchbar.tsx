@@ -4,11 +4,11 @@
 // using the following line to override for time being
 declare module 'react-tag-autocomplete'
 
-import React, { useState, useEffect } from 'react'
-import ReactTags from 'react-tag-autocomplete'
-import CloseIcon from '@patternfly/react-icons/dist/js/icons/times-circle-icon'
+import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
+import React, { useEffect, useState } from 'react'
+import ReactTags from 'react-tag-autocomplete'
 import './AcmSearchbar.css'
 import { convertStringToTags } from './helper'
 
@@ -46,7 +46,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
         <div className={'searchbar-container'}>
             <ReactTags
                 ref={reactTags}
-                placeholderText={currentQuery === '' ? 'Search items' : ''}
+                placeholderText={''}
                 tags={searchbarTags}
                 suggestions={
                     loadingSuggestions !== true ? suggestions : [{ id: 'loading', name: 'Loading...', disabled: true }]
@@ -130,7 +130,7 @@ export function AcmSearchbar(props: AcmSearchbarProps) {
                 delimiters={[' ', ':', ',', 'Enter']}
                 maxSuggestionsLength={Number.MAX_SAFE_INTEGER}
             />
-            <CloseIcon
+            <TimesIcon
                 id={'clear-all-search-tags-button'}
                 className={'clear-button'}
                 onClick={() => {
