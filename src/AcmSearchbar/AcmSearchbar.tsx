@@ -4,9 +4,9 @@
 // using the following line to override for time being
 declare module 'react-tag-autocomplete'
 
-import TimesIcon from '@patternfly/react-icons/dist/esm/icons/times-icon'
 import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon'
 import SearchIcon from '@patternfly/react-icons/dist/js/icons/search-icon'
+import TimesIcon from '@patternfly/react-icons/dist/js/icons/times-icon'
 import React, { useEffect, useState } from 'react'
 import ReactTags from 'react-tag-autocomplete'
 import './AcmSearchbar.css'
