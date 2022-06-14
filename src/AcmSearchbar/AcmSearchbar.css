@@ -169,6 +169,7 @@
     text-decoration: underline;
     background: none;
     font-weight: 600;
+    color: var(--pf-global--primary-color--100);
 }
 .react-tags__suggestions li:hover {
     cursor: pointer;
