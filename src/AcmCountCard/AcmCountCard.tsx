@@ -1,23 +1,23 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React, { ReactNode, useState } from 'react'
+import { makeStyles } from '@material-ui/styles'
 import {
     Card,
-    CardHeader,
-    CardHeaderMain,
     CardActions,
-    CardTitle,
+    CardActionsProps,
     CardBody,
     CardFooter,
+    CardHeader,
+    CardHeaderMain,
     CardProps,
+    CardTitle,
     Dropdown,
     DropdownItem,
     KebabToggle,
     Skeleton,
-    CardActionsProps,
 } from '@patternfly/react-core'
+import React, { ReactNode, useState } from 'react'
 import { AcmIcon, AcmIconVariant } from '../AcmIcons/AcmIcons'
-import { makeStyles } from '@material-ui/styles'
 
 type CardHeaderActions = {
     text: string
@@ -87,7 +87,6 @@ const useStyles = makeStyles({
     headerDescription: {
         fontSize: 'var(--pf-global--FontSize--sm)',
         lineHeight: '1.4',
-        color: 'var(--pf-global--palette--black-700)',
         overflowWrap: 'anywhere',
         display: '-webkit-box',
         '-webkit-line-clamp': '4',
