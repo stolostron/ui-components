@@ -1,10 +1,10 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React from 'react'
-import { Grid, GridItem, Skeleton, gridItemSpanValueShape } from '@patternfly/react-core'
-import { ExclamationCircleIcon } from '@patternfly/react-icons'
-import { AcmExpandableCard } from '../AcmExpandable'
 import { makeStyles } from '@material-ui/styles'
+import { Grid, GridItem, gridItemSpanValueShape, Skeleton } from '@patternfly/react-core'
+import { ExclamationCircleIcon } from '@patternfly/react-icons'
+import React from 'react'
+import { AcmExpandableCard } from '../AcmExpandable'
 
 const useStyles = makeStyles({
     section: {
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
         marginRight: '8px',
     },
     description: {
-        color: 'var(--pf-global--disabled-color--100)',
+        opacity: 0.7,
         marginTop: '8px',
         fontSize: '14px',
     },
