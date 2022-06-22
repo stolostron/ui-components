@@ -155,8 +155,13 @@ const SummarySection = (props: SummarySectionProps) => {
             id={`${props.description.toLowerCase().replace(/\s+/g, '-')}-summary`}
         >
             {props.isLoading ? (
-                <CardBody>
-                    <Skeleton width="50px" fontSize="3xl" className={classes.divider} />
+                <CardBody className={classes.cardBody}>
+                    <Skeleton
+                        id={`loading-${props.description}`}
+                        width="50px"
+                        fontSize="3xl"
+                        className={classes.divider}
+                    />
                     <Skeleton width="100px" fontSize="sm" />
                 </CardBody>
             ) : (

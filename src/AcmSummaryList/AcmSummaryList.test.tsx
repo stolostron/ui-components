@@ -31,6 +31,24 @@ describe('AcmSummaryList', () => {
         expect(queryByText('Summary')).toBeInTheDocument()
     })
 
+    test('renders individual list item skeleton component', () => {
+        const list = [
+            { isPrimary: true, description: 'Applications', count: 3, href: '/search?query=apps' },
+            { description: 'Clusters', count: 2, href: '/search?query=clusters' },
+            { description: 'Kubernetes type', count: 1 },
+            { description: 'Region', count: 1 },
+            { description: 'Nodes', count: 3, href: '/search?query=nodes' },
+            { description: 'Pods', count: 3, href: '/search?query=pods', isLoading: true },
+        ]
+        const { getByTestId } = render(
+            <MemoryRouter>
+                <AcmSummaryList title="Summary" list={list} />
+            </MemoryRouter>
+        )
+        expect(getByTestId('applications-summary')).toBeInTheDocument()
+        expect(getByTestId('loading-Pods')).toBeInTheDocument()
+    })
+
     test('has zero accessibility defects', async () => {
         const { container } = render(
             <MemoryRouter>
