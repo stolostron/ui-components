@@ -1,9 +1,9 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React, { useState } from 'react'
-import { MemoryRouter } from 'react-router-dom'
 import { Button, ButtonVariant, OptionsMenu, OptionsMenuItem, OptionsMenuToggleWithText } from '@patternfly/react-core'
 import { CaretDownIcon } from '@patternfly/react-icons'
+import React, { useState } from 'react'
+import { MemoryRouter } from 'react-router-dom'
 import { AcmSummaryList } from './AcmSummaryList'
 
 export default {
@@ -18,7 +18,7 @@ export const SummaryList = () => {
         { description: 'Kubernetes type', count: 1 },
         { description: 'Region', count: 1 },
         { description: 'Nodes', count: 3, href: '/search?query=nodes' },
-        { description: 'Pods', count: 3, href: '/search?query=pods' },
+        { description: 'Pods', count: 3, href: '/search?query=pods', isLoading: true },
     ]
     return (
         <MemoryRouter>

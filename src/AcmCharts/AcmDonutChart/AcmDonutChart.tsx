@@ -39,18 +39,15 @@ const useStyles = makeStyles({
     chartContainer: {
         maxWidth: '376px',
     },
+    skeleton: {
+        margin: '0 0 20px 35px',
+    },
 })
 
-export const loadingDonutChart = (title: string) => {
-    const useStyles = makeStyles({
-        chartContainer: {
-            maxWidth: '376px',
-        },
-        skeleton: {
-            margin: '0 0 20px 35px',
-        },
-    })
-    const classes = useStyles()
+export const loadingDonutChart = (
+    title: string,
+    classes: Record<'card' | 'cardTitle' | 'chartContainer' | 'skeleton', string>
+) => {
     return (
         <Card>
             <CardTitle>{title}</CardTitle>
@@ -105,7 +102,7 @@ export function AcmDonutChart(props: {
     const { viewWidth } = useViewport()
     const classes = useStyles({ ...props, danger: props.data.some((d) => d.isDanger), viewWidth } as StyleProps)
 
-    if (props.loading) return loadingDonutChart(props.title)
+    if (props.loading) return loadingDonutChart(props.title, classes)
     return (
         <Card className={classes.card} id={`${props.title.toLowerCase().replace(/\s+/g, '-')}-chart`}>
             <CardTitle className={classes.cardTitle}>

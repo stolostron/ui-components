@@ -1,27 +1,28 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import React, { Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { makeStyles } from '@material-ui/styles'
 import {
     Card,
-    CardTitle,
     CardBody,
-    Text,
-    TextVariants,
+    CardTitle,
+    Divider,
+    Flex,
+    FlexItem,
+    Grid,
+    GridItem,
     Skeleton,
     Split,
     SplitItem,
-    Flex,
-    FlexItem,
-    Divider,
-    Grid,
-    GridItem,
+    Text,
+    TextVariants,
 } from '@patternfly/react-core'
-import { makeStyles } from '@material-ui/styles'
+import React, { Fragment } from 'react'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles({
     rightSplit: { alignSelf: 'center', paddingRight: '12px' },
     cardBody: { borderTop: '1px solid rgba(0,0,0,0.1)' },
+    divider: { marginBottom: '6px' },
 })
 
 type AcmSummaryListProps = {
@@ -33,9 +34,6 @@ type AcmSummaryListProps = {
 }
 
 export const skeleton = (title: string) => {
-    const useStyles = makeStyles({
-        divider: { marginBottom: '6px' },
-    })
     const classes = useStyles()
     return (
         <Card>
@@ -136,6 +134,7 @@ const useSectionStyles = makeStyles({
         fontSize: '14px',
         fontWeight: 600,
     },
+    divider: { marginBottom: '6px' },
 })
 
 type SummarySectionProps = {
@@ -143,6 +142,7 @@ type SummarySectionProps = {
     description: string
     href?: string
     isPrimary?: boolean
+    isLoading?: boolean
 }
 
 const SummarySection = (props: SummarySectionProps) => {
@@ -154,14 +154,26 @@ const SummarySection = (props: SummarySectionProps) => {
             isFlat
             id={`${props.description.toLowerCase().replace(/\s+/g, '-')}-summary`}
         >
-            <CardBody className={classes.cardBody}>
-                <Text component={TextVariants.p} className={classes.count}>
-                    {props.href ? <Link to={props.href}>{props.count}</Link> : props.count}
-                </Text>
-                <Text component={TextVariants.p} className={classes.description}>
-                    {props.description}
-                </Text>
-            </CardBody>
+            {props.isLoading ? (
+                <CardBody className={classes.cardBody}>
+                    <Skeleton
+                        id={`loading-${props.description}`}
+                        width="50px"
+                        fontSize="3xl"
+                        className={classes.divider}
+                    />
+                    <Skeleton width="100px" fontSize="sm" />
+                </CardBody>
+            ) : (
+                <CardBody className={classes.cardBody}>
+                    <Text component={TextVariants.p} className={classes.count}>
+                        {props.href ? <Link to={props.href}>{props.count}</Link> : props.count}
+                    </Text>
+                    <Text component={TextVariants.p} className={classes.description}>
+                        {props.description}
+                    </Text>
+                </CardBody>
+            )}
         </Card>
     )
 }
