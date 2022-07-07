@@ -1,6 +1,6 @@
 /* Copyright Contributors to the Open Cluster Management project */
 
-import { Label, LabelGroup, Truncate } from '@patternfly/react-core'
+import { Label, LabelGroup } from '@patternfly/react-core'
 import React, { Fragment, useMemo } from 'react'
 
 export function AcmLabels(props: {
@@ -54,13 +54,13 @@ export function AcmLabels(props: {
     return (
         <LabelGroup numLabels={labels.length} expandedText={expandedText} collapsedText={collapsedText}>
             {labels.map((label) => (
-                <Label key={label}>
-                    <Truncate content={label} style={{ minWidth: 0 }} />
+                <Label key={label} isTruncated>
+                    {label}
                 </Label>
             ))}
             {hidden.map((label) => (
-                <Label key={label}>
-                    <Truncate content={label} style={{ minWidth: 0 }} />
+                <Label key={label} isTruncated>
+                    {label}
                 </Label>
             ))}
         </LabelGroup>
