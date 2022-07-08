@@ -2,6 +2,7 @@
 
 import { Label, LabelGroup } from '@patternfly/react-core'
 import React, { Fragment, useMemo } from 'react'
+import './AcmLabels.css'
 
 export function AcmLabels(props: {
     labels?: string[] | Record<string, string>
@@ -54,12 +55,12 @@ export function AcmLabels(props: {
     return (
         <LabelGroup numLabels={labels.length} expandedText={expandedText} collapsedText={collapsedText}>
             {labels.map((label) => (
-                <Label key={label} isTruncated>
+                <Label key={label} className="acm-label" isTruncated>
                     {label}
                 </Label>
             ))}
             {hidden.map((label) => (
-                <Label key={label} isTruncated>
+                <Label key={label} className="acm-label" isTruncated>
                     {label}
                 </Label>
             ))}
