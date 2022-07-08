@@ -1,4 +1,4 @@
 .acm-label {
-  display: inline-grid;
-  --pf-c-label__text--MaxWidth: unset;
+    display: inline-grid;
+    --pf-c-label__text--MaxWidth: unset;
 }
