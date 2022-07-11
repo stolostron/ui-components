@@ -2,6 +2,7 @@
 
 # Open Cluster Management UI Components
 
+## * *DEPRECATED* * - Code was merged with console: https://github.com/stolostron/console
 React shared UI component library for open cluster management.
 
 [![Build Status](https://travis-ci.com/stolostron/ui-components.svg?branch=main)](https://travis-ci.com/stolostron/ui-components)
